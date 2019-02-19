@@ -25,9 +25,16 @@ namespace Microsoft.Extensions.Configuration
             {"Production", "prod" }
         };
 
+        /// <summary>
+        /// Add Azure Key Vaults with VS.NET authentication or thru AppId=SecretID pair.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> builder.</param>
+        /// <param name="hostingEnviromentName">The name of the environment retrieved from the Hosting Provider.</param>
+        /// <param name="usePrefix">The prefix like dev,qa,prod.</param>
+        /// <returns></returns>
         public static IConfigurationRoot AddAzureKeyVault(
             this IConfigurationBuilder builder,
-            IHostingEnvironment hostingEnviroment,
+            string hostingEnviromentName,
             bool usePrefix = true)
         {
             var config = builder.Build();
@@ -36,7 +43,7 @@ namespace Microsoft.Extensions.Configuration
             var prefix = string.Empty;
             if (usePrefix)
             {
-                _enviroments.TryGetValue(hostingEnviroment.EnvironmentName, out prefix);
+                _enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
             if (!string.IsNullOrWhiteSpace(options.BaseUrl))
