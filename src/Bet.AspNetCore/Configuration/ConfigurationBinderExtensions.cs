@@ -32,6 +32,7 @@ namespace Microsoft.Extensions.Configuration
         /// <typeparam name="TOptions">The type of the configuration section to bind to.</typeparam>
         /// <param name="configuration">The configuration.</param>
         /// <param name="key">The section key. If <c>null</c>, the name of the type <typeparamref name="TOptions"/> is used.</param>
+        /// <param name="enableValidation">The Default value is true.</param>
         /// <returns>The bound object.</returns>
         public static TOptions Bind<TOptions>(
             this IConfiguration configuration,

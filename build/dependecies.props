@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">
-    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.2.0-preview"/>
+    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.0.1"/>
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.3" />
     <PackageReference Update="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
   </ItemGroup>

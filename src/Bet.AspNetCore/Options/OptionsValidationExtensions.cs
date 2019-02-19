@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class OptionsValidationExtensions
     {
         /// <summary>
-        /// Configure <see cref="{TOptions}"/> with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
+        /// Configure TOptions with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="services">The DI Services</param>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Configure <see cref="{TOptions}"/> with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
+        /// Configure TOptions with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="services">The DI services</param>
@@ -50,7 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Configure <see cref="{TOptions}"/> with a validation delegate.
+        /// Configure TOptions with a validation delegate.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="services"></param>

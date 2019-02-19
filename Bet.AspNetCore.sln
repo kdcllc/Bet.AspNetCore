@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore", "src\Bet.AspNetCore\Bet.AspNetCore.csproj", "{DBE192D3-44E8-4D67-AE13-8D859E85ADA3}"
 EndProject
@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B5340D45
 	ProjectSection(SolutionItems) = preProject
 		build\dependecies.props = build\dependecies.props
 		build\settings.props = build\settings.props
+		build\sources.props = build\sources.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BB9BCC1-2A94-4439-AE89-E99A79DF38DF}"

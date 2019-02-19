@@ -7,6 +7,7 @@
     <Company>King David Consulting LLC</Company>
     <Authors>kdcllc</Authors>
     <Copyright>King David Consulting LLC</Copyright>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
 
