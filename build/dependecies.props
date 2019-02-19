@@ -1,0 +1,66 @@
+<Project>
+
+
+  <PropertyGroup>
+    <NetCoreCommonVersion30>3.0.0-preview.19074.2</NetCoreCommonVersion30>
+    <NetCoreCommonVersion22>2.2.0</NetCoreCommonVersion22>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
+    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(NetCoreCommonVersion22)"/>
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion22)" />
+
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion22)" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion22)" />
+
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion22)" />
+
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="3.0.0-preview-18571-0006" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(NetCoreCommonVersion30)"/>
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion30)" />
+
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="$(NetCoreCommonVersion30)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetCoreCommonVersion30)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(NetCoreCommonVersion30)" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion30)" />
+    <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion30)" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion30)" />
+
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview-19075-0444" />
+
+  </ItemGroup>
+
+  <ItemGroup Label="Azure Key Vault">
+    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.2.0-preview"/>
+    <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.3" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Unit Tests">
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Update="xunit" Version="2.4.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Serilog">
+    <PackageReference Update="Serilog.Extensions.Logging" Version="2.0.2" />
+    <PackageReference Update="Serilog.Settings.Configuration" Version="3.0.1" />
+    <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="2.6.4" />
+    <PackageReference Update="Serilog.Sinks.AzureAnalytics" Version="4.0.0" />
+    <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Update="Serilog.Sinks.RollingFile" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Polly" Version="7.0.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

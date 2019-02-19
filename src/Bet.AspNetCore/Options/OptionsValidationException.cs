@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Bet.AspNetCore.Options
+{
+    /// <summary>
+    /// An exception to provide with useful options validation information.
+    /// </summary>
+    public class OptionsValidationException : Exception
+    {
+        private readonly IEnumerable<string> _failures;
+
+        private string _message;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OptionsValidationException"/> class.
+        /// </summary>
+        /// <param name="failure"></param>
+        /// <param name="optionsType"></param>
+        public OptionsValidationException(string failure, (Type type, string sectionName) optionsType)
+        {
+            if (string.IsNullOrWhiteSpace(failure))
+            {
+                throw new ArgumentNullException(nameof(failure));
+            }
+
+            OptionsType = optionsType != default ? optionsType : throw new ArgumentNullException(nameof(optionsType));
+
+            _failures = new string[] { failure };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OptionsValidationException"/> class.
+        /// </summary>
+        /// <param name="failures"></param>
+        /// <param name="optionsType"></param>
+        public OptionsValidationException(IEnumerable<string> failures, (Type type, string sectionName) optionsType)
+        {
+            _failures = failures ?? Array.Empty<string>().ToArray();
+
+            OptionsType = optionsType != default ? optionsType : throw new ArgumentNullException(nameof(optionsType));
+        }
+
+        /// <inheritdoc/>
+        public override string Message => _message ?? (_message = CreateExceptionMessage());
+
+        /// <summary>
+        /// Specify type of the <see cref="IOptions{TOptions}"/>.
+        /// </summary>
+        public (Type type, string sectionName) OptionsType { get; }
+
+        private string CreateExceptionMessage()
+        {
+            if (_failures?.Count() > 0)
+            {
+                return $"{_failures.Count()} validation errors occurred while validating options of type '{OptionsType.type.FullName}' and Configuration Section Name '{OptionsType.sectionName}'. The errors are: {string.Join("; ", _failures)}";
+            }
+
+            return string.Empty;
+        }
+    }
+}
