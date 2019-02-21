@@ -35,7 +35,6 @@ namespace Microsoft.Extensions.Configuration
         /// Displays all of the application configurations based on the Configuration Provider.
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="logger"></param>
         public static void DebugConfigurationsWithSerilog(
             this IConfigurationRoot config)
         {

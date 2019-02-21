@@ -1,31 +1,26 @@
 <Project>
 
   <PropertyGroup Label="Basic Settings">
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <LangVersion>Latest</LangVersion>
+    <VersionPrefix>1.1.0-pre</VersionPrefix>
+    <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget Package Settings">
-
     <Description>Collection of AspNetCore extensions and reusable functionality.</Description>
     <PackageProjectUrl>https://github.com/kdcllc/Bet.AspNetCore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kdcllc/Bet.AspNetCore.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicense>https://github.com/kdcllc/Bet.AspNetCore/master/LICENSE</PackageLicense>
     <PackageIconUrl>https://raw.githubusercontent.com/kdcllc/Bet.AspNetCore/master/img/logo64x64.png</PackageIconUrl>
-    <PackageTags>AspNetCore,DotNetCore,Configuration, Hosting, Extensions, Azure Key Vault,</PackageTags>
-
+    <PackageTags>aspnetcore,dotnet,configuration,hosting,extensions,azurekeyvault</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
   </PropertyGroup>
 
   <PropertyGroup Label="SourceLink Settings">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
