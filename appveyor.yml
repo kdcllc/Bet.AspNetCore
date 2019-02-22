@@ -26,7 +26,7 @@ test_script:
   - dotnet test
 
 artifacts:
-- path: - path: .\src\**\*.nupkg
+- path: .\src\**\*.nupkg
   name: NuGet package
 
 deploy:
