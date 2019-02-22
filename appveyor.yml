@@ -19,14 +19,14 @@ nuget:
 
 build_script:
   - ps: dotnet restore Bet.AspNetCore.sln -v quiet
-  - ps: dotnet build src/Bet.AspNetCore/ /p:configuration=Release /p:Version=$($env:appveyor_build_version)
+  - ps: dotnet build Bet.AspNetCore.sln /p:configuration=Release /p:Version=$($env:appveyor_build_version)
 
 test: off
 # test_script:
-#   - dotnet test tests/XUnitTests.csproj
+   - dotnet test
 
 artifacts:
-- path: .\src\Bet.AspNetCore\bin\Release\**\*.nupkg
+- path: - path: .\src\**\*.nupkg
   name: NuGet package
 
 deploy:
