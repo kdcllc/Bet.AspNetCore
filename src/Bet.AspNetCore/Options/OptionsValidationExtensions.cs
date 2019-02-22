@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
 
-            services.AddSingleton<IValidateOptions<TOptions>>(new DataAnnotationValidateOptions<TOptions>(Microsoft.Extensions.Options.Options.DefaultName));
+            services.AddSingleton<IValidateOptions<TOptions>>(new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
 
             var section = (IConfigurationSection)configuration;
 
