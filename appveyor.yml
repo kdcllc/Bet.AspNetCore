@@ -23,7 +23,7 @@ build_script:
 
 test: on
 test_script:
-  - dotnet test
+  - dotnet test --no-build --no-restore
 
 artifacts:
 - path: .\src\**\*.nupkg
