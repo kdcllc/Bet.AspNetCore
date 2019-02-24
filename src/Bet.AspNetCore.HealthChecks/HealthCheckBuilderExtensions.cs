@@ -1,4 +1,5 @@
 ﻿using Bet.AspNetCore.HealthChecks.MemoryCheck;
+using Bet.AspNetCore.HealthChecks.SigtermCheck;
 using Bet.AspNetCore.HealthChecks.UriCheck;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -13,6 +14,35 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class HealthCheckBuilderExtensions
     {
+        /// <summary>
+        /// Add SIGTERM Healcheck that provides notification for orchestrator with unhealthy status once the application begins to shut down.
+        /// </summary>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+        /// <returns></returns>
+        public static IHealthChecksBuilder AddSigtermCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string> tags = default)
+        {
+
+            builder.AddCheck<SigtermHealthCheck>(name, failureStatus, tags);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a HealthCHeck for a single <see cref="Uri"/> or many <see cref="Uri"/>s instances.
+        /// </summary>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="registration">The <see cref="Action{UriHealthCheckBuilder}"/> delegate.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+        /// <returns></returns>
         public static IHealthChecksBuilder AddUriHealthCheck(
             this IHealthChecksBuilder builder,
             string name,
@@ -65,6 +95,12 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Custom HealthCheck <see cref="HealthReport"/> renderer.
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static Task WriteResponse(
             HttpContext httpContext,
             HealthReport result)
