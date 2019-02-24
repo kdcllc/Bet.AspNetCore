@@ -12,8 +12,32 @@ using Xunit;
 
 namespace Bet.AspNetCore.UnitTest
 {
-    public class UriHealthChecks
+    public class HealthChecksTests
     {
+
+        [Fact]
+        public async Task Return_Unhealthy_On_SIGTERM()
+        {
+            var builder = new WebHostBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddHealthChecks().AddSigtermCheck("sigterm_check");
+                })
+                .Configure(app=>
+                {
+                    app.UseHealthChecks("/hc");
+                });
+
+            var server = new TestServer(builder);
+            var client = server.CreateClient();
+
+            var appLifetime = server.Host.Services.GetService<IApplicationLifetime>();
+
+            appLifetime.StopApplication();
+
+            var response = await client.GetAsync("hc");
+            Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        }
 
         [Fact]
         public async Task Return_Ok_Status()
