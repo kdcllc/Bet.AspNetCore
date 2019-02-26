@@ -1,5 +1,5 @@
 <Project>
 
-  <Import Project="build\dependecies.props" />
+  <Import Project="build\dependencies.props" />
 
 </Project>
