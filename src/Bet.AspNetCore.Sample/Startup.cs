@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Threading;
 
 namespace Bet.AspNetCore.Sample
 {
