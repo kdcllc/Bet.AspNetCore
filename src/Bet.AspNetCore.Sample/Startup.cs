@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Bet.AspNetCore.Sample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -42,6 +45,27 @@ namespace Bet.AspNetCore.Sample
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddHealthChecks()
+
+                .AddUriHealthCheck("200_check", builder =>
+                {
+                    builder.Add(option =>
+                    {
+                        option.AddUri("https://httpstat.us/200")
+                               .UseExpectedHttpCode(HttpStatusCode.OK);
+                    });
+
+                    builder.Add(option =>
+                    {
+                        option.AddUri("https://httpstat.us/203")
+                               .UseExpectedHttpCode(HttpStatusCode.NonAuthoritativeInformation);
+                    });
+                })
+                .AddUriHealthCheck("ms_check", uriOptions: (options) =>
+                {
+                    options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
+                })
+                .AddSigtermCheck("Sigterm_shutdown_check");
 
             services.AddMvc()
                 .AddNewtonsoftJson();
@@ -74,6 +98,12 @@ namespace Bet.AspNetCore.Sample
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // returns 200 okay
+            app.UseLivenessHealthCheck();
+
+            // returns healthy if all healthcheks return healthy
+            app.UseHealthyHealthCheck();
         }
     }
 }

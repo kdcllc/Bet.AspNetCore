@@ -74,5 +74,60 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+
+
+        /// <summary>
+        /// Registers a configuration instance which TOptions will bind against.
+        /// </summary>
+        /// <typeparam name="TOptions">The type of options being configured.</typeparam>
+        /// <param name="services"></param>
+        /// <param name="sectionName"></param>
+        /// <returns></returns>
+        public static IServiceCollection Configure<TOptions>(
+            this IServiceCollection services,
+            string sectionName = default) where TOptions : class, new()
+        {
+
+            return services.Configure<TOptions>(_ => { }, sectionName);
+        }
+
+        /// <summary>
+        /// Registers a configuration instance which TOptions will bind against.
+        /// </summary>
+        /// <typeparam name="TOptions">The type of options being configured.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+        /// <param name="sectionName">The section name that is different from {TOptions}.</param>
+        /// <param name="configureBinder">Used to configure the <see cref="BinderOptions"/>.</param>
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+        public static IServiceCollection Configure<TOptions>(
+            this IServiceCollection services,
+            Action<BinderOptions> configureBinder,
+            string sectionName = default)
+            where TOptions : class, new()
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            services.AddOptions();
+            services.AddSingleton<IOptionsChangeTokenSource<TOptions>>((sp) =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var section = config.GetSection(sectionName ?? nameof(TOptions));
+
+                return new ConfigurationChangeTokenSource<TOptions>(sectionName, section);
+            });
+
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
+
+            return services.AddSingleton<IConfigureOptions<TOptions>>((sp) =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var section = config.GetSection(sectionName ?? nameof(TOptions));
+
+                return new NamedConfigureFromConfigurationOptions<TOptions>(sectionName, config, configureBinder);
+            });
+        }
     }
 }

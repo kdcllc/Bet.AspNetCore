@@ -14,18 +14,18 @@ namespace Bet.AspNetCore.HealthChecks.SigtermCheck
             _applicationLifetime = applicationLifetime;
         }
 
-        public async Task<HealthCheckResult> CheckHealthAsync(
+        public Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,
             CancellationToken cancellationToken = default)
         {
             if (_applicationLifetime.ApplicationStopping.IsCancellationRequested)
             {
-                return new HealthCheckResult(
+                return Task.FromResult(new HealthCheckResult(
                     context.Registration.FailureStatus,
-                    description: "IApplicationLifetime.ApplicationStopping was requested");
+                    description: "IApplicationLifetime.ApplicationStopping was requested"));
             }
 
-            return HealthCheckResult.Healthy();
+            return Task.FromResult(HealthCheckResult.Healthy());
         }
     }
 }

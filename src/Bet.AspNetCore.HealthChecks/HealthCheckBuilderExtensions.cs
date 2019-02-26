@@ -1,6 +1,8 @@
 ﻿using Bet.AspNetCore.HealthChecks.MemoryCheck;
 using Bet.AspNetCore.HealthChecks.SigtermCheck;
 using Bet.AspNetCore.HealthChecks.UriCheck;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
@@ -34,6 +36,28 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        public static IHealthChecksBuilder AddUriHealthCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            Action<UriOptionsSetup> uriOptions,
+            HealthStatus? failureStatus = default,
+            IEnumerable<string> tags = default)
+        {
+            // TODO ability to add custom httpclient for the calls.
+            var client = builder.Services.AddHttpClient(name, (sp, config) =>
+            {
+                //config.Timeout = TimeSpan.FromSeconds(10);
+            });
+
+            var check = new UriHealthCheckBuilder(builder.Services, name);
+
+            check.Add(uriOptions);
+
+            builder.AddCheck<UriHealthCheck>(name, failureStatus, tags);
+
+            return builder;
+        }
+
         /// <summary>
         /// Add a HealthCHeck for a single <see cref="Uri"/> or many <see cref="Uri"/>s instances.
         /// </summary>
@@ -50,9 +74,10 @@ namespace Microsoft.Extensions.DependencyInjection
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
+            // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
             {
-                config.Timeout = TimeSpan.FromSeconds(10);
+                //config.Timeout = TimeSpan.FromSeconds(10);
             });
 
             var check = new UriHealthCheckBuilder(builder.Services, name);
@@ -91,6 +116,47 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.Threshold = thresholdInBytes.Value;
                 });
             }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Enable usage of the basic liveness check that returns 200 http status code.
+        /// Default registered health check is self.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="healthCheckPath"></param>
+        /// <param name="healthCheckOptions"></param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseLivenessHealthCheck(
+            this IApplicationBuilder builder,
+            string healthCheckPath = "/liveness",
+            HealthCheckOptions healthCheckOptions = default)
+        {
+
+            if (healthCheckOptions == default)
+            {
+                // Exclude all checks and return a 200-Ok. Default registered health check is self.
+                healthCheckOptions = new HealthCheckOptions { Predicate = (p) => false };
+            }
+
+            builder.UseHealthChecks(healthCheckPath, healthCheckOptions);
+
+            return builder;
+        }
+
+        public static IApplicationBuilder UseHealthyHealthCheck(
+            this IApplicationBuilder builder,
+            string healthCheckPath = "/healthy",
+            HealthCheckOptions healthCheckOptions = default)
+        {
+
+            if (healthCheckOptions == default)
+            {
+                healthCheckOptions = new HealthCheckOptions { ResponseWriter = WriteResponse };
+            }
+
+            builder.UseHealthChecks(healthCheckPath, healthCheckOptions);
 
             return builder;
         }
