@@ -12,12 +12,12 @@ namespace Bet.AspNetCore.UnitTest
     public class AzureKeyVaultFuncTests
     {
 
-        [Fact]
+        [Fact(Skip ="Integration Test")]
         public void  TestGenericHost()
         {
             var dic = new Dictionary<string, string>
             {
-                {"AzureVault:BaseUrl", "https://kdcllc.vault.azure.net/" },
+                {"AzureVault:BaseUrl", "https://{name}.vault.azure.net/" },
                 {"AzureVault:ClientId", "" },
                 {"AzureVault:ClientSecret", "" },
             };

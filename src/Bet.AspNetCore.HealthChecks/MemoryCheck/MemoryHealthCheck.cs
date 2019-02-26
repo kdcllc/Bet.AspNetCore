@@ -35,7 +35,7 @@ namespace Bet.AspNetCore.HealthChecks.MemoryCheck
                 { "Gen2Collections", GC.CollectionCount(2) },
             };
 
-            var status = (allocated < options.Threshold) ? HealthStatus.Healthy : HealthStatus.Unhealthy;
+            var status = (allocated < options.Threshold) ? HealthStatus.Healthy : context.Registration.FailureStatus;
 
             return Task.FromResult(new HealthCheckResult(
                 status,

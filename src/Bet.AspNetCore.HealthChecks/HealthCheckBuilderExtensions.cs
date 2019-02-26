@@ -1,5 +1,8 @@
 ﻿using Bet.AspNetCore.HealthChecks.MemoryCheck;
+using Bet.AspNetCore.HealthChecks.SigtermCheck;
 using Bet.AspNetCore.HealthChecks.UriCheck;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
@@ -13,6 +16,57 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class HealthCheckBuilderExtensions
     {
+        /// <summary>
+        /// Add SIGTERM Healcheck that provides notification for orchestrator with unhealthy status once the application begins to shut down.
+        /// </summary>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+        /// <returns></returns>
+        public static IHealthChecksBuilder AddSigtermCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            HealthStatus? failureStatus = null,
+            IEnumerable<string> tags = default)
+        {
+
+            builder.AddCheck<SigtermHealthCheck>(name, failureStatus, tags);
+
+            return builder;
+        }
+
+        public static IHealthChecksBuilder AddUriHealthCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            Action<UriOptionsSetup> uriOptions,
+            HealthStatus? failureStatus = default,
+            IEnumerable<string> tags = default)
+        {
+            // TODO ability to add custom httpclient for the calls.
+            var client = builder.Services.AddHttpClient(name, (sp, config) =>
+            {
+                //config.Timeout = TimeSpan.FromSeconds(10);
+            });
+
+            var check = new UriHealthCheckBuilder(builder.Services, name);
+
+            check.Add(uriOptions);
+
+            builder.AddCheck<UriHealthCheck>(name, failureStatus, tags);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a HealthCHeck for a single <see cref="Uri"/> or many <see cref="Uri"/>s instances.
+        /// </summary>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="registration">The <see cref="Action{UriHealthCheckBuilder}"/> delegate.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+        /// <returns></returns>
         public static IHealthChecksBuilder AddUriHealthCheck(
             this IHealthChecksBuilder builder,
             string name,
@@ -20,9 +74,10 @@ namespace Microsoft.Extensions.DependencyInjection
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
+            // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
             {
-                config.Timeout = TimeSpan.FromSeconds(10);
+                //config.Timeout = TimeSpan.FromSeconds(10);
             });
 
             var check = new UriHealthCheckBuilder(builder.Services, name);
@@ -65,6 +120,53 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Enable usage of the basic liveness check that returns 200 http status code.
+        /// Default registered health check is self.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="healthCheckPath"></param>
+        /// <param name="healthCheckOptions"></param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseLivenessHealthCheck(
+            this IApplicationBuilder builder,
+            string healthCheckPath = "/liveness",
+            HealthCheckOptions healthCheckOptions = default)
+        {
+
+            if (healthCheckOptions == default)
+            {
+                // Exclude all checks and return a 200-Ok. Default registered health check is self.
+                healthCheckOptions = new HealthCheckOptions { Predicate = (p) => false };
+            }
+
+            builder.UseHealthChecks(healthCheckPath, healthCheckOptions);
+
+            return builder;
+        }
+
+        public static IApplicationBuilder UseHealthyHealthCheck(
+            this IApplicationBuilder builder,
+            string healthCheckPath = "/healthy",
+            HealthCheckOptions healthCheckOptions = default)
+        {
+
+            if (healthCheckOptions == default)
+            {
+                healthCheckOptions = new HealthCheckOptions { ResponseWriter = WriteResponse };
+            }
+
+            builder.UseHealthChecks(healthCheckPath, healthCheckOptions);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Custom HealthCheck <see cref="HealthReport"/> renderer.
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static Task WriteResponse(
             HttpContext httpContext,
             HealthReport result)

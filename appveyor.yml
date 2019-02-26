@@ -21,9 +21,8 @@ build_script:
   - ps: dotnet restore Bet.AspNetCore.sln -v quiet
   - ps: dotnet build Bet.AspNetCore.sln /p:configuration=Release /p:Version=$($env:appveyor_build_version)
 
-test: on
 test_script:
-  - dotnet test
+  - dotnet test test/Bet.AspNetCore.UnitTest/Bet.AspNetCore.UnitTest.csproj -c Release --no-build
 
 artifacts:
 - path: .\src\**\*.nupkg
