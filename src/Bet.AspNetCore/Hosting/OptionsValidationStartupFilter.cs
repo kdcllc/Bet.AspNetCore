@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationExcep
 
 namespace Microsoft.AspNetCore.Hosting
 {
-    public class OptionsValidationStartupFilter : IStartupFilter, IHostStartupFilter
+    public class OptionsValidationStartupFilter : IStartupFilter
     {
         private IList<(Type type, string sectionName)> _optionsTypes;
 
@@ -43,29 +42,6 @@ namespace Microsoft.AspNetCore.Hosting
 
                 next(app);
             };
-        }
-
-        public void Configure(IServiceProvider provider)
-        {
-            if (_optionsTypes != null)
-            {
-                foreach (var (type, sectionName) in _optionsTypes)
-                {
-                    var options = provider.GetService(typeof(IOptions<>).MakeGenericType(type));
-                    try
-                    {
-                        if (options != null)
-                        {
-                            // Retrieve the value to trigger the Asp.Net Core validation
-                            var optionsValue = ((IOptions<object>)options).Value;
-                        }
-                    }
-                    catch (Extensions.Options.OptionsValidationException ex)
-                    {
-                        throw new OptionsValidationException(ex.Failures, (type, sectionName));
-                    }
-                }
-            }
         }
 
     }

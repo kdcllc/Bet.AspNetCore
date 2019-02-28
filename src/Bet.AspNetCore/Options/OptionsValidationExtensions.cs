@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
@@ -15,20 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="services">The instance of <see cref="IServiceCollection"/>.</param>
         /// <param name="configuration">The <see cref="IConfiguration"/> section for the Options.</param>
-        /// <returns></returns>
-        public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
-            this IServiceCollection services,
-            IConfiguration configuration) where TOptions : class, new()
-        {
-            return services.Build(configuration, () => new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
-        }
-
-        /// <summary>
-        /// Configure TOptions with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
-        /// </summary>
-        /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services">The instance of <see cref="IServiceCollection"/>.</param>
-        /// <param name="configuration">The <see cref="IConfiguration"/> section for the Options.</param>
         /// <param name="sectionName">The configuration name for the section. Default is null and the name equals {TOptions}.</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
@@ -36,11 +23,11 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration,
             string sectionName = null) where TOptions : class, new()
         {
-            // get config section
-            var section = GetConfigurationSection<TOptions>(configuration, sectionName);
+            var section = configuration as IConfigurationSection ?? (IConfigurationSection)GetConfigurationSection<TOptions>(configuration, sectionName);
 
-            return services.ConfigureWithDataAnnotationsValidation<TOptions>(section);
+            return services.Build(section, () => new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
         }
+
 
         /// <summary>
         /// Configure TOptions with a validation delegate.
@@ -69,14 +56,23 @@ namespace Microsoft.Extensions.DependencyInjection
             Type type,
             string sectionName)
         {
-            var filter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
-            if (filter == null)
+            var webhostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
+            if (webhostFilter == null)
             {
-                filter = new OptionsValidationStartupFilter();
-                services.AddSingleton<IStartupFilter>(filter);
-                services.AddSingleton<IHostStartupFilter>(filter);
+                webhostFilter = new OptionsValidationStartupFilter();
+                services.AddSingleton<IStartupFilter>(webhostFilter);
             }
-            filter.OptionsTypes.Add((type, sectionName));
+            webhostFilter.OptionsTypes.Add((type, sectionName));
+
+            var hostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationHostStartupFilter>().FirstOrDefault();
+
+            if (hostFilter == null)
+            {
+                hostFilter = new OptionsValidationHostStartupFilter();
+                services.AddSingleton<IHostStartupFilter>(hostFilter);
+            }
+
+            hostFilter.OptionsTypes.Add((type, sectionName));
         }
 
         private static IServiceCollection Build<TOptions>(
@@ -90,9 +86,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton(validator());
 
-            var section = (IConfigurationSection)configuration;
 
-            ValidateAtStartup(services, typeof(TOptions), section.Path);
+            if (configuration is IConfigurationSection section)
+            {
+                ValidateAtStartup(services, typeof(TOptions), section.Path);
+            }
 
             return services;
         }
@@ -101,7 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration,
             string sectionName)
         {
-            return configuration.GetSection(sectionName ?? nameof(TOptions));
+            return configuration.GetSection(sectionName ?? typeof(TOptions).Name);
         }
     }
 }
