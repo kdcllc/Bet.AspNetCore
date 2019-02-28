@@ -30,7 +30,6 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
 
             Services.Configure<UriHealthCheckOptions>(CheckName, options =>
             {
-
                 options.UriOptions.Add(option);
             });
 

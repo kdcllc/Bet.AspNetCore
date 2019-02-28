@@ -75,7 +75,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-
         /// <summary>
         /// Registers a configuration instance which TOptions will bind against.
         /// </summary>
@@ -87,7 +86,6 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             string sectionName = default) where TOptions : class, new()
         {
-
             return services.Configure<TOptions>(_ => { }, sectionName);
         }
 
@@ -102,7 +100,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection Configure<TOptions>(
             this IServiceCollection services,
             Action<BinderOptions> configureBinder,
-            string sectionName = default)
+            string sectionName = null)
             where TOptions : class, new()
         {
             if (services == null)

@@ -13,7 +13,6 @@ namespace Bet.AspNetCore.UnitTest
                     .AddApplicationPart(typeof(TestStartup).Assembly);
 
             services.AddMvc();
-
         }
 
         public void Configure(

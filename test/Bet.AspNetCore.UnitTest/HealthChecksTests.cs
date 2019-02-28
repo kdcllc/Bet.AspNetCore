@@ -13,7 +13,6 @@ namespace Bet.AspNetCore.UnitTest
 {
     public class HealthChecksTests
     {
-
         [Fact]
         public async Task Return_Unhealthy_On_SIGTERM()
         {
@@ -66,7 +65,6 @@ namespace Bet.AspNetCore.UnitTest
                             .UseExpectedHttpCode(statusCode);
                         });
                     });
-
                 })
                 .UseStartup<TestStartup>();
 

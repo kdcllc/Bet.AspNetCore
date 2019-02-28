@@ -11,7 +11,6 @@ namespace Bet.AspNetCore.UnitTest
 {
     public class AzureKeyVaultFuncTests
     {
-
         [Fact(Skip ="Integration Test")]
         public void  TestGenericHost()
         {
@@ -34,12 +33,10 @@ namespace Bet.AspNetCore.UnitTest
                 })
                 .ConfigureLogging((hostContext, logging) =>
                 {
-
                 })
                 .Build();
 
             var services = host.Services;
-
         }
     }
 }

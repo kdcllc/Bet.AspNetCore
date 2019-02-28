@@ -30,7 +30,6 @@ namespace Microsoft.Extensions.DependencyInjection
             HealthStatus? failureStatus = null,
             IEnumerable<string> tags = default)
         {
-
             builder.AddCheck<SigtermHealthCheck>(name, failureStatus, tags);
 
             return builder;
@@ -133,7 +132,6 @@ namespace Microsoft.Extensions.DependencyInjection
             string healthCheckPath = "/liveness",
             HealthCheckOptions healthCheckOptions = default)
         {
-
             if (healthCheckOptions == default)
             {
                 // Exclude all checks and return a 200-Ok. Default registered health check is self.
@@ -150,7 +148,6 @@ namespace Microsoft.Extensions.DependencyInjection
             string healthCheckPath = "/healthy",
             HealthCheckOptions healthCheckOptions = default)
         {
-
             if (healthCheckOptions == default)
             {
                 healthCheckOptions = new HealthCheckOptions { ResponseWriter = WriteResponse };
