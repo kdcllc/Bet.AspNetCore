@@ -230,3 +230,13 @@ dotnet_naming_rule.non_interface_types_must_be_pascal_case.style = pascal_case
 dotnet_naming_rule.interface_types_must_be_prefixed_with_i.severity = warning
 dotnet_naming_rule.interface_types_must_be_prefixed_with_i.symbols = interface_types
 dotnet_naming_rule.interface_types_must_be_prefixed_with_i.style = prefix_interface_interface_with_i
+
+# Const fields
+dotnet_naming_rule.const_field_naming.symbols = const_field_symbol
+dotnet_naming_rule.const_field_naming.style = pascal_case_style
+dotnet_naming_rule.const_field_naming.severity = warning
+
+dotnet_naming_symbols.const_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.const_field_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.const_field_symbol.required_modifiers = const
+

@@ -11,7 +11,6 @@ namespace Bet.AspNetCore.Sample.Pages
     {
         public void OnGet()
         {
-
         }
     }
 }

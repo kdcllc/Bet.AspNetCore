@@ -64,17 +64,19 @@ namespace Bet.AspNetCore.UnitTest
                 {"FakeOptions:Name", "" }
             };
 
+            IConfiguration Configuration = null;
+
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    configBuiler.AddInMemoryCollection(dic).Build();
+                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDatatAnnotations>(sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDatatAnnotations>(Configuration, sectionName: "FakeOptions");
                 })
                 .Configure(app =>
                 {
@@ -82,6 +84,41 @@ namespace Bet.AspNetCore.UnitTest
                 });
 
             Assert.Throws<OptionsValidationException>(() => new TestServer(host));
+        }
+
+        [Fact]
+        public void Configure_With_DataAnnotation_Validation_Succeded()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                {"FakeOptions:Id", "2" },
+                {"FakeOptions:Name", "tet" }
+            };
+
+            IConfiguration Configuration = null;
+
+            var host = new WebHostBuilder()
+                .ConfigureAppConfiguration((hostingContext, configBuiler) =>
+                {
+                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                })
+                .ConfigureServices((services) =>
+                {
+                    services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
+                    services.AddOptions();
+
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDatatAnnotations>(Configuration, sectionName: "FakeOptions");
+                })
+                .Configure(app =>
+                {
+                    app.UseMvc();
+                });
+
+            var server = new TestServer(host);
+
+            var result = server.Host.Services.GetService<FakeOptionsWithDatatAnnotations>();
+
+            Assert.Equal(2, result.Id);
         }
 
         [Fact]
@@ -93,17 +130,19 @@ namespace Bet.AspNetCore.UnitTest
                 {"FakeOptions:Name", "" }
             };
 
+            IConfiguration Configuration = null;
+
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    configBuiler.AddInMemoryCollection(dic).Build();
+                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithValidation<FakeOptions>(opt =>
+                    services.ConfigureWithValidation<FakeOptions>(Configuration, opt =>
                     {
                         if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
                         {

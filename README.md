@@ -72,3 +72,34 @@ Sometimes we need to have tracing information enable to see where the configurat
                configBuilder.Build().DebugConfigurations();
           }
 ``` 
+
+## Logging Extension with Serilog
+
+To enable Azure `ApplicationInsights` and/or `LogAnalytics` Seriglog sinks add the following in `Program.cs`:
+
+```csharp
+                .UseSerilog((hostingContext, loggerConfiguration) =>
+                {
+                    loggerConfiguration
+                          .ReadFrom.Configuration(hostingContext.Configuration)
+                          .Enrich.FromLogContext()
+                          .WriteTo.Console()
+                          .AddApplicationInsights(hostingContext.Configuration)
+                          .AddAzureLogAnalytics(hostingContext.Configuration);
+                })
+```
+
+Make sure that the following Options values are supplied.
+
+```json
+  "ApplicationInsights": {
+    "InstrumentationKey": "",
+    "EnableEvents": true,
+    "EnableTraces": true
+  },
+
+  "AzureLogAnalytics": {
+    "WorkspaceId": "",
+    "AuthenticationId": ""
+  }
+```

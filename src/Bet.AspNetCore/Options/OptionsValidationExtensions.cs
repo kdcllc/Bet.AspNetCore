@@ -19,17 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             IConfiguration configuration) where TOptions : class, new()
         {
-            services.Configure<TOptions>(configuration);
-
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
-
-            services.AddSingleton<IValidateOptions<TOptions>>(new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
-
-            var section = (IConfigurationSection)configuration;
-
-            ValidateAtStartup(services, typeof(TOptions), section.Path);
-
-            return services;
+            return services.Build(configuration, () => new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
         }
 
         /// <summary>
@@ -37,16 +27,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
         /// <param name="services">The DI services</param>
+        /// <param name="configuration"></param>
         /// <param name="sectionName">The configuration name for the section.</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
             this IServiceCollection services,
+            IConfiguration configuration,
             string sectionName = null) where TOptions : class, new()
         {
             // get config section
-            var config = GetConfigurationSection<TOptions>(services, sectionName);
+            var section = GetConfigurationSection<TOptions>(configuration, sectionName);
 
-            return services.ConfigureWithDataAnnotationsValidation<TOptions>(config);
+            return services.ConfigureWithDataAnnotationsValidation<TOptions>(section);
         }
 
         /// <summary>
@@ -56,27 +48,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="validation"></param>
         /// <param name="failureMessage"></param>
+        /// <param name="configuration"></param>
         /// <param name="sectionName"></param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithValidation<TOptions>(
             this IServiceCollection services,
+            IConfiguration configuration,
             Func<TOptions, bool> validation,
             string failureMessage,
             string sectionName = null) where TOptions : class, new()
         {
-            var configuration = GetConfigurationSection<TOptions>(services, sectionName);
+            var section = GetConfigurationSection<TOptions>(configuration, sectionName);
 
-            services.Configure<TOptions>(configuration);
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
-
-            // validation
-            services.AddSingleton<IValidateOptions<TOptions>>(new ValidateOptions<TOptions>(Microsoft.Extensions.Options.Options.DefaultName, validation, failureMessage));
-
-            var section = (IConfigurationSection)configuration;
-
-            ValidateAtStartup(services, typeof(TOptions), section.Path);
-
-            return services;
+            return services.Build(section, () => new ValidateOptions<TOptions>(Options.Options.DefaultName, validation, failureMessage));
         }
 
         private static void ValidateAtStartup(
@@ -93,10 +77,28 @@ namespace Microsoft.Extensions.DependencyInjection
             existingService.OptionsTypes.Add((type, sectionName));
         }
 
-        private static IConfiguration GetConfigurationSection<TOptions>(IServiceCollection services, string sectionName)
+        private static IServiceCollection Build<TOptions>(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Func<IValidateOptions<TOptions>> validator) where TOptions : class, new()
         {
-            var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            services.Configure<TOptions>(configuration);
 
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
+
+            services.AddSingleton(validator());
+
+            var section = (IConfigurationSection)configuration;
+
+            ValidateAtStartup(services, typeof(TOptions), section.Path);
+
+            return services;
+        }
+
+        private static IConfiguration GetConfigurationSection<TOptions>(
+            IConfiguration configuration,
+            string sectionName)
+        {
             return configuration.GetSection(sectionName ?? nameof(TOptions));
         }
     }
