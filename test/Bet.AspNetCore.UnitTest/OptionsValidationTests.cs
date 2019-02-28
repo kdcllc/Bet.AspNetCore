@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using Microsoft.Extensions.Hosting;
 
 namespace Bet.AspNetCore.UnitTest
 {
@@ -48,9 +49,9 @@ namespace Bet.AspNetCore.UnitTest
 
             var config = new ConfigurationBuilder().AddInMemoryCollection(dic).Build().GetSection(nameof(FakeOptions));
 
-            var options = new FakeOptionsWithDatatAnnotations();
+            var options = new FakeOptionsWithDataAnnotations();
 
-            void act() => config.Bind<FakeOptionsWithDatatAnnotations>(options);
+            void act() => config.Bind<FakeOptionsWithDataAnnotations>(options);
 
             Assert.Throws<OptionsValidationException>(act);
         }
@@ -76,7 +77,7 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDatatAnnotations>(Configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptions");
                 })
                 .Configure(app =>
                 {
@@ -107,7 +108,7 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDatatAnnotations>(Configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptions");
                 })
                 .Configure(app =>
                 {
@@ -116,7 +117,7 @@ namespace Bet.AspNetCore.UnitTest
 
             var server = new TestServer(host);
 
-            var result = server.Host.Services.GetService<FakeOptionsWithDatatAnnotations>();
+            var result = server.Host.Services.GetService<FakeOptionsWithDataAnnotations>();
 
             Assert.Equal(2, result.Id);
         }
@@ -157,6 +158,62 @@ namespace Bet.AspNetCore.UnitTest
                 });
 
             Assert.Throws<OptionsValidationException>(() => new TestServer(host));
+        }
+
+        [Fact]
+        public void Configure_HostBuilder_With_DataAnnotation_Fail()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                { "FakeOptions:Id", "-2" },
+                { "FakeOptions:Name", string.Empty }
+            };
+
+            IConfiguration configuration = null;
+
+            var host = new HostBuilder()
+                .ConfigureAppConfiguration((hostingContext, configBuiler) =>
+                {
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<HostStartupService>();
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
+                }).Build();
+
+            void Act() => host.Run();
+
+            Assert.Throws<OptionsValidationException>(() => Act());
+        }
+
+        [Fact]
+        public void Configure_HostBuilder_With_DataAnnotation_Succeeded()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                { "FakeOptions:Id", "2" },
+                { "FakeOptions:Name", "ha" }
+            };
+
+            IConfiguration configuration = null;
+
+            var hostBuilder = new HostBuilder()
+                .ConfigureAppConfiguration((hostingContext, configBuiler) =>
+                {
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<HostStartupService>();
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
+                }).Build();
+
+            var sp = hostBuilder.Services;
+
+            var result = sp.GetService<FakeOptionsWithDataAnnotations>();
+
+            Assert.Equal(2, result.Id);
         }
     }
 }
