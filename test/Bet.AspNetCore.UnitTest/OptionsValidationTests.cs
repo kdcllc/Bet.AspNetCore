@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace Bet.AspNetCore.UnitTest
 {
@@ -92,8 +93,12 @@ namespace Bet.AspNetCore.UnitTest
         {
             var dic = new Dictionary<string, string>
             {
-                {"FakeOptions:Id", "2" },
-                {"FakeOptions:Name", "tet" }
+                { "FakeOptionsWithDataAnnotations:Id", "2" },
+                { "FakeOptionsWithDataAnnotations:Name", "bet" },
+                { "FakeOptions:Id", "3" },
+                { "FakeOptions:Name", "gimel" },
+                { "FakeOptions2:Id", "4" },
+                { "FakeOptions2:Name", "dalet" }
             };
 
             IConfiguration Configuration = null;
@@ -108,7 +113,11 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptionsWithDataAnnotations");
+                    //services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration);
+
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(Configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(Configuration.GetSection("FakeOptions2"));
                 })
                 .Configure(app =>
                 {
@@ -188,12 +197,16 @@ namespace Bet.AspNetCore.UnitTest
         }
 
         [Fact]
-        public void Configure_HostBuilder_With_DataAnnotation_Succeeded()
+        public async Task Configure_HostBuilder_With_DataAnnotation_Succeeded()
         {
             var dic = new Dictionary<string, string>
             {
-                { "FakeOptions:Id", "2" },
-                { "FakeOptions:Name", "ha" }
+                { "FakeOptionsWithDataAnnotations:Id", "2" },
+                { "FakeOptionsWithDataAnnotations:Name", "bet" },
+                { "FakeOptions:Id", "3" },
+                { "FakeOptions:Name", "gimel" },
+                { "FakeOptions2:Id", "4" },
+                { "FakeOptions2:Name", "dalet" }
             };
 
             IConfiguration configuration = null;
@@ -205,15 +218,22 @@ namespace Bet.AspNetCore.UnitTest
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<HostStartupService>();
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
-                }).Build();
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(configuration.GetSection("FakeOptions2"));
+                })
+                .UseStartupFilter()
+                .Build();
 
             var sp = hostBuilder.Services;
+            await hostBuilder.StartAsync();
+            var result1 = sp.GetService<FakeOptionsWithDataAnnotations>();
 
-            var result = sp.GetService<FakeOptionsWithDataAnnotations>();
+            var result2 = sp.GetService<FakeOptions>();
 
-            Assert.Equal(2, result.Id);
+            Assert.Equal(2, result1.Id);
+
+            await hostBuilder.StopAsync();
         }
     }
 }

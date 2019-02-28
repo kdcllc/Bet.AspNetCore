@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Bet.AspNetCore.Options
@@ -8,6 +9,7 @@ namespace Bet.AspNetCore.Options
     /// <summary>
     /// An exception to provide with useful options validation information.
     /// </summary>
+    [SuppressMessage("Readability", "RCS1194", Justification = "No need for the default constructors here.")]
     public class OptionsValidationException : Exception
     {
         private readonly IEnumerable<string> _failures;

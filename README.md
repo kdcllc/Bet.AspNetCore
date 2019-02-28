@@ -17,10 +17,21 @@ This project contains the following functionality:
 
 ## Options Validation
 
-Bind options with validation are often used in `ConfigureAppConfiguration` in `IWebHostBuilder` or `IHostBuilder`. 
-In some cases you want to prevent from application execution unless all of the required Options are supplied.
+Since AspNetCore is very flexible with Configuration providers it allows to load options from different providers. It doesn't grantee the validations of the values out of the box.
+AspNetCore 2.2 introduced extension methods on `OptionsBuilder` which if registered will be validated on the first use of the Options. 
 
-1. Bind Method extension with a validation delegate
+This project include further ability to validate Options on the application startup before the values are ever used.
+
+Options validation falls into two category:
+
+1. Configuration Extension Method for the `Bind` method which is usually used to bind options with validation `Program.cs` file in `ConfigureAppConfiguration` in `IWebHostBuilder` or `IHostBuilder`.
+
+2. `Configure` Extension method for `Startup.cs` file and `ConfigureServices` method named `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation`.
+
+
+### Usage Within the `Program.cs`
+
+1. `Bind`  or `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation` Method extension with a validation delegate
 
 ```csharp
 
@@ -32,17 +43,36 @@ In some cases you want to prevent from application execution unless all of the r
             }
             return false;
         }, "Validation Failed");
+
+
+   services.ConfigureWithValidation<FakeOptions>(Configuration, opt =>
+        {
+            if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
+            {
+                return true;
+            }
+            return false;
+        }, "This didn't validated.");
+
+   services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
+
 ```
 
-When used with `HostBuilder` you have to register hosted service `services.AddHostedService<HostStartupService>();`.
+When used with `HostBuilder` you have to register hosted service `services.AddHostedService<HostStartupService>();` or use an extension method.
 
-2. Bind<> Method with DataAnnotations
+```csharp
+    var host = new HostBuilder()
+                .UseStartupFilter()
+                .Build();
+```
+
+2. `Bind<>` Method with DataAnnotations
 
 ```csharp
     var options = config.Bind<MyOptionsWithDatatAnnotations>(options);
 ```
 
-### Azure Key Vault Configuration Provider
+## Azure Key Vault Configuration Provider
 
 This provider requires the following configurations to be present in any other configuration providers.
 The `ClientId` and `ClientSecret` are not needed if used within Visual Studio.Net or in Azure Web Application with MSI enable.
