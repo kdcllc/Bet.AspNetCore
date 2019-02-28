@@ -12,8 +12,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Configure TOptions with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services">The DI Services</param>
-        /// <param name="configuration">The configuration section</param>
+        /// <param name="services">The instance of <see cref="IServiceCollection"/>.</param>
+        /// <param name="configuration">The <see cref="IConfiguration"/> section for the Options.</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
             this IServiceCollection services,
@@ -26,9 +26,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Configure TOptions with <see cref="DataAnnotationValidateOptions{TOptions}"/>.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services">The DI services</param>
-        /// <param name="configuration"></param>
-        /// <param name="sectionName">The configuration name for the section.</param>
+        /// <param name="services">The instance of <see cref="IServiceCollection"/>.</param>
+        /// <param name="configuration">The <see cref="IConfiguration"/> section for the Options.</param>
+        /// <param name="sectionName">The configuration name for the section. Default is null and the name equals {TOptions}.</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
             this IServiceCollection services,
@@ -45,11 +45,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Configure TOptions with a validation delegate.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="validation"></param>
-        /// <param name="failureMessage"></param>
-        /// <param name="configuration"></param>
-        /// <param name="sectionName"></param>
+        /// <param name="services">The instance of <see cref="IServiceCollection"/>.</param>
+        /// <param name="configuration">The <see cref="IConfiguration"/> section for the Options.</param>
+        /// <param name="validation">The validation delegate.</param>
+        /// <param name="failureMessage">The message to be returned if validation delegation failed.</param>
+        /// <param name="sectionName">The configuration name for the section. Default is null and the name equals {TOptions}.</param>
         /// <returns></returns>
         public static IServiceCollection ConfigureWithValidation<TOptions>(
             this IServiceCollection services,
