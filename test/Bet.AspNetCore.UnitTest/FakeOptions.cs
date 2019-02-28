@@ -9,7 +9,7 @@ namespace Bet.AspNetCore.UnitTest
         public string Name { get; set; }
     }
 
-    internal class FakeOptionsWithDatatAnnotations
+    internal class FakeOptionsWithDataAnnotations
     {
         [Range(1, int.MaxValue, ErrorMessage = "Value should be greater than or equal to 1")]
         public int Id { get; set; }

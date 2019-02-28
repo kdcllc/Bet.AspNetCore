@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -68,13 +69,14 @@ namespace Microsoft.Extensions.DependencyInjection
             Type type,
             string sectionName)
         {
-            var existingService = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
-            if (existingService == null)
+            var filter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
+            if (filter == null)
             {
-                existingService = new OptionsValidationStartupFilter();
-                services.AddSingleton<IStartupFilter>(existingService);
+                filter = new OptionsValidationStartupFilter();
+                services.AddSingleton<IStartupFilter>(filter);
+                services.AddSingleton<IHostStartupFilter>(filter);
             }
-            existingService.OptionsTypes.Add((type, sectionName));
+            filter.OptionsTypes.Add((type, sectionName));
         }
 
         private static IServiceCollection Build<TOptions>(
