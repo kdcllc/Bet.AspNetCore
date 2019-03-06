@@ -42,13 +42,13 @@
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">
-    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.0.1"/>
+    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3"/>
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.3" />
     <PackageReference Update="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup Label="Unit Tests">
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Update="Moq" Version="4.10.1" />
@@ -57,14 +57,14 @@
   <ItemGroup Label="Serilog">
     <PackageReference Update="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.0.1" />
-    <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="2.6.4" />
+    <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.0.2" />
     <PackageReference Update="Serilog.Sinks.AzureAnalytics" Version="4.0.0" />
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.RollingFile" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup Label="Shared">
-    <PackageReference Update="Polly" Version="7.0.2" />
+    <PackageReference Update="Polly" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup Label="SourceLink">
