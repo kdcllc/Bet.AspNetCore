@@ -11,6 +11,8 @@
 
     <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
 
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 

@@ -26,19 +26,22 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(NetCoreCommonVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(NetCoreCommonVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="3.0.0-preview-18571-0006" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview4-19121-08" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="3.0.0-preview4-19121-08"/>
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview4-19121-08" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="3.0.0-preview3.19115.4" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0-preview3.19115.4" />
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">

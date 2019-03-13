@@ -4,7 +4,6 @@ namespace Bet.AspNetCore
 {
     public static class StringExtensions
     {
-
         /// <summary>
         /// Removes anything besides [^A-Za-z] this regular expression.
         /// </summary>

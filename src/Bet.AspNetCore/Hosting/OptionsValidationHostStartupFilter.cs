@@ -36,6 +36,5 @@ namespace Microsoft.Extensions.Hosting
                 }
             }
         }
-
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using System;
 using System.Net;
@@ -28,8 +29,11 @@ namespace Bet.AspNetCore.UnitTest
 
             var server = new TestServer(builder);
             var client = server.CreateClient();
-
-            var appLifetime = server.Host.Services.GetService<IApplicationLifetime>();
+#if NETCOREAPP2_2
+            var appLifetime = server.Host.Services.GetService<Microsoft.AspNetCore.Hosting.IApplicationLifetime>();
+#else
+            var appLifetime = server.Host.Services.GetService<IHostApplicationLifetime>();
+#endif
 
             appLifetime.StopApplication();
 
@@ -69,7 +73,6 @@ namespace Bet.AspNetCore.UnitTest
                 .UseStartup<TestStartup>();
 
             var client = new TestServer(hostBuilder).CreateClient();
-
 
             var result = await client.GetAsync("/healthy");
             Assert.Equal(statusCode, (int)result.StatusCode);

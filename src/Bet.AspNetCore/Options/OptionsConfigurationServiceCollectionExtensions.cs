@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

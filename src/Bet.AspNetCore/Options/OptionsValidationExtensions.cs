@@ -28,7 +28,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.Build(section, () => new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
         }
 
-
         /// <summary>
         /// Configure TOptions with a validation delegate.
         /// </summary>
@@ -85,7 +84,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
 
             services.AddSingleton(validator());
-
 
             if (configuration is IConfigurationSection section)
             {
