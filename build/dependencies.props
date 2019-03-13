@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-    <NetCoreCommonVersion>2.2.0</NetCoreCommonVersion>
+    <NetCoreCommonVersion>2.2.*</NetCoreCommonVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <NetCoreCommonVersion>3.0.0-preview.19074.2</NetCoreCommonVersion>
+    <NetCoreCommonVersion>3.0.0-preview4.19120.4</NetCoreCommonVersion>
   </PropertyGroup>
 
 
@@ -37,8 +37,8 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="3.0.0-preview-18571-0006" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview-18571-0006" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="3.0.0-preview-18571-0006"/>
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview4-19121-08" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="3.0.0-preview4-19121-08"/>
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">

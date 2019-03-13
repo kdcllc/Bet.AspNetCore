@@ -1,22 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Bet.AspNetCore.Sample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Net;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using System.Threading;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -76,7 +67,7 @@ namespace Bet.AspNetCore.Sample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -95,7 +86,8 @@ namespace Bet.AspNetCore.Sample
 
             app.UseRouting(routes =>
             {
-                routes.MapApplication();
+                routes.MapControllers();
+                routes.MapRazorPages();
             });
 
             app.UseCookiePolicy();
