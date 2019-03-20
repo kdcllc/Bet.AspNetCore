@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions", "src\Bet.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.AzureVault", "src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj", "{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.Hosting", "src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj", "{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{2B077466-D1D8-4D93-8324-90898D286719} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}
