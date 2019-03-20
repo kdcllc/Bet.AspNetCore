@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Bet.AspNetCore
+namespace Bet.Extensions
 {
     public static class StringExtensions
     {

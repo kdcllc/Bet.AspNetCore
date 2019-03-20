@@ -26,6 +26,7 @@
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(NetCoreCommonVersion)"/>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
