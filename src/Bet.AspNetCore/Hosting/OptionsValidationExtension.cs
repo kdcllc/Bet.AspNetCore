@@ -1,17 +1,23 @@
-﻿using Bet.Extensions.Options;
+﻿using Bet.AspNetCore.Hosting;
+using Bet.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
-namespace Bet.AspNetCore.Hosting
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OptionsValidationExtension
     {
-        public static IServiceCollection AddValidation(this IServiceCollection services)
+        public static IServiceCollection AddConfigurationValidation(this IServiceCollection services)
         {
-            var validator = new OptionsValidationStartupFilter();
+            var webhostFilter = services.Select(x => x.ImplementationInstance as IValidationFilter).OfType<IValidationFilter>().FirstOrDefault();
+            if (webhostFilter == null)
+            {
+                webhostFilter = new OptionsValidationStartupFilter();
 
-            services.AddTransient<IValidationFilter>(_ => validator);
-            services.AddSingleton<IStartupFilter>(_ => validator);
+                services.AddSingleton<IValidationFilter>(webhostFilter);
+                services.AddSingleton<IStartupFilter>(webhostFilter as IStartupFilter);
+            }
 
             return services;
         }
