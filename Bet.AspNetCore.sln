@@ -35,11 +35,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.HealthChecks
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.Sample", "src\Bet.AspNetCore.Sample\Bet.AspNetCore.Sample.csproj", "{46623EA9-75B0-4F3F-9694-18472EB40266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.Options", "src\Bet.Extensions.Options\Bet.Extensions.Options.csproj", "{93CF9BE6-FB16-4298-8B7A-6207C510F161}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.Options", "src\Bet.Extensions.Options\Bet.Extensions.Options.csproj", "{93CF9BE6-FB16-4298-8B7A-6207C510F161}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.Logging", "src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj", "{4AA707F9-A368-46D2-AE6F-195EA14211F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.Logging", "src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj", "{4AA707F9-A368-46D2-AE6F-195EA14211F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.AspNetCore.Logging", "src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj", "{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.Logging", "src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj", "{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions", "src\Bet.Extensions\Bet.Extensions.csproj", "{2B077466-D1D8-4D93-8324-90898D286719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B077466-D1D8-4D93-8324-90898D286719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B077466-D1D8-4D93-8324-90898D286719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B077466-D1D8-4D93-8324-90898D286719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B077466-D1D8-4D93-8324-90898D286719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{93CF9BE6-FB16-4298-8B7A-6207C510F161} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{4AA707F9-A368-46D2-AE6F-195EA14211F1} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{73CDB4A3-C458-4AB3-82F9-68F25DCB36B0} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{2B077466-D1D8-4D93-8324-90898D286719} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}
