@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Bet.Extensions.Options;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
-namespace Microsoft.AspNetCore.Hosting
+namespace Bet.AspNetCore.Hosting
 {
-    public class OptionsValidationStartupFilter : IStartupFilter
+    public class OptionsValidationStartupFilter : IStartupFilter, IValidationFilter
     {
         private IList<(Type type, string sectionName)> _optionsTypes;
 
@@ -33,7 +35,7 @@ namespace Microsoft.AspNetCore.Hosting
                                 var optionsValue = ((IOptions<object>)options).Value;
                             }
                         }
-                        catch (Extensions.Options.OptionsValidationException ex)
+                        catch (Microsoft.Extensions.Options.OptionsValidationException ex)
                         {
                             throw new OptionsValidationException(ex.Failures, (type, sectionName));
                         }

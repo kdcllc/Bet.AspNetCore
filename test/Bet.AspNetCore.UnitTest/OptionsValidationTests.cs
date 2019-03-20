@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using System;
 using System.Collections.Generic;
 using Xunit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 

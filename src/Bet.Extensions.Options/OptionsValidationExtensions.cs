@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Bet.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -55,23 +53,8 @@ namespace Microsoft.Extensions.DependencyInjection
             Type type,
             string sectionName)
         {
-            var webhostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
-            if (webhostFilter == null)
-            {
-                webhostFilter = new OptionsValidationStartupFilter();
-                services.AddSingleton<IStartupFilter>(webhostFilter);
-            }
-            webhostFilter.OptionsTypes.Add((type, sectionName));
-
-            var hostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationHostStartupFilter>().FirstOrDefault();
-
-            if (hostFilter == null)
-            {
-                hostFilter = new OptionsValidationHostStartupFilter();
-                services.AddSingleton<IHostStartupFilter>(hostFilter);
-            }
-
-            hostFilter.OptionsTypes.Add((type, sectionName));
+            var filter = services.Select(x => x.ImplementationInstance).OfType<IValidationFilter>().FirstOrDefault();
+            filter.OptionsTypes.Add((type, sectionName));
         }
 
         private static IServiceCollection Build<TOptions>(

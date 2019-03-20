@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Bet.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.Hosting
 {
@@ -13,6 +14,11 @@ namespace Microsoft.Extensions.Hosting
         {
             hostBuilder.ConfigureServices((context, services) =>
             {
+                var validator = new OptionsValidationHostStartupFilter();
+
+                services.AddSingleton<IValidationFilter>(_ => validator);
+                services.AddSingleton<IHostStartupFilter>(_ => validator);
+
                 services.AddHostedService<HostStartupService>();
             });
 

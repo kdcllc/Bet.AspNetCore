@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Bet.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Microsoft.Extensions.Hosting
 {
     /// <inheritdoc/>
-    public class OptionsValidationHostStartupFilter : IHostStartupFilter
+    public class OptionsValidationHostStartupFilter : IHostStartupFilter, IValidationFilter
     {
         private IList<(Type type, string sectionName)> _optionsTypes;
 
