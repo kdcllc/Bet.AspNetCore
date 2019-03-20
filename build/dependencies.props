@@ -58,6 +58,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Serilog">
+    <PackageReference Update="Serilog" Version="2.8.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.0.1" />
     <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.0.2" />

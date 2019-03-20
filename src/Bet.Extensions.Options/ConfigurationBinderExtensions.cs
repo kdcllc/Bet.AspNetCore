@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
-using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Microsoft.Extensions.Configuration
 {
