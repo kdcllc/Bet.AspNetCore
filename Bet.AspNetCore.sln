@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.Sample", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.Options", "src\Bet.Extensions.Options\Bet.Extensions.Options.csproj", "{93CF9BE6-FB16-4298-8B7A-6207C510F161}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.Logging", "src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj", "{4AA707F9-A368-46D2-AE6F-195EA14211F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{93CF9BE6-FB16-4298-8B7A-6207C510F161}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93CF9BE6-FB16-4298-8B7A-6207C510F161}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93CF9BE6-FB16-4298-8B7A-6207C510F161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA707F9-A368-46D2-AE6F-195EA14211F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA707F9-A368-46D2-AE6F-195EA14211F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA707F9-A368-46D2-AE6F-195EA14211F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA707F9-A368-46D2-AE6F-195EA14211F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{35AC2F0D-58B1-409B-A892-7286508393D9} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{46623EA9-75B0-4F3F-9694-18472EB40266} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{93CF9BE6-FB16-4298-8B7A-6207C510F161} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{4AA707F9-A368-46D2-AE6F-195EA14211F1} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}
