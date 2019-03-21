@@ -49,6 +49,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.Hosting", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{D08248C1-62F0-4011-9CB2-406FDE28EEA3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cli-tool", "cli-tool", "{D5655917-C1A5-44AA-85D2-BF9132205E4E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAuthentication", "src\AppAuthentication\AppAuthentication.csproj", "{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,10 @@ Global
 		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +118,7 @@ Global
 		{2B077466-D1D8-4D93-8324-90898D286719} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{50B38E2B-E33D-4BAF-B6D0-7BBA49D8824A} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34} = {D5655917-C1A5-44AA-85D2-BF9132205E4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}

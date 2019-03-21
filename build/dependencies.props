@@ -69,6 +69,8 @@
   </ItemGroup>
 
   <ItemGroup Label="Shared">
+    <PackageReference Update="Colorful.Console" Version="1.2.9" />
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.2"/>
     <PackageReference Update="Polly" Version="7.0.3" />
   </ItemGroup>
 
