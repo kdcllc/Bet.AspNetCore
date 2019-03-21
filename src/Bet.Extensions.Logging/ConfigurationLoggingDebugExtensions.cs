@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration

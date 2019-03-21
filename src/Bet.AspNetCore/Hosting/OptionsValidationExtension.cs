@@ -1,7 +1,6 @@
 ﻿using Bet.AspNetCore.Hosting;
 using Bet.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
 namespace Microsoft.Extensions.DependencyInjection

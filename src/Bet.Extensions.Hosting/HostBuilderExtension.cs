@@ -15,7 +15,6 @@ namespace Microsoft.Extensions.Hosting
         {
             hostBuilder.ConfigureServices((context, services) =>
             {
-
                 var hostFilter = services.Select(x => x.ImplementationInstance).OfType<IValidationFilter>().FirstOrDefault();
 
                 if (hostFilter == null)

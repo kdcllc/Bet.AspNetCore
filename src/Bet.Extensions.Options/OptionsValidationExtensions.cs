@@ -54,6 +54,13 @@ namespace Microsoft.Extensions.DependencyInjection
             string sectionName)
         {
             var filter = services.Select(x => x.ImplementationInstance).OfType<IValidationFilter>().FirstOrDefault();
+
+            if (filter == null)
+            {
+                throw new Exception("IValidationFilter wasn't added. For AspNetCore applications please add services.AddConfigurationValidation(); or for" +
+                    "Generic Host Use .UseStartupFilter(); ");
+            }
+
             filter.OptionsTypes.Add((type, sectionName));
         }
 

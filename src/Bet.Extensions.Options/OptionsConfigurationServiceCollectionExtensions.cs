@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// Registers a configuration instance which TOptions will bind against without passing <see cref="IConfiguration"/> into registration.
-        /// In addition adds the singelton of the {TOptions}.
+        /// In addition adds the singleton of the {TOptions}.
         /// https://github.com/aspnet/Extensions/blob/299af9e32ba790dbfe8cfdf99b441766d7b0f6b6/src/Options/ConfigurationExtensions/src/OptionsConfigurationServiceCollectionExtensions.cs#L58
         /// </summary>
         /// <typeparam name="TConfigureType">The type of the object that configuration provider has entry for.</typeparam>

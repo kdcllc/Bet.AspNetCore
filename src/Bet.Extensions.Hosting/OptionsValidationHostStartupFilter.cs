@@ -30,7 +30,7 @@ namespace Microsoft.Extensions.Hosting
                             var optionsValue = ((IOptions<object>)options).Value;
                         }
                     }
-                    catch (Extensions.Options.OptionsValidationException ex)
+                    catch (Options.OptionsValidationException ex)
                     {
                         throw new OptionsValidationException(ex.Failures, (type, sectionName));
                     }
