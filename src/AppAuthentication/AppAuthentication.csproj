@@ -2,22 +2,25 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.2;</TargetFrameworks>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <ToolCommandName>appauthentication</ToolCommandName>
     <PackageId>appauthnetication</PackageId>
     <Description>A command-line tool that provides ability to get Authentication token for Docker Containers running locally.</Description>
     <PackAsTool>True</PackAsTool>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Colorful.Console" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-	</ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<Content Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="hostsettings*.json" CopyToOutputDirectory="PreserveNewest" />

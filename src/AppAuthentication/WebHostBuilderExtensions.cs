@@ -11,7 +11,7 @@ namespace AppAuthentication
 {
     internal static class WebHostBuilderExtensions
     {
-        internal static IWebHostBuilder CreateDefaultBuilder(WebHostBuilderOptions options)
+        internal static WebHostBuilder CreateDefaultBuilder(WebHostBuilderOptions options)
         {
             var builder = new WebHostBuilder();
 
@@ -34,6 +34,8 @@ namespace AppAuthentication
 
             var config = new ConfigurationBuilder();
 
+            config.AddEnvironmentVariables(prefix: "ASPNETCORE_");
+
             // appsettings file or others
             config.AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.json"), optional: true)
                   .AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.{options.HostingEnviroment}.json"), optional: true);
@@ -51,6 +53,8 @@ namespace AppAuthentication
             builder.UseConfiguration(config.Build());
 
             builder
+                .UseKestrel()
+                .UseUrls(string.Format(Constants.HostUrl,options.Port))
                 .ConfigureLogging(logger =>
                 {
                     if (options.Verbose)

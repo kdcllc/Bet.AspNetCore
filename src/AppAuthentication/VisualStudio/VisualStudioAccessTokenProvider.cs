@@ -105,7 +105,7 @@ namespace AppAuthentication.VisualStudio
             return processStartInfos;
         }
 
-        public async Task<AppAuthenticationResult> GetAuthResultAsync(string resource, string authority)
+        public async Task<(AppAuthenticationResult result, TokenResponse token)> GetAuthResultAsync(string resource, string authority)
         {
             try
             {
@@ -144,7 +144,9 @@ namespace AppAuthentication.VisualStudio
                             PrincipalUsed.TenantId = token.TenantId;
                         }
 
-                        return AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
+                        var result = AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
+
+                        return (result, tokenResponse);
                     }
                     catch (Exception exp)
                     {

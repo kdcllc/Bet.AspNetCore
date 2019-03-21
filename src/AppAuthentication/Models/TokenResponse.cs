@@ -12,7 +12,7 @@ namespace AppAuthentication.Models
     /// Used to hold the deserialized token response.
     /// </summary>
     [DataContract]
-    internal class TokenResponse
+    public class TokenResponse
     {
         private const string TokenResponseFormatExceptionMessage = "Token response is not in the expected format.";
 

@@ -22,7 +22,7 @@
         /// <summary>
         /// Web Host Port number.
         /// </summary>
-        public int? Port { get; set; }
+        public int Port { get; set; }
 
         public string ConfigFile { get; set; }
 

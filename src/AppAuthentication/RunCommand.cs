@@ -1,6 +1,15 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using AppAuthentication.Helpers;
+using AppAuthentication.VisualStudio;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AppAuthentication
@@ -23,7 +32,7 @@ namespace AppAuthentication
         [Option("-h", Description = "Specify Hosting Environment Name for the cli tool execution.")]
         public string HostingEnviroment { get; set; }
 
-        [Option("-p", Description ="Specify Web Host port number otherwise it is automatically generated.")]
+        [Option("-p", Description = "Specify Web Host port number otherwise it is automatically generated.")]
         public int? Port { get; set; }
 
         [Option("-c", Description = "Allows to specify a configuration file besides appsettings.json to be specified.")]
@@ -37,20 +46,43 @@ namespace AppAuthentication
             {
                 Authority = Authority,
                 HostingEnviroment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
-                Resource = Resource,
+                Resource = !string.IsNullOrWhiteSpace(Resource) ? Resource : "https://vault.azure.net/",
                 Verbose = Verbose,
                 ConfigFile = ConfigFile
             };
 
             try
             {
+                builderConfig.Port = Port ?? ConsoleHandler.GetRandomUnusedPort();
+
+                Console.WriteLine(builderConfig.Port.ToString(), Color.Green);
+
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)
+                                // header: Secret = MSI_SECRET
+                                //?resource=clientid=&api-version=2017-09-01
+                                .Configure(app =>
+                                {
+                                    app.Run(async (context) =>
+                                    {
+                                        var visualStudioProvider = new VisualStudioAccessTokenProvider(new ProcessManager());
+
+                                        var requestResource = context.Request.Query["resource"].ToString();// ?? builderConfig.Resource;
+                                        var result = await visualStudioProvider.GetAuthResultAsync(requestResource, builderConfig.Authority);
+
+                                        var json = JsonConvert.SerializeObject(result.token);
+
+                                        await context.Response.WriteAsync(json);
+                                    });
+                                })
                                 .ConfigureServices((hostingContext, services) =>
                                 {
-                                   //TODO register the hosting
-                                }).Build();
+                                    services.AddSingleton(builderConfig);
+                                    services.AddHostedService<EnvironmentHostedService>();
+                                })
 
-                await webHost.StartAsync();
+                                .Build();
+
+                await webHost.RunAsync();
 
                 return 0;
             }

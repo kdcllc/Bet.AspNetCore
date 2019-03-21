@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
@@ -57,6 +59,15 @@ namespace AppAuthentication.Helpers
             }
 
             throw new Exception("The UserSecretsId element was not found in your csproj. Please ensure it has been configured.");
+        }
+
+        internal static int GetRandomUnusedPort()
+        {
+            var listener = new TcpListener(IPAddress.Loopback, 5050);
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+            return port;
         }
     }
 }
