@@ -1,8 +1,8 @@
-﻿using Bet.AspNetCore;
-using Bet.AspNetCore.Options;
+﻿using Bet.AspNetCore.Logging.Azure;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Bet.Extensions;
 
 namespace Serilog
 {

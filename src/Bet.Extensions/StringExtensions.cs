@@ -1,10 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Bet.AspNetCore
+namespace Bet.Extensions
 {
     public static class StringExtensions
     {
-
         /// <summary>
         /// Removes anything besides [^A-Za-z] this regular expression.
         /// </summary>

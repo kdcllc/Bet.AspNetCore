@@ -11,6 +11,8 @@
 
     <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
 
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 
@@ -23,7 +25,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+    <ProjectReference Include="..\..\src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
     <ProjectReference Include="..\..\src\Bet.AspNetCore\Bet.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
   </ItemGroup>
 
 </Project>

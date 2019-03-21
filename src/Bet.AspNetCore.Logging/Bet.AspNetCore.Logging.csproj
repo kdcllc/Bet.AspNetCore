@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Collection of AspNetCore functionality for logging with Azure Appinsight and Azure Log Analyzer.</Description>
+    <PackageTags>aspnetcore,configuration,validation,bind,options,hosting,extensions</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+    <PackageReference Include="Serilog.Sinks.AzureAnalytics" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
+    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration
 {
-    public static class ConfigurationExtensions
+    public static class ConfigurationLoggingDebugExtensions
     {
         /// <summary>
         /// Displays all of the application configurations based on the Configuration Provider.

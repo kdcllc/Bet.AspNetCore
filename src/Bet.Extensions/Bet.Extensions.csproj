@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Collection of functionality for DotNetCore.</Description>
+    <PackageTags>dotnetcore,extensions</PackageTags>
+  </PropertyGroup>
+
+</Project>

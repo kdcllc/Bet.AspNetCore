@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Bet.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -27,7 +25,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services.Build(section, () => new DataAnnotationValidateOptions<TOptions>(Options.Options.DefaultName));
         }
-
 
         /// <summary>
         /// Configure TOptions with a validation delegate.
@@ -56,23 +53,15 @@ namespace Microsoft.Extensions.DependencyInjection
             Type type,
             string sectionName)
         {
-            var webhostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationStartupFilter>().FirstOrDefault();
-            if (webhostFilter == null)
-            {
-                webhostFilter = new OptionsValidationStartupFilter();
-                services.AddSingleton<IStartupFilter>(webhostFilter);
-            }
-            webhostFilter.OptionsTypes.Add((type, sectionName));
+            var filter = services.Select(x => x.ImplementationInstance).OfType<IValidationFilter>().FirstOrDefault();
 
-            var hostFilter = services.Select(x => x.ImplementationInstance).OfType<OptionsValidationHostStartupFilter>().FirstOrDefault();
-
-            if (hostFilter == null)
+            if (filter == null)
             {
-                hostFilter = new OptionsValidationHostStartupFilter();
-                services.AddSingleton<IHostStartupFilter>(hostFilter);
+                throw new Exception("IValidationFilter wasn't added. For AspNetCore applications please add services.AddConfigurationValidation(); or for" +
+                    "Generic Host Use .UseStartupFilter(); ");
             }
 
-            hostFilter.OptionsTypes.Add((type, sectionName));
+            filter.OptionsTypes.Add((type, sectionName));
         }
 
         private static IServiceCollection Build<TOptions>(
@@ -85,7 +74,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<TOptions>>().Value);
 
             services.AddSingleton(validator());
-
 
             if (configuration is IConfigurationSection section)
             {

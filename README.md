@@ -1,72 +1,75 @@
-# Bet.AspNetCore Common Library
+# Bet.AspNetCore solution
 
-This repo contains several projects that provide with extended functionality for AspNetCore platform.
+This repo contains several projects that provide with extended functionality for `DotNetCore` framework. The projects are split into two category:
 
-- `Bet.AspNetCore` contains extensions to `Bind()` and `Configure()` methods. AspNetCore is configuration providers are very flexible but with that flexibility comes
-the lack of validation. This project builds on AspNetCore 2.2 Validation and extends it.
+1. `Bet.Extensions` generic functionality for `DotNetCore` in general.
+    - `Bet.Extensions.Options` - includes Application Options and `Bind()` validations.
+    - `Bet.Extensions.Logging` - includes shared/common logging functionality.
+    - `Bet.Extensions.Hosting` - includes Generic Hosting functionality.
+    - `Bet.Extensions.AzureVault` - includes Azure Vault functionality.
+    - `Bet.Extensions` - includes extensions methods for `DotNetCore`.
 
-- `Bet.AspNetCore.HealthChecks` contains HealthChecks for most common scenarios of the web application.
+2. `Bet.AspNetCore` specific functionality for web applications.
+    - `Bet.AspNetCore.HealthChecks` contains HealthChecks for most common scenarios of the web application.
+    - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
+    - `Bet.AspNetCore` - default location for `AspNetCore`.
 
-## Bet.AspNetCore 
+## Configuration Validation
 
-This project contains the following functionality:
+`AspNetCore` has very flexible Configuration providers framework. Application can load Configurations from various locations. The last provider overrides the values of the same kind of keys.
+Since it has such flexibility was introduces the validation of the Configurations was missing until `2.2`. `AsptNetCore` 2.2 release introduced extension methods on `OptionsBuilder` which if registered will be validated on the first use of the Options, but there are cases where application needs to terminate at startup if the required configurations are missing. This is where the collection of the libraries from this solution come in.
 
-- Options Validations on startup of the application generic host or AspNetCore app.
+### Configuration Validations for `IWebHost`
 
-- Azure Key Vault Configuration Provider.
+```bash
+    dotnet add package Bet.AspNetCore
+    dotnet add package Bet.Extensions.Options
+```
 
-## Options Validation
-
-Since AspNetCore is very flexible with Configuration providers it allows to load options from different providers. It doesn't grantee the validations of the values out of the box.
-AspNetCore 2.2 introduced extension methods on `OptionsBuilder` which if registered will be validated on the first use of the Options. 
-
-This project include further ability to validate Options on the application startup before the values are ever used.
-
-Options validation falls into two category:
-
-1. Configuration Extension Method for the `Bind` method which is usually used to bind options with validation `Program.cs` file in `ConfigureAppConfiguration` in `IWebHostBuilder` or `IHostBuilder`.
-
-2. `Configure` Extension method for `Startup.cs` file and `ConfigureServices` method named `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation`.
-
-
-### Usage Within the `Program.cs`
-
-1. `Bind`  or `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation` Method extension with a validation delegate
+To enable validation add before any Configuration validation are added in `Startup.cs` within `ConfigureServices`
 
 ```csharp
+    services.AddConfigurationValidation();
+```
 
-   var options = config.Bind<MyOptions>(options, opt =>
-        {
-            if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
-            {
-                return true;
-            }
-            return false;
-        }, "Validation Failed");
+Then add validation for Configurations as action call back or as data annotations
 
-
+```csharp
    services.ConfigureWithValidation<FakeOptions>(Configuration, opt =>
-        {
-            if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
-            {
-                return true;
-            }
-            return false;
-        }, "This didn't validated.");
+      {
+          if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
+          {
+              return true;
+          }
+          return false;
+      }, "This didn't validated.");
 
    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
-
 ```
 
-When used with `HostBuilder` you have to register hosted service `services.AddHostedService<HostStartupService>();` or use an extension method.
+### Configuration Validations for `IHost`
+
+```bash
+    dotnet add package Bet.Extensions.Hosting
+    dotnet add package Bet.Extensions.Options
+```
+
+To enable validation use `UseStartupFilter` in `Program.cs`
 
 ```csharp
-    var host = new HostBuilder()
-                .UseStartupFilter()
-                .Build();
+        var host = new HostBuilder()
+                .UseStartupFilter().Build();
 ```
 
-2. `Bind<>` Method with DataAnnotations
+Usage of `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation` the same as in `IWebHost`
+
+### Bind Object with Validation
+
+Simply add this package to your application and use `Bind` validation extensions methods
+
+```bash
+    dotnet add package Bet.Extensions.Options
+```
 
 ```csharp
     var options = config.Bind<MyOptionsWithDatatAnnotations>(options);
@@ -74,8 +77,13 @@ When used with `HostBuilder` you have to register hosted service `services.AddHo
 
 ## Azure Key Vault Configuration Provider
 
+```csharp
+    dotnet add package Bet.Extensions.AzureVault
+```
+
 This provider requires the following configurations to be present in any other configuration providers.
 The `ClientId` and `ClientSecret` are not needed if used within Visual Studio.Net or in Azure Web Application with MSI enable.
+
 ```json
 "AzureVault": {
     "BaseUrl": "https://kdcllc.vault.azure.net/",
@@ -83,6 +91,7 @@ The `ClientId` and `ClientSecret` are not needed if used within Visual Studio.Ne
     "ClientSecret": ""
   }
 ```
+
 At minimum this provider requires to have BaseUrl and will authenticated based on the Visual Studio.Net 
 Credentials. For `Docker` Containers and other environments where Microsoft MSI can't be used provide `ClientId` and `ClientSecret`.
 
@@ -90,6 +99,14 @@ In order to use Azure Key Vault register it with `IServiceCollection`.
 
 ```c#
    configBuilder.AddAzureKeyVault(hostingEnviromentName:hostContext.HostingEnvironment.EnvironmentName);
+```
+
+## Logging Configurations for debugging
+
+Add the following to the project
+
+```csharp
+    dotnet add package Bet.Extensions.Logging
 ```
 
 Sometimes we need to have tracing information enable to see where the configuration details are loaded from.
@@ -101,9 +118,15 @@ Sometimes we need to have tracing information enable to see where the configurat
           {
                configBuilder.Build().DebugConfigurations();
           }
-``` 
+```
 
 ## Logging Extension with Serilog
+
+Add the following to the project
+
+```csharp
+    dotnet add package Bet.AspNetCore.Logging
+```
 
 To enable Azure `ApplicationInsights` and/or `LogAnalytics` Seriglog sinks add the following in `Program.cs`:
 

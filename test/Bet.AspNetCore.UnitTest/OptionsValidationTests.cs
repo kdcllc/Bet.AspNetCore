@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using System;
 using System.Collections.Generic;
 using Xunit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using OptionsValidationException = Bet.AspNetCore.Options.OptionsValidationException;
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 
@@ -75,6 +74,8 @@ namespace Bet.AspNetCore.UnitTest
                 })
                 .ConfigureServices((services) =>
                 {
+                    services.AddConfigurationValidation();
+
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
@@ -110,6 +111,8 @@ namespace Bet.AspNetCore.UnitTest
                 })
                 .ConfigureServices((services) =>
                 {
+                    services.AddConfigurationValidation();
+
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
@@ -149,6 +152,8 @@ namespace Bet.AspNetCore.UnitTest
                 })
                 .ConfigureServices((services) =>
                 {
+                    services.AddConfigurationValidation();
+
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
@@ -181,15 +186,16 @@ namespace Bet.AspNetCore.UnitTest
             IConfiguration configuration = null;
 
             var host = new HostBuilder()
+                .UseStartupFilter()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
                     configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<HostStartupService>();
                     services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
-                }).Build();
+                })
+                .Build();
 
             void Act() => host.Run();
 
@@ -212,6 +218,7 @@ namespace Bet.AspNetCore.UnitTest
             IConfiguration configuration = null;
 
             var hostBuilder = new HostBuilder()
+                .UseStartupFilter()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
                     configuration = configBuiler.AddInMemoryCollection(dic).Build();
@@ -222,7 +229,6 @@ namespace Bet.AspNetCore.UnitTest
                     services.ConfigureWithDataAnnotationsValidation<FakeOptions>(configuration);
                     services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(configuration.GetSection("FakeOptions2"));
                 })
-                .UseStartupFilter()
                 .Build();
 
             var sp = hostBuilder.Services;

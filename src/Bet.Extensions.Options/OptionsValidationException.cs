@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Bet.AspNetCore.Options
+namespace Bet.Extensions.Options
 {
     /// <summary>
     /// An exception to provide with useful options validation information.

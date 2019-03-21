@@ -17,10 +17,13 @@ namespace Bet.AspNetCore.UnitTest
 
         public void Configure(
            IApplicationBuilder app,
+#if NETCOREAPP2_2
            IHostingEnvironment env)
+#elif NETCOREAPP3_0
+           IWebHostEnvironment env)
+#endif
         {
             app.UseMvc();
-
 
             app.UseHealthChecks("/healthy", new HealthCheckOptions
             {
