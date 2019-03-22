@@ -25,6 +25,8 @@ namespace Bet.AspNetCore.Sample
         {
             services.AddConfigurationValidation();
 
+            services.AddReCapture(Configuration);
+
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
 

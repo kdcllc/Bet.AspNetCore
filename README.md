@@ -13,6 +13,7 @@ This repo contains several projects that provide with extended functionality for
     - `Bet.AspNetCore.HealthChecks` contains HealthChecks for most common scenarios of the web application.
     - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
     - `Bet.AspNetCore` - default location for `AspNetCore`.
+    - `Bet.AspNetCore.ReCapture` - ability to verify users submissions.
 
 ## AppAuthenticaion CLI tool
 
@@ -20,6 +21,10 @@ Azure Vault is a great utility but what if your company doesn't allow you to hav
 on your local machine and be able to authenticate your Azure Vault. This utility provides this functionality.
 
 [AppAuthenticaion CLI tool Readme](./src/AppAuthentication/Readme.md)
+
+## Bet.AspNetCore.ReCapture
+
+[Bet.AspNetCore.ReCapture](./src/Bet.AspNetCore.ReCapture/Readme.md)
 
 ## Configuration Validation
 
