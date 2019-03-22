@@ -1,15 +1,11 @@
 <Project>
 
   <PropertyGroup>
-    <NetCoreCommonVersion>2.1.1</NetCoreCommonVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netstandard2.0'">
-    <NetCoreCommonVersion>2.1.1</NetCoreCommonVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
     <NetCoreCommonVersion>2.2.*</NetCoreCommonVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+    <NetCoreCommonVersion>2.2.0</NetCoreCommonVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -27,9 +23,11 @@
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(NetCoreCommonVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(NetCoreCommonVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
@@ -69,6 +67,8 @@
   </ItemGroup>
 
   <ItemGroup Label="Shared">
+    <PackageReference Update="Colorful.Console" Version="1.2.9" />
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.2"/>
     <PackageReference Update="Polly" Version="7.0.3" />
   </ItemGroup>
 
