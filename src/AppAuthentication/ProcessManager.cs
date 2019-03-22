@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -12,11 +13,17 @@ namespace AppAuthentication
     /// </summary>
     internal class ProcessManager : IProcessManager
     {
+        public ProcessManager(ILogger<ProcessManager> logger)
+        {
+            _logger = logger;
+        }
+
         // Timeout used such that if process does not respond in this time, it is killed.
         private readonly TimeSpan _timeOutDuration = TimeSpan.FromSeconds(20);
 
         // Error when process took too long.
         private const string TimeOutError = "Process took too long to return the token.";
+        private readonly ILogger<ProcessManager> _logger;
 
         /// <summary>
         /// Execute the given process and return the result.
@@ -39,6 +46,8 @@ namespace AppAuthentication
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
+
+                    _logger.LogDebug("Received data: {data}", e.Data);
                 }
             };
 
@@ -46,6 +55,7 @@ namespace AppAuthentication
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     error.AppendLine(e.Data);
+                    _logger.LogError("Received data: {data}", e.Data);
                 }
             };
 
@@ -61,6 +71,7 @@ namespace AppAuthentication
                 else
                 {
                     tcs.TrySetResult(error.ToString());
+                    _logger.LogError("{ex}", error);
                 }
             };
 

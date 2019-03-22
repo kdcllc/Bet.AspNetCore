@@ -54,7 +54,7 @@ namespace AppAuthentication
 
             builder
                 .UseKestrel()
-                .UseUrls(string.Format(Constants.HostUrl,options.Port))
+                .UseUrls(string.Format(Constants.HostUrl,"localhost",options.Port))
                 .ConfigureLogging(logger =>
                 {
                     if (options.Verbose)

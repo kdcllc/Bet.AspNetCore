@@ -105,7 +105,7 @@ namespace AppAuthentication.VisualStudio
             return processStartInfos;
         }
 
-        public async Task<(AppAuthenticationResult result, TokenResponse token)> GetAuthResultAsync(string resource, string authority)
+        public async Task<(AppAuthenticationResult authResult, TokenResponse tokenResponse, string tokenString, AccessToken access)> GetAuthResultAsync(string resource, string authority)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace AppAuthentication.VisualStudio
 
                         var result = AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
 
-                        return (result, tokenResponse);
+                        return (result, tokenResponse, response, token);
                     }
                     catch (Exception exp)
                     {

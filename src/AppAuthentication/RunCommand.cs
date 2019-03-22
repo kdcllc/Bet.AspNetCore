@@ -1,15 +1,15 @@
 ﻿using AppAuthentication.Helpers;
+using AppAuthentication.Models;
 using AppAuthentication.VisualStudio;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace AppAuthentication
@@ -23,7 +23,7 @@ namespace AppAuthentication
         [Option("-a", Description = "Authority Azure TenantId or Azure Directory ID")]
         public string Authority { get; set; }
 
-        [Option("-r", Description = "Resource to authenticate against. Default set to https://vault.azure.net/")]
+        [Option("-r", Description = "Resource to authenticate against. Provided https://login.microsoftonline.com/{tenantId}. Default set to https://vault.azure.net/")]
         public string Resource { get; set; }
 
         [Option("-v", Description = "Allows Verbose logging for the tool. Enable this to get tracing information. Default is false.")]
@@ -48,7 +48,8 @@ namespace AppAuthentication
                 HostingEnviroment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
                 Resource = !string.IsNullOrWhiteSpace(Resource) ? Resource : "https://vault.azure.net/",
                 Verbose = Verbose,
-                ConfigFile = ConfigFile
+                ConfigFile = ConfigFile,
+                SecretId =  Guid.NewGuid().ToString()
             };
 
             try
@@ -64,12 +65,27 @@ namespace AppAuthentication
                                 {
                                     app.Run(async (context) =>
                                     {
-                                        var visualStudioProvider = new VisualStudioAccessTokenProvider(new ProcessManager());
+                                        var provider = app.ApplicationServices.GetRequiredService<VisualStudioAccessTokenProvider>();
 
-                                        var requestResource = context.Request.Query["resource"].ToString();// ?? builderConfig.Resource;
-                                        var result = await visualStudioProvider.GetAuthResultAsync(requestResource, builderConfig.Authority);
+                                        var requestResource = context.Request.Query["resource"].ToString();
 
-                                        var json = JsonConvert.SerializeObject(result.token);
+                                        var resource = !string.IsNullOrWhiteSpace(context.Request.Query["resource"].ToString()) ? requestResource : builderConfig.Resource;
+
+                                        var (authResult, tokenResponse, tokenString, access) =
+                                            await provider.GetAuthResultAsync(resource, builderConfig.Authority);
+
+                                        var customToken = new CustomToken
+                                        {
+                                            AccessToken = authResult.AccessToken,
+                                            TokenType = authResult.TokenType,
+                                            Resource = authResult.Resource,
+                                            ExpiresOn = tokenResponse.ExpiresOn,
+                                            ExpiresIn = access.ExpiryTime.ToString(),
+                                            ExtExpiresIn = access.ExpiryTime.ToString(),
+                                            RefreshToken = tokenResponse.AccessToken,
+                                        };
+
+                                        var json = JsonConvert.SerializeObject(customToken);
 
                                         await context.Response.WriteAsync(json);
                                     });
@@ -78,8 +94,14 @@ namespace AppAuthentication
                                 {
                                     services.AddSingleton(builderConfig);
                                     services.AddHostedService<EnvironmentHostedService>();
-                                })
 
+                                    services.AddSingleton(sp =>
+                                    {
+                                        var logger = sp.GetRequiredService<ILogger<ProcessManager>>();
+
+                                        return new VisualStudioAccessTokenProvider(new ProcessManager(logger));
+                                    });
+                                })
                                 .Build();
 
                 await webHost.RunAsync();

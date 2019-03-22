@@ -7,23 +7,23 @@ namespace AppAuthentication
 {
     internal class EnvironmentHostedService : IHostedService
     {
-        private int _port;
+        private WebHostBuilderOptions _options;
 
         public EnvironmentHostedService(WebHostBuilderOptions options)
         {
-            _port = options.Port;
+            _options = options;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Environment.SetEnvironmentVariable(
                 Constants.MsiAppServiceEndpointEnv,
-                $"{string.Format(Constants.HostUrl, _port)}{Constants.MsiEndpoint}",
+                $"{string.Format(Constants.HostUrl,Constants.MsiContinerUrl,_options.Port)}{Constants.MsiEndpoint}",
                 EnvironmentVariableTarget.User);
 
             Environment.SetEnvironmentVariable(
                 Constants.MsiAppServiceSecretEnv,
-                Guid.NewGuid().ToString(),
+                _options.SecretId,
                 EnvironmentVariableTarget.User);
 
             return Task.CompletedTask;

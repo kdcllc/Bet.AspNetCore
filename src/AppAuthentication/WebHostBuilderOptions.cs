@@ -27,5 +27,10 @@
         public string ConfigFile { get; set; }
 
         public string[] Arguments { get; set; }
+
+        /// <summary>
+        /// Guid Generated Id for the secret.
+        /// </summary>
+        public string SecretId { get; set; }
     }
 }

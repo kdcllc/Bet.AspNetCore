@@ -14,6 +14,13 @@ This repo contains several projects that provide with extended functionality for
     - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
     - `Bet.AspNetCore` - default location for `AspNetCore`.
 
+## AppAuthenticaion CLI tool
+
+Azure Vault is a great utility but what if your company doesn't allow you to have secret and client id. What if you want to use Docker Containers
+on your local machine and be able to authenticate your Azure Vault. This utility provides this functionality.
+
+[AppAuthenticaion CLI tool Readme](./src/AppAuthentication/Readme.md)
+
 ## Configuration Validation
 
 `AspNetCore` has very flexible Configuration providers framework. Application can load Configurations from various locations. The last provider overrides the values of the same kind of keys.
