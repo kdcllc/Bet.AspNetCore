@@ -8,7 +8,6 @@
     <Description>A command-line tool that provides ability to get Authentication token for Docker Containers running locally.</Description>
     <PackAsTool>True</PackAsTool>
     <PackageTags>Azure,Authentication,AppAuthentication,Azure Key Vault</PackageTags>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
