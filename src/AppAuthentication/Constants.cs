@@ -1,6 +1,6 @@
 ﻿namespace AppAuthentication
 {
-    public static class Constants
+    internal static class Constants
     {
         public const string CLIToolName = "appauthentication";
 

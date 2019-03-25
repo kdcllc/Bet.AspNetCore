@@ -5,7 +5,9 @@ using System;
 
 namespace AppAuthentication.Helpers
 {
+#pragma warning disable RCS1102 // Make class static.
     internal class UriHelper
+#pragma warning restore RCS1102 // Make class static.
     {
         /// <summary>
         /// Given an Azure AD authority URL, returns the instance URL from it

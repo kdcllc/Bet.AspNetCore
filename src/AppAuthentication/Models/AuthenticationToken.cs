@@ -2,7 +2,7 @@
 
 namespace AppAuthentication.Models
 {
-    public class CustomToken
+    internal class AuthenticationToken
     {
         [JsonProperty("token_type")]
         public string TokenType { get; set; }

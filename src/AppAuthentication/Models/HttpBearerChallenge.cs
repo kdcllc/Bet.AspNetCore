@@ -118,6 +118,7 @@ namespace AppAuthentication.Models
         /// </summary>
         /// <param name="authorization"></param>
         /// <param name="resource"></param>
+        /// <param name="scope"></param>
         private HttpBearerChallenge(string authorization, string resource, string scope)
         {
             AuthorizationServer = authorization;

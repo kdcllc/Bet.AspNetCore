@@ -12,7 +12,7 @@ namespace AppAuthentication.Models
     /// Used to hold the deserialized access token.
     /// </summary>
     [DataContract]
-    public class AccessToken
+    internal class AccessToken
     {
         private const char Base64PadCharacter = '=';
         private const char Base64Character62 = '+';

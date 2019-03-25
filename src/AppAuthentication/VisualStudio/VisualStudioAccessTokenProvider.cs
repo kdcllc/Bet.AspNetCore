@@ -12,11 +12,8 @@ using Microsoft.Azure.Services.AppAuthentication;
 
 namespace AppAuthentication.VisualStudio
 {
-    public class VisualStudioAccessTokenProvider
+    internal class VisualStudioAccessTokenProvider : NonInteractiveAzureServiceTokenProviderBase, IAccessTokenProvider
     {
-        public string ConnectionString;
-        public Principal PrincipalUsed;
-
         private const string ResourceArgumentName = "--resource";
         private const string TenantArgumentName = "--tenant";
 
@@ -105,7 +102,7 @@ namespace AppAuthentication.VisualStudio
             return processStartInfos;
         }
 
-        public async Task<(AppAuthenticationResult authResult, TokenResponse tokenResponse, string tokenString, AccessToken access)> GetAuthResultAsync(string resource, string authority)
+        public async Task<AuthenticationToken> GetAuthResultAsync(string resource, string authority)
         {
             try
             {
@@ -131,22 +128,33 @@ namespace AppAuthentication.VisualStudio
 
                         var tokenResponse = TokenResponse.Parse(response);
 
-                        var token = AccessToken.Parse(tokenResponse.AccessToken);
+                        var accessToken = AccessToken.Parse(tokenResponse.AccessToken);
 
                         PrincipalUsed.IsAuthenticated = true;
 
-                        if (token != null)
+                        if (accessToken != null)
                         {
                             // Set principal used based on the claims in the access token.
                             PrincipalUsed.UserPrincipalName =
-                                !string.IsNullOrEmpty(token.Upn) ? token.Upn : token.Email;
+                                !string.IsNullOrEmpty(accessToken.Upn) ? accessToken.Upn : accessToken.Email;
 
-                            PrincipalUsed.TenantId = token.TenantId;
+                            PrincipalUsed.TenantId = accessToken.TenantId;
                         }
 
-                        var result = AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
+                        var authResult = AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
 
-                        return (result, tokenResponse, response, token);
+                        var authenticationToken = new AuthenticationToken
+                        {
+                            AccessToken = authResult.AccessToken,
+                            TokenType = authResult.TokenType,
+                            Resource = authResult.Resource,
+                            ExpiresOn = tokenResponse.ExpiresOn,
+                            ExpiresIn = accessToken.ExpiryTime.ToString(),
+                            ExtExpiresIn = accessToken.ExpiryTime.ToString(),
+                            RefreshToken = tokenResponse.AccessToken,
+                        };
+
+                        return authenticationToken;
                     }
                     catch (Exception exp)
                     {
