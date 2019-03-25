@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAuthentication", "src\Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.ReCapture", "src\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj", "{6472D7D3-D27B-4B57-ABE1-1708AB64E1D1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML", "src\Bet.Extensions.ML\Bet.Extensions.ML.csproj", "{5FD99A79-7BFB-4112-9B7F-6E308306FC46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{6472D7D3-D27B-4B57-ABE1-1708AB64E1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6472D7D3-D27B-4B57-ABE1-1708AB64E1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6472D7D3-D27B-4B57-ABE1-1708AB64E1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FD99A79-7BFB-4112-9B7F-6E308306FC46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FD99A79-7BFB-4112-9B7F-6E308306FC46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FD99A79-7BFB-4112-9B7F-6E308306FC46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FD99A79-7BFB-4112-9B7F-6E308306FC46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +132,7 @@ Global
 		{AA34055E-D487-44B7-BD4C-FEEB29FFDA05} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34} = {D5655917-C1A5-44AA-85D2-BF9132205E4E}
 		{6472D7D3-D27B-4B57-ABE1-1708AB64E1D1} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{5FD99A79-7BFB-4112-9B7F-6E308306FC46} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}
