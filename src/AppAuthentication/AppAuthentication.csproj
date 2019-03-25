@@ -23,10 +23,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Content Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
-		<Content Include="hostsettings*.json" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
 	  <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
 	</ItemGroup>
