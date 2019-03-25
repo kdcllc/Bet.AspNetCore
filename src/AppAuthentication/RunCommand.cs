@@ -48,7 +48,7 @@ namespace AppAuthentication
             var builderConfig = new WebHostBuilderOptions
             {
                 Authority = Authority,
-                HostingEnviroment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
+                HostingEnvironment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
                 Resource = !string.IsNullOrWhiteSpace(Resource) ? Resource : "https://vault.azure.net/",
                 Verbose = Verbose,
                 ConfigFile = ConfigFile,

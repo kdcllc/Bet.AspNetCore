@@ -63,8 +63,19 @@ namespace AppAuthentication.Helpers
 
         internal static int GetRandomUnusedPort()
         {
-            var listener = new TcpListener(IPAddress.Loopback, 5050);
-            listener.Start();
+            TcpListener listener = null;
+
+            try
+            {
+                listener = new TcpListener(IPAddress.Loopback, 5050);
+                listener.Start();
+            }
+            catch (Exception)
+            {
+                listener = new TcpListener(IPAddress.Loopback, 0);
+                listener.Start();
+            }
+
             var port = ((IPEndPoint)listener.LocalEndpoint).Port;
             listener.Stop();
             return port;

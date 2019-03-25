@@ -13,9 +13,9 @@
         public string Authority { get; set; }
 
         /// <summary>
-        /// Specify environment.
+        /// Specify Environment.
         /// </summary>
-        public string HostingEnviroment { get; set; }
+        public string HostingEnvironment { get; set; }
 
         public bool Verbose { get; set; }
 

@@ -15,7 +15,7 @@ namespace AppAuthentication
         {
             var builder = new WebHostBuilder();
 
-            builder.UseEnvironment(options.HostingEnviroment);
+            builder.UseEnvironment(options.HostingEnvironment);
             var fullPath = Directory.GetCurrentDirectory();
 
             if (!string.IsNullOrWhiteSpace(Path.GetDirectoryName(options.ConfigFile)))
@@ -38,7 +38,7 @@ namespace AppAuthentication
 
             // appsettings file or others
             config.AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.json"), optional: true)
-                  .AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.{options.HostingEnviroment}.json"), optional: true);
+                  .AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.{options.HostingEnvironment}.json"), optional: true);
 
             if (options.Arguments != null)
             {

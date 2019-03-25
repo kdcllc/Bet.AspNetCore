@@ -18,7 +18,7 @@ namespace AppAuthentication
         {
             Environment.SetEnvironmentVariable(
                 Constants.MsiAppServiceEndpointEnv,
-                $"{string.Format(Constants.HostUrl,Constants.MsiContinerUrl,_options.Port)}{Constants.MsiEndpoint}",
+                $"{string.Format(Constants.HostUrl,Constants.MsiContainerUrl,_options.Port)}{Constants.MsiEndpoint}",
                 EnvironmentVariableTarget.User);
 
             Environment.SetEnvironmentVariable(
