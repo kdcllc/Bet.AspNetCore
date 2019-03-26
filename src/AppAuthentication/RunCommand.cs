@@ -59,7 +59,7 @@ namespace AppAuthentication
             {
                 builderConfig.Port = Port ?? ConsoleHandler.GetRandomUnusedPort();
 
-                Console.WriteLine(builderConfig.Port.ToString(), Color.Green);
+                Console.WriteLine($"Active Port: {builderConfig.Port.ToString()}", Color.Green);
 
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)
                                 // header: Secret = MSI_SECRET

@@ -12,6 +12,12 @@ namespace AppAuthentication
         public EnvironmentHostedService(WebHostBuilderOptions options)
         {
             _options = options;
+
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv,EnvironmentVariableTarget.User)) &&
+                !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, EnvironmentVariableTarget.User)))
+            {
+                throw new ArgumentException($"Only one instance of the tool can ran at one time {Constants.CLIToolName}");
+            }
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
