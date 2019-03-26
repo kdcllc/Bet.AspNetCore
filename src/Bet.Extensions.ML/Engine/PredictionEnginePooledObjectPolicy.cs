@@ -46,12 +46,7 @@ namespace Bet.Extensions.ML.Engine
 
         public bool Return(PredictionEngine<TData, TPrediction> obj)
         {
-            if(obj == null)
-            {
-                return false;
-            }
-
-            return true;
+            return obj != null;
         }
     }
 }
