@@ -41,10 +41,19 @@ namespace AppAuthentication
         [Option("-t|--token-provider", Description = "Access Token Provider")]
         public TokenProvider TokenProvider { get; } = TokenProvider.VisualStudio;
 
+        [Option("-f|--fix", Description = "Reset Environment Variables if not cleared")]
+        public bool Fix { get; private set; }
+
         public string[] RemainingArguments { get; }
 
         private async Task<int> OnExecuteAsync()
         {
+            if (Fix)
+            {
+                Environment.SetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv, null, EnvironmentVariableTarget.User);
+                Environment.SetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, null, EnvironmentVariableTarget.User);
+            }
+
             var builderConfig = new WebHostBuilderOptions
             {
                 Authority = Authority,

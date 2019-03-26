@@ -72,6 +72,7 @@
 
   <ItemGroup Label="Shared">
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
+    <PackageReference Update="CsvHelper" Version="12.1.2" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.3"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Update="Microsoft.ML" Version="0.11.0" />

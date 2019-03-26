@@ -1,8 +1,8 @@
 ﻿using Microsoft.ML;
 
-namespace Bet.Extensions.ML.Engine
+namespace Bet.Extensions.ML.Prediction
 {
-    public interface IMLModelEngine<TData, TPrediction> where TData : class where TPrediction : class
+    public interface IModelPredictionEngine<TData, TPrediction> where TData : class where TPrediction : class
     {
         /// <summary>
         /// The transformer is a component that transforms data. It also supports 'schema

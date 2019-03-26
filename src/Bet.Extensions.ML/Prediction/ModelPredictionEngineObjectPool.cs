@@ -2,25 +2,27 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
-namespace Bet.Extensions.ML.Engine
+namespace Bet.Extensions.ML.Prediction
 {
-    public class MLModelEngineObjectPool<TData, TPrediction>
-        : IMLModelEngine<TData, TPrediction>
+    public class ModelPredictionEngineObjectPool<TData, TPrediction>
+        : IModelPredictionEngine<TData, TPrediction>
         where TData : class
         where TPrediction : class, new()
     {
         private readonly MLContext _mlContext;
-        private readonly ILogger<PredictionEnginePooledObjectPolicy<TData, TPrediction>> _logger;
+        private readonly ILogger _logger;
         private readonly int _maximumObjectsRetained;
         private readonly ObjectPool<PredictionEngine<TData, TPrediction>> _predictionEnginePool;
 
         public ITransformer MLModel { get; private set; }
 
-        public MLModelEngineObjectPool(
+        public ModelPredictionEngineObjectPool(
+            IOptionsMonitor<MLContextOptions> options,
             string modelFilePathName,
-            ILogger<PredictionEnginePooledObjectPolicy<TData, TPrediction>> logger,
+            ILogger logger,
             int maximumObjectsRetained = -1)
         {
             //Create the MLContext object to use under the scope of this class

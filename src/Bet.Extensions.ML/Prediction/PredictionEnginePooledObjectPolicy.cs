@@ -4,7 +4,7 @@ using Microsoft.ML;
 using System;
 using System.Diagnostics;
 
-namespace Bet.Extensions.ML.Engine
+namespace Bet.Extensions.ML.Prediction
 {
     /// <summary>
     /// Creates instance of the <see cref="PredictionEngine{TSrc, TDst}"/> for the dataset.
@@ -20,12 +20,12 @@ namespace Bet.Extensions.ML.Engine
 
         private readonly ITransformer _model;
 
-        private readonly ILogger<PredictionEnginePooledObjectPolicy<TData,TPrediction>> _logger;
+        private readonly ILogger _logger;
 
         public PredictionEnginePooledObjectPolicy(
             MLContext mlContext,
             ITransformer model,
-            ILogger<PredictionEnginePooledObjectPolicy<TData,TPrediction>> logger)
+            ILogger logger)
         {
             _mlContext = mlContext ?? throw new ArgumentNullException(nameof(mlContext));
             _model = model ?? throw new ArgumentNullException(nameof(model));
