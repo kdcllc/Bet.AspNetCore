@@ -26,22 +26,22 @@ namespace AppAuthentication
         [Option("-r", Description = "Resource to authenticate against. Provided https://login.microsoftonline.com/{tenantId}. Default set to https://vault.azure.net/")]
         public string Resource { get; private set; }
 
-        [Option("-v", Description = "Allows Verbose logging for the tool. Enable this to get tracing information. Default is false.")]
+        [Option("-v", Description = "Allows Verbose logging for the tool. Enable this to get tracing information. The Default is false.")]
         public bool Verbose { get; private set; }
 
-        [Option("-h", Description = "Specify Hosting Environment Name for the cli tool execution.")]
+        [Option("-h", Description = "Specify Hosting Environment Name for the cli tool execution. The Default is Development")]
         public string HostingEnviroment { get; private set; }
 
-        [Option("-p", Description = "Specify Web Host port number otherwise it is automatically generated.")]
+        [Option("-p", Description = "Specify Web Host port number otherwise it is automatically generated. The Default port if open is 5050.")]
         public int? Port { get; private set; }
 
-        [Option("-c", Description = "Allows to specify a configuration file besides appsettings.json to be specified.")]
+        [Option("-c", Description = "Allows to specify a configuration file besides appsettings.json to be specified. The Default appsetting.json located in the execution path.")]
         public string ConfigFile { get; private set; }
 
-        [Option("-t|--token-provider", Description = "Access Token Provider")]
+        [Option("-t|--token-provider", Description = "The Access Token Provider to retrieve the Authentication Token. The Default provider is VisualStudio.")]
         public TokenProvider TokenProvider { get; } = TokenProvider.VisualStudio;
 
-        [Option("-f|--fix", Description = "Reset Environment Variables if not cleared")]
+        [Option("-f|--fix", Description = "Fix command resets Environment Variables.")]
         public bool Fix { get; private set; }
 
         public string[] RemainingArguments { get; }
@@ -50,8 +50,7 @@ namespace AppAuthentication
         {
             if (Fix)
             {
-                Environment.SetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv, null, EnvironmentVariableTarget.User);
-                Environment.SetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, null, EnvironmentVariableTarget.User);
+                EnvironmentHostedService.ResetVariables();
             }
 
             var builderConfig = new WebHostBuilderOptions

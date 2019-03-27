@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Console = Colorful.Console;
@@ -19,12 +21,23 @@ namespace AppAuthentication
     {
         private static async Task<int> Main(string[] args)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            using (var mutex = new Mutex(true, Constants.CLIToolName, out var canCreateNew))
             {
-                throw new ApplicationException($"{Constants.CLIToolName} doesn't support this operating system.");
-            }
+                if (canCreateNew)
+                {
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        throw new ApplicationException($"{Constants.CLIToolName} doesn't support this operating system.");
+                    }
 
-            return await CommandLineApplication.ExecuteAsync<Program>(args);
+                    return await CommandLineApplication.ExecuteAsync<Program>(args);
+                }
+                else
+                {
+                    Console.WriteLine($"Only one instance of the tool can be run at the same time {Constants.CLIToolName}.",Color.Red);
+                    return -1;
+                }
+            }
         }
 
         private int OnExecute(CommandLineApplication app, IConsole console)
@@ -42,5 +55,6 @@ namespace AppAuthentication
         {
             return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
         }
+
     }
 }
