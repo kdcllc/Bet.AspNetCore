@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.ML;
+﻿using Bet.AspNetCore.Sample.Models;
+using Bet.Extensions.ML.Prediction;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Bet.AspNetCore.Sample.Controllers
 {
@@ -7,20 +9,29 @@ namespace Bet.AspNetCore.Sample.Controllers
     [ApiController]
     public class PredictionController : ControllerBase
     {
-        private readonly MLContext _mlContext;
+        private readonly IModelPredictionEngine<SentimentObservation, SentimentPrediction> _sentimentModel;
+        private readonly IModelPredictionEngine<SpamInput, SpamPrediction> _spamModel;
 
-        public PredictionController()
+        public PredictionController(
+            IModelPredictionEngine<SentimentObservation, SentimentPrediction> sentimentModel,
+            IModelPredictionEngine<SpamInput, SpamPrediction> spamModel)
         {
-           _mlContext = new MLContext();
+            _sentimentModel = sentimentModel ?? throw new ArgumentNullException(nameof(sentimentModel));
+            _spamModel = spamModel ?? throw new ArgumentNullException(nameof(spamModel));
         }
 
-        // GET /api/predictor/spam?text=Hello World
+        [HttpPost()]
+        public ActionResult<SentimentPrediction> GetSentiment(SentimentObservation input)
+        {
+            return _sentimentModel.Predict(input);
+        }
+
+        // GET /api/prediction/spam?text=Hello World
         [HttpGet]
         [Route("spam")]
-        public ActionResult<string> PredictSpam([FromQuery]string text)
+        public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
         {
-            return text;
+            return _spamModel.Predict(new SpamInput { Message = text});
         }
-
     }
 }

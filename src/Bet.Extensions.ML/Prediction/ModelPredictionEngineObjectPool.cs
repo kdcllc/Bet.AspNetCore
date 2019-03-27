@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
@@ -12,30 +10,25 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
+        private readonly ModelPredictionEngineOptions _options;
         private readonly MLContext _mlContext;
         private readonly ILogger _logger;
-        private readonly int _maximumObjectsRetained;
         private readonly ObjectPool<PredictionEngine<TData, TPrediction>> _predictionEnginePool;
 
-        public ITransformer MLModel { get; private set; }
+        public ITransformer Model { get; private set; }
 
         public ModelPredictionEngineObjectPool(
-            IOptionsMonitor<MLContextOptions> options,
-            string modelFilePathName,
-            ILogger logger,
-            int maximumObjectsRetained = -1)
+           ModelPredictionEngineOptions options,
+           ILogger logger)
         {
-            //Create the MLContext object to use under the scope of this class
-            _mlContext = new MLContext();
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            _logger = logger;
-            //Load the ProductSalesForecast model from the .ZIP file
-            using (var fileStream = File.OpenRead(modelFilePathName))
-            {
-                MLModel = _mlContext.Model.Load(fileStream);
-            }
+            // get mlcontext
+            _mlContext = options.MLContext();
 
-            _maximumObjectsRetained = maximumObjectsRetained;
+            // get prediction model
+            Model = _options.CreateModel(_mlContext);
 
             // create PredictionEngine Object Pool
             _predictionEnginePool = CreatePredictionEngineObjectPool();
@@ -53,7 +46,7 @@ namespace Bet.Extensions.ML.Prediction
             }
             catch (Exception ex)
             {
-                _logger.LogError("PredictionEngine failed: {ex}", ex.ToString());
+                _logger.LogError("Predict failed: {ex}", ex.ToString());
             }
             finally
             {
@@ -67,13 +60,13 @@ namespace Bet.Extensions.ML.Prediction
 
         private ObjectPool<PredictionEngine<TData,TPrediction>> CreatePredictionEngineObjectPool()
         {
-            var pooledObjectPolicy = new PredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, MLModel, _logger);
+            var pooledObjectPolicy = new PredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, Model, _logger);
 
             DefaultObjectPool<PredictionEngine<TData, TPrediction>> pool;
 
-            if (_maximumObjectsRetained != -1)
+            if (_options.MaximumObjectsRetained != -1)
             {
-                pool = new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy, _maximumObjectsRetained);
+                pool = new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy, _options.MaximumObjectsRetained);
             }
             else
             {

@@ -7,7 +7,9 @@ using System.Reflection;
 
 namespace Bet.Extensions.ML.Data
 {
+#pragma warning disable RCS1102 // Make class static.
     public class LoadFromEmbededResource
+#pragma warning restore RCS1102 // Make class static.
     {
         public static List<TData> GetRecords<TData>(
             string fileName,

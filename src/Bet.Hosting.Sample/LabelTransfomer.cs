@@ -1,19 +1,19 @@
-﻿using Microsoft.ML;
-using System.ComponentModel.Composition;
+﻿using Microsoft.ML.Transforms;
+using System;
 
 namespace Bet.Hosting.Sample
 {
-    public class LabelTransfomer
+    [CustomMappingFactoryAttribute(nameof(LabelTransfomer.Transform))]
+    public class LabelTransfomer : CustomMappingFactory<LabelInput, LabelOutput>
     {
-        [Export(nameof(LabelTransfomer))]
-        public ITransformer Transformer => ML.Transforms.CustomMappingTransformer<LabelInput, LabelOutput>(Transform,nameof(LabelTransfomer));
-
-        [Import]
-        public MLContext ML { get; set; }
-
         public static void Transform(LabelInput input, LabelOutput output)
         {
             output.Label = string.Equals(input.Label, "spam", System.StringComparison.InvariantCultureIgnoreCase) ? true : false;
+        }
+
+        public override Action<LabelInput, LabelOutput> GetMapping()
+        {
+            return Transform;
         }
     }
 

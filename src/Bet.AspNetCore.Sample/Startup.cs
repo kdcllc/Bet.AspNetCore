@@ -8,6 +8,15 @@ using Bet.AspNetCore.Sample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+using Bet.Extensions.ML.Prediction;
+using Microsoft.ML;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Bet.AspNetCore.Sample.Models;
+using System.IO;
+using Microsoft.ML.Data;
+using Bet.Hosting.Sample;
+using System.Reflection;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -26,6 +35,29 @@ namespace Bet.AspNetCore.Sample
             services.AddConfigurationValidation();
 
             services.AddReCapture(Configuration);
+
+            services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(mlOptions =>
+            {
+                mlOptions.MLContext = () =>
+                {
+                    var mlContext = new MLContext();
+                    mlContext.ComponentCatalog.RegisterAssembly(typeof(LabelTransfomer).Assembly);
+                    mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(LabelTransfomer.Transform, nameof(LabelTransfomer.Transform));
+
+                    return mlContext;
+                };
+
+                mlOptions.CreateModel = (mlContext) =>
+                {
+                    using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
+                    {
+                        return mlContext.Model.Load(fileStream);
+                    }
+                };
+            },
+                "SpamModel"
+                );
 
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");

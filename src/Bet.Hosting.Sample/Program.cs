@@ -15,7 +15,9 @@ namespace Bet.Hosting.Sample
 {
     class Program
     {
-        static void Main(string[] args)
+        private static string ModelPath = GetAbsolutePath("SpamModel.zip");
+
+        public static void Main(string[] args)
         {
             Console.WriteLine("Building model");
 
@@ -26,7 +28,7 @@ namespace Bet.Hosting.Sample
         {
             var mlContext = new MLContext();
 
-            var records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
+            var records = new List<SpamInput>(); // LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
 
             var smsRecords = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SMSSpamCollection.txt", delimiter: "\t", hasHeaderRecord: false);
 
@@ -37,7 +39,7 @@ namespace Bet.Hosting.Sample
             var testTrainSplit = mlContext.BinaryClassification.TrainTestSplit(data, testFraction: 0.2);
 
             var dataProcessPipeline =
-                mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(mapAction: LabelTransfomer.Transform, contractName: nameof(LabelTransfomer))
+                    mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(LabelTransfomer.Transform, nameof(LabelTransfomer.Transform))
                 .Append(mlContext
                     .Transforms
                     .Text
@@ -62,10 +64,10 @@ namespace Bet.Hosting.Sample
 
             var trainingPipeline = dataProcessPipeline.Append(trainer);
 
-            Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
-            var crossValidationResults = mlContext.BinaryClassification.CrossValidate(data: data, estimator: trainingPipeline, numFolds: 5);
-            var aucs = crossValidationResults.Select(r => r.Metrics.Auc);
-            Console.WriteLine("The AUC is {0}", aucs.Average());
+            //Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
+            //var crossValidationResults = mlContext.BinaryClassification.CrossValidate(data: data, estimator: trainingPipeline, numFolds: 5);
+            //var aucs = crossValidationResults.Select(r => r.Metrics.Auc);
+            //Console.WriteLine("The AUC is {0}", aucs.Average());
 
             var model = trainingPipeline.Fit(testTrainSplit.TrainSet);
 
@@ -77,6 +79,19 @@ namespace Bet.Hosting.Sample
             var prediction = predEngine.Predict(new SpamInput { Message = "you win pills and free entry vouchers" });
 
             Console.WriteLine($"Accuracy:{calMetrics.Accuracy}-Auc:{calMetrics.Auc}-Prediction:{prediction.IsSpam}");
+
+            using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                mlContext.Model.Save(model, fs);
+            }
+        }
+
+        public static string GetAbsolutePath(string relativePath)
+        {
+            var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
+            var assemblyFolderPath = _dataRoot.Directory.FullName;
+
+            return Path.Combine(assemblyFolderPath, relativePath);
         }
     }
 }
