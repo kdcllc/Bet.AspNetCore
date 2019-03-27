@@ -16,14 +16,14 @@ namespace AppAuthentication
             ILogger<EnvironmentHostedService> logger)
         {
             _options = options;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv, EnvironmentVariableTarget.User)) &&
                 !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, EnvironmentVariableTarget.User)))
             {
-                _logger.LogTrace("On startup resetting variables that were left from previous instance of the application.");
+                _logger.LogTrace("{serviceName} resetting User Environment variables.");
+                ResetVariables();
             }
-
-            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

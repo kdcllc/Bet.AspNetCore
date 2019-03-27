@@ -34,7 +34,7 @@ namespace AppAuthentication
                 }
                 else
                 {
-                    Console.WriteLine($"Only one instance of the tool can be run at the same time {Constants.CLIToolName}.",Color.Red);
+                    Console.WriteLine($"Only one instance of the {Constants.CLIToolName} tool can be run at the same time.", Color.Red);
                     return -1;
                 }
             }
@@ -55,6 +55,5 @@ namespace AppAuthentication
         {
             return typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
         }
-
     }
 }
