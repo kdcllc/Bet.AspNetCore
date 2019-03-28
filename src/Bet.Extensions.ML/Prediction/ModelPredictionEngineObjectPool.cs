@@ -10,7 +10,7 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
-        private readonly ModelPredictionEngineOptions _options;
+        private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
         private readonly MLContext _mlContext;
         private readonly ILogger _logger;
         private readonly ObjectPool<PredictionEngine<TData, TPrediction>> _predictionEnginePool;
@@ -18,14 +18,14 @@ namespace Bet.Extensions.ML.Prediction
         public ITransformer Model { get; private set; }
 
         public ModelPredictionEngineObjectPool(
-           ModelPredictionEngineOptions options,
-           ILogger logger)
+           Func<ModelPredictionEngineOptions<TData, TPrediction>> options,
+           ILoggerFactory loggerFactory)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options() ?? throw new ArgumentNullException(nameof(options));
+            _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData,TPrediction>)) ?? throw new ArgumentNullException(nameof(loggerFactory));
 
             // get mlcontext
-            _mlContext = options.MLContext();
+            _mlContext = _options.MLContext();
 
             // get prediction model
             Model = _options.CreateModel(_mlContext);

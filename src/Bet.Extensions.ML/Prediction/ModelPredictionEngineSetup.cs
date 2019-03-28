@@ -4,17 +4,30 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
 {
-    public class PostModelPredictionEngineOptionsConfiguration : IPostConfigureOptions<ModelPredictionEngineOptions>
+    public class ModelPredictionEngineSetup<TData, TPrediction>
+        : IPostConfigureOptions<ModelPredictionEngineOptions<TData, TPrediction>>, IConfigureNamedOptions<ModelPredictionEngineOptions<TData, TPrediction>>
+        where TData : class
+        where TPrediction : class, new()
     {
         private readonly ILogger<MLContext> _logger;
-        private ModelPredictionEngineOptions _options;
+        private ModelPredictionEngineOptions<TData, TPrediction> _options;
 
-        public PostModelPredictionEngineOptionsConfiguration(ILogger<MLContext> logger)
+        public ModelPredictionEngineSetup(ILogger<MLContext> logger)
         {
             _logger = logger;
         }
 
-        public void PostConfigure(string name, ModelPredictionEngineOptions options)
+        public void Configure(string name, ModelPredictionEngineOptions<TData, TPrediction> options)
+        {
+            options.ModelName = name;
+        }
+
+        public void Configure(ModelPredictionEngineOptions<TData, TPrediction> options)
+        {
+            Configure(options.ModelName, options);
+        }
+
+        public void PostConfigure(string name, ModelPredictionEngineOptions<TData, TPrediction> options)
         {
             _options = options;
 
@@ -26,7 +39,7 @@ namespace Bet.Extensions.ML.Prediction
 
         private void Log(object sender, LoggingEventArgs e)
         {
-            _logger.Log(_options.LogLevel,e.Message);
+            _logger.Log(_options.LogLevel, e.Message);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Bet.Extensions.ML;
 using Bet.Extensions.ML.Prediction;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,6 +10,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPredictionEngineObjectPool{TData, TPrediction}"/> implementation.
+        /// </summary>
+        /// <typeparam name="TData"></typeparam>
+        /// <typeparam name="TPrediction"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="mlModelPath">The path to the ML model file.</param>
+        /// <param name="modelName">The Unique ML model name. The default <see cref="Constants.MLDefaultModelName"/>.</param>
+        /// <returns></returns>
         public static IServiceCollection AddModelPredictionEngine<TData, TPrediction>(
             this IServiceCollection services,
             string mlModelPath,
@@ -42,23 +50,22 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddModelPredictionEngine<TData,TPrediction>(
             this IServiceCollection services,
-            Action<ModelPredictionEngineOptions> options,
+            Action<ModelPredictionEngineOptions<TData, TPrediction>> options,
             string modelName = Constants.MLDefaultModelName) where TData : class where TPrediction : class, new()
         {
+            // enables with generic host
             services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<ModelPredictionEngineOptions>, PostModelPredictionEngineOptionsConfiguration>());
 
-            services.Configure(modelName, options);
+            services.ConfigureOptions<ModelPredictionEngineSetup<TData,TPrediction>>();
 
-            services.AddSingleton<IModelPredictionEngine<TData, TPrediction>>(sp =>
+            services.Configure(modelName,options);
+
+            services.AddSingleton<Func<ModelPredictionEngineOptions<TData,TPrediction>>>(provider => () =>
             {
-                var logger = sp.GetRequiredService<ILogger<PredictionEnginePooledObjectPolicy<TData, TPrediction>>>();
-                var configuration = sp.GetRequiredService<IOptionsMonitor<ModelPredictionEngineOptions>>().Get(modelName);
-
-                configuration.ModelName = modelName;
-
-                return new ModelPredictionEngineObjectPool<TData, TPrediction>(configuration, logger);
+                return provider.GetRequiredService<IOptionsMonitor<ModelPredictionEngineOptions<TData, TPrediction>>>().Get(modelName);
             });
+
+            services.AddSingleton<IModelPredictionEngine<TData, TPrediction>,ModelPredictionEngineObjectPool<TData,TPrediction>>();
 
             return services;
         }

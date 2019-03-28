@@ -8,15 +8,12 @@ using Bet.AspNetCore.Sample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using Bet.Extensions.ML.Prediction;
 using Microsoft.ML;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Bet.AspNetCore.Sample.Models;
 using System.IO;
-using Microsoft.ML.Data;
 using Bet.Hosting.Sample;
-using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -37,6 +34,7 @@ namespace Bet.AspNetCore.Sample
             services.AddReCapture(Configuration);
 
             services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
+
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>(mlOptions =>
             {
                 mlOptions.MLContext = () =>
@@ -55,12 +53,12 @@ namespace Bet.AspNetCore.Sample
                         return mlContext.Model.Load(fileStream);
                     }
                 };
-            },
-                "SpamModel"
-                );
+            },"SpamModel");
 
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
+
+            services.AddSwaggerGenWithApiVersion();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -105,7 +103,10 @@ namespace Bet.AspNetCore.Sample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -138,6 +139,18 @@ namespace Bet.AspNetCore.Sample
 
             // returns healthy if all healthcheks return healthy
             app.UseHealthyHealthCheck();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant());
+                }
+            });
         }
     }
 }

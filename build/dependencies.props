@@ -45,6 +45,9 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
+
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">

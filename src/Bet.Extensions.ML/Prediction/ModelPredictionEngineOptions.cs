@@ -4,7 +4,9 @@ using System;
 
 namespace Bet.Extensions.ML.Prediction
 {
-    public class ModelPredictionEngineOptions
+    public class ModelPredictionEngineOptions<TData, TPrediction>
+        where TData : class
+        where TPrediction : class, new()
     {
         public string ModelName { get; set; } = Constants.MLDefaultModelName;
 
