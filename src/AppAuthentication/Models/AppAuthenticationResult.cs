@@ -10,7 +10,7 @@ namespace AppAuthentication.Models
     /// <summary>
     /// Contains access token and other results from a token request call
     /// </summary>
-    public class AppAuthenticationResult
+    internal class AppAuthenticationResult
     {
         /// <summary>
         /// The access token returned from the token request

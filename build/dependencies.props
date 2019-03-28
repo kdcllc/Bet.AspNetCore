@@ -40,10 +40,14 @@
     <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(NetCoreCommonVersion)"/>
     <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.ObjectPool" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
+
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">
@@ -71,8 +75,10 @@
 
   <ItemGroup Label="Shared">
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
+    <PackageReference Update="CsvHelper" Version="12.1.2" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.3"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
+    <PackageReference Update="Microsoft.ML" Version="0.11.0" />
     <PackageReference Update="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Update="Polly" Version="7.1.0" />

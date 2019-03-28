@@ -11,16 +11,34 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+    <PackageReference Include="Microsoft.ML" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer"  />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+    <ProjectReference Include="..\Bet.Hosting.Sample\Bet.Hosting.Sample.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MLContent\SentimentModel.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MLContent\SpamModel.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace AppAuthentication.Helpers
 {
+#pragma warning disable RCS1102 // Make class static.
     internal class ValidationHelper
+#pragma warning restore RCS1102 // Make class static.
     {
         /// <summary>
         /// Validates a resource identifier.

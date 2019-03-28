@@ -1,8 +1,9 @@
 ﻿# AppAuthentication Cli Tool
+This dotnet cli tool provides ability to accesses Azure Vault in Docker Container when this container is ran on the local machine.
 
 Requirements for this tool:
-- Windows 10
-- Visual Studio.NET
+- Windows 10 and Visual Studio.NET/AzureCli
+- Linux and AzureCli
 
 ## Usage
 
@@ -22,16 +23,40 @@ This can be done via `docker-compose.override.yml` like so:
       - MSI_SECRET=${MSI_SECRET}
 ```
 
+- Install cli tool
+
+```cmd
+    dotnet tool install --global appauthentication
+```
+
 - Make sure that all of the existing `Containers` and `Images` are removed from the system as well.
-- Select `Azure Service Authentication Account Selection` by going to Tools --> Options to the account that will be authenticated 
-with your company's Azure Vault.
+
+- Go to Tools --> Options --> Azure Service Authentication --> Account Selection and Select the account that will be used for authenticating with your company's Azure Vault.
+
 
 - Retrieve Azure AD Directory Id by navigating to [Azure Portal](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties)
 
 - Run this CLI tool with the following sample command:
+`Default provider is Visual Studio provider`
+```bash
+    appauthentication run -a  https://login.microsoftonline.com/{companyDirectoryGuidId} -v
+    
+    #or
+
+    appauthentication run -a  {companyDirectoryGuidId} -v
+
+
+    #or azure cli
+    
+    appauthentication run -a  {companyDirectoryGuidId} -v --token-provider AzureCli
+
+```
+If AzureCli provider is used please make sure you log into Azure with the following commands:
 
 ```bash
-    appauthentication run -a  https://login.microsoftonline.com/{companyDirectoryId} -v
+    az login
+    az account list
+    az account set –subscription “YourSubscriptionName”
 ```
 
--- Now you are ready to run your docker container locally and use Azure Vault.
+- Now you are ready to run your docker container locally and use Azure Vault.

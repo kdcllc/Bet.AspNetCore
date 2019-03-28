@@ -1,5 +1,5 @@
-﻿using AppAuthentication.Helpers;
-using AppAuthentication.Models;
+﻿using AppAuthentication.AzureCli;
+using AppAuthentication.Helpers;
 using AppAuthentication.VisualStudio;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Builder;
@@ -21,42 +21,53 @@ namespace AppAuthentication
     internal class RunCommand
     {
         [Option("-a", Description = "Authority Azure TenantId or Azure Directory ID")]
-        public string Authority { get; set; }
+        public string Authority { get; private set; }
 
         [Option("-r", Description = "Resource to authenticate against. Provided https://login.microsoftonline.com/{tenantId}. Default set to https://vault.azure.net/")]
-        public string Resource { get; set; }
+        public string Resource { get; private set; }
 
-        [Option("-v", Description = "Allows Verbose logging for the tool. Enable this to get tracing information. Default is false.")]
-        public bool Verbose { get; set; }
+        [Option("-v", Description = "Allows Verbose logging for the tool. Enable this to get tracing information. The Default is false.")]
+        public bool Verbose { get; private set; }
 
-        [Option("-h", Description = "Specify Hosting Environment Name for the cli tool execution.")]
-        public string HostingEnviroment { get; set; }
+        [Option("-h", Description = "Specify Hosting Environment Name for the cli tool execution. The Default is Development")]
+        public string HostingEnviroment { get; private set; }
 
-        [Option("-p", Description = "Specify Web Host port number otherwise it is automatically generated.")]
-        public int? Port { get; set; }
+        [Option("-p", Description = "Specify Web Host port number otherwise it is automatically generated. The Default port if open is 5050.")]
+        public int? Port { get; private set; }
 
-        [Option("-c", Description = "Allows to specify a configuration file besides appsettings.json to be specified.")]
-        public string ConfigFile { get; set; }
+        [Option("-c", Description = "Allows to specify a configuration file besides appsettings.json to be specified. The Default appsetting.json located in the execution path.")]
+        public string ConfigFile { get; private set; }
+
+        [Option("-t|--token-provider", Description = "The Access Token Provider to retrieve the Authentication Token. The Default provider is VisualStudio.")]
+        public TokenProvider TokenProvider { get; } = TokenProvider.VisualStudio;
+
+        [Option("-f|--fix", Description = "Fix command resets Environment Variables.")]
+        public bool Fix { get; private set; }
 
         public string[] RemainingArguments { get; }
 
         private async Task<int> OnExecuteAsync()
         {
+            if (Fix)
+            {
+                EnvironmentHostedService.ResetVariables();
+            }
+
             var builderConfig = new WebHostBuilderOptions
             {
                 Authority = Authority,
-                HostingEnviroment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
+                HostingEnvironment = !string.IsNullOrWhiteSpace(HostingEnviroment) ? HostingEnviroment : "Development",
                 Resource = !string.IsNullOrWhiteSpace(Resource) ? Resource : "https://vault.azure.net/",
                 Verbose = Verbose,
                 ConfigFile = ConfigFile,
-                SecretId =  Guid.NewGuid().ToString()
+                SecretId = Guid.NewGuid().ToString()
             };
 
             try
             {
                 builderConfig.Port = Port ?? ConsoleHandler.GetRandomUnusedPort();
 
-                Console.WriteLine(builderConfig.Port.ToString(), Color.Green);
+                Console.WriteLine($"Active Port: {builderConfig.Port.ToString()}", Color.Green);
 
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)
                                 // header: Secret = MSI_SECRET
@@ -65,27 +76,19 @@ namespace AppAuthentication
                                 {
                                     app.Run(async (context) =>
                                     {
-                                        var provider = app.ApplicationServices.GetRequiredService<VisualStudioAccessTokenProvider>();
+                                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Program>>();
+
+                                        var provider = app.ApplicationServices.GetRequiredService<IAccessTokenProvider>();
 
                                         var requestResource = context.Request.Query["resource"].ToString();
 
+                                        logger.LogDebug("Request QueryString {query}", requestResource);
+
                                         var resource = !string.IsNullOrWhiteSpace(context.Request.Query["resource"].ToString()) ? requestResource : builderConfig.Resource;
 
-                                        var (authResult, tokenResponse, tokenString, access) =
-                                            await provider.GetAuthResultAsync(resource, builderConfig.Authority);
+                                        var token = await provider.GetAuthResultAsync(resource, builderConfig.Authority);
 
-                                        var customToken = new CustomToken
-                                        {
-                                            AccessToken = authResult.AccessToken,
-                                            TokenType = authResult.TokenType,
-                                            Resource = authResult.Resource,
-                                            ExpiresOn = tokenResponse.ExpiresOn,
-                                            ExpiresIn = access.ExpiryTime.ToString(),
-                                            ExtExpiresIn = access.ExpiryTime.ToString(),
-                                            RefreshToken = tokenResponse.AccessToken,
-                                        };
-
-                                        var json = JsonConvert.SerializeObject(customToken);
+                                        var json = JsonConvert.SerializeObject(token);
 
                                         await context.Response.WriteAsync(json);
                                     });
@@ -95,12 +98,24 @@ namespace AppAuthentication
                                     services.AddSingleton(builderConfig);
                                     services.AddHostedService<EnvironmentHostedService>();
 
-                                    services.AddSingleton(sp =>
+                                    switch (TokenProvider)
                                     {
-                                        var logger = sp.GetRequiredService<ILogger<ProcessManager>>();
+                                        case TokenProvider.VisualStudio:
+                                            services.AddSingleton<IAccessTokenProvider>(sp =>
+                                            {
+                                                var logger = sp.GetRequiredService<ILogger<ProcessManager>>();
+                                                return new VisualStudioAccessTokenProvider(new ProcessManager(logger));
+                                            });
 
-                                        return new VisualStudioAccessTokenProvider(new ProcessManager(logger));
-                                    });
+                                            break;
+                                        case TokenProvider.AzureCli:
+                                            services.AddSingleton<IAccessTokenProvider>(sp =>
+                                            {
+                                                var logger = sp.GetRequiredService<ILogger<ProcessManager>>();
+                                                return new AzureCliAccessTokenProvider(new ProcessManager(logger));
+                                            });
+                                            break;
+                                    }
                                 })
                                 .Build();
 
@@ -114,5 +129,11 @@ namespace AppAuthentication
                 return -1;
             }
         }
+    }
+
+    internal enum TokenProvider
+    {
+        VisualStudio,
+        AzureCli
     }
 }

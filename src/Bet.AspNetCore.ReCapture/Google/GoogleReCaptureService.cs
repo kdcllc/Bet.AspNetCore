@@ -42,7 +42,7 @@ namespace Bet.AspNetCore.ReCapture.Google
                 return message;
             }
 
-            string jsonResponse = await response.Content.ReadAsStringAsync();
+            var jsonResponse = await response.Content.ReadAsStringAsync();
             dynamic jsonData = JObject.Parse(jsonResponse);
             if (jsonData.success != true.ToString().ToLower())
             {

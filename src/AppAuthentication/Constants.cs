@@ -1,6 +1,6 @@
 ﻿namespace AppAuthentication
 {
-    public static class Constants
+    internal static class Constants
     {
         public const string CLIToolName = "appauthentication";
 
@@ -9,7 +9,7 @@
 
         public static readonly string MsiAppServiceSecretEnv = "MSI_SECRET";
 
-        public static readonly string MsiContinerUrl = "host.docker.internal";
+        public static readonly string MsiContainerUrl = "host.docker.internal";
 
         public static readonly string HostUrl = "http://{0}:{1}/";
 
