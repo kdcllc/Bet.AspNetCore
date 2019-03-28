@@ -60,7 +60,7 @@ namespace Bet.Extensions.ML.Prediction
 
         private ObjectPool<PredictionEngine<TData,TPrediction>> CreatePredictionEngineObjectPool()
         {
-            var pooledObjectPolicy = new PredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, Model, _logger);
+            var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, Model, _options, _logger);
 
             DefaultObjectPool<PredictionEngine<TData, TPrediction>> pool;
 

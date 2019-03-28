@@ -5,6 +5,7 @@ This repo contains several projects that provide with extended functionality for
 1. `Bet.Extensions` generic functionality for `DotNetCore` in general.
     - `Bet.Extensions.Options` - includes Application Options and `Bind()` validations.
     - `Bet.Extensions.Logging` - includes shared/common logging functionality.
+    - `Bet.Extensions.ML` - includes Machine Learning library around [ML.NET](https://github.com/dotnet/machinelearning).
     - `Bet.Extensions.Hosting` - includes Generic Hosting functionality.
     - `Bet.Extensions.AzureVault` - includes Azure Vault functionality.
     - `Bet.Extensions` - includes extensions methods for `DotNetCore`.
@@ -14,6 +15,67 @@ This repo contains several projects that provide with extended functionality for
     - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
     - `Bet.AspNetCore` - default location for `AspNetCore`.
     - `Bet.AspNetCore.ReCapture` - ability to verify users submissions.
+
+## Bet.Extensions.ML
+This library provides a helper classes for Microsoft C# based Machine Learning Library [ML.NET](https://github.com/dotnet/machinelearning).
+
+To include Machine Learning prediction the following can be added:
+
+```csharp
+
+    services.AddModelPredictionEngine<SpamInput, SpamPrediction>(mlOptions =>
+    {
+        mlOptions.MLContext = () =>
+        {
+            var mlContext = new MLContext();
+            mlContext.ComponentCatalog.RegisterAssembly(typeof(LabelTransfomer).Assembly);
+            mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(LabelTransfomer.Transform, nameof(LabelTransfomer.Transform));
+
+            return mlContext;
+        };
+
+        mlOptions.CreateModel = (mlContext) =>
+        {
+            using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
+            {
+                return mlContext.Model.Load(fileStream);
+            }
+        };
+    },"SpamModel");
+```
+Then in the API Controller:
+
+```csharp
+[Route("api/[controller]")]
+    [ApiController]
+    public class PredictionController : ControllerBase
+    {
+        private readonly IModelPredictionEngine<SentimentObservation, SentimentPrediction> _sentimentModel;
+        private readonly IModelPredictionEngine<SpamInput, SpamPrediction> _spamModel;
+
+        public PredictionController(
+            IModelPredictionEngine<SentimentObservation, SentimentPrediction> sentimentModel,
+            IModelPredictionEngine<SpamInput, SpamPrediction> spamModel)
+        {
+            _sentimentModel = sentimentModel ?? throw new ArgumentNullException(nameof(sentimentModel));
+            _spamModel = spamModel ?? throw new ArgumentNullException(nameof(spamModel));
+        }
+
+        [HttpPost()]
+        public ActionResult<SentimentPrediction> GetSentiment(SentimentObservation input)
+        {
+            return _sentimentModel.Predict(input);
+        }
+
+        // GET /api/prediction/spam?text=Hello World
+        [HttpGet]
+        [Route("spam")]
+        public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
+        {
+            return _spamModel.Predict(new SpamInput { Message = text});
+        }
+    }
+```
 
 ## AppAuthenticaion CLI tool
 
