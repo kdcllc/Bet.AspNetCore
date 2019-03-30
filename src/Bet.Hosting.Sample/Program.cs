@@ -5,6 +5,7 @@ using CsvHelper.Configuration;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
+using Microsoft.ML.Transforms;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +29,7 @@ namespace Bet.Hosting.Sample
         {
             var mlContext = new MLContext();
 
-            var records = new List<SpamInput>(); // LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
+            var records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
 
             var smsRecords = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SMSSpamCollection.txt", delimiter: "\t", hasHeaderRecord: false);
 
@@ -46,6 +47,8 @@ namespace Bet.Hosting.Sample
                     .FeaturizeText(
                         outputColumnName: DefaultColumnNames.Features,
                         inputColumnName: nameof(SpamInput.Message)))
+                //.Append(mlContext.Transforms.Normalize(new NormalizingEstimator.LogMeanVarColumnOptions("LogMeanVarNormalized", DefaultColumnNames.Features,useCdf:true)))
+                .Append(mlContext.Transforms.Normalize(new NormalizingEstimator.MinMaxColumnOptions("LogMeanVarNormalized", DefaultColumnNames.Features,fixZero:false)))
                 .AppendCacheCheckpoint(mlContext);
 
             //var trainer = mlContext.BinaryClassification.Trainers.FastTree(
@@ -54,13 +57,12 @@ namespace Bet.Hosting.Sample
 
             var options = new SdcaBinaryTrainer.Options
             {
-                L1Threshold = 0.05f,
+                //L1Threshold = 0.05f,
                 LabelColumn = DefaultColumnNames.Label,
-                FeatureColumn = DefaultColumnNames.Features
+                FeatureColumn = "LogMeanVarNormalized"
             };
 
             var trainer = mlContext.BinaryClassification.Trainers.StochasticDualCoordinateAscent(options);
-
 
             var trainingPipeline = dataProcessPipeline.Append(trainer);
 
@@ -69,16 +71,31 @@ namespace Bet.Hosting.Sample
             //var aucs = crossValidationResults.Select(r => r.Metrics.Auc);
             //Console.WriteLine("The AUC is {0}", aucs.Average());
 
+            Console.WriteLine("=============== Training the model ===============");
+
             var model = trainingPipeline.Fit(testTrainSplit.TrainSet);
 
-
             var predictions = model.Transform(testTrainSplit.TestSet);
+
+            Console.WriteLine("=============== Validating to get model's accuracy metrics ===============");
+
             var calMetrics = mlContext.BinaryClassification.Evaluate(data: predictions, label: DefaultColumnNames.Label, score: DefaultColumnNames.Score);
 
             var predEngine = model.CreatePredictionEngine<SpamInput, SpamPrediction>(mlContext);
-            var prediction = predEngine.Predict(new SpamInput { Message = "you win pills and free entry vouchers" });
 
-            Console.WriteLine($"Accuracy:{calMetrics.Accuracy}-Auc:{calMetrics.Auc}-Prediction:{prediction.IsSpam}");
+            Console.WriteLine("=============== Predictions for below data===============");
+            // Test a few examples
+            ClassifyMessage(predEngine, "That's a great idea. It should work.");
+            ClassifyMessage(predEngine, "free medicine winner! congratulations");
+            ClassifyMessage(predEngine, "Yes we should meet over the weekend!");
+            ClassifyMessage(predEngine, "you win pills and free entry vouchers");
+
+            ClassifyMessage(predEngine, "Albions wight seraphs soul yes was uses full all fountain losel perchance blast at crime concubines another.");
+            ClassifyMessage(predEngine, "Albions you win pills and free entry vouchers at crime concubines another.");
+
+            Console.WriteLine("=============== End of process, hit any key to finish =============== ");
+
+            Console.WriteLine($"Accuracy:{calMetrics.Accuracy}-Auc:{calMetrics.Auc}");
 
             using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
@@ -93,5 +110,13 @@ namespace Bet.Hosting.Sample
 
             return Path.Combine(assemblyFolderPath, relativePath);
         }
+
+        public static void ClassifyMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
+        {
+            var input = new SpamInput { Message = message };
+            var prediction = predictor.Predict(input);
+            Console.WriteLine("The message '{0}' is {1}", input.Message, prediction.IsSpam ? "spam" : "not spam");
+        }
     }
 }
+
