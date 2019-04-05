@@ -109,7 +109,6 @@ namespace AppAuthentication
 
                                         var resource = !string.IsNullOrWhiteSpace(context.Request.Query["resource"].ToString()) ? requestResource : builderConfig.Resource;
 
-
                                         var token = await provider.GetAuthResultAsync(resource, builderConfig.Authority);
 
                                         var json = JsonConvert.SerializeObject(token);

@@ -202,8 +202,8 @@ namespace Bet.AspNetCore.UnitTest
 
             void Act() => host.Run();
 
-            Act();
-            //Assert.Throws<OptionsValidationException>(() => Act());
+            //Act();
+            Assert.Throws<OptionsValidationException>(() => Act());
         }
 
         [Fact]
