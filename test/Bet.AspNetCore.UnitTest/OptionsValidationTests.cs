@@ -180,7 +180,9 @@ namespace Bet.AspNetCore.UnitTest
             var dic = new Dictionary<string, string>
             {
                 { "FakeOptions:Id", "-2" },
-                { "FakeOptions:Name", string.Empty }
+                { "FakeOptions:Name", string.Empty },
+                {"FakeOptions2:Id", "-2" },
+                {"FakeOptions2:Name", "" }
             };
 
             IConfiguration configuration = null;
@@ -194,11 +196,13 @@ namespace Bet.AspNetCore.UnitTest
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions2");
                 })
                 .Build();
 
             void Act() => host.Run();
 
+            //Act();
             Assert.Throws<OptionsValidationException>(() => Act());
         }
 

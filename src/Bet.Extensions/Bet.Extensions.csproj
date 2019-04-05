@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>Collection of functionality for DotNetCore.</Description>
-    <PackageTags>dotnetcore,extensions</PackageTags>
+    <PackageTags>dotnetcore, extensions, async,</PackageTags>
   </PropertyGroup>
 
 </Project>

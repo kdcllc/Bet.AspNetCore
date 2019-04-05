@@ -1,17 +1,20 @@
 ﻿# AppAuthentication Cli Tool
 This dotnet cli tool provides ability to accesses Azure Vault in Docker Container when this container is ran on the local machine.
+In addition if needed this cli tool can be enabled to retrieve tokens for local machine development.
 
-Requirements for this tool:
-- Windows 10 and Visual Studio.NET/AzureCli
-- Linux and AzureCli
+The tool was tested on:
+- On Windows 10 Visual Studio.NET or AzureCli Providers.
+- On Linux with Azure Cli only.
 
-## Usage
+## Usage with Local Docker development
 
-Before running this cli tool please make sure that your project files updated to support the following environment variables that this tool generates:
+1. Update `Docker-Compose.yml`
+
+Before running this cli tool please make sure that the docker-compose file for the project has the environment variables
 
 ```
-    MSI_ENDPOINT=http://host.docker.internal:5050/oauth2/token
-    MSI_SECRET=9243C6B3-7E00-400C-B065-0DBF77D33E84
+    MSI_ENDPOINT={MSI_ENDPOINT}
+    MSI_SECRET={MSI_SECRET}
 ```
 
 This can be done via `docker-compose.override.yml` like so:
@@ -23,16 +26,17 @@ This can be done via `docker-compose.override.yml` like so:
       - MSI_SECRET=${MSI_SECRET}
 ```
 
-- Install cli tool
+2. Install dotnet cli `appauthentication` tool
 
 ```cmd
     dotnet tool install --global appauthentication
 ```
 
+Notes:
+
 - Make sure that all of the existing `Containers` and `Images` are removed from the system as well.
 
 - Go to Tools --> Options --> Azure Service Authentication --> Account Selection and Select the account that will be used for authenticating with your company's Azure Vault.
-
 
 - Retrieve Azure AD Directory Id by navigating to [Azure Portal](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties)
 
@@ -51,6 +55,7 @@ This can be done via `docker-compose.override.yml` like so:
     appauthentication run -a  {companyDirectoryGuidId} -v --token-provider AzureCli
 
 ```
+
 If AzureCli provider is used please make sure you log into Azure with the following commands:
 
 ```bash
@@ -60,3 +65,16 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 ```
 
 - Now you are ready to run your docker container locally and use Azure Vault.
+
+## Tools possible switches
+
+- --authority:authid or -a:authid
+- --verbose:debug 
+- --token-provider:AzureCli or -t:VisualStudio (default VisualStudio)
+- --environment:Production  or -e:Development
+- --resource:test or -r:someresource
+- --port:1010 or -p:2323
+- --config:file or -c:appsettings.config 
+- --fix or -f
+- --local or -l (default Docker)
+ 

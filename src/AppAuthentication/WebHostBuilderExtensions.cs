@@ -45,7 +45,8 @@ namespace AppAuthentication
                 config.AddCommandLine(options.Arguments);
             }
 
-            if (options.Verbose)
+            if (options.Verbose
+                && options.Level == LogLevel.Debug)
             {
                 config.Build().DebugConfigurations();
             }
@@ -54,7 +55,7 @@ namespace AppAuthentication
 
             builder
                 .UseKestrel()
-                .UseUrls(string.Format(Constants.HostUrl,"localhost",options.Port))
+                .UseUrls(string.Format(Constants.HostUrl,Constants.MsiLocalhostUrl,options.Port))
                 .ConfigureLogging(logger =>
                 {
                     if (options.Verbose)
@@ -70,7 +71,10 @@ namespace AppAuthentication
                     services.AddSingleton(options);
                     if (options.Verbose)
                     {
-                        services.AddLogging(x => x.AddFilter((_) => true));
+                        services.AddLogging(x => x.AddFilter((loglevel) =>
+                        {
+                            return loglevel == options.Level;
+                        }));
                     }
 
                     services.AddSingleton(PhysicalConsole.Singleton);

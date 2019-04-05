@@ -57,7 +57,7 @@ namespace Bet.Extensions.Options
         {
             if (_failures?.Count() > 0)
             {
-                return $"{_failures.Count()} validation errors occurred while validating options of type '{OptionsType.type.FullName}' and Configuration Section Name '{OptionsType.sectionName}'. The errors are: {string.Join("; ", _failures)}";
+                return $"{_failures.Count()} errors occurred for '{OptionsType.type.Name}' with Configuration '{OptionsType.sectionName}'. The errors are: {string.Join("; ", _failures)}";
             }
 
             return string.Empty;
