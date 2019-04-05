@@ -8,7 +8,7 @@ namespace AppAuthentication
 {
     internal class EnvironmentHostedService : IHostedService
     {
-        private WebHostBuilderOptions _options;
+        private readonly WebHostBuilderOptions _options;
         private readonly ILogger<EnvironmentHostedService> _logger;
 
         public EnvironmentHostedService(
@@ -21,14 +21,24 @@ namespace AppAuthentication
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv, EnvironmentVariableTarget.User)) &&
                 !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, EnvironmentVariableTarget.User)))
             {
-                _logger.LogTrace("{serviceName} resetting User Environment variables.");
+                _logger.LogTrace("{serviceName} resetting User Environment variables.", nameof(EnvironmentHostedService));
                 ResetVariables();
             }
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var envMsiUrl = $"{string.Format(Constants.HostUrl, Constants.MsiContainerUrl, _options.Port)}{Constants.MsiEndpoint}";
+            var domain = _options.IsLocal ? Constants.MsiLocalhostUrl : Constants.MsiContainerUrl;
+
+            var envMsiUrl = $"{string.Format(Constants.HostUrl, domain, _options.Port)}{Constants.MsiEndpoint}";
+
+            if (_options.IsLocal)
+            {
+                Environment.SetEnvironmentVariable(
+                   Constants.AzureAuthConnectionStringEnv,
+                   Constants.MsiRunAsApp,
+                   EnvironmentVariableTarget.User);
+            }
 
             Environment.SetEnvironmentVariable(
                 Constants.MsiAppServiceEndpointEnv,
@@ -62,6 +72,7 @@ namespace AppAuthentication
         {
             Environment.SetEnvironmentVariable(Constants.MsiAppServiceEndpointEnv, null, EnvironmentVariableTarget.User);
             Environment.SetEnvironmentVariable(Constants.MsiAppServiceSecretEnv, null, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable(Constants.AzureAuthConnectionStringEnv, null, EnvironmentVariableTarget.User);
         }
     }
 }
