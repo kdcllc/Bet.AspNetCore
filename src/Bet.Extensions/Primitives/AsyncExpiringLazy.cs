@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace Bet.Extensions
+namespace System.Threading
 {
     public class AsyncExpiringLazy<T>
     {

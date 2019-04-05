@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bet.Extensions
+﻿namespace System.Threading
 {
     /// <summary>
     /// Used with <see cref="AsyncExpiringLazy{T}"/> for OAuth token retrieval.

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace Bet.Extensions
+namespace System.Threading
 {
     // Code based on http://blogs.msdn.com/b/pfxteam/archive/2012/02/12/10266988.aspx
 
