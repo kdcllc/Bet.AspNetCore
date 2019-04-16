@@ -21,12 +21,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer"  />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+    <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />

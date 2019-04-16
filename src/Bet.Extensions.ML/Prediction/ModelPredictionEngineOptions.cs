@@ -24,6 +24,12 @@ namespace Bet.Extensions.ML.Prediction
         public Func<MLContext> MLContext { get; set; } = () => new MLContext();
 
         /// <summary>
+        /// Will contain the input schema for the model. If the model was saved without any
+        /// description of the input, there will be no input schema. In this case this can be null.
+        /// </summary>
+        public DataViewSchema InputSchema { get; set; }
+
+        /// <summary>
         /// The number of maximum pools allowed for Object Pool. The default value is -1 which sets Environment.ProcessorCount * 2.
         /// </summary>
         public int MaximumObjectsRetained { get; set; } = -1;

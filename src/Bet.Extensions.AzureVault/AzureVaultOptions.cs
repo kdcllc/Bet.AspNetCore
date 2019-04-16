@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Bet.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bet.AspNetCore.Options
 {
     /// <summary>
     /// Provides a place holder for validation and creation of Azure Vault.
     /// </summary>
-    public class AzureVaultOptions
+    public class AzureVaultOptions : IOptionsFormatter
     {
         /// <summary>
         /// Url for Azure Vault 'https://{name}.vault.azure.net/'
@@ -17,5 +20,15 @@ namespace Bet.AspNetCore.Options
         public string ClientId { get; set; }
 
         public string ClientSecret { get; set; }
+
+        public string Format()
+        {
+            var options = new JObject
+            {
+                {nameof(BaseUrl), BaseUrl }
+            };
+
+            return options.ToString(Formatting.Indented);
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace Bet.AspNetCore.UnitTest
                 return false;
             }, "Validation Failed");
 
+            var formatted = options.Format();
+
             Assert.Throws<OptionsValidationException>(act);
         }
 

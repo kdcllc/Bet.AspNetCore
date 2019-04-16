@@ -1,7 +1,10 @@
-﻿using Bet.AspNetCore.Sample.Models;
+﻿using System;
+
+using Bet.AspNetCore.Sample.Models;
 using Bet.Extensions.ML.Prediction;
+using Bet.Extensions.ML.Spam.Models;
+
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace Bet.AspNetCore.Sample.Controllers
 {

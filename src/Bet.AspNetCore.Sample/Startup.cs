@@ -1,19 +1,20 @@
+using System.IO;
+using System.Net;
+using Bet.AspNetCore.Middleware.Diagnostics;
+using Bet.AspNetCore.Sample.Data;
+using Bet.AspNetCore.Sample.Models;
+using Bet.Extensions.ML.Spam.Models;
+
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
-using Bet.AspNetCore.Sample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using Microsoft.ML;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Bet.AspNetCore.Sample.Models;
-using System.IO;
-using Bet.Hosting.Sample;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -29,6 +30,11 @@ namespace Bet.AspNetCore.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDeveloperListRegisteredServices(o =>
+            {
+                o.PathOutputOptions = PathOutputOptions.Json;
+            });
+
             services.AddConfigurationValidation();
 
             services.AddReCapture(Configuration);
@@ -37,20 +43,11 @@ namespace Bet.AspNetCore.Sample
 
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>(mlOptions =>
             {
-                mlOptions.MLContext = () =>
-                {
-                    var mlContext = new MLContext();
-                    mlContext.ComponentCatalog.RegisterAssembly(typeof(LabelTransfomer).Assembly);
-                    mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(LabelTransfomer.Transform, nameof(LabelTransfomer.Transform));
-
-                    return mlContext;
-                };
-
                 mlOptions.CreateModel = (mlContext) =>
                 {
                     using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
                     {
-                        return mlContext.Model.Load(fileStream);
+                        return mlContext.Model.Load(fileStream, out var inputSchema);
                     }
                 };
             },"SpamModel");
@@ -112,6 +109,7 @@ namespace Bet.AspNetCore.Sample
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseDeveloperListRegisteredServices();
             }
             else
             {

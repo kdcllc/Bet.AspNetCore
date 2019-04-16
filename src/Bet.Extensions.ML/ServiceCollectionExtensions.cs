@@ -30,7 +30,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     using (var fileStream = File.OpenRead(mlModelPath))
                     {
-                        return mlContext.Model.Load(fileStream);
+                        var context = mlContext.Model.Load(fileStream, out var modelInputSchema);
+                        options.InputSchema = modelInputSchema;
+
+                        return context;
                     }
                 };
             },

@@ -22,7 +22,9 @@ namespace Bet.Extensions.ML.Prediction
            ILoggerFactory loggerFactory)
         {
             _options = options() ?? throw new ArgumentNullException(nameof(options));
-            _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData,TPrediction>)) ?? throw new ArgumentNullException(nameof(loggerFactory));
+
+            _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData,TPrediction>))
+                ?? throw new ArgumentNullException(nameof(loggerFactory));
 
             // get mlcontext
             _mlContext = _options.MLContext();

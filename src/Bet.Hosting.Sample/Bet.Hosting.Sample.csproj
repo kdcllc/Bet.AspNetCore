@@ -11,19 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Content\SpamDetectionData.csv" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Content\SpamDetectionData.csv" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Content\SMSSpamCollection.txt" />
   </ItemGroup>
 
 </Project>

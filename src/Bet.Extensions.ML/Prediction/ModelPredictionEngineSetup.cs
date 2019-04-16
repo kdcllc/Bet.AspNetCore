@@ -5,7 +5,8 @@ using Microsoft.ML;
 namespace Bet.Extensions.ML.Prediction
 {
     public class ModelPredictionEngineSetup<TData, TPrediction>
-        : IPostConfigureOptions<ModelPredictionEngineOptions<TData, TPrediction>>, IConfigureNamedOptions<ModelPredictionEngineOptions<TData, TPrediction>>
+        : IPostConfigureOptions<ModelPredictionEngineOptions<TData, TPrediction>>,
+        IConfigureNamedOptions<ModelPredictionEngineOptions<TData, TPrediction>>
         where TData : class
         where TPrediction : class, new()
     {

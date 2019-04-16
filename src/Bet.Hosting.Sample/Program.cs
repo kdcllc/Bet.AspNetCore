@@ -1,106 +1,91 @@
-﻿using Bet.Extensions.ML.Data;
-using Bet.Hosting.Sample.ML.Models;
-using CsvHelper;
-using CsvHelper.Configuration;
-using Microsoft.ML;
-using Microsoft.ML.Data;
-using Microsoft.ML.Trainers;
-using Microsoft.ML.Transforms;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
+using Bet.Extensions.ML.Helpers;
+using Bet.Extensions.ML.Sentiment.Models;
+using Bet.Extensions.ML.Spam.Models;
+
+using Microsoft.ML;
 
 namespace Bet.Hosting.Sample
 {
+    /// <summary>
+    /// https://github.com/dotnet/machinelearning/blob/master/docs/code/MlNetCookBook.md
+    /// </summary>
     class Program
     {
-        private static string ModelPath = GetAbsolutePath("SpamModel.zip");
+        private static string SpamModelPath = GetAbsolutePath("SpamModel.zip");
+
+        private static string SentimentModelPath = GetAbsolutePath("SentimentModel.zip");
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("Building model");
+            Console.WriteLine("Start Creating models");
 
-            BuildModel();
+            BuildSentimentDetectionModel();
+            // BuildSpamDetectionModel();
+
+            Console.WriteLine("Building models");
+
+            Console.WriteLine("=============== End of process, hit any key to finish ===============");
+            Console.ReadKey();
         }
 
-        private static void BuildModel()
+        private static void BuildSentimentDetectionModel()
+        {
+            var builder = new Extensions.ML.Sentiment.ModelBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetrics>();
+            builder.LoadData();
+
+            var result = builder.Train();
+
+            Console.WriteLine(result.ToString());
+
+            var predictor = builder.MlContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(builder.Model);
+            Console.WriteLine("=============== Predictions for below data===============");
+
+            ClassifySentimentText(predictor, "This is a very rude movie");
+            ClassifySentimentText(predictor, "Hate All Of You're Work");
+
+            Console.WriteLine("=================== Saving Model to Disk ============================ ");
+
+            using (var fs = new FileStream(SentimentModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                builder.MlContext.Model.Save(builder.Model, builder.TrainingSchema, fs);
+            }
+
+            Console.WriteLine("======================= Creating Model Completed ================== ");
+        }
+
+        private static void BuildSpamDetectionModel()
         {
             var mlContext = new MLContext();
 
-            var records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
+            var builder = new Extensions.ML.Spam.ModelBuilder<SpamInput,SpamPrediction, MulticlassClassificationFoldsAverageMetrics>(mlContext);
 
-            var smsRecords = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SMSSpamCollection.txt", delimiter: "\t", hasHeaderRecord: false);
+            // loads based dataset.
+            builder.LoadData();
 
-            records.AddRange(smsRecords);
+            var result = builder.Train();
 
-            var data = mlContext.Data.LoadFromEnumerable(records);
+            Console.WriteLine(result.ToString());
 
-            var testTrainSplit = mlContext.BinaryClassification.TrainTestSplit(data, testFraction: 0.2);
-
-            var dataProcessPipeline =
-                    mlContext.Transforms.CustomMapping<LabelInput, LabelOutput>(LabelTransfomer.Transform, nameof(LabelTransfomer.Transform))
-                .Append(mlContext
-                    .Transforms
-                    .Text
-                    .FeaturizeText(
-                        outputColumnName: DefaultColumnNames.Features,
-                        inputColumnName: nameof(SpamInput.Message)))
-                //.Append(mlContext.Transforms.Normalize(new NormalizingEstimator.LogMeanVarColumnOptions("LogMeanVarNormalized", DefaultColumnNames.Features,useCdf:true)))
-                .Append(mlContext.Transforms.Normalize(new NormalizingEstimator.MinMaxColumnOptions("LogMeanVarNormalized", DefaultColumnNames.Features,fixZero:false)))
-                .AppendCacheCheckpoint(mlContext);
-
-            //var trainer = mlContext.BinaryClassification.Trainers.FastTree(
-            //    labelColumnName: DefaultColumnNames.Label,
-            //    featureColumnName: DefaultColumnNames.Features);
-
-            var options = new SdcaBinaryTrainer.Options
-            {
-                //L1Threshold = 0.05f,
-                LabelColumn = DefaultColumnNames.Label,
-                FeatureColumn = "LogMeanVarNormalized"
-            };
-
-            var trainer = mlContext.BinaryClassification.Trainers.StochasticDualCoordinateAscent(options);
-
-            var trainingPipeline = dataProcessPipeline.Append(trainer);
-
-            //Console.WriteLine("=============== Cross-validating to get model's accuracy metrics ===============");
-            //var crossValidationResults = mlContext.BinaryClassification.CrossValidate(data: data, estimator: trainingPipeline, numFolds: 5);
-            //var aucs = crossValidationResults.Select(r => r.Metrics.Auc);
-            //Console.WriteLine("The AUC is {0}", aucs.Average());
-
-            Console.WriteLine("=============== Training the model ===============");
-
-            var model = trainingPipeline.Fit(testTrainSplit.TrainSet);
-
-            var predictions = model.Transform(testTrainSplit.TestSet);
-
-            Console.WriteLine("=============== Validating to get model's accuracy metrics ===============");
-
-            var calMetrics = mlContext.BinaryClassification.Evaluate(data: predictions, label: DefaultColumnNames.Label, score: DefaultColumnNames.Score);
-
-            var predEngine = model.CreatePredictionEngine<SpamInput, SpamPrediction>(mlContext);
+            var predictor = mlContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(builder.Model);
 
             Console.WriteLine("=============== Predictions for below data===============");
             // Test a few examples
-            ClassifyMessage(predEngine, "That's a great idea. It should work.");
-            ClassifyMessage(predEngine, "free medicine winner! congratulations");
-            ClassifyMessage(predEngine, "Yes we should meet over the weekend!");
-            ClassifyMessage(predEngine, "you win pills and free entry vouchers");
+            ClassifySpamMessage(predictor, "That's a great idea. It should work.");
+            ClassifySpamMessage(predictor, "free medicine winner! congratulations");
+            ClassifySpamMessage(predictor, "Yes we should meet over the weekend!");
+            ClassifySpamMessage(predictor, "you win pills and free entry vouchers");
 
-            ClassifyMessage(predEngine, "Albions wight seraphs soul yes was uses full all fountain losel perchance blast at crime concubines another.");
-            ClassifyMessage(predEngine, "Albions you win pills and free entry vouchers at crime concubines another.");
 
-            Console.WriteLine("=============== End of process, hit any key to finish =============== ");
+            Console.WriteLine("=================== Saving Model to Disk ============================ ");
 
-            Console.WriteLine($"Accuracy:{calMetrics.Accuracy}-Auc:{calMetrics.Auc}");
-
-            using (var fs = new FileStream(ModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (var fs = new FileStream(SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
-                mlContext.Model.Save(model, fs);
+                mlContext.Model.Save(builder.Model, builder.TrainingSchema, fs);
             }
+
+            Console.WriteLine("======================= Creating Model Completed ================== ");
         }
 
         public static string GetAbsolutePath(string relativePath)
@@ -111,11 +96,18 @@ namespace Bet.Hosting.Sample
             return Path.Combine(assemblyFolderPath, relativePath);
         }
 
-        public static void ClassifyMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
+        public static void ClassifySpamMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
         {
             var input = new SpamInput { Message = message };
             var prediction = predictor.Predict(input);
-            Console.WriteLine("The message '{0}' is {1}", input.Message, prediction.IsSpam ? "spam" : "not spam");
+            Console.WriteLine("The message '{0}' is {1}", input.Message, prediction.IsSpam == "spam" ? "spam" : "not spam");
+        }
+
+        public static void ClassifySentimentText(PredictionEngine<SentimentIssue, SentimentPrediction> predictor, string text)
+        {
+            var input = new SentimentIssue { Text = text };
+            var prediction = predictor.Predict(input);
+            Console.WriteLine("The text '{0}' is {1} Probability of being toxic: {2}", input.Text, Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic", prediction.Probability);
         }
     }
 }

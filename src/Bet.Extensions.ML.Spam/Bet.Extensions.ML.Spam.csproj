@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\SMSSpamCollection.txt" />
+    <None Remove="Content\SpamDetectionData.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\SMSSpamCollection.txt" />
+    <EmbeddedResource Include="Content\SpamDetectionData.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+  </ItemGroup>
+
+</Project>
