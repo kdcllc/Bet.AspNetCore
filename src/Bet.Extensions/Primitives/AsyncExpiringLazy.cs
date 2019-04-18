@@ -6,7 +6,7 @@ namespace System.Threading
     {
         private readonly AsyncLock valueLock = new AsyncLock();
 
-        private readonly Func<AsyncExpirationValue<T>, Task<AsyncExpirationValue<T>>> _vauleProvider;
+        private readonly Func<AsyncExpirationValue<T>, Task<AsyncExpirationValue<T>>> _valueProvider;
 
         private AsyncExpirationValue<T> _value;
 
@@ -14,7 +14,7 @@ namespace System.Threading
 
         public AsyncExpiringLazy(Func<AsyncExpirationValue<T>, Task<AsyncExpirationValue<T>>> vauleProvider)
         {
-            _vauleProvider = vauleProvider ?? throw new ArgumentNullException(nameof(vauleProvider));
+            _valueProvider = vauleProvider ?? throw new ArgumentNullException(nameof(vauleProvider));
         }
 
         public async Task<bool> IsValueCreated()
@@ -34,7 +34,7 @@ namespace System.Threading
                     return _value.Result;
                 }
 
-                _value = await _vauleProvider(_value).ConfigureAwait(false);
+                _value = await _valueProvider(_value).ConfigureAwait(false);
 
                 return _value.Result;
             }

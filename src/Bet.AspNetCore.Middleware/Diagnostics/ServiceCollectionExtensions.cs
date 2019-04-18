@@ -9,6 +9,12 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds <see cref="DeveloperListRegisteredServicesOptions"/> for the <see cref="DeveloperListRegisteredServicesMiddleware"/>.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
         public static IServiceCollection AddDeveloperListRegisteredServices(
             this IServiceCollection services,
             Action<DeveloperListRegisteredServicesOptions> configure = null)
@@ -22,6 +28,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        /// <summary>
+        /// Use <see cref="DeveloperListRegisteredServicesMiddleware"/> for listing all of the registered services within the DI.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IApplicationBuilder UseDeveloperListRegisteredServices(this IApplicationBuilder builder)
         {
             var check = builder.ApplicationServices.GetService<IOptions<DeveloperListRegisteredServicesOptions>>();
