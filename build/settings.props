@@ -2,12 +2,14 @@
 
   <PropertyGroup Label="Basic Settings">
     <VersionPrefix>1.1.0-pre</VersionPrefix>
-    <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <NoWarn>$(NoWarn);CS1591;</NoWarn>
     <TieredCompilation>true</TieredCompilation>
+
   </PropertyGroup>
+
+
 
   <PropertyGroup Label="Nuget Package Settings">
     <Description>Collection of AspNetCore extensions and reusable functionality.</Description>

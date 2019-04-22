@@ -121,9 +121,12 @@ namespace Bet.AspNetCore.Sample
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting(routes =>
+            app.UseRouting();
+
+            // https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/
+            app.UseEndpoints(routes =>
             {
-                routes.MapControllers();
+                routes.MapDefaultControllerRoute();
                 routes.MapRazorPages();
             });
 

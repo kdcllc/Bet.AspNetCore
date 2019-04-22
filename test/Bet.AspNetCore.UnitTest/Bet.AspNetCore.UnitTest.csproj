@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <!-- bug in the preview -->
+    <!-- bug in the preview-->
+    <DepsFileGenerationMode>old</DepsFileGenerationMode>
   </PropertyGroup>
 
   <ItemGroup>

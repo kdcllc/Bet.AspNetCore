@@ -1,10 +1,12 @@
-﻿using Bet.Extensions.ML;
+﻿using System;
+using System.IO;
+
+using Bet.Extensions.ML;
 using Bet.Extensions.ML.Prediction;
+
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using System;
-using System.IO;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
