@@ -6,10 +6,17 @@
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <NoWarn>$(NoWarn);CS1591;</NoWarn>
     <TieredCompilation>true</TieredCompilation>
-
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' AND '$(LangVersion)' == '8.0'">
+    <LangVersion>latest</LangVersion>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <NullableContextOptions>enable</NullableContextOptions>
+  </PropertyGroup>
 
   <PropertyGroup Label="Nuget Package Settings">
     <Description>Collection of AspNetCore extensions and reusable functionality.</Description>
