@@ -95,8 +95,9 @@ namespace Bet.AspNetCore.Sample
                 })
                 .AddSigtermCheck("Sigterm_shutdown_check");
 
-            services.AddMvc()
-                .AddNewtonsoftJson();
+            services.AddMvc().AddNewtonsoftJson();
+
+            services.AddRazorPages().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,6 +127,7 @@ namespace Bet.AspNetCore.Sample
             // https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/
             app.UseEndpoints(routes =>
             {
+                routes.MapControllers();
                 routes.MapDefaultControllerRoute();
                 routes.MapRazorPages();
             });

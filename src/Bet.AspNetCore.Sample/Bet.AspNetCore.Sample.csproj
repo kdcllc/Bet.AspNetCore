@@ -30,8 +30,9 @@
     <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
-    <ProjectReference Include="..\Bet.Hosting.Sample\Bet.Hosting.Sample.csproj" />
   </ItemGroup>
 
   <ItemGroup>

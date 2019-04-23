@@ -230,3 +230,8 @@ Make sure that the following Options values are supplied.
     "AuthenticationId": ""
   }
 ```
+
+## DotNetCore 3.0
+
+- [Migrate from ASP.NET Core 2.2 to 3.0](https://docs.microsoft.com/en-us/aspnet/core/migration/22-to-30?view=aspnetcore-2.2&tabs=visual-studio)
+- [Tutorial: Migrate existing code with nullable reference types](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/upgrade-to-nullable-references#upgrade-the-projects-to-c-8)
