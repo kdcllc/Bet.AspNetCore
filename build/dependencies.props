@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <NetCoreCommonVersion>3.0.0-preview3-*</NetCoreCommonVersion>
+    <NetCoreCommonVersion>3.0.0-preview4*</NetCoreCommonVersion>
   </PropertyGroup>
 
   <ItemGroup Label="NetCore">
