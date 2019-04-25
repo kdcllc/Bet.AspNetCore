@@ -77,7 +77,6 @@ namespace Bet.Hosting.Sample
             ClassifySpamMessage(predictor, "Yes we should meet over the weekend!");
             ClassifySpamMessage(predictor, "you win pills and free entry vouchers");
 
-
             Console.WriteLine("=================== Saving Model to Disk ============================ ");
 
             using (var fs = new FileStream(SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))

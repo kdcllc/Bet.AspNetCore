@@ -2,7 +2,8 @@
 
 namespace Bet.Extensions.ML.Prediction
 {
-    public interface IModelPredictionEngine<TData, TPrediction> where TData : class where TPrediction : class
+    public interface IModelPredictionEngine<TData, TPrediction>
+        where TData : class where TPrediction : class
     {
         /// <summary>
         /// The transformer holds the Machine Learning predictive model data.

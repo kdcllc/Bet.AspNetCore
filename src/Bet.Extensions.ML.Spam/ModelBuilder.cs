@@ -35,7 +35,7 @@ namespace Bet.Extensions.ML.Spam
         public override TResult Train()
         {
             //Measure training time
-            var watch =Stopwatch.StartNew();
+            var watch = Stopwatch.StartNew();
 
             var data = MlContext.Data.LoadFromEnumerable(_records);
 
@@ -78,6 +78,5 @@ namespace Bet.Extensions.ML.Spam
 
             return crossTrainingResults as TResult;
         }
-
     }
 }

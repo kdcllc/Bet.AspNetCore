@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 using Bet.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
