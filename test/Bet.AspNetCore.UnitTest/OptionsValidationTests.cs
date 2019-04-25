@@ -123,6 +123,10 @@ namespace Bet.AspNetCore.UnitTest
 
                     services.ConfigureWithDataAnnotationsValidation<FakeOptions>(Configuration);
                     services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(Configuration.GetSection("FakeOptions2"));
+
+#if NETCOREAPP3_0
+                    services.AddMvc(options => options.EnableEndpointRouting = false);
+#endif
                 })
                 .Configure(app =>
                 {

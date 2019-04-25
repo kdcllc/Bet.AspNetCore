@@ -69,6 +69,10 @@ namespace Bet.AspNetCore.UnitTest
                             .UseExpectedHttpCode(statusCode);
                         });
                     });
+
+#if NETCOREAPP3_0
+                    services.AddMvc(options => options.EnableEndpointRouting = false);
+#endif
                 })
                 .UseStartup<TestStartup>();
 
