@@ -1,7 +1,10 @@
-﻿using Bet.Extensions.Options;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Bet.Extensions.Options;
+
+using Microsoft.Extensions.Options;
+
 using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Microsoft.Extensions.Hosting

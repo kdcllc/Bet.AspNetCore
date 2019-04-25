@@ -21,6 +21,9 @@ namespace Bet.AspNetCore.Options
         [RegularExpression(@"^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$", ErrorMessage = "Must be valid Guid Id")]
         public string ClientId { get; set; }
 
+        /// <summary>
+        /// The Client Secret must be Base64String.
+        /// </summary>
         public string ClientSecret { get; set; }
 
         public string Format()

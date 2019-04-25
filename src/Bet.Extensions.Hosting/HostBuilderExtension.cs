@@ -1,6 +1,8 @@
-﻿using Bet.Extensions.Options;
+﻿using System.Linq;
+
+using Bet.Extensions.Options;
+
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
 namespace Microsoft.Extensions.Hosting
 {

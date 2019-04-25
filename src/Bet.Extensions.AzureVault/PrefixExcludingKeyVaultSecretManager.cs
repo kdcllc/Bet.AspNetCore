@@ -22,7 +22,7 @@ namespace Bet.Extensions.AzureVault
             {
                 var env = secretName.Substring(0, envIndex);
 
-                return !AzureVaultKeyBuilder._enviroments.ContainsKey(env);
+                return !AzureVaultKeyBuilder.Enviroments.ContainsValue(env);
             }
 
             return true;

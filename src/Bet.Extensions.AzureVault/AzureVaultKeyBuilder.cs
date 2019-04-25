@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class AzureVaultKeyBuilder
     {
-        internal static readonly Dictionary<string, string> _enviroments = new Dictionary<string, string>
+        internal static readonly Dictionary<string, string> Enviroments = new Dictionary<string, string>
         {
             {"Development", "dev" },
             {"Staging", "qa" },
@@ -50,7 +50,7 @@ namespace Microsoft.Extensions.Configuration
             var prefix = string.Empty;
             if (usePrefix)
             {
-                _enviroments.TryGetValue(hostingEnviromentName, out prefix);
+                Enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
             if (!string.IsNullOrWhiteSpace(options.BaseUrl))
@@ -67,6 +67,9 @@ namespace Microsoft.Extensions.Configuration
 
                     var keyVaultClient = policy.Execute(kv);
 
+                    // load values that are not specific to the environment.
+                    builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
+
                     if (!string.IsNullOrEmpty(prefix))
                     {
                         builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
@@ -76,7 +79,7 @@ namespace Microsoft.Extensions.Configuration
                         builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new DefaultKeyVaultSecretManager());
                     }
 
-                   return builder.Build();
+                    return builder.Build();
                 }
                 catch (AzureServiceTokenProviderException)
                 {
@@ -94,6 +97,9 @@ namespace Microsoft.Extensions.Configuration
             {
                 var secretBytes = Convert.FromBase64String(options.ClientSecret);
                 var secret = System.Text.Encoding.ASCII.GetString(secretBytes);
+
+                // load values that are not specific to the environment.
+                builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new PrefixExcludingKeyVaultSecretManager());
 
                 if (!string.IsNullOrEmpty(prefix))
                 {
@@ -124,10 +130,10 @@ namespace Microsoft.Extensions.Configuration
         {
             if (!string.IsNullOrEmpty(keyVaultEndpoints))
             {
-                var keyPrefix = string.Empty;
+                var prefix = string.Empty;
                 if (usePrefix)
                 {
-                    _enviroments.TryGetValue(hostingEnviromentName, out keyPrefix);
+                    Enviroments.TryGetValue(hostingEnviromentName, out prefix);
                 }
 
                 foreach (var splitEndpoint in keyVaultEndpoints.Split(';'))
@@ -137,9 +143,9 @@ namespace Microsoft.Extensions.Configuration
 
                     builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
 
-                    if (!string.IsNullOrEmpty(keyPrefix))
+                    if (!string.IsNullOrEmpty(prefix))
                     {
-                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(keyPrefix));
+                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
                     }
                 }
             }

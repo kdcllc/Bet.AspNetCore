@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.Hosting
 {
