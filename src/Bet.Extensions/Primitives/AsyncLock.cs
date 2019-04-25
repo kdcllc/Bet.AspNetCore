@@ -9,16 +9,16 @@ namespace System.Threading
     /// </summary>
     public class AsyncLock : IDisposable
     {
-        private readonly SemaphoreSlim asyncSemaphore = new SemaphoreSlim(1);
-        private readonly Task<LockRelease> lockRelease;
-        private bool disposed;
+        private readonly SemaphoreSlim _asyncSemaphore = new SemaphoreSlim(1);
+        private readonly Task<LockRelease> _lockRelease;
+        private bool _disposed;
 
         /// <summary>
         /// Returns a new AsyncLock.
         /// </summary>
         public AsyncLock()
         {
-            lockRelease = Task.FromResult(new LockRelease(this));
+            _lockRelease = Task.FromResult(new LockRelease(this));
         }
 
         /// <summary>
@@ -37,11 +37,11 @@ namespace System.Threading
         /// <returns>An asynchronous operation</returns>
         public Task<LockRelease> LockAsync(CancellationToken cancellationToken)
         {
-            var waitTask = asyncSemaphore.WaitAsync(cancellationToken);
+            var waitTask = _asyncSemaphore.WaitAsync(cancellationToken);
             if (waitTask.IsCompleted)
             {
                 // Avoid an allocation in the non-contention case.
-                return lockRelease;
+                return _lockRelease;
             }
 
             return waitTask.ContinueWith(
@@ -62,15 +62,15 @@ namespace System.Threading
 
         private void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
-                    asyncSemaphore.Dispose();
-                    (lockRelease as IDisposable)?.Dispose();
+                    _asyncSemaphore.Dispose();
+                    (_lockRelease as IDisposable)?.Dispose();
                 }
 
-                disposed = true;
+                _disposed = true;
             }
         }
 
@@ -79,11 +79,11 @@ namespace System.Threading
         /// </summary>
         public struct LockRelease : IDisposable
         {
-            private readonly AsyncLock asyncLockRelease;
+            private readonly AsyncLock _asyncLockRelease;
 
             internal LockRelease(AsyncLock release)
             {
-                asyncLockRelease = release;
+                _asyncLockRelease = release;
             }
 
             /// <summary>
@@ -92,7 +92,7 @@ namespace System.Threading
             /// <returns>An asynchronous operation</returns>
             public void Dispose()
             {
-                asyncLockRelease?.asyncSemaphore.Release();
+                _asyncLockRelease?._asyncSemaphore.Release();
             }
         }
     }

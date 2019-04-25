@@ -1,5 +1,6 @@
 ﻿using Bet.AspNetCore.ReCapture;
 using Bet.AspNetCore.ReCapture.Google;
+
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection

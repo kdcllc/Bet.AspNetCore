@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Machine Learning Library that builds Sentiment model to be used within AspNetCore Web Api project.</Description>
+    <PackageTags>aspnetcore, dotnet, machine, learning ,ml , artificial, intelligence, sentiment assignment</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\wikiDetoxAnnotated40kRows.tsv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\wikiDetoxAnnotated40kRows.tsv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.ML;
-using System;
 
 namespace Bet.Extensions.ML.Prediction
 {
@@ -22,6 +23,12 @@ namespace Bet.Extensions.ML.Prediction
         /// Machine Learning Model Specific Context. The default value is set to a new instance.
         /// </summary>
         public Func<MLContext> MLContext { get; set; } = () => new MLContext();
+
+        /// <summary>
+        /// Will contain the input schema for the model. If the model was saved without any
+        /// description of the input, there will be no input schema. In this case this can be null.
+        /// </summary>
+        public DataViewSchema InputSchema { get; set; }
 
         /// <summary>
         /// The number of maximum pools allowed for Object Pool. The default value is -1 which sets Environment.ProcessorCount * 2.

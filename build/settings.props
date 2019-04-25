@@ -2,11 +2,20 @@
 
   <PropertyGroup Label="Basic Settings">
     <VersionPrefix>1.1.0-pre</VersionPrefix>
-    <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
-    <NoWarn>$(NoWarn);CS1591;IDE1006</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;</NoWarn>
     <TieredCompilation>true</TieredCompilation>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' AND '$(LangVersion)' == '8.0'">
+    <LangVersion>latest</LangVersion>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget Package Settings">

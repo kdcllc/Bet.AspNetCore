@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Collections.Generic;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
+
 using Xunit;
 
 namespace Bet.AspNetCore.UnitTest
@@ -8,11 +10,12 @@ namespace Bet.AspNetCore.UnitTest
     public class AzureKeyVaultFuncTests
     {
         [Fact(Skip ="Integration Test")]
+        //[Fact]
         public void  TestGenericHost()
         {
             var dic = new Dictionary<string, string>
             {
-                {"AzureVault:BaseUrl", "https://{name}.vault.azure.net/" },
+                {"AzureVault:BaseUrl", "https://kdcllc.vault.azure.net/" },
                 {"AzureVault:ClientId", "" },
                 {"AzureVault:ClientSecret", "" },
             };

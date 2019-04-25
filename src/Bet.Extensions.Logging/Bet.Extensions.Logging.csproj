@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of Logging functionality for AspNetCore or GenericHost.</Description>
-    <PackageTags>aspnetcore,dotnetcore,logging,serilog,extensions</PackageTags>
+    <Description>The Collection of the Logging related functionality for AspNetCore or GenericHost.</Description>
+    <PackageTags>aspnetcore, dotnetcore ,logging ,serilog ,extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,9 +1,10 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace Bet.Extensions.ML.Data
 {

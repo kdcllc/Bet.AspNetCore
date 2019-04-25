@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using Bet.Extensions.Options;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Bet.AspNetCore.Options
 {
     /// <summary>
     /// Provides a place holder for validation and creation of Azure Vault.
     /// </summary>
-    public class AzureVaultOptions
+    public class AzureVaultOptions : IOptionsFormatter
     {
         /// <summary>
         /// Url for Azure Vault 'https://{name}.vault.azure.net/'
@@ -16,6 +21,19 @@ namespace Bet.AspNetCore.Options
         [RegularExpression(@"^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$", ErrorMessage = "Must be valid Guid Id")]
         public string ClientId { get; set; }
 
+        /// <summary>
+        /// The Client Secret must be Base64String.
+        /// </summary>
         public string ClientSecret { get; set; }
+
+        public string Format()
+        {
+            var options = new JObject
+            {
+                {nameof(BaseUrl), BaseUrl }
+            };
+
+            return options.ToString(Formatting.Indented);
+        }
     }
 }

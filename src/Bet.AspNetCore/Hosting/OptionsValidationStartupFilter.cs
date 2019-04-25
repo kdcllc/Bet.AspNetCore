@@ -1,9 +1,12 @@
-﻿using Bet.Extensions.Options;
+﻿using System;
+using System.Collections.Generic;
+
+using Bet.Extensions.Options;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
+
 using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Bet.AspNetCore.Hosting

@@ -1,11 +1,15 @@
-﻿using Bet.AspNetCore.Options;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Bet.AspNetCore.Options;
+using Bet.Extensions.AzureVault;
+
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
+
 using Polly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -17,7 +21,7 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class AzureVaultKeyBuilder
     {
-        private static readonly Dictionary<string, string> _enviroments = new Dictionary<string, string>
+        internal static readonly Dictionary<string, string> Enviroments = new Dictionary<string, string>
         {
             {"Development", "dev" },
             {"Staging", "qa" },
@@ -25,16 +29,20 @@ namespace Microsoft.Extensions.Configuration
         };
 
         /// <summary>
-        /// Add Azure Key Vaults with VS.NET authentication or thru AppId=SecretID pair.
+        /// Adds Azure Key Vault with VS.NET authentication in the Development and MSI in production.
+        /// If MSI authentication fails it falls back to Client Id and Secret pair if specified in the configuration.
+        /// If needed use AppAuthentication global cli tool for Docker MSI authentication.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> builder.</param>
         /// <param name="hostingEnviromentName">The name of the environment retrieved from the Hosting Provider.</param>
         /// <param name="usePrefix">The prefix like dev,qa,prod.</param>
+        /// <param name="tokenAuthRetry">The default value for the retry is 2.</param>
         /// <returns></returns>
         public static IConfigurationRoot AddAzureKeyVault(
             this IConfigurationBuilder builder,
             string hostingEnviromentName,
-            bool usePrefix = true)
+            bool usePrefix = true,
+            int tokenAuthRetry = 2)
         {
             var config = builder.Build();
             var options = config.Bind<AzureVaultOptions>("AzureVault");
@@ -42,7 +50,7 @@ namespace Microsoft.Extensions.Configuration
             var prefix = string.Empty;
             if (usePrefix)
             {
-                _enviroments.TryGetValue(hostingEnviromentName, out prefix);
+                Enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
             if (!string.IsNullOrWhiteSpace(options.BaseUrl))
@@ -51,13 +59,16 @@ namespace Microsoft.Extensions.Configuration
                 {
                     var policy = Policy
                         .Handle<AzureServiceTokenProviderException>()
-                        .WaitAndRetry(2, retryAttempt => TimeSpan.FromSeconds(Math.Pow(3, retryAttempt)));
+                        .WaitAndRetry(tokenAuthRetry, retryAttempt => TimeSpan.FromSeconds(Math.Pow(3, retryAttempt)));
 
                     var azureServiceTokenProvider = new AzureServiceTokenProvider();
 
                     KeyVaultClient kv() => new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
                     var keyVaultClient = policy.Execute(kv);
+
+                    // load values that are not specific to the environment.
+                    builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
 
                     if (!string.IsNullOrEmpty(prefix))
                     {
@@ -68,7 +79,7 @@ namespace Microsoft.Extensions.Configuration
                         builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new DefaultKeyVaultSecretManager());
                     }
 
-                   return builder.Build();
+                    return builder.Build();
                 }
                 catch (AzureServiceTokenProviderException)
                 {
@@ -87,6 +98,9 @@ namespace Microsoft.Extensions.Configuration
                 var secretBytes = Convert.FromBase64String(options.ClientSecret);
                 var secret = System.Text.Encoding.ASCII.GetString(secretBytes);
 
+                // load values that are not specific to the environment.
+                builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new PrefixExcludingKeyVaultSecretManager());
+
                 if (!string.IsNullOrEmpty(prefix))
                 {
                     builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new PrefixKeyVaultSecretManager(prefix));
@@ -94,6 +108,45 @@ namespace Microsoft.Extensions.Configuration
                 else
                 {
                     builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new DefaultKeyVaultSecretManager());
+                }
+            }
+
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// Adds Azure Key Vaults with VS.NET or MSI authentication only.
+        /// </summary>
+        /// <param name="builder">The <see cref="IConfigurationBuilder"/> configuration builder instance.</param>
+        /// <param name="keyVaultEndpoints">The default Azure Key Vaults values separated by ';'.</param>
+        /// <param name="usePrefix">The default is true. It adds prefixed values from the vault.</param>
+        /// <param name="hostingEnviromentName">The hosting environment that is matched to 'dev, stage or prod'.</param>
+        /// <returns></returns>
+        public static IConfigurationRoot AddAzureKeyVaults(
+            this IConfigurationBuilder builder,
+            string keyVaultEndpoints,
+            bool usePrefix = true,
+            string hostingEnviromentName = null)
+        {
+            if (!string.IsNullOrEmpty(keyVaultEndpoints))
+            {
+                var prefix = string.Empty;
+                if (usePrefix)
+                {
+                    Enviroments.TryGetValue(hostingEnviromentName, out prefix);
+                }
+
+                foreach (var splitEndpoint in keyVaultEndpoints.Split(';'))
+                {
+                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                    var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                    builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
+
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
+                    }
                 }
             }
 

@@ -1,6 +1,7 @@
-﻿using Bet.CleanArchitecture.Core.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Bet.CleanArchitecture.Core.Entities;
 
 namespace Bet.CleanArchitecture.Core.Interfaces
 {
