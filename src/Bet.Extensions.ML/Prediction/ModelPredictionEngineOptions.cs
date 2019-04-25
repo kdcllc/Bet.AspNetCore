@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.ML;
-using System;
 
 namespace Bet.Extensions.ML.Prediction
 {

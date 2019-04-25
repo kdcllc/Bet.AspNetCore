@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Diagnostics;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.ML;
-using System;
-using System.Diagnostics;
 
 namespace Bet.Extensions.ML.Prediction
 {

@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of Azure Vault functionality for Webhost or GenericHost.</Description>
-    <PackageTags>dotnetcore,generic host,webhost,azure,azure vault key,options,hosting,extensions</PackageTags>
+    <Description>The Collection of the Azure Key Vault related functionality for both Webhost and GenericHost.</Description>
+    <PackageTags>dotnetcore,generic host,webhost,azure,azure key vault, options, hosting, extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

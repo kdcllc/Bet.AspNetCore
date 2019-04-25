@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of functionality for DotNetCore.</Description>
-    <PackageTags>dotnetcore, extensions, async,</PackageTags>
+    <Description>The Collection of extension methods for DotNetCore application development.</Description>
+    <PackageTags>dotnetcore, extensions, async</PackageTags>
   </PropertyGroup>
 
 </Project>

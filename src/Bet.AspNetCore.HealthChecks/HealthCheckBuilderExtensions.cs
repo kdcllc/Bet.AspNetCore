@@ -1,16 +1,19 @@
-﻿using Bet.AspNetCore.HealthChecks.MemoryCheck;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Bet.AspNetCore.HealthChecks.MemoryCheck;
 using Bet.AspNetCore.HealthChecks.SigtermCheck;
 using Bet.AspNetCore.HealthChecks.UriCheck;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

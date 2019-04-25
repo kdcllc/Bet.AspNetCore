@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Description>Machine Learning Library that builds Sentiment model to be used within AspNetCore Web Api project.</Description>
     <PackageTags>aspnetcore, dotnet, machine learning, ai, sentiment assignment</PackageTags>
   </PropertyGroup>

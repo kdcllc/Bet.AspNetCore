@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+
+using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json.Linq;
 
 namespace Bet.AspNetCore.ReCapture.Google
 {

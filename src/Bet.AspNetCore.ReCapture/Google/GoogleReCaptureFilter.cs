@@ -1,7 +1,9 @@
-﻿using Bet.AspNetCore.ReCapture.Google;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+using Bet.AspNetCore.ReCapture.Google;
+
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Bet.AspNetCore.ReCapture
 {

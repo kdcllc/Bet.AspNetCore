@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+
 using Bet.AspNetCore.Middleware.Diagnostics;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 

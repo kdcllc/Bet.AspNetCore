@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
 namespace Bet.AspNetCore.ReCapture.Google
 {
