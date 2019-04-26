@@ -1,4 +1,5 @@
 ﻿using System;
+using Bet.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -126,6 +127,30 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 return new NamedConfigureFromConfigurationOptions<TOptions>(sectionName, config, configureBinder);
             });
+        }
+
+        /// <summary>
+        /// Adds binding configuration callback for TOptions based on the configuration section.
+        /// </summary>
+        /// <typeparam name="TOptions">The type of the options to be configured.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="sectionName">The configuration section to be used for this TOptions.</param>
+        /// <param name="configure">The delegate to be used to configure the binding of the options.</param>
+        /// <returns></returns>
+        public static IServiceCollection ConfigureOptions<TOptions>(
+            this IServiceCollection services,
+            string sectionName,
+            Action<IConfiguration, string, TOptions> configure) where TOptions : class
+        {
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
+
+            var rootSection = sectionName ?? typeof(TOptions).Name;
+
+            services.AddSingleton<IConfigureOptions<TOptions>>(sp => new OptionsConfiguration<TOptions>(sp.GetService<IConfiguration>(), rootSection, configure));
+            return services;
         }
     }
 }
