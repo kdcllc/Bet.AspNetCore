@@ -106,18 +106,21 @@ namespace Bet.AspNetCore.Sample
             IWebHostEnvironment env,
             IApiVersionDescriptionProvider provider)
         {
-            if (env.IsDevelopment())
+            app.UseIfElse(env.IsDevelopment(), dev =>
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseDeveloperListRegisteredServices();
-            }
-            else
+                return dev;
+            },
+            prod =>
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+
+                return prod;
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

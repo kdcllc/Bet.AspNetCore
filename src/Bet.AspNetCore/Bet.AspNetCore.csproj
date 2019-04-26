@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
   </ItemGroup>
 
   <ItemGroup>

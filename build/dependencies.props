@@ -19,10 +19,13 @@
     <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(NetCoreCommonVersion)" />
@@ -44,9 +47,8 @@
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
-
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.Extensions.Primitives" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetCoreCommonVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">
