@@ -1,10 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using System.Threading.Tasks;
 
-using Bet.Extensions.ML.Helpers;
-using Bet.Extensions.ML.Sentiment.Models;
-using Bet.Extensions.ML.Spam.Models;
+using Bet.Hosting.Sample.Services;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 
 namespace Bet.Hosting.Sample
@@ -14,101 +16,74 @@ namespace Bet.Hosting.Sample
     /// </summary>
     class Program
     {
-        private static string SpamModelPath = GetAbsolutePath("SpamModel.zip");
-
-        private static string SentimentModelPath = GetAbsolutePath("SentimentModel.zip");
-
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            Console.WriteLine("Start Creating models");
+            var host = new HostBuilder()
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.AddConsole();
+                        logging.AddDebug();
+                    })
+                    .ConfigureAppConfiguration((hostContext, config) =>
+                    {
+                        config.AddEnvironmentVariables();
+                        config.AddJsonFile("appsettings.json", optional: true);
+                        config.AddCommandLine(args);
+                    })
+                    .ConfigureServices((hostContext, services) =>
+                    {
+                        services.AddScoped<ModelPathService>();
+                        services.AddSingleton(new MLContext());
+                        services.AddSpamDetectionModelGenerator();
+                        services.TryAddScoped<SpamModelGeneratorService>();
+                    })
+                    .Build();
 
-            BuildSentimentDetectionModel();
-            // BuildSpamDetectionModel();
+            var hostedServices = host.Services;
 
-            Console.WriteLine("Building models");
-
-            Console.WriteLine("=============== End of process, hit any key to finish ===============");
-            Console.ReadKey();
-        }
-
-        private static void BuildSentimentDetectionModel()
-        {
-            var builder = new Extensions.ML.Sentiment.ModelBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetrics>();
-            builder.LoadData();
-
-            var result = builder.Train();
-
-            Console.WriteLine(result.ToString());
-
-            var predictor = builder.MlContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(builder.Model);
-            Console.WriteLine("=============== Predictions for below data===============");
-
-            ClassifySentimentText(predictor, "This is a very rude movie");
-            ClassifySentimentText(predictor, "Hate All Of You're Work");
-
-            Console.WriteLine("=================== Saving Model to Disk ============================ ");
-
-            using (var fs = new FileStream(SentimentModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (host)
             {
-                builder.MlContext.Model.Save(builder.Model, builder.TrainingSchema, fs);
+                await host.StartAsync();
+
+                var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
+                await spamService.GenerateModel();
+
+                await host.StopAsync();
             }
-
-            Console.WriteLine("======================= Creating Model Completed ================== ");
         }
 
-        private static void BuildSpamDetectionModel()
-        {
-            var mlContext = new MLContext();
 
-            var builder = new Extensions.ML.Spam.ModelBuilder<SpamInput,SpamPrediction, MulticlassClassificationFoldsAverageMetrics>(mlContext);
+        //private static void BuildSentimentDetectionModel()
+        //{
+        //    var builder = new Extensions.ML.Sentiment.ModelBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>();
+        //    builder.LoadData();
 
-            // loads based dataset.
-            builder.LoadData();
+        //    var result = builder.Train();
 
-            var result = builder.Train();
+        //    Console.WriteLine(result.ToString());
 
-            Console.WriteLine(result.ToString());
+        //    var predictor = builder.MlContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(builder.Model);
+        //    Console.WriteLine("=============== Predictions for below data===============");
 
-            var predictor = mlContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(builder.Model);
+        //    ClassifySentimentText(predictor, "This is a very rude movie");
+        //    ClassifySentimentText(predictor, "Hate All Of You're Work");
 
-            Console.WriteLine("=============== Predictions for below data===============");
-            // Test a few examples
-            ClassifySpamMessage(predictor, "That's a great idea. It should work.");
-            ClassifySpamMessage(predictor, "free medicine winner! congratulations");
-            ClassifySpamMessage(predictor, "Yes we should meet over the weekend!");
-            ClassifySpamMessage(predictor, "you win pills and free entry vouchers");
+        //    Console.WriteLine("=================== Saving Model to Disk ============================ ");
 
-            Console.WriteLine("=================== Saving Model to Disk ============================ ");
+        //    using (var fs = new FileStream(SentimentModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+        //    {
+        //        builder.MlContext.Model.Save(builder.Model, builder.TrainingSchema, fs);
+        //    }
 
-            using (var fs = new FileStream(SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
-            {
-                mlContext.Model.Save(builder.Model, builder.TrainingSchema, fs);
-            }
+        //    Console.WriteLine("======================= Creating Model Completed ================== ");
+        //}
 
-            Console.WriteLine("======================= Creating Model Completed ================== ");
-        }
-
-        public static string GetAbsolutePath(string relativePath)
-        {
-            var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
-            var assemblyFolderPath = _dataRoot.Directory.FullName;
-
-            return Path.Combine(assemblyFolderPath, relativePath);
-        }
-
-        public static void ClassifySpamMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
-        {
-            var input = new SpamInput { Message = message };
-            var prediction = predictor.Predict(input);
-            Console.WriteLine("The message '{0}' is {1}", input.Message, prediction.IsSpam == "spam" ? "spam" : "not spam");
-        }
-
-        public static void ClassifySentimentText(PredictionEngine<SentimentIssue, SentimentPrediction> predictor, string text)
-        {
-            var input = new SentimentIssue { Text = text };
-            var prediction = predictor.Predict(input);
-            Console.WriteLine("The text '{0}' is {1} Probability of being toxic: {2}", input.Text, Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic", prediction.Probability);
-        }
+        //public static void ClassifySentimentText(PredictionEngine<SentimentIssue, SentimentPrediction> predictor, string text)
+        //{
+        //    var input = new SentimentIssue { Text = text };
+        //    var prediction = predictor.Predict(input);
+        //    Console.WriteLine("The text '{0}' is {1} Probability of being toxic: {2}", input.Text, Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic", prediction.Probability);
+        //}
     }
 }
 

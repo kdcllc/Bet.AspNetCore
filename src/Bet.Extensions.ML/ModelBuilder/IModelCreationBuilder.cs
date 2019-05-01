@@ -16,7 +16,6 @@ namespace Bet.Extensions.ML.ModelBuilder
 
         DataViewSchema TrainingSchema { get; set; }
 
-
         IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView();
 
         /// <summary>
@@ -51,12 +50,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        TrainModelResult TrainModel(Func<TrainModelResult> builder);
+        TrainModelResult TrainModel(Func<IDataView,TrainModelResult> builder);
 
         /// <summary>
         /// Evaluates ML model and returns results
         /// </summary>
         /// <returns></returns>
         TResult Evaluate();
+
+        TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder);
     }
 }

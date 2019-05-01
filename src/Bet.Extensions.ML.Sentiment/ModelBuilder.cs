@@ -72,7 +72,7 @@ namespace Bet.Extensions.ML.Sentiment
             var predictions = Model.Transform(testData);
             var metrics = MlContext.BinaryClassification.Evaluate(data: predictions, labelColumnName: "Label", scoreColumnName: "Score");
 
-            var result = new Helpers.BinaryClassificationMetrics(trainer.ToString(), metrics);
+            var result = new ModelBuilder.BinaryClassificationMetricsResult(trainer.ToString(), metrics);
 
             watch.Stop();
 

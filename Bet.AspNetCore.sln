@@ -63,9 +63,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.CleanArchitecture.Core"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.Middleware", "src\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj", "{A8A4C701-9F61-4A43-9D8B-5AD70E388020}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.ML.Spam", "src\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj", "{03F2734D-F0FB-459F-963C-3BB249BB31D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML.Spam", "src\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj", "{03F2734D-F0FB-459F-963C-3BB249BB31D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.ML.Sentiment", "src\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj", "{B76EC229-8B48-45C7-B2F7-686FB55CD323}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML.Sentiment", "src\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj", "{40D0AD45-7772-4FA7-B566-E1F69FC180A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,10 +141,10 @@ Global
 		{03F2734D-F0FB-459F-963C-3BB249BB31D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03F2734D-F0FB-459F-963C-3BB249BB31D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03F2734D-F0FB-459F-963C-3BB249BB31D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B76EC229-8B48-45C7-B2F7-686FB55CD323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B76EC229-8B48-45C7-B2F7-686FB55CD323}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B76EC229-8B48-45C7-B2F7-686FB55CD323}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B76EC229-8B48-45C7-B2F7-686FB55CD323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D0AD45-7772-4FA7-B566-E1F69FC180A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D0AD45-7772-4FA7-B566-E1F69FC180A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D0AD45-7772-4FA7-B566-E1F69FC180A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D0AD45-7772-4FA7-B566-E1F69FC180A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,7 +167,7 @@ Global
 		{89AC6B13-DE02-4762-8243-4FEEB3CA80A2} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{A8A4C701-9F61-4A43-9D8B-5AD70E388020} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{03F2734D-F0FB-459F-963C-3BB249BB31D9} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
-		{B76EC229-8B48-45C7-B2F7-686FB55CD323} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
+		{40D0AD45-7772-4FA7-B566-E1F69FC180A0} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}

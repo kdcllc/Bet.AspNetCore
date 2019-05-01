@@ -10,19 +10,19 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Spam
 {
-    public  class ModelBuilder<TInput, TOutput, TResult> : IModelCreationBuilder<TInput, TOutput, TResult>
+    public  class SpamModelBuilder<TInput, TOutput, TResult> : IModelCreationBuilder<TInput, TOutput, TResult>
         where TInput : class
         where TOutput : class
         where TResult : class
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<SpamModelBuilder<TInput, TOutput, TResult>> _logger;
         private IEstimator<ITransformer> _trainingPipeLine;
         private string _trainerName;
 
-        public ModelBuilder(MLContext context, ILogger logger)
+        public SpamModelBuilder(MLContext context, ILogger<SpamModelBuilder<TInput, TOutput, TResult>> logger)
         {
             MLContext = context ?? new MLContext();
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             Records = new List<TInput>();
         }
@@ -115,7 +115,7 @@ namespace Bet.Extensions.ML.Spam
 
         public TrainModelResult TrainModel()
         {
-            return TrainModel(() =>
+            return TrainModel((dataView) =>
             {
                 var sw = Stopwatch.StartNew();
 
@@ -126,9 +126,9 @@ namespace Bet.Extensions.ML.Spam
             });
         }
 
-        public TrainModelResult TrainModel(Func<TrainModelResult> builder)
+        public TrainModelResult TrainModel(Func<IDataView,TrainModelResult> builder)
         {
-            var result = builder();
+            var result = builder(_dataView);
 
             Model = result.Model;
 
@@ -137,19 +137,27 @@ namespace Bet.Extensions.ML.Spam
 
         public TResult Evaluate()
         {
-            var sw = Stopwatch.StartNew();
-            // Evaluate the model using cross-validation.
-            // Cross-validation splits our dataset into 'folds', trains a model on some folds and
-            // evaluates it on the remaining fold. We are using 5 folds so we get back 5 sets of scores.
-            // Let's compute the average AUC, which should be between 0.5 and 1 (higher is better).
-            var crossValidationResults = MLContext.MulticlassClassification.CrossValidate(data: _dataView, estimator: _trainingPipeLine, numberOfFolds: 5);
-            var crossTrainingResults = new MulticlassClassificationFoldsAverageMetricsResult(_trainerName, crossValidationResults);
+            return Evaluate((dataView, train) =>
+            {
+                var sw = Stopwatch.StartNew();
+                // Evaluate the model using cross-validation.
+                // Cross-validation splits our dataset into 'folds', trains a model on some folds and
+                // evaluates it on the remaining fold. We are using 5 folds so we get back 5 sets of scores.
+                // Let's compute the average AUC, which should be between 0.5 and 1 (higher is better).
+                var crossValidationResults = MLContext.MulticlassClassification.CrossValidate(data: _dataView, estimator: _trainingPipeLine, numberOfFolds: 5);
+                var crossTrainingResults = new MulticlassClassificationFoldsAverageMetricsResult(_trainerName, crossValidationResults);
 
-            sw.Stop();
+                sw.Stop();
 
-            crossTrainingResults.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+                crossTrainingResults.ElapsedMilliseconds = sw.ElapsedMilliseconds;
 
-            return crossTrainingResults as TResult;
+                return crossTrainingResults as TResult;
+            });
+        }
+
+        public TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
+        {
+            return builder(_dataView, _trainingPipeLine);
         }
     }
 }
