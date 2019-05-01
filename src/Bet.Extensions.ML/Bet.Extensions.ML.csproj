@@ -17,5 +17,9 @@
     <PackageReference Include="CsvHelper" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
+  </ItemGroup>
+
 
 </Project>
