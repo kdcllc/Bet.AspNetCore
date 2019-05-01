@@ -34,8 +34,13 @@ namespace Bet.Hosting.Sample
                     {
                         services.AddScoped<ModelPathService>();
                         services.AddSingleton(new MLContext());
+
                         services.AddSpamDetectionModelGenerator();
                         services.TryAddScoped<SpamModelGeneratorService>();
+
+                        services.AddSentimentModelGenerator();
+                        services.TryAddScoped<SentimentModelGeneratorService>();
+
                     })
                     .Build();
 
@@ -45,8 +50,12 @@ namespace Bet.Hosting.Sample
             {
                 await host.StartAsync();
 
-                var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
-                await spamService.GenerateModel();
+                //var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
+                //await spamService.GenerateModel();
+
+
+                var sentimentService = hostedServices.GetRequiredService<SentimentModelGeneratorService>();
+                await sentimentService.GenerateModel();
 
                 await host.StopAsync();
             }

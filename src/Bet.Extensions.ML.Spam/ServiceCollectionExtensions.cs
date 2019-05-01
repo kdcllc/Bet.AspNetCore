@@ -2,9 +2,10 @@
 using Bet.Extensions.ML.Spam;
 using Bet.Extensions.ML.Spam.Models;
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.ML;
 
-namespace Microsoft.Extensions.DependencyInjection.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {

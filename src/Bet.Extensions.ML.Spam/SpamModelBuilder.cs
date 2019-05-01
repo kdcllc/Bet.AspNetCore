@@ -19,13 +19,6 @@ namespace Bet.Extensions.ML.Spam
         private IEstimator<ITransformer> _trainingPipeLine;
         private string _trainerName;
 
-        public SpamModelBuilder(MLContext context, ILogger<SpamModelBuilder<TInput, TOutput, TResult>> logger)
-        {
-            MLContext = context ?? new MLContext();
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            Records = new List<TInput>();
-        }
 
         public List<TInput> Records { get; set; }
 
@@ -36,6 +29,14 @@ namespace Bet.Extensions.ML.Spam
         private IDataView _dataView;
 
         public DataViewSchema TrainingSchema { get; set; }
+
+        public SpamModelBuilder(MLContext context, ILogger<SpamModelBuilder<TInput, TOutput, TResult>> logger)
+        {
+            MLContext = context ?? new MLContext();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            Records = new List<TInput>();
+        }
 
         public IModelCreationBuilder<TInput, TOutput, TResult> LoadDefaultData()
         {
@@ -119,7 +120,7 @@ namespace Bet.Extensions.ML.Spam
             {
                 var sw = Stopwatch.StartNew();
 
-                var model = _trainingPipeLine.Fit(_dataView);
+                var model = _trainingPipeLine.Fit(dataView);
                 sw.Stop();
 
                 return new TrainModelResult(model, sw.ElapsedMilliseconds);
@@ -137,14 +138,14 @@ namespace Bet.Extensions.ML.Spam
 
         public TResult Evaluate()
         {
-            return Evaluate((dataView, train) =>
+            return Evaluate((dataView, trainingPipeLine) =>
             {
                 var sw = Stopwatch.StartNew();
                 // Evaluate the model using cross-validation.
                 // Cross-validation splits our dataset into 'folds', trains a model on some folds and
                 // evaluates it on the remaining fold. We are using 5 folds so we get back 5 sets of scores.
                 // Let's compute the average AUC, which should be between 0.5 and 1 (higher is better).
-                var crossValidationResults = MLContext.MulticlassClassification.CrossValidate(data: _dataView, estimator: _trainingPipeLine, numberOfFolds: 5);
+                var crossValidationResults = MLContext.MulticlassClassification.CrossValidate(data: dataView, estimator: trainingPipeLine, numberOfFolds: 5);
                 var crossTrainingResults = new MulticlassClassificationFoldsAverageMetricsResult(_trainerName, crossValidationResults);
 
                 sw.Stop();

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
+using Bet.Extensions.ML.Sentiment.Models;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;
@@ -10,21 +11,22 @@ using Microsoft.ML;
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class SpamModelGeneratorService
+    public class SentimentModelGeneratorService
     {
-        private readonly ILogger<SpamModelGeneratorService> _logger;
-        private readonly IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> _modelBuilder;
+        private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly ModelPathService _pathService;
+        private readonly ILogger<SentimentModelGeneratorService> _logger;
 
-        public SpamModelGeneratorService(
-            IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
+        public SentimentModelGeneratorService(
+            IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             ModelPathService pathService,
-            ILogger<SpamModelGeneratorService> logger)
+            ILogger<SentimentModelGeneratorService> logger)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _modelBuilder = spamModelBuilder ?? throw new ArgumentNullException(nameof(spamModelBuilder));
+            _modelBuilder = sentimentModelBuilder ?? throw new ArgumentNullException(nameof(sentimentModelBuilder));
             _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
 
         public Task GenerateModel()
         {
@@ -51,31 +53,28 @@ namespace Bet.Hosting.Sample.Services
 
             // 5. predict on sample data
             _logger.LogInformation("=============== Predictions for below data===============");
+            var predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(_modelBuilder.Model);
 
-            var predictor =_modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
-            // Test a few examples
-            ClassifySpamMessage(predictor, "That's a great idea. It should work.");
-            ClassifySpamMessage(predictor, "free medicine winner! congratulations");
-            ClassifySpamMessage(predictor, "Yes we should meet over the weekend!");
-            ClassifySpamMessage(predictor, "you win pills and free entry vouchers");
+            ClassifySentimentText(predictor, "This is a very rude movie");
+            ClassifySentimentText(predictor, "Hate All Of You're Work");
 
-            // 6. save to the file
-            _logger.LogInformation("=================== Saving Model to Disk ============================ ");
+            Console.WriteLine("=================== Saving Model to Disk ============================ ");
+
             using (var fs = new FileStream(_pathService.SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 _modelBuilder.MLContext.Model.Save(_modelBuilder.Model, _modelBuilder.TrainingSchema, fs);
             }
 
-            _logger.LogInformation("======================= Creating Model Completed ================== ");
+            Console.WriteLine("======================= Creating Model Completed ================== ");
 
             return Task.CompletedTask;
         }
 
-        private void ClassifySpamMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
+        public void ClassifySentimentText(PredictionEngine<SentimentIssue, SentimentPrediction> predictor, string text)
         {
-            var input = new SpamInput { Message = message };
+            var input = new SentimentIssue { Text = text };
             var prediction = predictor.Predict(input);
-            _logger.LogInformation("The message '{0}' is {1}", input.Message, prediction.IsSpam == "spam" ? "spam" : "not spam");
+            _logger.LogInformation("The text '{0}' is {1} Probability of being toxic: {2}", input.Text, Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic", prediction.Probability);
         }
     }
 }

@@ -1,32 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Bet.Extensions.ML.Data;
+using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Sentiment.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
-using Microsoft.ML.Calibrators;
-using Microsoft.ML.Data;
-using Microsoft.ML.Trainers;
 
 namespace Bet.Extensions.ML.Sentiment
 {
-    public class ModelBuilder<TInput, TOutput, TResult> : ModelCreationBuilder<TInput, TOutput, TResult>
-        where TInput : class, new()
+    public class SentimentModelBuilder<TInput, TOutput, TResult> : IModelCreationBuilder<TInput, TOutput, TResult>
+        where TInput : class
         where TOutput : class
         where TResult : class
     {
-        public ModelBuilder(
-            MLContext context = null,
-            IEnumerable<TInput> inputs = null,
-            ILogger logger = null) : base(context,inputs,logger)
+        private readonly ILogger<SentimentModelBuilder<TInput, TOutput, TResult>> _logger;
+        private IEstimator<ITransformer> _trainingPipeLine;
+        private string _trainerName;
+
+
+        public List<TInput> Records { get; set; }
+
+        public ITransformer Model { get; set; }
+
+        public MLContext MLContext { get; set; }
+
+        private IDataView _dataView;
+        private IDataView _trainingData;
+        private IDataView _testData;
+
+        public DataViewSchema TrainingSchema { get; set; }
+
+        public SentimentModelBuilder(MLContext context, ILogger<SentimentModelBuilder<TInput, TOutput, TResult>> logger)
         {
+            MLContext = context ?? new MLContext();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            Records = new List<TInput>();
         }
 
-        public TransformerChain<BinaryPredictionTransformer<CalibratedModelParametersBase<LinearBinaryModelParameters, PlattCalibrator>>> Model { get; private set; }
-
-        public override void LoadData()
+        public IModelCreationBuilder<TInput, TOutput, TResult> LoadDefaultData()
         {
             var inputs = LoadFromEmbededResource.GetRecords<InputSentimentIssueRow>("Content.wikiDetoxAnnotated40kRows.tsv", delimiter: "\t", hasHeaderRecord: true);
 
@@ -41,44 +56,112 @@ namespace Bet.Extensions.ML.Sentiment
 
                 result.Add(newItem);
             }
-            _records.AddRange(result as List<TInput>);
+
+            Records.AddRange(result as List<TInput>);
+            return this;
         }
 
-        public override TResult Train()
+        public IModelCreationBuilder<TInput, TOutput, TResult> LoadData(IEnumerable<TInput> data)
         {
-            //Measure training time
-            var watch = Stopwatch.StartNew();
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
 
-            // STEP 1: Common data loading configuration
-            var data = MlContext.Data.LoadFromEnumerable(_records);
+            Records.AddRange(data);
 
-            TrainingSchema = data.Schema;
+            return this;
+        }
 
-            var trainTestSplit = MlContext.Data.TrainTestSplit(data, testFraction: 0.2);
-            var trainingData = trainTestSplit.TrainSet;
-            var testData = trainTestSplit.TestSet;
+        public IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView()
+        {
+            if (Records.Count > 0)
+            {
+                _dataView = MLContext.Data.LoadFromEnumerable(Records);
+                TrainingSchema = _dataView.Schema;
 
-            // STEP 2: Common data process configuration with pipeline data transformations
-            var dataProcessPipeline = MlContext.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentIssue.Text));
+                var trainTestSplit = MLContext.Data.TrainTestSplit(_dataView, testFraction: 0.2);
+                _trainingData = trainTestSplit.TrainSet;
+                _testData = trainTestSplit.TestSet;
+            }
+            else
+            {
+                throw new ArgumentException($"{nameof(_dataView)} doesn't have any records.");
+            }
 
-            // STEP 3: Set the training algorithm, then create and config the modelBuilder
-            var trainer = MlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features");
-            var trainingPipeline = dataProcessPipeline.Append(trainer);
+            return this;
+        }
 
-            // STEP 4: Train the model fitting to the DataSet
-            Model = trainingPipeline.Fit(trainingData);
+        public TrainingPipelineResult BuildTrainingPipeline()
+        {
+            return BuildTrainingPipeline(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                 // STEP 2: Common data process configuration with pipeline data transformations
+                var dataProcessPipeline = MLContext.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentIssue.Text));
 
-            // STEP 5: Evaluate the model and show accuracy stats
-            var predictions = Model.Transform(testData);
-            var metrics = MlContext.BinaryClassification.Evaluate(data: predictions, labelColumnName: "Label", scoreColumnName: "Score");
+                // STEP 3: Set the training algorithm, then create and config the modelBuilder
+                var trainer = MLContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features");
+                var trainingPipeline = dataProcessPipeline.Append(trainer);
 
-            var result = new ModelBuilder.BinaryClassificationMetricsResult(trainer.ToString(), metrics);
+                sw.Stop();
+                return new TrainingPipelineResult(trainingPipeline, sw.ElapsedMilliseconds, trainer.ToString());
+            });
+        }
 
-            watch.Stop();
+        public TrainingPipelineResult BuildTrainingPipeline(Func<TrainingPipelineResult> builder)
+        {
+            var result = builder();
 
-            result.ElapsedMilliseconds = watch.ElapsedMilliseconds;
+            _trainingPipeLine = result.TrainingPipeLine;
+            _trainerName = result.TrainerName;
+            return result;
+        }
 
-            return result as TResult;
+        public TrainModelResult TrainModel()
+        {
+            return TrainModel((dataView) =>
+            {
+                var sw = Stopwatch.StartNew();
+
+                var model = _trainingPipeLine.Fit(dataView);
+                sw.Stop();
+
+                return new TrainModelResult(model, sw.ElapsedMilliseconds);
+            });
+        }
+
+        public TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder)
+        {
+            var result = builder(_trainingData);
+
+            Model = result.Model;
+
+            return result;
+        }
+
+        public TResult Evaluate()
+        {
+            return Evaluate((dataView, train) =>
+            {
+                var sw = Stopwatch.StartNew();
+                // STEP 5: Evaluate the model and show accuracy stats
+                var predictions = Model.Transform(dataView);
+                var metrics = MLContext.BinaryClassification.Evaluate(data: predictions, labelColumnName: "Label", scoreColumnName: "Score");
+
+                var result = new BinaryClassificationMetricsResult(_trainerName ?? "BinaryClassification", metrics);
+
+                sw.Stop();
+
+                result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+
+                return result as TResult;
+            });
+        }
+
+        public TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
+        {
+            return builder(_testData, _trainingPipeLine);
         }
     }
 }
