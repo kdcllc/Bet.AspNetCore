@@ -61,10 +61,8 @@ namespace Bet.Hosting.Sample.Services
 
             // 6. save to the file
             _logger.LogInformation("=================== Saving Model to Disk ============================ ");
-            using (var fs = new FileStream(_pathService.SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
-            {
-                _modelBuilder.MLContext.Model.Save(_modelBuilder.Model, _modelBuilder.TrainingSchema, fs);
-            }
+
+            _modelBuilder.SaveModel(_pathService.SpamModelPath);
 
             _logger.LogInformation("======================= Creating Model Completed ================== ");
 

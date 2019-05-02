@@ -27,7 +27,6 @@ namespace Bet.Hosting.Sample.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
         public Task GenerateModel()
         {
             // 1. load default ML data set
@@ -40,16 +39,17 @@ namespace Bet.Hosting.Sample.Services
             var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
             _logger.LogInformation("BuildTrainingPipeline ran for: {BuildTrainingPipelineTime}", buildTrainingPipelineResult.ElapsedMilliseconds);
 
-            // 3. evaluate quality of the pipeline
+
+            // 3. train the model
+            _logger.LogInformation("=============== TrainModel ===============");
+            var trainModelResult = _modelBuilder.TrainModel();
+            _logger.LogInformation("TrainModel ran for {TrainModelTime}", trainModelResult.ElapsedMilliseconds);
+
+            // 4. evaluate quality of the pipeline
             _logger.LogInformation("=============== Evaluate ===============");
             var evaluateResult = _modelBuilder.Evaluate();
             _logger.LogInformation("Evaluate ran for {EvaluateTime}", evaluateResult.ElapsedMilliseconds);
             _logger.LogInformation(evaluateResult.ToString());
-
-            // 4. train the model
-            _logger.LogInformation("=============== TrainModel ===============");
-            var trainModelResult = _modelBuilder.TrainModel();
-            _logger.LogInformation("TrainModel ran for {TrainModelTime}", trainModelResult.ElapsedMilliseconds);
 
             // 5. predict on sample data
             _logger.LogInformation("=============== Predictions for below data===============");
@@ -60,10 +60,7 @@ namespace Bet.Hosting.Sample.Services
 
             Console.WriteLine("=================== Saving Model to Disk ============================ ");
 
-            using (var fs = new FileStream(_pathService.SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
-            {
-                _modelBuilder.MLContext.Model.Save(_modelBuilder.Model, _modelBuilder.TrainingSchema, fs);
-            }
+            _modelBuilder.SaveModel(_pathService.SentimentModelPath);
 
             Console.WriteLine("======================= Creating Model Completed ================== ");
 

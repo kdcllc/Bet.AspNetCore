@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using Bet.Extensions.ML.Data;
 using Bet.Extensions.ML.ModelBuilder;
@@ -19,7 +20,6 @@ namespace Bet.Extensions.ML.Spam
         private IEstimator<ITransformer> _trainingPipeLine;
         private string _trainerName;
 
-
         public List<TInput> Records { get; set; }
 
         public ITransformer Model { get; set; }
@@ -30,7 +30,9 @@ namespace Bet.Extensions.ML.Spam
 
         public DataViewSchema TrainingSchema { get; set; }
 
-        public SpamModelBuilder(MLContext context, ILogger<SpamModelBuilder<TInput, TOutput, TResult>> logger)
+        public SpamModelBuilder(
+            MLContext context,
+            ILogger<SpamModelBuilder<TInput, TOutput, TResult>> logger)
         {
             MLContext = context ?? new MLContext();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -111,6 +113,7 @@ namespace Bet.Extensions.ML.Spam
 
             _trainingPipeLine = result.TrainingPipeLine;
             _trainerName = result.TrainerName;
+
             return result;
         }
 
@@ -159,6 +162,22 @@ namespace Bet.Extensions.ML.Spam
         public TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
         {
             return builder(_dataView, _trainingPipeLine);
+        }
+
+        public void SaveModel(string modelRelativePath)
+        {
+            SaveModel((mlContext, mlModel, path, modelInputSchema) =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    mlContext.Model.Save(mlModel, modelInputSchema, fs);
+                }
+            }, modelRelativePath);
+        }
+
+        public void SaveModel(Action<MLContext, ITransformer, string, DataViewSchema> builder, string modelRelativePath)
+        {
+            builder(MLContext, Model, modelRelativePath, TrainingSchema);
         }
     }
 }

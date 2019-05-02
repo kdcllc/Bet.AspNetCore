@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.IO;
 using Bet.Extensions.ML.Data;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Sentiment.Models;
@@ -20,7 +20,6 @@ namespace Bet.Extensions.ML.Sentiment
         private IEstimator<ITransformer> _trainingPipeLine;
         private string _trainerName;
 
-
         public List<TInput> Records { get; set; }
 
         public ITransformer Model { get; set; }
@@ -28,12 +27,14 @@ namespace Bet.Extensions.ML.Sentiment
         public MLContext MLContext { get; set; }
 
         private IDataView _dataView;
-        private IDataView _trainingData;
-        private IDataView _testData;
+        private IDataView _trainingDataView;
+        private IDataView _testDataView;
 
         public DataViewSchema TrainingSchema { get; set; }
 
-        public SentimentModelBuilder(MLContext context, ILogger<SentimentModelBuilder<TInput, TOutput, TResult>> logger)
+        public SentimentModelBuilder(
+            MLContext context,
+            ILogger<SentimentModelBuilder<TInput, TOutput, TResult>> logger)
         {
             MLContext = context ?? new MLContext();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -45,6 +46,7 @@ namespace Bet.Extensions.ML.Sentiment
         {
             var inputs = LoadFromEmbededResource.GetRecords<InputSentimentIssueRow>("Content.wikiDetoxAnnotated40kRows.tsv", delimiter: "\t", hasHeaderRecord: true);
 
+            // convert int to boolean values
             var result = new List<SentimentIssue>();
             foreach (var item in inputs)
             {
@@ -81,8 +83,8 @@ namespace Bet.Extensions.ML.Sentiment
                 TrainingSchema = _dataView.Schema;
 
                 var trainTestSplit = MLContext.Data.TrainTestSplit(_dataView, testFraction: 0.2);
-                _trainingData = trainTestSplit.TrainSet;
-                _testData = trainTestSplit.TestSet;
+                _trainingDataView = trainTestSplit.TrainSet;
+                _testDataView = trainTestSplit.TestSet;
             }
             else
             {
@@ -115,6 +117,7 @@ namespace Bet.Extensions.ML.Sentiment
 
             _trainingPipeLine = result.TrainingPipeLine;
             _trainerName = result.TrainerName;
+
             return result;
         }
 
@@ -133,7 +136,7 @@ namespace Bet.Extensions.ML.Sentiment
 
         public TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder)
         {
-            var result = builder(_trainingData);
+            var result = builder(_trainingDataView);
 
             Model = result.Model;
 
@@ -144,12 +147,17 @@ namespace Bet.Extensions.ML.Sentiment
         {
             return Evaluate((dataView, train) =>
             {
+                if (Model == null)
+                {
+                    throw new ArgumentNullException(nameof(Model));
+                }
+
                 var sw = Stopwatch.StartNew();
                 // STEP 5: Evaluate the model and show accuracy stats
                 var predictions = Model.Transform(dataView);
                 var metrics = MLContext.BinaryClassification.Evaluate(data: predictions, labelColumnName: "Label", scoreColumnName: "Score");
 
-                var result = new BinaryClassificationMetricsResult(_trainerName ?? "BinaryClassification", metrics);
+                var result = new BinaryClassificationMetricsResult(_trainerName, metrics);
 
                 sw.Stop();
 
@@ -161,7 +169,23 @@ namespace Bet.Extensions.ML.Sentiment
 
         public TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
         {
-            return builder(_testData, _trainingPipeLine);
+            return builder(_testDataView, _trainingPipeLine);
+        }
+
+        public void SaveModel(string modelRelativePath)
+        {
+            SaveModel((mlContext,mlModel, path, modelInputSchema) =>
+            {
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    mlContext.Model.Save(mlModel, modelInputSchema, fs);
+                }
+            }, modelRelativePath);
+        }
+
+        public void SaveModel(Action<MLContext, ITransformer, string, DataViewSchema> builder, string modelRelativePath)
+        {
+            builder(MLContext, Model, modelRelativePath, TrainingSchema);
         }
     }
 }

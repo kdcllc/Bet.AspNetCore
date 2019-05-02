@@ -40,7 +40,6 @@ namespace Bet.Hosting.Sample
 
                         services.AddSentimentModelGenerator();
                         services.TryAddScoped<SentimentModelGeneratorService>();
-
                     })
                     .Build();
 
@@ -50,17 +49,19 @@ namespace Bet.Hosting.Sample
             {
                 await host.StartAsync();
 
-                //var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
-                //await spamService.GenerateModel();
+                var logger = hostedServices.GetRequiredService<ILogger<Program>>();
 
+                logger.LogInformation("=================== Start Building Spam Model ============================ ");
+                var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
+                await spamService.GenerateModel();
 
+                logger.LogInformation("=================== Start Building Sentiment Model ============================ ");
                 var sentimentService = hostedServices.GetRequiredService<SentimentModelGeneratorService>();
                 await sentimentService.GenerateModel();
 
                 await host.StopAsync();
             }
         }
-
 
         //private static void BuildSentimentDetectionModel()
         //{

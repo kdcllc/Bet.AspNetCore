@@ -59,5 +59,10 @@ namespace Bet.Extensions.ML.ModelBuilder
         TResult Evaluate();
 
         TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder);
+
+        void SaveModel(Action<MLContext, ITransformer,string, DataViewSchema> builder, string modelRelativePath);
+
+        void SaveModel(string modelRelativePath);
+
     }
 }
