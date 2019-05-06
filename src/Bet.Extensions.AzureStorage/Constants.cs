@@ -7,5 +7,7 @@
         public const string StorageBlobs = nameof(StorageBlobs);
 
         public const string StorageQueues = nameof(StorageQueues);
+
+        public const string StorageFileProviders = nameof(StorageFileProviders);
     }
 }

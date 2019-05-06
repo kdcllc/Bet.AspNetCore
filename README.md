@@ -9,12 +9,13 @@ This repo contains several projects that provide with extended functionality for
     - `Bet.Extensions.Hosting` - includes Generic Hosting functionality.
     - `Bet.Extensions.AzureVault` - includes Azure Vault functionality.
     - `Bet.Extensions` - includes extensions methods for `DotNetCore`.
+    - [`Bet.Extensions.AzureStorage` -includes MSI and regular access to Azure Storage Blob or Queue.](./src/Bet.Extensions.AzureStorage/README.md)
 
 2. `Bet.AspNetCore` specific functionality for web applications.
     - `Bet.AspNetCore.HealthChecks` contains HealthChecks for most common scenarios of the web application.
     - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
     - `Bet.AspNetCore` - default location for `AspNetCore`.
-    - `Bet.AspNetCore.ReCapture` - ability to verify users submissions.
+    - [`Bet.AspNetCore.ReCapture` - ability to verify users submissions.](./src/Bet.AspNetCore.ReCapture/README.md)
 
 ## Bet.Extensions.ML
 This library provides a helper classes for Microsoft C# based Machine Learning Library [ML.NET](https://github.com/dotnet/machinelearning).
@@ -77,16 +78,22 @@ Then in the API Controller:
     }
 ```
 
+## Bet.Extensions.AzureStorage
+This library provides a cohesive object model that deals with authentication and access to Azure Storage Blob and Queues. Please visit the project details
+[Bet.Extensions.AzureStorage](./src/Bet.Extensions.AzureStorage/README.md).
+
+
+
 ## AppAuthenticaion CLI tool
 
 Azure Vault is a great utility but what if your company doesn't allow you to have secret and client id. What if you want to use Docker Containers
 on your local machine and be able to authenticate your Azure Vault. This utility provides this functionality.
 
-[AppAuthenticaion CLI tool Readme](./src/AppAuthentication/Readme.md)
+[AppAuthenticaion CLI tool Readme](./src/AppAuthentication/README.md)
 
 ## Bet.AspNetCore.ReCapture
 
-[Bet.AspNetCore.ReCapture](./src/Bet.AspNetCore.ReCapture/Readme.md)
+[Bet.AspNetCore.ReCapture](./src/Bet.AspNetCore.ReCapture/README.md)
 
 ## Configuration Validation
 

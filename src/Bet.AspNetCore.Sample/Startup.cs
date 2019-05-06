@@ -3,6 +3,7 @@ using System.Net;
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
 using Bet.AspNetCore.Sample.Models;
+using Bet.AspNetCore.Sample.Options;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
@@ -98,6 +99,11 @@ namespace Bet.AspNetCore.Sample
             services.AddMvc().AddNewtonsoftJson();
 
             services.AddRazorPages().AddNewtonsoftJson();
+
+            services.AddStorageBlob()
+                .AddBlobContainer<UploadsBlobOptions>();
+
+            services.AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,6 +130,8 @@ namespace Bet.AspNetCore.Sample
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
             app.UseRouting();
 

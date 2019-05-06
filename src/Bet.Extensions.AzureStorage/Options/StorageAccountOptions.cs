@@ -6,6 +6,9 @@ using Microsoft.Azure.Storage;
 
 namespace Bet.Extensions.AzureStorage.Options
 {
+    /// <summary>
+    /// Azure Storage Account based on configurations.
+    /// </summary>
     public class StorageAccountOptions
     {
         /// <summary>

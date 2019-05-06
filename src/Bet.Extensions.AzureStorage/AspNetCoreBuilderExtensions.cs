@@ -8,6 +8,12 @@ namespace Microsoft.AspNetCore.Builder
 {
     public static class AspNetCoreBuilderExtensions
     {
+        /// <summary>
+        /// Uses Azure Storage Blob Container for serving `Static File`.
+        /// </summary>
+        /// <typeparam name="TOptions">The type of the configuration object to be used to register the Azure Storage Blob container.</typeparam>
+        /// <param name="app">The <see cref="IApplicationBuilder"/> instance.</param>
+        /// <returns></returns>
         public static IApplicationBuilder UseAzureStorageForStaticFiles<TOptions>(
             this IApplicationBuilder app)
             where TOptions : StorageFileProviderOptions

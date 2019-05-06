@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using Bet.Extensions.AzureStorage;
 using Bet.Extensions.AzureStorage.Builder;
 using Bet.Extensions.AzureStorage.Options;
 
@@ -14,27 +14,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds Azure Storage Account Configurations.
         /// </summary>
-        /// <param name="services">The services.</param>
-        /// <param name="azureStorageSectionName">The Default value is ''. This corresponds to 'Account' in 'AzureStorage' configuration.</param>
+        /// <param name="services">The collection of Dependency Injection services.</param>
+        /// <param name="azureStorageSectionName">The Default value is 'Account'. This corresponds to 'Account' in 'AzureStorage' configuration.</param>
+        /// <param name="configure">The delegate to configure the <see cref="StorageAccountOptions"/>.</param>
         /// <returns></returns>
         public static IServiceCollection AddAzureStorage(
             this IServiceCollection services,
-            string azureStorageSectionName = "")
-        {
-            return services.AddAzureStorage(o=> { }, azureStorageSectionName);
-        }
-
-        /// <summary>
-        /// Adds Azure Storage Account Configurations.
-        /// </summary>
-        /// <param name="services">The services</param>
-        /// <param name="configure">A Delegate to configure the <see cref="StorageAccountOptions"/>.</param>
-        /// <param name="azureStorageSectionName">The Default value is ''. This corresponds to 'Account' in 'AzureStorage' configuration.</param>
-        /// <returns></returns>
-        public static IServiceCollection AddAzureStorage(
-            this IServiceCollection services,
-            Action<StorageAccountOptions> configure,
-            string azureStorageSectionName = "")
+            string azureStorageSectionName = "",
+            Action<StorageAccountOptions> configure = null)
         {
             var registered = services.Select(x => x.ImplementationInstance).OfType<ConfigureNamedOptions<StorageAccountOptions>>();
 
@@ -43,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.ConfigureOptions<StorageAccountOptionsSetup>();
 
                 services.AddOptions<StorageAccountOptions>(azureStorageSectionName)
-                    .Configure(options => configure(options));
+                    .Configure(options => configure?.Invoke(options));
             }
 
             return services;
@@ -53,49 +40,21 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds Configuration for UseStaticFiles middleware to use Azure Storage container.
         /// </summary>
         /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddAzureStorageForStaticFiles<TOptions>(
-            this IServiceCollection services)
-            where TOptions : StorageFileProviderOptions
-        {
-            return services.AddAzureStorageForStaticFiles<TOptions>("");
-        }
-
-        /// <summary>
-        /// Adds Configuration for UseStaticFiles middleware to use Azure Storage container.
-        /// </summary>
-        /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services">The services.</param>
-        /// <param name="sectionAzureStorageName">The configuration name of the section used for Azure Storage Account.</param>
+        /// <param name="services">The collection of Dependency Injection services.</param>
+        /// <param name="azureStorageSectionName">The Default value is 'Account'. This corresponds to 'Account' in 'AzureStorage' configuration.</param>
+        /// <param name="configure">The delegate to configure the <see cref="StorageAccountOptions"/>.</param>
         /// <returns></returns>
         public static IServiceCollection AddAzureStorageForStaticFiles<TOptions>(
             this IServiceCollection services,
-            string sectionAzureStorageName)
+            string azureStorageSectionName = "",
+            Action<TOptions> configure = null)
             where TOptions : StorageFileProviderOptions
         {
-            return services.AddAzureStorageForStaticFiles<TOptions>(sectionAzureStorageName, o => { });
-        }
+            services.AddAzureStorage(azureStorageSectionName);
 
-        /// <summary>
-        /// Adds Configuration for UseStaticFiles middleware to use Azure Storage container.
-        /// </summary>
-        /// <typeparam name="TOptions"></typeparam>
-        /// <param name="services">The services.</param>
-        /// <param name="sectionAzureStorageName">The configuration name of the section used for Azure Storage Account.</param>
-        /// <param name="configure">The delegate to configure the options. </param>
-        /// <returns></returns>
-        public static IServiceCollection AddAzureStorageForStaticFiles<TOptions>(
-            this IServiceCollection services,
-            string sectionAzureStorageName,
-            Action<TOptions> configure)
-            where TOptions : StorageFileProviderOptions
-        {
-            services.AddAzureStorage(sectionAzureStorageName);
-
-            services.ConfigureOptions<TOptions>("StorageFileProviders", (config, path, options) =>
+            services.ConfigureOptions<TOptions>(Constants.StorageFileProviders, (config, path, options) =>
             {
-                options.AzureStorageConfiguration = sectionAzureStorageName;
+                options.AzureStorageConfiguration = azureStorageSectionName;
 
                 if (path != typeof(TOptions).Name)
                 {
@@ -104,24 +63,36 @@ namespace Microsoft.Extensions.DependencyInjection
                 var section = config.GetSection(path);
                 section.Bind(options);
 
-                configure(options);
+                configure?.Invoke(options);
             });
 
             return services;
         }
 
+        /// <summary>
+        /// Adds Azure Storage Blob to Azure Storage Account.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="azureStorageSectionName"></param>
+        /// <returns></returns>
         public static IStorageBlobBuilder AddStorageBlob(
             this IServiceCollection services,
-            string sectionAzureStorageName = default)
+            string azureStorageSectionName = default)
         {
-            return new DefaultStorageBlobBuilder(services, sectionAzureStorageName);
+            return new DefaultStorageBlobBuilder(services, azureStorageSectionName);
         }
 
+        /// <summary>
+        /// Adds Azure Storage Queue to Azure Storage Account.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="azureStorageSectionName"></param>
+        /// <returns></returns>
         public static IStorageQueueBuilder AddStorageQueue(
             this IServiceCollection services,
-            string sectionAzureStorageName = default)
+            string azureStorageSectionName = default)
         {
-            return new DefaultStorageQueueBuilder(services, sectionAzureStorageName);
+            return new DefaultStorageQueueBuilder(services, azureStorageSectionName);
         }
     }
 }

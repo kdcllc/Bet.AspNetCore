@@ -13,12 +13,20 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.AzureStorage
 {
+    /// <inheritdoc />
     public class StorageBlob<TOptions> : IStorageBlob<TOptions> where TOptions : StorageBlobOptions
     {
+        /// <inheritdoc />
         public string Name { get; }
 
         private StorageBlob _storage;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StorageBlob"/> class.
+        /// </summary>
+        /// <param name="storageAccountOptions">The named <see cref="StorageAccountOptions"/>.</param>
+        /// <param name="blobOptions">The named <see cref="{TOptions}"/> configurations.</param>
+        /// <param name="logger">The logger</param>
         public StorageBlob(
             IOptionsMonitor<StorageAccountOptions> storageAccountOptions,
             IOptionsMonitor<TOptions> blobOptions,
@@ -33,6 +41,7 @@ namespace Bet.Extensions.AzureStorage
             _storage = new StorageBlob(blobOptions.CurrentValue as StorageBlobOptions, accountOptions, logger.CreateLogger(nameof(StorageBlob<TOptions>)));
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<CloudBlockBlob>> GetAllAsync(
             string prefix = default,
             CancellationToken cancellationToken = default)
