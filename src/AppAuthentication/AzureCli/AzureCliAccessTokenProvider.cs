@@ -109,7 +109,7 @@ namespace AppAuthentication.AzureCli
                     PrincipalUsed.TenantId = token.TenantId;
                 }
 
-                var authResult = AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
+                var authResult = Models.AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
 
                 var authenticationToken = new AuthenticationToken
                 {

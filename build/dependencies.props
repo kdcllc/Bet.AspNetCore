@@ -19,10 +19,13 @@
     <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(NetCoreCommonVersion)" />
@@ -42,17 +45,21 @@
     <PackageReference Update="Microsoft.Extensions.ObjectPool" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
     <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
-
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
+    <PackageReference Update="Microsoft.Extensions.Primitives" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetCoreCommonVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">
-    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3"/>
+    <PackageReference Update="Microsoft.Azure.Services.AppAuthentication" Version="1.2.0-preview2"/>
     <PackageReference Update="Microsoft.Azure.KeyVault" Version="3.0.3" />
+    <PackageReference Update="Microsoft.Azure.KeyVault.Core" Version="3.0.3" />
     <PackageReference Update="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Azure Storage">
+    <PackageReference Update="Microsoft.Azure.Storage.Blob" Version="10.0.2" />
+    <PackageReference Update="Microsoft.Azure.Storage.Queue" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup Label="Unit Tests">
@@ -77,7 +84,7 @@
     <PackageReference Update="CsvHelper" Version="12.1.2" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.3.3"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Update="Microsoft.ML" Version="1.0.0-preview" />
+    <PackageReference Update="Microsoft.ML" Version="1.0.0" />
     <PackageReference Update="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Update="Polly" Version="7.1.0" />

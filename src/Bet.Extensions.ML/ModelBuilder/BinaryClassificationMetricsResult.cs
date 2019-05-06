@@ -2,14 +2,14 @@
 
 using Microsoft.ML.Data;
 
-namespace Bet.Extensions.ML.Helpers
+namespace Bet.Extensions.ML.ModelBuilder
 {
-    public class BinaryClassificationMetrics : BaseMetrics
+    public class BinaryClassificationMetricsResult : MetricsResult
     {
         private readonly CalibratedBinaryClassificationMetrics _metrics;
         private readonly string _modelName;
 
-        public BinaryClassificationMetrics(
+        public BinaryClassificationMetricsResult(
             string modelName,
             CalibratedBinaryClassificationMetrics metrics)
         {

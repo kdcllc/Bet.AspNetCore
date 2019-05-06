@@ -7,13 +7,13 @@ using Microsoft.ML.Data;
 
 using static Microsoft.ML.TrainCatalogBase;
 
-namespace Bet.Extensions.ML.Helpers
+namespace Bet.Extensions.ML.ModelBuilder
 {
-    public class MulticlassClassificationFoldsAverageMetrics : BaseMetrics
+    public class MulticlassClassificationFoldsAverageMetricsResult : MetricsResult
     {
         private readonly IReadOnlyList<CrossValidationResult<MulticlassClassificationMetrics>> _crossValResults;
 
-        public MulticlassClassificationFoldsAverageMetrics(
+        public MulticlassClassificationFoldsAverageMetricsResult(
             string algorithmName,
             IReadOnlyList<CrossValidationResult<MulticlassClassificationMetrics>> crossValResults)
         {

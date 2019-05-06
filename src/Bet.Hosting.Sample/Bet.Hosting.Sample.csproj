@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
