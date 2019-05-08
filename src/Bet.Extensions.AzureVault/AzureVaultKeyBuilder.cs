@@ -53,7 +53,7 @@ namespace Microsoft.Extensions.Configuration
                 Enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
-            if (!string.IsNullOrWhiteSpace(options.BaseUrl))
+            if (!string.IsNullOrWhiteSpace(options?.BaseUrl))
             {
                 try
                 {
@@ -92,11 +92,10 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(options.ClientId)
-                && !string.IsNullOrWhiteSpace(options.ClientSecret))
+            if (!string.IsNullOrWhiteSpace(options?.ClientId)
+                && !string.IsNullOrWhiteSpace(options?.ClientSecret))
             {
-                var secretBytes = Convert.FromBase64String(options.ClientSecret);
-                var secret = System.Text.Encoding.ASCII.GetString(secretBytes);
+                var secret = options.ClientSecret.FromBase64String();
 
                 // load values that are not specific to the environment.
                 builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new PrefixExcludingKeyVaultSecretManager());

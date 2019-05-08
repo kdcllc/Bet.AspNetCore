@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Bet.Extensions
+namespace System
 {
     public static class StringExtensions
     {
@@ -30,6 +29,29 @@ namespace Bet.Extensions
 
             var bytes = Encoding.UTF8.GetBytes(value);
             return Convert.ToBase64String(bytes);
+        }
+
+        /// <summary>
+        /// Converts Base64 string back to string.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="encoder"></param>
+        /// <returns></returns>
+        public static string FromBase64String(this string value, Encoding encoder = null)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            var bytes = Convert.FromBase64String(value);
+
+            if (encoder != null)
+            {
+                return encoder.GetString(bytes);
+            }
+
+            return Encoding.ASCII.GetString(bytes);
         }
     }
 }

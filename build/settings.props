@@ -4,7 +4,7 @@
     <VersionPrefix>1.1.0-pre</VersionPrefix>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
-    <NoWarn>$(NoWarn);CS1591;</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;NU1605;</NoWarn>
     <TieredCompilation>true</TieredCompilation>
   </PropertyGroup>
 
