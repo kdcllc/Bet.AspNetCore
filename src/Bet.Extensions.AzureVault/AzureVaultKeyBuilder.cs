@@ -6,6 +6,7 @@ using Bet.AspNetCore.Options;
 using Bet.Extensions.AzureVault;
 
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 
@@ -53,7 +54,7 @@ namespace Microsoft.Extensions.Configuration
                 Enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
-            if (!string.IsNullOrWhiteSpace(options.BaseUrl))
+            if (!string.IsNullOrWhiteSpace(options?.BaseUrl))
             {
                 try
                 {
@@ -81,22 +82,24 @@ namespace Microsoft.Extensions.Configuration
 
                     return builder.Build();
                 }
-                catch (AzureServiceTokenProviderException)
+                catch (Exception)
                 {
                     var list = builder.Sources.ToList();
-                    var found = list.FirstOrDefault(x => x.GetType().FullName.Contains("AzureKeyVaultConfigurationSource"));
+                    var found = list.Where(x => x.GetType().FullName.Contains("AzureKeyVaultConfigurationSource"));
                     if (found != null)
                     {
-                        builder.Sources.Remove(found);
+                        foreach (var item in found)
+                        {
+                            builder.Sources.Remove(item);
+                        }
                     }
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(options.ClientId)
-                && !string.IsNullOrWhiteSpace(options.ClientSecret))
+            if (!string.IsNullOrWhiteSpace(options?.ClientId)
+                && !string.IsNullOrWhiteSpace(options?.ClientSecret))
             {
-                var secretBytes = Convert.FromBase64String(options.ClientSecret);
-                var secret = System.Text.Encoding.ASCII.GetString(secretBytes);
+                var secret = options.ClientSecret.FromBase64String();
 
                 // load values that are not specific to the environment.
                 builder.AddAzureKeyVault(options.BaseUrl, options.ClientId, secret, new PrefixExcludingKeyVaultSecretManager());

@@ -1,5 +1,6 @@
-﻿using Bet.AspNetCore.Logging.Azure;
-using Bet.Extensions;
+﻿using System;
+
+using Bet.AspNetCore.Logging.Azure;
 
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;

@@ -1,53 +1,67 @@
 <Project>
   <PropertyGroup>
-    <NetCoreCommonVersion>2.2.*</NetCoreCommonVersion>
+    <AspNetCoreVersion>2.2.*</AspNetCoreVersion>
+    <EFCommonVersion>2.2.*</EFCommonVersion>
+    <ExtensionsVersion>2.2.*</ExtensionsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
-    <NetCoreCommonVersion>2.2.*</NetCoreCommonVersion>
+    <AspNetCoreVersion>2.2.*</AspNetCoreVersion>
+    <EFCommonVersion>2.2.*</EFCommonVersion>
+    <ExtensionsVersion>2.2.*</ExtensionsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <NetCoreCommonVersion>3.0.0-preview4*</NetCoreCommonVersion>
+    <AspNetCoreVersion>3.0.0-preview*</AspNetCoreVersion>
+    <EFCommonVersion>3.0.0-preview5.*</EFCommonVersion>
+    <ExtensionsVersion>3.0.0-preview5.*</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="NetCore">
-    <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(NetCoreCommonVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(NetCoreCommonVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(NetCoreCommonVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(NetCoreCommonVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Http.Polly" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(NetCoreCommonVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.ObjectPool" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Options" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Primitives" Version="$(NetCoreCommonVersion)" />
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetCoreCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(AspNetCoreVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="$(AspNetCoreVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Label="EF">
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Label="Extensions">
+    <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)"/>
+    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Http.Polly" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Configuration" Version="$(ExtensionsVersion)"/>
+    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.ObjectPool" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Options.DataAnnotations" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Primitives" Version="$(ExtensionsVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Azure Key Vault">

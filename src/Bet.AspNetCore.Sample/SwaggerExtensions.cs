@@ -16,11 +16,12 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddVersionedApiExplorer();
 
-            services.AddApiVersioning(o =>
-            {
-                o.ReportApiVersions = true;
-                o.AssumeDefaultVersionWhenUnspecified = true;
-            });
+            //TODO: fix it once this is resolve https://github.com/microsoft/aspnet-api-versioning/issues/499
+            //services.AddApiVersioning(o =>
+            //{
+            //    o.ReportApiVersions = true;
+            //    o.AssumeDefaultVersionWhenUnspecified = true;
+            //});
 
             services.AddMvcCore().AddApiExplorer()
                 .AddAuthorization()
