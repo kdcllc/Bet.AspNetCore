@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Serilog;
-using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Configuration
 {
@@ -17,17 +21,8 @@ namespace Microsoft.Extensions.Configuration
             var logFactory = GetLoggerFactory();
 
             var logger = logFactory.CreateLogger("Program");
-            var allConfigurations = GetAllConfigurations(config);
-
-            foreach (var provider in GetConfigurationsByProvider(config.Providers, allConfigurations))
-            {
-                logger.LogDebug("Configuration Provider: {name} - Count: {count}", provider.Key, provider.Value.Count);
-
-                foreach (var (path, value) in provider.Value)
-                {
-                   logger.LogDebug("{provider} - {location} - {value}", provider.Key, path, value);
-                }
-            }
+            var allConfigurations = config.GetDebugView();
+            logger.LogDebug(allConfigurations);
         }
 
         /// <summary>
@@ -42,55 +37,70 @@ namespace Microsoft.Extensions.Configuration
                                               .WriteTo.Console()
                                               .CreateLogger();
 
-            var allConfigurations = GetAllConfigurations(config);
-
-            foreach (var provider in GetConfigurationsByProvider(config.Providers, allConfigurations))
-            {
-                logger.Debug("Configuration Provider: {name} - Count: {count}", provider.Key, provider.Value.Count);
-
-                foreach (var (path, value) in provider.Value)
-                {
-                    logger.Debug("{provider} - {location} - {value}", provider.Key, path, value);
-                }
-            }
+            var allConfigurations = config.GetDebugView();
+            logger.Debug(allConfigurations);
         }
 
-        private static Dictionary<string, List<(string path, string value)>> GetConfigurationsByProvider(
-            IEnumerable<IConfigurationProvider> providers,
-            List<(string path, string value)> allConfigs)
+        /// <summary>
+        /// Generates a human-readable view of the configuration showing where each value came from.
+        /// In version 3.0 this can be utilized directly.
+        /// https://github.com/aspnet/Extensions/blob/d7f8e253d414ce6053ad59b6f974621d5620c0da/src/Configuration/Config.Abstractions/src/ConfigurationRootExtensions.cs#L15-L74
+        /// </summary>
+        /// <returns> The debug view. </returns>
+        public static string GetDebugView(this IConfigurationRoot root)
         {
-            var dict = new Dictionary<string, List<(string path, string value)>>();
-
-            foreach (var provider in providers)
+            void RecurseChildren(
+                StringBuilder stringBuilder,
+                IEnumerable<IConfigurationSection> children,
+                string indent)
             {
-                var name = provider.GetType().Name;
-
-                var providersConfigs = new List<(string path, string value)>();
-
-                foreach (var (path, value) in allConfigs)
+                foreach (var child in children)
                 {
-                    if (provider.TryGet(path, out var val))
+                    var (Value, Provider) = GetValueAndProvider(root, child.Path);
+
+                    if (Provider != null)
                     {
-                        providersConfigs.Add((path, value));
+                        stringBuilder
+                            .Append(indent)
+                            .Append(child.Key)
+                            .Append("=")
+                            .Append(Value)
+                            .Append(" (")
+                            .Append(Provider)
+                            .AppendLine(")");
                     }
-                }
+                    else
+                    {
+                        stringBuilder
+                            .Append(indent)
+                            .Append(child.Key)
+                            .AppendLine(":");
+                    }
 
-                dict.Add($"{name}-{provider.GetHashCode()}", providersConfigs);
+                    RecurseChildren(stringBuilder, child.GetChildren(), indent + "  ");
+                }
             }
 
-            return dict;
+            var builder = new StringBuilder();
+
+            RecurseChildren(builder, root.GetChildren(), "");
+
+            return builder.ToString();
         }
 
-        private static List<(string path, string value)> GetAllConfigurations(IConfiguration config)
+        private static (string Value, IConfigurationProvider Provider) GetValueAndProvider(
+            IConfigurationRoot root,
+            string key)
         {
-            var configs = new List<(string path, string value)>();
-
-            foreach (var pair in config.GetChildren())
+            foreach (var provider in root.Providers.Reverse())
             {
-                configs.Add((pair.Path, pair.Value));
-                configs.AddRange(GetAllConfigurations(pair));
+                if (provider.TryGet(key, out var value))
+                {
+                    return (value, provider);
+                }
             }
-            return configs;
+
+            return (null, null);
         }
 
         /// <summary>
