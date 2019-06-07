@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Security;
 using System.Threading.Tasks;
 
+using Bet.AspNetCore.HealthChecks.CertificateCheck;
 using Bet.AspNetCore.HealthChecks.MemoryCheck;
 using Bet.AspNetCore.HealthChecks.SigtermCheck;
 using Bet.AspNetCore.HealthChecks.UriCheck;
@@ -19,6 +22,44 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class HealthCheckBuilderExtensions
     {
+        public static IHealthChecksBuilder AddSslCertificateCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            string baseUrl,
+            HealthStatus? failureStatus = default,
+            IEnumerable<string> tags = default)
+        {
+            builder.Services.AddHttpClient(name,(sp, config) =>{
+                config.BaseAddress = new Uri(baseUrl);
+            }).ConfigurePrimaryHttpMessageHandler(sp=> {
+                var handler = new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, cetChain, sslPolicyErrors) =>
+                    {
+                        var expirationDate = DateTime.Parse(certificate.GetExpirationDateString());
+                        if (expirationDate - DateTime.Today < TimeSpan.FromDays(30))
+                        {
+                            throw new Exception("Time to renew the certificate!");
+                        }
+                        if (sslPolicyErrors == SslPolicyErrors.None)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            throw new Exception("Cert policy errors: " + sslPolicyErrors.ToString());
+                        }
+                    }
+                };
+                return handler;
+            });
+
+            builder.AddCheck<SslCertificateHealthCheck>(name, failureStatus, tags);
+            return builder;
+        }
+
         /// <summary>
         /// Add SIGTERM Healcheck that provides notification for orchestrator with unhealthy status once the application begins to shut down.
         /// </summary>
