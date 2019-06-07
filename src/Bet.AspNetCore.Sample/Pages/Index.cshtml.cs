@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
 using Bet.AspNetCore.Sample.Options;
 using Bet.Extensions.AzureStorage;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -11,18 +10,8 @@ namespace Bet.AspNetCore.Sample.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IStorageBlob<UploadsBlobOptions> _storageBlob;
-
-        public IndexModel(IStorageBlob<UploadsBlobOptions> storageBlob)
+        public void OnGet()
         {
-            _storageBlob = storageBlob;
-        }
-
-        public async Task<IActionResult> OnGetAsync()
-        {
-            await _storageBlob.AddAsync(new { content = "This is added to uploads" }, $"{Guid.NewGuid()}.json" );
-
-            return Page();
         }
     }
 }

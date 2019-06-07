@@ -68,13 +68,17 @@ namespace Bet.AspNetCore.Sample
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+
+                // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddHealthChecks()
+
+                .AddSslCertificateCheck("localhost", "https://localhost:5001")
+                .AddSslCertificateCheck("kdcllc", "https://kingdavidconsulting.com")
 
                 .AddUriHealthCheck("200_check", builder =>
                 {
