@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Sentiment.Models;
-using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
@@ -31,8 +29,7 @@ namespace Bet.Hosting.Sample.Services
         {
             // 1. load default ML data set
             _logger.LogInformation("=============== Loading data===============");
-            _modelBuilder.LoadDefaultData()
-                .BuiltDataView();
+            _modelBuilder.LoadDefaultData().BuiltDataView();
 
             // 2. build training pipeline
             _logger.LogInformation("=============== BuildTrainingPipeline ===============");

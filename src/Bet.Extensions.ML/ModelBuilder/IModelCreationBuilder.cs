@@ -14,8 +14,26 @@ namespace Bet.Extensions.ML.ModelBuilder
     public interface IModelCreationBuilder<TInput, TOutput, TResult>
         where TInput : class
         where TOutput : class
-        where TResult : class
+        where TResult : MetricsResult
     {
+        IDataView TrainingDataView { get; }
+
+        IDataView TestDataView { get; }
+
+        IEstimator<ITransformer> TrainingPipeLine { get; }
+
+        string TrainerName { get; }
+
+        /// <summary>
+        /// ML dataset that was loaded.
+        /// </summary>
+        IDataView DataView { get; }
+
+        /// <summary>
+        /// All of the records.
+        /// </summary>
+        List<TInput> Records { get; set; }
+
         /// <summary>
         /// ML Context to be used for Model Generation.
         /// </summary>
@@ -24,7 +42,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <summary>
         /// Model that was produced.
         /// </summary>
-        ITransformer Model { get; set; }
+        ITransformer Model { get; }
 
         /// <summary>
         /// Input Training Schema.
@@ -34,8 +52,9 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <summary>
         /// Builds DataView object to be used for the training pipeline.
         /// </summary>
+        /// <param name="testFraction">The fraction of data to go into the test set.</param>
         /// <returns></returns>
-        IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView();
+        IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView(double testFraction = 0.1);
 
         /// <summary>
         /// Loads dataset from embedded resource of the library.

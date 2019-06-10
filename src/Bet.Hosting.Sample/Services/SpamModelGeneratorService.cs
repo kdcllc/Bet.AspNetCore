@@ -30,8 +30,7 @@ namespace Bet.Hosting.Sample.Services
         {
             // 1. load default ML data set
             _logger.LogInformation("=============== Loading data===============");
-            _modelBuilder.LoadDefaultData()
-                .BuiltDataView();
+            _modelBuilder.LoadDefaultData().BuiltDataView();
 
             // 2. build training pipeline
             _logger.LogInformation("=============== BuildTrainingPipeline ===============");
