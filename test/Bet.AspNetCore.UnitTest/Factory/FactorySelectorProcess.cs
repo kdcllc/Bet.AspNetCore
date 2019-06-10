@@ -10,16 +10,16 @@ namespace Bet.AspNetCore.UnitTest.Factory
 {
     public class FactorySelectorProcess
     {
-        private readonly IFactorySelector<ProcessSelector, IProcess> _factory;
+        private readonly IFactorySelector<ProcessKey, IProcess> _factory;
 
-        public FactorySelectorProcess(IFactorySelector<ProcessSelector, IProcess> factory)
+        public FactorySelectorProcess(IFactorySelector<ProcessKey, IProcess> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public void DoWork()
         {
-            var instance = _factory.Create(ProcessSelector.A);
+            var instance = _factory.Create(ProcessKey.A);
 
             instance.Run();
         }

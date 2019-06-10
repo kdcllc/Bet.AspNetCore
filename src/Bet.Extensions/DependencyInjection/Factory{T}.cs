@@ -2,7 +2,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public class Factory<TService> : IFactory<TService>
+    internal class Factory<TService> : IFactory<TService>
         where TService : class
     {
         private readonly Func<TService> _func;

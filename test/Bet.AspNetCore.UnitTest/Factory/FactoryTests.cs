@@ -10,7 +10,7 @@ namespace Bet.AspNetCore.UnitTest.Factory
 {
     public class FactoryTests
     {
-        public enum ProcessSelector
+        public enum ProcessKey
         {
             A,
             B
@@ -53,15 +53,18 @@ namespace Bet.AspNetCore.UnitTest.Factory
         {
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddTransientFactorySelector<IProcess, ProcessSelector>(
-                (sp, selector) =>
+            serviceCollection.AddTransientKeyFactory<IProcess, ProcessKey>(
+                (sp, key) =>
                 {
-                    if (selector == ProcessSelector.A)
+                    switch (key)
                     {
-                        return sp.GetRequiredService<ProcessA>();
+                        case ProcessKey.A:
+                            return sp.GetRequiredService<ProcessA>();
+                        case ProcessKey.B:
+                            return sp.GetRequiredService<ProcessB>();
+                        default:
+                            throw new KeyNotFoundException();
                     }
-
-                    return null;
                 },
                 typeof(ProcessA),
                 typeof(ProcessB));

@@ -2,7 +2,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public class FactorySelector<TSelector, TService> : IFactorySelector<TSelector, TService>
+    internal class FactorySelector<TSelector, TService> : IFactorySelector<TSelector, TService>
         where TService : class
     {
         private readonly IServiceProvider _provider;

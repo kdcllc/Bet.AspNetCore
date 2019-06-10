@@ -38,14 +38,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Add Transient Factory Selector Service.
         /// </summary>
         /// <typeparam name="TService">The interface type to be injected.</typeparam>
-        /// <typeparam name="TSelector">The type of selector to be used for the DI resolve.</typeparam>
+        /// <typeparam name="TKey">The type of Key to be used for the DI resolve.</typeparam>
         /// <param name="services">The DI services.</param>
         /// <param name="selector">The type of selector.</param>
         /// <param name="implementationTypes">The possible return type implementations.</param>
         /// <returns></returns>
-        public static IServiceCollection AddTransientFactorySelector<TService, TSelector>(
+        public static IServiceCollection AddTransientKeyFactory<TService, TKey>(
             this IServiceCollection services,
-            Func<IServiceProvider, TSelector, TService> selector,
+            Func<IServiceProvider, TKey, TService> selector,
             params Type[] implementationTypes)
             where TService : class
         {
@@ -54,12 +54,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddTransient(implType);
             }
 
-            services.AddSingleton<Func<IServiceProvider, TSelector, TService>>((sp, resolver) =>
+            services.AddSingleton<Func<IServiceProvider, TKey, TService>>((sp, key) =>
             {
-                return selector(sp, resolver);
+                return selector(sp, key);
             });
 
-            services.AddSingleton<IFactorySelector<TSelector,TService>, FactorySelector<TSelector,TService>>();
+            services.AddSingleton<IFactorySelector<TKey,TService>, FactorySelector<TKey,TService>>();
 
             return services;
         }
