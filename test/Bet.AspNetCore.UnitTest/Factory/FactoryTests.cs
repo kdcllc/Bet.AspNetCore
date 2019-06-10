@@ -69,11 +69,11 @@ namespace Bet.AspNetCore.UnitTest.Factory
                 typeof(ProcessA),
                 typeof(ProcessB));
 
-            serviceCollection.AddTransient<FactorySelectorProcess>();
+            serviceCollection.AddTransient<KeyFactoryProcess>();
 
             var services = serviceCollection.BuildServiceProvider();
 
-            var process1 = services.GetRequiredService<FactorySelectorProcess>();
+            var process1 = services.GetRequiredService<KeyFactoryProcess>();
 
             Assert.NotNull(process1);
 

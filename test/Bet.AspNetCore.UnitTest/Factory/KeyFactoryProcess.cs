@@ -8,11 +8,11 @@ using static Bet.AspNetCore.UnitTest.Factory.FactoryTests;
 
 namespace Bet.AspNetCore.UnitTest.Factory
 {
-    public class FactorySelectorProcess
+    public class KeyFactoryProcess
     {
         private readonly IKeyFactory<ProcessKey, IProcess> _factory;
 
-        public FactorySelectorProcess(IKeyFactory<ProcessKey, IProcess> factory)
+        public KeyFactoryProcess(IKeyFactory<ProcessKey, IProcess> factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
