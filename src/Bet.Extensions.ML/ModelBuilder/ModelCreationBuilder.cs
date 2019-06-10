@@ -137,7 +137,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         }
 
         /// <inheritdoc/>
-        public abstract TrainModelResult TrainModel();
+        public virtual TrainModelResult TrainModel()
+        {
+            return TrainModel((dataView) =>
+            {
+                var model = TrainingPipeLine.Fit(dataView);
+                return new TrainModelResult(model);
+            });
+        }
 
         /// <inheritdoc/>
         public virtual TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder)

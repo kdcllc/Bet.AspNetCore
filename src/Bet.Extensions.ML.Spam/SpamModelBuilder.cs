@@ -62,15 +62,6 @@ namespace Bet.Extensions.ML.Spam
             });
         }
 
-        public override TrainModelResult TrainModel()
-        {
-            return TrainModel((dataView) =>
-            {
-                var model = TrainingPipeLine.Fit(dataView);
-                return new TrainModelResult(model);
-            });
-        }
-
         public override MulticlassClassificationFoldsAverageMetricsResult Evaluate()
         {
             return Evaluate((dataView, trainingPipeLine) =>
@@ -80,6 +71,7 @@ namespace Bet.Extensions.ML.Spam
                 // evaluates it on the remaining fold. We are using 5 folds so we get back 5 sets of scores.
                 // Let's compute the average AUC, which should be between 0.5 and 1 (higher is better).
                 var crossValidationResults = MLContext.MulticlassClassification.CrossValidate(data: dataView, estimator: trainingPipeLine, numberOfFolds: 5);
+
                 return new MulticlassClassificationFoldsAverageMetricsResult(TrainerName, crossValidationResults);
             });
         }
