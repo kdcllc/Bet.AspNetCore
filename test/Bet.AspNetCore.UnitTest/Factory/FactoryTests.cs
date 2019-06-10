@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
+
+namespace Bet.AspNetCore.UnitTest.Factory
+{
+    public class FactoryTests
+    {
+        public enum ProcessSelector
+        {
+            A,
+            B
+        }
+
+        [Fact]
+        public void Test_Trainsient_Factory_Registration()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddTransientFactory<IProcess, ProcessB>();
+
+            serviceCollection.AddTransient<FactoryProcess<string>>();
+
+            var services = serviceCollection.BuildServiceProvider();
+
+            var process1 = services.GetRequiredService<FactoryProcess<string>>();
+
+            process1.DoWork();
+
+            var process2 = services.GetRequiredService<FactoryProcess<string>>();
+
+            process2.DoWork();
+
+            Assert.NotSame(process1, process2);
+        }
+
+        [Fact]
+        public void Test_Throw_ArgumentException()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddTransientFactory<IProcess, ProcessB>();
+
+            Assert.Throws<ArgumentException>(() => serviceCollection.AddTransientFactory<IProcess, ProcessA>());
+        }
+
+        [Fact]
+        public void Test_Trainsient_FactorySelector_Registration()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddTransientFactorySelector<IProcess, ProcessSelector>(
+                (sp, selector) =>
+                {
+                    if (selector == ProcessSelector.A)
+                    {
+                        return sp.GetRequiredService<ProcessA>();
+                    }
+
+                    return null;
+                },
+                typeof(ProcessA),
+                typeof(ProcessB));
+
+            serviceCollection.AddTransient<FactorySelectorProcess>();
+
+            var services = serviceCollection.BuildServiceProvider();
+
+            var process1 = services.GetRequiredService<FactorySelectorProcess>();
+
+            Assert.NotNull(process1);
+
+            process1.DoWork();
+        }
+    }
+}
