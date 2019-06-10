@@ -26,7 +26,7 @@ namespace Bet.Hosting.Sample.Services
             _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
         }
 
-        public Task GenerateModel()
+        public async Task GenerateModel()
         {
             // 1. load default ML data set
             _logger.LogInformation("=============== Loading data===============");
@@ -65,7 +65,14 @@ namespace Bet.Hosting.Sample.Services
 
             _logger.LogInformation("======================= Creating Model Completed ================== ");
 
-            return Task.CompletedTask;
+            var readStream = _modelBuilder.GetModelStream();
+
+            using (var fs = new FileStream(_pathService.SpamModelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                readStream.WriteTo(fs);
+            }
+
+            await Task.CompletedTask;
         }
 
         private void ClassifySpamMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)

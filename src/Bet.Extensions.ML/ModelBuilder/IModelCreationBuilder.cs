@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.IO;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -120,5 +120,11 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="modelRelativePath"></param>
         void SaveModel(string modelRelativePath);
+
+        /// <summary>
+        /// Get Binary stream of ML.NET model.
+        /// </summary>
+        /// <returns></returns>
+        MemoryStream GetModelStream();
     }
 }

@@ -128,6 +128,14 @@ namespace Bet.Extensions.ML.ModelBuilder
             }, modelRelativePath);
         }
 
+        public virtual MemoryStream GetModelStream()
+        {
+            var stream = new MemoryStream();
+
+            MLContext.Model.Save(Model, TrainingSchema, stream);
+            return stream;
+        }
+
         /// <inheritdoc/>
         public abstract TrainModelResult TrainModel();
 
@@ -144,5 +152,6 @@ namespace Bet.Extensions.ML.ModelBuilder
             result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
             return result;
         }
+
     }
 }
