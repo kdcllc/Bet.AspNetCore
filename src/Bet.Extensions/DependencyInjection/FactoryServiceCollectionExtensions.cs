@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return selector(sp, key);
             });
 
-            services.AddSingleton<IFactorySelector<TKey,TService>, FactorySelector<TKey,TService>>();
+            services.AddSingleton<IKeyFactory<TKey,TService>, FactorySelector<TKey,TService>>();
 
             return services;
         }
