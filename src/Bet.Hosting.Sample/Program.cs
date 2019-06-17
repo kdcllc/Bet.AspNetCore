@@ -14,7 +14,7 @@ namespace Bet.Hosting.Sample
     /// <summary>
     /// https://github.com/dotnet/machinelearning/blob/master/docs/code/MlNetCookBook.md
     /// </summary>
-    class Program
+    internal class Program
     {
         public static async Task Main(string[] args)
         {

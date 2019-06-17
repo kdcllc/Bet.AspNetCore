@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML.Sentiment
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.AzureStorage", "src\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj", "{E2DB931C-8B88-4870-A7D7-D51C411C141A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.AspNetCore.LetsEncrypt", "src\Bet.AspNetCore.LetsEncrypt\Bet.AspNetCore.LetsEncrypt.csproj", "{2D33AF22-F2D7-4862-861B-8C67537E0A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.LetsEncrypt", "src\Bet.AspNetCore.LetsEncrypt\Bet.AspNetCore.LetsEncrypt.csproj", "{2D33AF22-F2D7-4862-861B-8C67537E0A18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

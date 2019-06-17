@@ -20,10 +20,7 @@ namespace Bet.Extensions.AzureStorage
         private readonly ILogger _logger;
         private readonly Lazy<Task<CloudQueue>> _queue;
 
-        public Task<CloudQueue> Queue
-        {
-            get { return _queue.Value; }
-        }
+        public Task<CloudQueue> Queue => _queue.Value;
 
         public StorageQueue(
             StorageQueueOptions storageQueueOptions,
@@ -103,7 +100,7 @@ namespace Bet.Extensions.AzureStorage
                 return JsonConvert.DeserializeObject<T>(message.AsString);
             }
 
-            return default(T);
+            return default;
         }
 
         public async Task<IEnumerable<CloudQueueMessage>> GetManyAsync(

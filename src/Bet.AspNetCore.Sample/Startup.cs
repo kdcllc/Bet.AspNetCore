@@ -16,11 +16,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace Bet.AspNetCore.Sample
 {
     public class Startup
     {
+        private static readonly string AppName = "Bet.AspNetCore.Sample";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -56,7 +59,7 @@ namespace Bet.AspNetCore.Sample
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
 
-            services.AddSwaggerGenWithApiVersion();
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -71,6 +74,7 @@ namespace Bet.AspNetCore.Sample
 
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -108,13 +112,18 @@ namespace Bet.AspNetCore.Sample
                 .AddBlobContainer<UploadsBlobOptions>();
 
             services.AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
+
+            services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
+
+            // Preview 6 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
+            //  services.AddSwaggerGenWithApiVersion();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
-            IApiVersionDescriptionProvider provider)
+            IWebHostEnvironment env) //, IApiVersionDescriptionProvider provider)
         {
             app.UseIfElse(env.IsDevelopment(), dev =>
             {
@@ -160,15 +169,18 @@ namespace Bet.AspNetCore.Sample
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(options =>
-            {
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint(
-                        $"/swagger/{description.GroupName}/swagger.json",
-                        description.GroupName.ToUpperInvariant());
-                }
-            });
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
+
+            // Preview 6 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
+            //app.UseSwaggerUI(options =>
+            //{
+            //    foreach (var description in provider.ApiVersionDescriptions)
+            //    {
+            //        options.SwaggerEndpoint(
+            //            $"/swagger/{description.GroupName}/swagger.json",
+            //            description.GroupName.ToUpperInvariant());
+            //    }
+            //});
         }
     }
 }

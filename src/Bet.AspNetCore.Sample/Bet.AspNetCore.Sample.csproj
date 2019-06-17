@@ -6,17 +6,19 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <IsPackable>false</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <PreserveCompilationReferences>true</PreserveCompilationReferences>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview5-19227-01" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview5-19227-01" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview5.19227.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0-preview5.19227.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.0-preview5.19227.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview5.19227.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview3-19122-02" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview3-19122-02"/>
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"  />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"  />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"  />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"  />
 
     <PackageReference Include="Microsoft.ML" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
@@ -25,6 +27,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
+
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
   </ItemGroup>

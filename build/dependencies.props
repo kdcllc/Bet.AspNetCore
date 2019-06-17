@@ -1,37 +1,40 @@
 <Project>
   <PropertyGroup>
     <AspNetCoreVersion>2.2.*</AspNetCoreVersion>
+    <AspNetCoreVersion2>$(AspNetCoreVersion)</AspNetCoreVersion2>
     <EFCommonVersion>2.2.*</EFCommonVersion>
     <ExtensionsVersion>2.2.*</ExtensionsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
     <AspNetCoreVersion>2.2.*</AspNetCoreVersion>
+    <AspNetCoreVersion2>$(AspNetCoreVersion)</AspNetCoreVersion2>
     <EFCommonVersion>2.2.*</EFCommonVersion>
     <ExtensionsVersion>2.2.*</ExtensionsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <AspNetCoreVersion>3.0.0-preview*</AspNetCoreVersion>
-    <EFCommonVersion>3.0.0-preview5.*</EFCommonVersion>
-    <ExtensionsVersion>3.0.0-preview5.*</ExtensionsVersion>
+    <AspNetCoreVersion>3.0.0-preview6-*</AspNetCoreVersion>
+    <AspNetCoreVersion2>3.0.0-preview4-*</AspNetCoreVersion2>
+    <EFCommonVersion>3.0.0-preview6.*</EFCommonVersion>
+    <ExtensionsVersion>3.0.0-preview6.*</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="NetCore">
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion2)" />
+    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion2)" />
+    <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion2)" />
+    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion2)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing"  Version="$(AspNetCoreVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.2.0"/>
-    <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
@@ -39,6 +42,8 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Tools"  Version="$(EFCommonVersion)"/>
   </ItemGroup>
 
   <ItemGroup Label="Extensions">
