@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSentimentModelGenerator(this IServiceCollection services)
         {
             services.TryAddSingleton(new MLContext());
-            services.TryAddScoped<IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>, SentimentModelBuilder>();
+            services.TryAddTransient<IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>, SentimentModelBuilder>();
             return services;
         }
     }

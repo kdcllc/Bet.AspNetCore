@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSpamDetectionModelGenerator(this IServiceCollection services)
         {
             services.TryAddSingleton(new MLContext());
-            services.TryAddScoped<IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>, SpamModelBuilder>();
+            services.TryAddTransient<IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>, SpamModelBuilder>();
             return services;
         }
     }

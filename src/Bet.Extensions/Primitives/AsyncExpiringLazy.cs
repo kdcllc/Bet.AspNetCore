@@ -4,7 +4,7 @@ namespace System.Threading
 {
     public class AsyncExpiringLazy<T>
     {
-        private readonly AsyncLock valueLock = new AsyncLock();
+        private readonly AsyncLock _valueLock = new AsyncLock();
 
         private readonly Func<AsyncExpirationValue<T>, Task<AsyncExpirationValue<T>>> _valueProvider;
 
@@ -19,7 +19,7 @@ namespace System.Threading
 
         public async Task<bool> IsValueCreated()
         {
-            using (await valueLock.LockAsync().ConfigureAwait(false))
+            using (await _valueLock.LockAsync().ConfigureAwait(false))
             {
                return IsValueCreatedInternal;
             }
@@ -27,7 +27,7 @@ namespace System.Threading
 
         public async Task<T> Value()
         {
-            using(await valueLock.LockAsync().ConfigureAwait(false))
+            using(await _valueLock.LockAsync().ConfigureAwait(false))
             {
                 if (IsValueCreatedInternal)
                 {
@@ -42,7 +42,7 @@ namespace System.Threading
 
         public async Task Invalidate()
         {
-            using(await valueLock.LockAsync().ConfigureAwait(false))
+            using(await _valueLock.LockAsync().ConfigureAwait(false))
             {
                 _value = default;
             }

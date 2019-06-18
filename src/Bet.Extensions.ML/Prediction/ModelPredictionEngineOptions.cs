@@ -15,6 +15,11 @@ namespace Bet.Extensions.ML.Prediction
         where TPrediction : class, new()
     {
         /// <summary>
+        /// The instance of the service provider.
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; set; }
+
+        /// <summary>
         /// This is set up by DI process. The default value is <see cref="Constants.MLDefaultModelName"/>.
         /// </summary>
         public string ModelName { get; set; } = Constants.MLDefaultModelName;
