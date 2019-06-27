@@ -29,7 +29,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
 
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />-->
   </ItemGroup>
 
   <ItemGroup>
