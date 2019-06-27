@@ -7,6 +7,8 @@
     <IsPackable>false</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
   </PropertyGroup>
 
   <ItemGroup>
