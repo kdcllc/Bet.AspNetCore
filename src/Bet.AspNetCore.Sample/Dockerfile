@@ -1,10 +1,13 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-buster AS build
 WORKDIR /src
+COPY ["Directory.Build.props", "Directory.Build.props"]
+COPY ["Directory.Build.targets", "Directory.Build.targets"]
+COPY ["build/", "build/"]
 COPY ["src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj", "src/Bet.AspNetCore.Sample/"]
 COPY ["src/Bet.AspNetCore.Middleware/Bet.AspNetCore.Middleware.csproj", "src/Bet.AspNetCore.Middleware/"]
 COPY ["src/Bet.Extensions.Logging/Bet.Extensions.Logging.csproj", "src/Bet.Extensions.Logging/"]
@@ -23,7 +26,7 @@ WORKDIR "/src/src/Bet.AspNetCore.Sample"
 RUN dotnet build "Bet.AspNetCore.Sample.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "Bet.AspNetCore.Sample.csproj" -c Release -o /app
+RUN dotnet publish "Bet.AspNetCore.Sample.csproj" -o /app
 
 FROM base AS final
 WORKDIR /app

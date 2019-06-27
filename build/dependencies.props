@@ -14,14 +14,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <AspNetCoreVersion>3.0.0-preview6-*</AspNetCoreVersion>
+    <AspNetCoreVersion>3.0.0-preview6.*</AspNetCoreVersion>
     <AspNetCoreVersion2>3.0.0-preview4-*</AspNetCoreVersion2>
     <EFCommonVersion>3.0.0-preview6.*</EFCommonVersion>
     <ExtensionsVersion>3.0.0-preview6.*</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="NetCore">
-    <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(EFCommonVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(AspNetCoreVersion)" />
+
     <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion2)" />

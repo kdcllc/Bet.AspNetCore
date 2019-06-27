@@ -152,7 +152,7 @@ namespace Bet.AspNetCore.Sample
             app.UseEndpoints(routes =>
             {
                 routes.MapControllers();
-                routes.MapDefaultControllerRoute();
+                //routes.MapDefaultControllerRoute();
                 routes.MapRazorPages();
             });
 
