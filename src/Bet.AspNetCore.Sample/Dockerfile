@@ -1,13 +1,14 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6 AS build
+#ENV MSBuildSDKsPath=$DOTNET_ROOT/sdk/3.0.100-preview6-012264/Sdks
 WORKDIR /src
-COPY ["Directory.Build.props", "Directory.Build.props"]
-COPY ["Directory.Build.targets", "Directory.Build.targets"]
-COPY ["build/", "build/"]
+COPY ["./Directory.Build.props", "Directory.Build.props"]
+COPY ["./Directory.Build.targets", "Directory.Build.targets"]
+COPY ["./build/", "build/"]
 COPY ["src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj", "src/Bet.AspNetCore.Sample/"]
 COPY ["src/Bet.AspNetCore.Middleware/Bet.AspNetCore.Middleware.csproj", "src/Bet.AspNetCore.Middleware/"]
 COPY ["src/Bet.Extensions.Logging/Bet.Extensions.Logging.csproj", "src/Bet.Extensions.Logging/"]
