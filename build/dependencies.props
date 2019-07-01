@@ -41,10 +41,9 @@
   </ItemGroup>
 
   <ItemGroup Label="EF">
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)" />
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools"  Version="$(EFCommonVersion)"/>
   </ItemGroup>
 

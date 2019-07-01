@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Microsoft.Extensions.DependencyInjection
+{
+    public static class BuilderExtensions
+    {
+
+        public static ILetsEncryptBuilder AddInMemoryProvider(this ILetsEncryptBuilder builder)
+        {
+
+            return builder;
+        }
+    }
+}

@@ -159,6 +159,5 @@ namespace Bet.Extensions.ML.ModelBuilder
             result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
             return result;
         }
-
     }
 }

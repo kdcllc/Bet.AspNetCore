@@ -20,7 +20,6 @@ namespace Bet.AspNetCore.HealthChecks.CertificateCheck
         {
             try
             {
-
                 var checkName = context.Registration.Name;
                 var httpClient = _httpClientFactory.CreateClient(checkName);
 

@@ -7,8 +7,10 @@
     <IsPackable>false</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
+    <!--https://github.com/aspnet/AspNetCore/issues/11636-->
+    <!--https://github.com/aspnet/AspNetCore/issues/11226-->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bet.AspNetCore.Sample.Pages
 {
-
     public class BlobTestModel : PageModel
     {
         private readonly IStorageBlob<UploadsBlobOptions> _storageBlob;
@@ -26,7 +25,6 @@ namespace Bet.AspNetCore.Sample.Pages
 
             return Page();
         }
-
 
     }
 }

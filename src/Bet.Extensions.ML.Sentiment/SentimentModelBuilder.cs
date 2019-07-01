@@ -76,6 +76,5 @@ namespace Bet.Extensions.ML.Sentiment
                 return new BinaryClassificationMetricsResult(TrainerName, metrics);
             });
         }
-
     }
 }
