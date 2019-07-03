@@ -17,11 +17,11 @@ namespace Bet.Extensions.Hosting.Abstractions
         private readonly SemaphoreSlim _semaphoreSlim;
 
         public TimedHostedServiceOptions Options { get; private set; }
-        public ILogger<ITimedHostedService> Logger { get; private set; }
+        public ILogger<ITimedHostedService> Logger { get; }
 
-        public Func<Task> TaskToExecuteTask { get; set; }
+        public Func<CancellationToken,Task> TaskToExecuteAsync { get; set; }
 
-        internal TimedHostedService(
+        public TimedHostedService(
             IOptionsMonitor<TimedHostedServiceOptions> options,
             IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
             ILogger<ITimedHostedService> logger)
@@ -90,7 +90,7 @@ namespace Bet.Extensions.Hosting.Abstractions
 
                 await _semaphoreSlim.WaitAsync();
 
-                await TaskToExecuteTask();
+                await TaskToExecuteAsync(cancellationToken);
             }
             catch (Exception ex)
             {

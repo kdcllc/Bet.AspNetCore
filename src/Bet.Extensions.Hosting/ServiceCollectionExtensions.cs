@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting;
@@ -16,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddTimedHostedService(
             this IServiceCollection services,
-            Func<Task> execute,
+            Func<CancellationToken, Task> execute,
             Action<TimedHostedServiceOptions> configure = null)
         {
             services.AddTimedHostedService<DefaultTimedHostedService>(sp =>

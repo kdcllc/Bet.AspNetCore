@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting.Abstractions;
@@ -12,12 +13,12 @@ namespace Bet.Extensions.Hosting
     internal class DefaultTimedHostedService : TimedHostedService
     {
         public DefaultTimedHostedService(
-            Func<Task> task,
+            Func<CancellationToken, Task> task,
             IOptionsMonitor<TimedHostedServiceOptions> options,
             IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
             ILogger<ITimedHostedService> logger) : base(options, lifeCycleHooks, logger)
         {
-            TaskToExecuteTask = task;
+            TaskToExecuteAsync = task;
         }
     }
 }

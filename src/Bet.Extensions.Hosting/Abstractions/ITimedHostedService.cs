@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Bet.Extensions.Hosting.Abstractions
 {
+    /// <summary>
+    /// Timed hosted service.
+    /// </summary>
     public interface ITimedHostedService : IHostedService, IDisposable
     {
         Task ExecuteOnceAsync(CancellationToken cancellationToken);
@@ -17,6 +20,6 @@ namespace Bet.Extensions.Hosting.Abstractions
 
         ILogger<ITimedHostedService> Logger { get; }
 
-        Func<Task> TaskToExecuteTask { get; set; }
+        Func<CancellationToken, Task> TaskToExecuteAsync { get; set; }
     }
 }

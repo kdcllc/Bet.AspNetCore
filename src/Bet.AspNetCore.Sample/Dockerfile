@@ -27,7 +27,7 @@ WORKDIR "/src/src/Bet.AspNetCore.Sample"
 RUN dotnet build "Bet.AspNetCore.Sample.csproj" -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish "Bet.AspNetCore.Sample.csproj" --no-restore -o /app
+RUN dotnet publish "Bet.AspNetCore.Sample.csproj" -c Release --no-restore -o /app
 
 FROM base AS final
 WORKDIR /app

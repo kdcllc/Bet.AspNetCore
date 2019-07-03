@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Bet.Hosting.Sample.Services;
 
@@ -40,7 +41,22 @@ namespace Bet.Hosting.Sample
 
                         services.AddSentimentModelGenerator();
                         services.TryAddScoped<SentimentModelGeneratorService>();
+
+                        services.AddTimedHostedService(
+                            (token) => Task.Run(async () =>
+                            {
+                                Console.WriteLine("Executing...");
+                                await Task.CompletedTask;
+                            }),
+                            options =>
+                            {
+                                options.Interval = TimeSpan.FromSeconds(1);
+
+                                options.FailMode = Extensions.Hosting.Abstractions.FailMode.LogAndRetry;
+                                options.RetryInterval = TimeSpan.FromSeconds(1);
+                            });
                     })
+                    .UseConsoleLifetime()
                     .Build();
 
             var hostedServices = host.Services;
@@ -49,17 +65,20 @@ namespace Bet.Hosting.Sample
             {
                 await host.StartAsync();
 
-                var logger = hostedServices.GetRequiredService<ILogger<Program>>();
+                // var logger = hostedServices.GetRequiredService<ILogger<Program>>();
 
-                logger.LogInformation("=================== Start Building Spam Model ============================ ");
-                var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
-                await spamService.GenerateModel();
+                //logger.LogInformation("=================== Start Building Spam Model ============================ ");
+                //var spamService = hostedServices.GetRequiredService<SpamModelGeneratorService>();
+                //await spamService.GenerateModel();
 
                 //logger.LogInformation("=================== Start Building Sentiment Model ============================ ");
                 //var sentimentService = hostedServices.GetRequiredService<SentimentModelGeneratorService>();
                 //await sentimentService.GenerateModel();
 
-                await host.StopAsync();
+                //await host.StopAsync();
+
+                // Wait for the host to shutdown
+                await host.WaitForShutdownAsync();
             }
         }
 

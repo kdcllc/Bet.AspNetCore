@@ -58,8 +58,6 @@ namespace Bet.AspNetCore.Sample
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
 
-
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -151,7 +149,7 @@ namespace Bet.AspNetCore.Sample
             app.UseEndpoints(routes =>
             {
                 routes.MapControllers();
-                //routes.MapDefaultControllerRoute();
+                routes.MapDefaultControllerRoute();
                 routes.MapRazorPages();
             });
 
