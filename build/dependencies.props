@@ -38,6 +38,10 @@
     <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(AspNetCoreVersion2)" />
     <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
+
+    <PackageReference Update="Microsoft.AspNetCore.Connections.Abstractions" Version="$(AspNetCoreVersion)"/>
+    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel.Core" Version="$(AspNetCoreVersion2)" />
+
   </ItemGroup>
 
   <ItemGroup Label="EF">

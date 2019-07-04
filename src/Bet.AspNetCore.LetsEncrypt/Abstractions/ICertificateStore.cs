@@ -9,11 +9,11 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
     public interface ICertificateStore
     {
         /// <summary>
-        /// Gets ACME Account Certificate.
+        /// Gets ACME Account information.
         /// </summary>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>Returns ACME key that was used to sign the SSL certificate. </returns>
-        Task<IKey> GetAccountCertificateAsync(CancellationToken cancellationToken);
+        Task<IKey> GetAccountAsync(CancellationToken cancellationToken);
 
         /// <summary>
         ///  Saves ACME SSL Certificate.
@@ -21,21 +21,23 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
         /// <param name="certificate">The ACME certificate. </param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns></returns>
-        Task SaveAccountCertificateAsync(IKey certificate, CancellationToken cancellationToken);
+        Task SaveAccountAsync(IKey certificate, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets site specific SSL Certificate.
+        /// Gets SSL Certificate.
         /// </summary>
+        /// <param name="hostName">The name of the host.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns>Returns <see cref="X509Certificate2"/> saved certificate. </returns>
-        Task<X509Certificate2> GetSiteCertificateAsync(CancellationToken cancellationToken);
+        Task<X509Certificate2> GetCertificateAsync(string hostName, CancellationToken cancellationToken);
 
         /// <summary>
         /// Saves ACME SSL Certificate.
         /// </summary>
-        /// <param name="certificateBytes"></param>
+        /// <param name="hostName">The name of the host.</param>
+        /// <param name="certificateBytes">The certificate.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns></returns>
-        Task SaveSiteCertificateAsync(byte[] certificateBytes, CancellationToken cancellationToken);
+        Task SaveCertificateAsync(string hostName, byte[] certificateBytes, CancellationToken cancellationToken);
     }
 }

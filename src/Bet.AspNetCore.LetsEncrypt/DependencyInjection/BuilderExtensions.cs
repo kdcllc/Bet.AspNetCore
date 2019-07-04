@@ -2,6 +2,7 @@
 
 using Bet.AspNetCore.LetsEncrypt;
 using Bet.AspNetCore.LetsEncrypt.Abstractions;
+using Bet.AspNetCore.LetsEncrypt.InMemory;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,8 +12,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (!builder.Services.Any(x => x.ServiceType == typeof(IChallengeStore)))
             {
-                builder.Services.AddSingleton<IChallengeStore, DefaultChallengeStore>();
+                builder.Services.AddSingleton<IChallengeStore, ChallengeStore>();
                 builder.Services.AddSingleton<IChallengeStoreProvider, InMemoryChallengeStoreProvider>();
+            }
+
+            if (!builder.Services.Any(x => x.ServiceType == typeof(ICertificateStore)))
+            {
+                builder.Services.AddSingleton<ICertificateStore, CertificateStore>();
+                builder.Services.AddSingleton<ICertificateStoreProvider, InMemoryCertificateStoreProvider>();
             }
 
             return builder;

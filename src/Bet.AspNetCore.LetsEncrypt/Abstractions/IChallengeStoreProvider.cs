@@ -11,16 +11,18 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
         /// <summary>
         /// Saves the Approval Challenge Response.
         /// </summary>
+        /// <param name="responseToken"></param>
         /// <param name="bytes">The approval challenge response to save.</param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns></returns>
-        Task SaveAsync(byte[] bytes, CancellationToken cancellationToken);
+        Task SaveAsync(string responseToken, byte[] bytes, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the Approval Challenge Response.
         /// </summary>
+        /// <param name="responseToken"></param>
         /// <param name="cancellationToken">The task cancellation token.</param>
         /// <returns></returns>
-        Task<byte[]> GetAsync(CancellationToken cancellationToken);
+        Task<byte[]> GetAsync(string responseToken, CancellationToken cancellationToken);
     }
 }

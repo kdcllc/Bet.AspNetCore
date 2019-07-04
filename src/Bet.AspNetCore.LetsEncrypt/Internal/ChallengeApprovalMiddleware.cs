@@ -23,25 +23,23 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             // assumes that this middleware has been mapped
-            var requestedToken = context.Request.Path.ToString();
-            if (requestedToken.StartsWith("/"))
+            var token = context.Request.Path.ToString();
+            if (token.StartsWith("/"))
             {
-                requestedToken = requestedToken.Substring(1);
+                token = token.Substring(1);
             }
 
-            var allChallenges = await _store.GetChallengesAsync(context.RequestAborted);
-            var matchingChallenge = allChallenges.FirstOrDefault(x => x.Token == requestedToken);
+            var matchingChallenge = await _store.GetChallengesAsync(token, context.RequestAborted);
             if (matchingChallenge == null)
             {
                 _logger.LogInformation(
-                    "The given challenge did not match {challengePath} among {allChallenges}",
-                    context.Request.Path.ToString(), allChallenges);
-
+                    "The given challenge did not match {challengePath}",
+                    context.Request.Path.ToString(), token);
                 await next(context);
                 return;
             }
 
-            _logger.LogInformation("Confirmed challenge request for {token}", requestedToken);
+            _logger.LogInformation("Confirmed challenge request for {token}", token);
 
             context.Response.ContentLength = matchingChallenge.Response.Length;
             context.Response.ContentType = "application/octet-stream";

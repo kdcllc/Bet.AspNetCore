@@ -19,6 +19,11 @@ namespace Bet.AspNetCore.LetsEncrypt.Options
         }
 
         /// <summary>
+        /// Request a new SSL Certificate before.
+        /// </summary>
+        public int DaysBefore { get; set; } = 15;
+
+        /// <summary>
         /// The email address used to register with letsencrypt.org.
         /// </summary>
         public string Email { get; set; }
@@ -56,5 +61,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Options
         /// The uri to the server that implements thE ACME protocol for certificate generation.
         /// </summary>
         internal Uri AcmeServer { get; set; }
+
+        internal bool IsDevelopment { get; set; } = true;
     }
 }

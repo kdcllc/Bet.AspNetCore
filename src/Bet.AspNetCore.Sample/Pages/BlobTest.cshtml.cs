@@ -25,6 +25,5 @@ namespace Bet.AspNetCore.Sample.Pages
 
             return Page();
         }
-
     }
 }

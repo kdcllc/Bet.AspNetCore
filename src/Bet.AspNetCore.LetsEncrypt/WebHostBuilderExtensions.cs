@@ -20,13 +20,11 @@ namespace Microsoft.AspNetCore.Hosting
             this IWebHostBuilder hostBuilder,
             Action<LetsEncryptOptions> configure)
         {
-
             hostBuilder.ConfigureServices(services =>
             {
                 var builder = services.AddLetsEncrypt(configure);
                 builder.AddInMemoryProvider();
                 builder.Services.AddSingleton<IStartupFilter, ChallengeApprovalStartupFilter>();
-
             });
 
             return hostBuilder;

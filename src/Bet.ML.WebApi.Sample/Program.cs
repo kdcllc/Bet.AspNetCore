@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Certes;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +14,7 @@ namespace Bet.ML.WebApi.Sample
 {
     public class Program
     {
-        public const string DomainName = "ffb6c453.ngrok.io";
+        public const string DomainName = "test.kingdavidconsulting.com";
 
         public static void Main(string[] args)
         {
@@ -44,6 +45,14 @@ namespace Bet.ML.WebApi.Sample
                                 CommonName = DomainName
                             };
                         });
+
+                        //webBuilder.ConfigureKestrel(options =>
+                        //{
+                        //    options.ConfigureHttpsDefaults(configure =>
+                        //    {
+                        //        configure.ServerCertificate
+                        //    });
+                        //});
 
                         webBuilder.UseStartup<Startup>();
                     });
