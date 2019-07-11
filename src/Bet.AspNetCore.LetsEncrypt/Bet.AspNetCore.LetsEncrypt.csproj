@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <Description>Provides API for configuring ASP.NET Core to use Let's Encrypt.org to automatically generate HTTPS certificates.</Description>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>pre-01</VersionSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Certes" Version="2.3.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
+  </ItemGroup>
+
+</Project>

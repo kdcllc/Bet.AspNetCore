@@ -31,6 +31,9 @@ namespace Bet.Extensions.AzureStorage
             return new StorageFileInfo(blob);
         }
 
-        public IChangeToken Watch(string filter) => NullChangeToken.Singleton;
+        public IChangeToken Watch(string filter)
+        {
+            return NullChangeToken.Singleton;
+        }
     }
 }

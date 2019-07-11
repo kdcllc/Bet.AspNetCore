@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
@@ -12,15 +13,20 @@ namespace Bet.Extensions.ML.Prediction
     {
         private readonly ILogger<MLContext> _logger;
         private ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private readonly IServiceProvider _serviceProvider;
 
-        public ModelPredictionEngineSetup(ILogger<MLContext> logger)
+        public ModelPredictionEngineSetup(
+            IServiceProvider serviceProvider,
+            ILogger<MLContext> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public void Configure(string name, ModelPredictionEngineOptions<TData, TPrediction> options)
         {
             options.ModelName = name;
+            options.ServiceProvider = _serviceProvider;
         }
 
         public void Configure(ModelPredictionEngineOptions<TData, TPrediction> options)

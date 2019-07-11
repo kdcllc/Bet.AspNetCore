@@ -9,11 +9,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSpamDetectionModelGenerator(this IServiceCollection services)
+        public static IServiceCollection AddSpamDetectionModelBuilder(this IServiceCollection services)
         {
             services.TryAddSingleton(new MLContext());
-            services.TryAddScoped<IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>,
-                SpamModelBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>>();
+            services.TryAddTransient<IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>, SpamModelBuilder>();
             return services;
         }
     }

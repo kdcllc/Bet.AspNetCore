@@ -4,6 +4,5 @@ namespace Bet.AspNetCore.Sample.Options
 {
     public class UploadsBlobStaticFilesOptions : StorageFileProviderOptions
     {
-
     }
 }
