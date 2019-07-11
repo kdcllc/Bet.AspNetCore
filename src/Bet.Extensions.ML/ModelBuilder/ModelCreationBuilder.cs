@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -9,7 +10,7 @@ namespace Bet.Extensions.ML.ModelBuilder
     /// <inheritdoc/>
     public abstract class ModelCreationBuilder<TInput, TOutput, TResult> : IModelCreationBuilder<TInput, TOutput, TResult>
      where TInput : class
-     where TOutput : class
+     where TOutput : class, new()
      where TResult : MetricsResult
     {
         /// <inheritdoc/>

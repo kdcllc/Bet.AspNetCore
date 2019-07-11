@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -10,11 +11,12 @@ using Microsoft.ML;
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class SpamModelGeneratorService
+    public class SpamModelGeneratorService : IModelBuildeService
     {
         private readonly ILogger<SpamModelGeneratorService> _logger;
         private readonly IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> _modelBuilder;
         private readonly ModelPathService _pathService;
+        private PredictionEngine<SpamInput, SpamPrediction> _predictor;
 
         public SpamModelGeneratorService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
@@ -28,6 +30,8 @@ namespace Bet.Hosting.Sample.Services
 
         public async Task GenerateModel()
         {
+            var sw = ValueStopwatch.StartNew();
+
             // 1. load default ML data set
             _logger.LogInformation("=============== Loading data===============");
             _modelBuilder.LoadDefaultData().BuiltDataView();
@@ -51,12 +55,12 @@ namespace Bet.Hosting.Sample.Services
             // 5. predict on sample data
             _logger.LogInformation("=============== Predictions for below data===============");
 
-            var predictor =_modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
+            _predictor =_modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
             // Test a few examples
-            ClassifySpamMessage(predictor, "That's a great idea. It should work.");
-            ClassifySpamMessage(predictor, "free medicine winner! congratulations");
-            ClassifySpamMessage(predictor, "Yes we should meet over the weekend!");
-            ClassifySpamMessage(predictor, "you win pills and free entry vouchers");
+            Classify("That's a great idea. It should work.");
+            Classify("free medicine winner! congratulations");
+            Classify("Yes we should meet over the weekend!");
+            Classify("you win pills and free entry vouchers");
 
             // 6. save to the file
             _logger.LogInformation("=================== Saving Model to Disk ============================ ");
@@ -72,14 +76,19 @@ namespace Bet.Hosting.Sample.Services
                 readStream.WriteTo(fs);
             }
 
+            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
+
             await Task.CompletedTask;
         }
 
-        private void ClassifySpamMessage(PredictionEngine<SpamInput, SpamPrediction> predictor, string message)
+        public void Classify(string text)
         {
-            var input = new SpamInput { Message = message };
-            var prediction = predictor.Predict(input);
-            _logger.LogInformation("The message '{0}' is {1}", input.Message, prediction.IsSpam == "spam" ? "spam" : "not spam");
+            var input = new SpamInput { Message = text };
+            var prediction = _predictor.Predict(input);
+            _logger.LogInformation(
+                "The message '{0}' is {1}",
+                input.Message,
+                prediction.IsSpam == "spam" ? "spam" : "not spam");
         }
     }
 }

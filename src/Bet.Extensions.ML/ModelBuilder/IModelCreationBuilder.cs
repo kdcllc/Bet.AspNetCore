@@ -13,7 +13,7 @@ namespace Bet.Extensions.ML.ModelBuilder
     /// <typeparam name="TResult">The type of the Evaluate function.</typeparam>
     public interface IModelCreationBuilder<TInput, TOutput, TResult>
         where TInput : class
-        where TOutput : class
+        where TOutput : class, new()
         where TResult : MetricsResult
     {
         IDataView TrainingDataView { get; }
@@ -126,5 +126,6 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <returns></returns>
         MemoryStream GetModelStream();
+
     }
 }

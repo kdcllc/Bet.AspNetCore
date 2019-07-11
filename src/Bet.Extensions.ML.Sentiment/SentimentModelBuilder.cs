@@ -55,7 +55,6 @@ namespace Bet.Extensions.ML.Sentiment
                 var trainer = MLContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features");
                 var trainingPipeline = dataProcessPipeline.Append(trainer);
 
-
                 return new TrainingPipelineResult(trainingPipeline, trainer.ToString());
             });
         }

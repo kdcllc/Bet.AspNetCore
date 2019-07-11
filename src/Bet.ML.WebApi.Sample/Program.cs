@@ -14,8 +14,6 @@ namespace Bet.ML.WebApi.Sample
 {
     public class Program
     {
-        public const string DomainName = "test.kingdavidconsulting.com";
-
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -26,35 +24,7 @@ namespace Bet.ML.WebApi.Sample
             return Host.CreateDefaultBuilder(args)
                     .ConfigureWebHostDefaults(webBuilder =>
                     {
-                        webBuilder.UseLetsEncrypt(configure =>
-                        {
-                            configure.Email = "info@kingdavidconsulting.com";
-                            configure.HostNames = new[] { DomainName };
-
-                            configure.UseStagingServer = true;
-
-                            configure.CertificateFriendlyName = DomainName;
-                            configure.CertificatePassword = "7A1FE7EE-8DAF-423D-B43B-A55E6794DCD9";
-
-                            configure.CertificateSigningRequest = new CsrInfo()
-                            {
-                                CountryName = "US",
-                                Locality = "NC",
-                                Organization = "KDCLLC",
-                                OrganizationUnit = "Dev",
-                                CommonName = DomainName
-                            };
-                        });
-
-                        //webBuilder.ConfigureKestrel(options =>
-                        //{
-                        //    options.ConfigureHttpsDefaults(configure =>
-                        //    {
-                        //        configure.ServerCertificate
-                        //    });
-                        //});
-
-                        webBuilder.UseStartup<Startup>();
+                       webBuilder.UseStartup<Startup>();
                     });
         }
     }

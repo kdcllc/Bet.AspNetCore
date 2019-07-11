@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
@@ -9,11 +10,12 @@ using Microsoft.ML;
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class SentimentModelGeneratorService
+    public class SentimentModelGeneratorService : IModelBuildeService
     {
         private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly ModelPathService _pathService;
         private readonly ILogger<SentimentModelGeneratorService> _logger;
+        private PredictionEngine<SentimentIssue, SentimentPrediction> _predictor;
 
         public SentimentModelGeneratorService(
             IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
@@ -27,6 +29,8 @@ namespace Bet.Hosting.Sample.Services
 
         public Task GenerateModel()
         {
+            var sw = ValueStopwatch.StartNew();
+
             // 1. load default ML data set
             _logger.LogInformation("=============== Loading data===============");
             _modelBuilder.LoadDefaultData().BuiltDataView();
@@ -35,7 +39,6 @@ namespace Bet.Hosting.Sample.Services
             _logger.LogInformation("=============== BuildTrainingPipeline ===============");
             var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
             _logger.LogInformation("BuildTrainingPipeline ran for: {BuildTrainingPipelineTime}", buildTrainingPipelineResult.ElapsedMilliseconds);
-
 
             // 3. train the model
             _logger.LogInformation("=============== TrainModel ===============");
@@ -50,25 +53,32 @@ namespace Bet.Hosting.Sample.Services
 
             // 5. predict on sample data
             _logger.LogInformation("=============== Predictions for below data===============");
-            var predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(_modelBuilder.Model);
 
-            ClassifySentimentText(predictor, "This is a very rude movie");
-            ClassifySentimentText(predictor, "Hate All Of You're Work");
+            _predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(_modelBuilder.Model);
 
-            Console.WriteLine("=================== Saving Model to Disk ============================ ");
+            Classify("This is a very rude movie");
+            Classify("Hate All Of You're Work");
+
+            _logger.LogInformation("=================== Saving Model to Disk ============================ ");
 
             _modelBuilder.SaveModel(_pathService.SentimentModelPath);
 
-            Console.WriteLine("======================= Creating Model Completed ================== ");
+            _logger.LogInformation("======================= Creating Model Completed ================== ");
 
+            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
             return Task.CompletedTask;
         }
 
-        public void ClassifySentimentText(PredictionEngine<SentimentIssue, SentimentPrediction> predictor, string text)
+        public void Classify(string text)
         {
             var input = new SentimentIssue { Text = text };
-            var prediction = predictor.Predict(input);
-            _logger.LogInformation("The text '{0}' is {1} Probability of being toxic: {2}", input.Text, Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic", prediction.Probability);
+            var prediction = _predictor.Predict(input);
+
+            _logger.LogInformation(
+                "The text '{0}' is {1} Probability of being toxic: {2}",
+                input.Text,
+                Convert.ToBoolean(prediction.Prediction) ? "Toxic" : "Non Toxic",
+                prediction.Probability);
         }
     }
 }
