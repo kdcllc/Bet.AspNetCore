@@ -11,24 +11,26 @@ using Microsoft.ML;
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class SpamModelGeneratorService : IModelBuildeService
+    public class SpamModelBuilderService : IModelBuilderService
     {
-        private readonly ILogger<SpamModelGeneratorService> _logger;
+        private readonly ILogger<SpamModelBuilderService> _logger;
         private readonly IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> _modelBuilder;
         private readonly ModelPathService _pathService;
         private PredictionEngine<SpamInput, SpamPrediction> _predictor;
 
-        public SpamModelGeneratorService(
+        public SpamModelBuilderService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
             ModelPathService pathService,
-            ILogger<SpamModelGeneratorService> logger)
+            ILogger<SpamModelBuilderService> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _modelBuilder = spamModelBuilder ?? throw new ArgumentNullException(nameof(spamModelBuilder));
             _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
         }
 
-        public async Task GenerateModel()
+
+
+        public async Task TrainModel()
         {
             var sw = ValueStopwatch.StartNew();
 
@@ -52,16 +54,13 @@ namespace Bet.Hosting.Sample.Services
             var trainModelResult = _modelBuilder.TrainModel();
             _logger.LogInformation("TrainModel ran for {TrainModelTime}", trainModelResult.ElapsedMilliseconds);
 
-            // 5. predict on sample data
-            _logger.LogInformation("=============== Predictions for below data===============");
+            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
 
-            _predictor =_modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
-            // Test a few examples
-            Classify("That's a great idea. It should work.");
-            Classify("free medicine winner! congratulations");
-            Classify("Yes we should meet over the weekend!");
-            Classify("you win pills and free entry vouchers");
+            await Task.CompletedTask;
+        }
 
+        public void SaveModel()
+        {
             // 6. save to the file
             _logger.LogInformation("=================== Saving Model to Disk ============================ ");
 
@@ -75,13 +74,22 @@ namespace Bet.Hosting.Sample.Services
             {
                 readStream.WriteTo(fs);
             }
+     }
 
-            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
+        public void ClassifySample()
+        {
+            // 5. predict on sample data
+            _logger.LogInformation("=============== Predictions for below data===============");
 
-            await Task.CompletedTask;
+            _predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
+            // Test a few examples
+            Classify("That's a great idea. It should work.");
+            Classify("free medicine winner! congratulations");
+            Classify("Yes we should meet over the weekend!");
+            Classify("you win pills and free entry vouchers");
         }
 
-        public void Classify(string text)
+        private void Classify(string text)
         {
             var input = new SpamInput { Message = text };
             var prediction = _predictor.Predict(input);

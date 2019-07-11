@@ -33,8 +33,7 @@ namespace Bet.Hosting.Sample
                     })
                     .ConfigureServices((hostContext, services) =>
                     {
-
-
+                        services.AddModelBuilderService();
                     })
                     .UseConsoleLifetime()
                     .Build();

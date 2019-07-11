@@ -10,24 +10,24 @@ using Microsoft.ML;
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class SentimentModelGeneratorService : IModelBuildeService
+    public class SentimentModelBuilderService : IModelBuilderService
     {
         private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly ModelPathService _pathService;
-        private readonly ILogger<SentimentModelGeneratorService> _logger;
+        private readonly ILogger<SentimentModelBuilderService> _logger;
         private PredictionEngine<SentimentIssue, SentimentPrediction> _predictor;
 
-        public SentimentModelGeneratorService(
+        public SentimentModelBuilderService(
             IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             ModelPathService pathService,
-            ILogger<SentimentModelGeneratorService> logger)
+            ILogger<SentimentModelBuilderService> logger)
         {
             _modelBuilder = sentimentModelBuilder ?? throw new ArgumentNullException(nameof(sentimentModelBuilder));
             _pathService = pathService ?? throw new ArgumentNullException(nameof(pathService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task GenerateModel()
+        public Task TrainModel()
         {
             var sw = ValueStopwatch.StartNew();
 
@@ -51,6 +51,14 @@ namespace Bet.Hosting.Sample.Services
             _logger.LogInformation("Evaluate ran for {EvaluateTime}", evaluateResult.ElapsedMilliseconds);
             _logger.LogInformation(evaluateResult.ToString());
 
+            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
+
+            return Task.CompletedTask;
+        }
+
+
+        public void ClassifySample()
+        {
             // 5. predict on sample data
             _logger.LogInformation("=============== Predictions for below data===============");
 
@@ -58,18 +66,19 @@ namespace Bet.Hosting.Sample.Services
 
             Classify("This is a very rude movie");
             Classify("Hate All Of You're Work");
+        }
 
+        public void SaveModel()
+        {
             _logger.LogInformation("=================== Saving Model to Disk ============================ ");
 
             _modelBuilder.SaveModel(_pathService.SentimentModelPath);
 
             _logger.LogInformation("======================= Creating Model Completed ================== ");
-
-            _logger.LogInformation("Elapsed time {elapsed}", sw.GetElapsedTime());
-            return Task.CompletedTask;
         }
 
-        public void Classify(string text)
+
+        private void Classify(string text)
         {
             var input = new SentimentIssue { Text = text };
             var prediction = _predictor.Predict(input);

@@ -12,16 +12,14 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddModelBuilderService(this IServiceCollection services)
         {
-
             services.AddScoped<ModelPathService>();
             services.TryAddSingleton(new MLContext());
 
             services.AddSpamDetectionModelBuilder();
-            services.TryAddScoped<SpamModelGeneratorService>();
+            services.AddScoped<IModelBuilderService,SpamModelBuilderService>();
 
             services.AddSentimentModelBuilder();
-            services.TryAddScoped<SentimentModelGeneratorService>();
-
+            services.AddScoped<IModelBuilderService,SentimentModelBuilderService>();
 
             services.AddTimedHostedService<ModelBuilderHostedService>(options =>
             {
@@ -33,6 +31,5 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
-
     }
 }

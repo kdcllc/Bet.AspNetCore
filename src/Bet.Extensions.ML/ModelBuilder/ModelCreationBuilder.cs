@@ -46,16 +46,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual TrainingPipelineResult BuildTrainingPipeline(Func<TrainingPipelineResult> builder)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var result = builder();
 
             TrainingPipeLine = result.TrainingPipeLine;
             TrainerName = result.TrainerName;
 
-            sw.Stop();
-
-            result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+            result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
             return result;
         }
 
@@ -85,13 +83,11 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var result = builder(TestDataView, TrainingPipeLine);
 
-            sw.Stop();
-
-            result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+            result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
 
             return result;
         }
@@ -150,14 +146,12 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var result = builder(TrainingDataView);
             Model = result.Model;
 
-            sw.Stop();
-
-            result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+            result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
             return result;
         }
     }
