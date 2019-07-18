@@ -112,7 +112,6 @@ namespace Bet.Extensions.Hosting.Abstractions
             try
             {
                 await ExecuteOnceAsync(cancellationToken);
-                //_timer.Change(Timeout.InfiniteTimeSpan, Options.Interval);
 
                 foreach (var lifeCycleHook in _lifeCycleHooks)
                 {

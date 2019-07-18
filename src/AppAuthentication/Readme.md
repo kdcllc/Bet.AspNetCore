@@ -74,7 +74,6 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 - --environment:Production  or -e:Development
 - --resource:test or -r:someresource
 - --port:1010 or -p:2323
-- --config:file or -c:appsettings.config 
+- --config:file or -c:appsettings.config
 - --fix or -f
 - --local or -l (default Docker)
- 
