@@ -126,6 +126,5 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <returns></returns>
         MemoryStream GetModelStream();
-
     }
 }

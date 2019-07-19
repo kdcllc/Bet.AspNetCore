@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting;
 using Bet.Extensions.Hosting.Abstractions;
+using Bet.Extensions.ML.ModelBuilder;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,11 +30,18 @@ namespace Bet.Hosting.Sample.Services
         {
             foreach (var modelBuilder in _modelBuilders)
             {
-                await modelBuilder.TrainModel();
+                try
+                {
+                    await modelBuilder.TrainModelAsync(cancellationToken);
 
-                modelBuilder.ClassifySample();
+                    await modelBuilder.ClassifyTestAsync(cancellationToken);
 
-                modelBuilder.SaveModel();
+                    await modelBuilder.SaveModelAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.Message);
+                }
             }
         }
     }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Bet.Extensions.Hosting.Abstractions;
-using Bet.Hosting.Sample.Services;
+﻿using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.ML;
 
 namespace Bet.Hosting.Sample
 {
