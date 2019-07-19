@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.ModelBuilder
 {
     public class FileModelStorageProvider : IModelStorageProvider
     {

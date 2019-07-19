@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Bet.Extensions.ML.Helpers;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.Spam
 {
     public class SpamModelBuilderService : IModelBuilderService
     {
@@ -53,7 +54,7 @@ namespace Bet.Hosting.Sample.Services
                 _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
                 _logger.LogInformation(evaluateResult.ToString());
 
-                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-spam-results.json");
+                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-spam-results.json", typeof(SpamModelBuilderService));
                 await _storageProvider.SaveResultsAsync(evaluateResult, fileLocation, cancellationToken);
 
                 // 4. train the model

@@ -2,8 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.ModelBuilder
 {
+    /// <summary>
+    /// ML model storage provider.
+    /// </summary>
     public interface IModelStorageProvider
     {
         /// <summary>

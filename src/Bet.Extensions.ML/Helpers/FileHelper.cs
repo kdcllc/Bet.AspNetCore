@@ -1,12 +1,21 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.Helpers
 {
     public static class FileHelper
     {
-        public static string GetAbsolutePath(string relativePath)
+        /// <summary>
+        /// Creates a relative path to the file name provided.
+        /// </summary>
+        /// <param name="relativePath">The path to the file in the Assembly directory.</param>
+        /// <param name="assemblyType">The Assembly type. The default value is null resolves `FileHelper`.</param>
+        /// <returns></returns>
+        public static string GetAbsolutePath(string relativePath, Type assemblyType = null)
         {
-            var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
+            assemblyType = assemblyType ?? typeof(FileHelper);
+
+            var _dataRoot = new FileInfo(assemblyType.Assembly.Location);
             var assemblyFolderPath = _dataRoot.Directory.FullName;
 
             return Path.Combine(assemblyFolderPath, relativePath);

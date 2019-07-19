@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting;
 using Bet.Extensions.Hosting.Abstractions;
+using Bet.Extensions.ML.ModelBuilder;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

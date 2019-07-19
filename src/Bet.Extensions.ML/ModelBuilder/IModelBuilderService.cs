@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.ModelBuilder
 {
     /// <summary>
     /// ML model builder service provides with away to build/train/evaluate multiple ML models in the CI pipeline.

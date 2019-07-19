@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Bet.Extensions.ML.Helpers;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Sentiment.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 
-namespace Bet.Hosting.Sample.Services
+namespace Bet.Extensions.ML.Sentiment
 {
     public class SentimentModelBuilderService : IModelBuilderService
     {
@@ -58,7 +58,7 @@ namespace Bet.Hosting.Sample.Services
                 _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
                 _logger.LogInformation(evaluateResult.ToString());
 
-                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-sentiment-results.json");
+                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-sentiment-results.json", typeof(SentimentModelBuilderService));
                 await _storageProvider.SaveResultsAsync(evaluateResult, fileLocation, cancellationToken);
 
                 _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().Milliseconds);
