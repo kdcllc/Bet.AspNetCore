@@ -1,13 +1,33 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bet.Hosting.Sample.Services
 {
+    /// <summary>
+    /// ML model builder service provides with away to build/train/evaluate multiple ML models in the CI pipeline.
+    /// </summary>
     public interface IModelBuilderService
     {
-        Task TrainModel();
+        /// <summary>
+        /// Train model consist of:
+        /// 1. Load dataset.
+        /// 2. Build Training pipeline.
+        /// 3. Train the ML Model.
+        /// 4. Evaluate the Model against test dataset.
+        /// </summary>
+        /// <returns></returns>
+        Task TrainModelAsync(CancellationToken cancellationToken);
 
-        void ClassifySample();
+        /// <summary>
+        /// Provides with ability to test against know datasets.
+        /// </summary>
+        /// <returns></returns>
+        Task ClassifyTestAsync(CancellationToken cancellationToken);
 
-        void SaveModel();
+        /// <summary>
+        /// Saves the ML model.
+        /// </summary>
+        /// <returns></returns>
+        Task SaveModelAsync(CancellationToken cancellationToken);
     }
 }

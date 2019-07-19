@@ -29,11 +29,18 @@ namespace Bet.Hosting.Sample.Services
         {
             foreach (var modelBuilder in _modelBuilders)
             {
-                await modelBuilder.TrainModel();
+                try
+                {
+                    await modelBuilder.TrainModelAsync(cancellationToken);
 
-                modelBuilder.ClassifySample();
+                    await modelBuilder.ClassifyTestAsync(cancellationToken);
 
-                modelBuilder.SaveModel();
+                    await modelBuilder.SaveModelAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.Message);
+                }
             }
         }
     }

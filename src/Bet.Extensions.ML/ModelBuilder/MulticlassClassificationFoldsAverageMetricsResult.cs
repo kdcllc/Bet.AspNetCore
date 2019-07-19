@@ -83,7 +83,7 @@ namespace Bet.Extensions.ML.ModelBuilder
 
         public static double CalculateConfidenceInterval95(IEnumerable<double> values)
         {
-            return 1.96 * CalculateStandardDeviation(values) / Math.Sqrt((values.Count() - 1));
+            return 1.96 * CalculateStandardDeviation(values) / Math.Sqrt(values.Count() - 1);
         }
 
         public override string ToString()

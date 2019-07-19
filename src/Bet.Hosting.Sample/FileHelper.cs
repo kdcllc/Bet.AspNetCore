@@ -2,12 +2,8 @@
 
 namespace Bet.Hosting.Sample.Services
 {
-    public class ModelPathService
+    public static class FileHelper
     {
-        public string SpamModelPath => GetAbsolutePath("SpamModel.zip");
-
-        public string SentimentModelPath => GetAbsolutePath("SentimentModel.zip");
-
         public static string GetAbsolutePath(string relativePath)
         {
             var _dataRoot = new FileInfo(typeof(Program).Assembly.Location);

@@ -9,6 +9,9 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Spam
 {
+    /// <summary>
+    /// https://github.com/dotnet/machinelearning-samples/blob/0ba74327e843c30eb02f01ca5d5d31ce77e84442/samples/csharp/getting-started/BinaryClassification_SpamDetection/SpamDetectionConsoleApp/Program.cs#L55
+    /// </summary>
     public class SpamModelBuilder
         : ModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>
     {
@@ -26,9 +29,10 @@ namespace Bet.Extensions.ML.Spam
         {
             Records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
 
+            //Records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SMSSpamCollection.txt", delimiter: "\t", hasHeaderRecord: false);
             var smsRecords = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SMSSpamCollection.txt", delimiter: "\t", hasHeaderRecord: false);
-
             Records.AddRange(smsRecords);
+
             return this;
         }
 

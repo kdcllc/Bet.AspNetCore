@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddModelBuilderService(this IServiceCollection services)
         {
-            services.AddScoped<ModelPathService>();
+            services.AddScoped<IModelStorageProvider, FileModelStorageProvider>();
             services.TryAddSingleton(new MLContext());
 
             services.AddSpamDetectionModelBuilder();
