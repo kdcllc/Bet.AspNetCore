@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Microsoft.Extensions.Options;
 
@@ -10,11 +9,6 @@ namespace Microsoft.Extensions.Hosting
     /// </summary>
     public interface IHostStartupFilter
     {
-        /// <summary>
-        /// List of types for Options registered.
-        /// </summary>
-        IList<(Type type, string sectionName)> OptionsTypes { get; }
-
         /// <summary>
         /// Validates <see cref="IOptions{TOptions}"/> by retrieving value.
         /// </summary>

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.Hosting
 {
-    public class HostStartupService : BackgroundService
+    public class HostStartupService : IHostedService
     {
         private readonly IEnumerable<IHostStartupFilter> _filters;
         private readonly ILogger<HostStartupService> _logger;
@@ -23,29 +23,32 @@ namespace Microsoft.Extensions.Hosting
             _provider = provider;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("{Service} is starting.", nameof(HostStartupService));
+            _logger.LogDebug("{ServiceName} is starting...", nameof(HostStartupService));
 
-            stoppingToken.Register(() => _logger.LogDebug("{Service} is stopping.", nameof(HostStartupService)));
+            cancellationToken.Register(() => _logger.LogDebug("{ServiceName} is stopping...", nameof(HostStartupService)));
 
-            while (!stoppingToken.IsCancellationRequested)
+            var count = 0;
+
+            if (_filters != null)
             {
-                if (_filters != null)
+                foreach (var filter in _filters)
                 {
-                    foreach (var filter in _filters)
-                    {
-                        filter.Configure(_provider);
-                    }
-
-                    break;
+                    filter.Configure(_provider);
+                    Interlocked.Increment(ref count);
                 }
-
-                _logger.LogDebug("{Service}  is running.", nameof(HostStartupService));
-                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
             }
 
-            _logger.LogDebug("{Service}  background task is stopping.", nameof(HostStartupService));
+            _logger.LogDebug("{ServiceName} finished configuring 'IHostStartupFilters' with Total Count of {TotalCount}.", nameof(HostStartupService));
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogDebug("{ServiceName}  background task is stopping.", nameof(HostStartupService));
+            return Task.CompletedTask;
         }
     }
 }

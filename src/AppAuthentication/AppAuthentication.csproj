@@ -7,7 +7,7 @@
 		<PackageId>appauthentication</PackageId>
 		<Description>A command-line tool that provides ability to get Authentication token for Docker Containers running locally.</Description>
 		<PackAsTool>True</PackAsTool>
-		<PackageTags>Azure,Authentication,AppAuthentication,Azure Key Vault</PackageTags>
+		<PackageTags>Azure, Authentication, AppAuthentication, Azure Key Vault, Docker, Kubernetes</PackageTags>
 		<WarningLevel>1</WarningLevel>
 	</PropertyGroup>
 
