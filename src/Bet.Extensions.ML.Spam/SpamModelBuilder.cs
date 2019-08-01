@@ -1,10 +1,8 @@
-﻿using System;
-
+﻿
 using Bet.Extensions.ML.Data;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Spam.Models;
 
-using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Spam
@@ -15,14 +13,8 @@ namespace Bet.Extensions.ML.Spam
     public class SpamModelBuilder
         : ModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>
     {
-        private readonly ILogger<SpamModelBuilder> _logger;
-
-        public SpamModelBuilder(
-            MLContext context,
-            ILogger<SpamModelBuilder> logger)
+        public SpamModelBuilder(MLContext context) : base(context)
         {
-            MLContext = context ?? new MLContext();
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> LoadDefaultData()

@@ -5,7 +5,6 @@ using Bet.Extensions.ML.Data;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Sentiment.Models;
 
-using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Sentiment
@@ -13,14 +12,8 @@ namespace Bet.Extensions.ML.Sentiment
     public class SentimentModelBuilder
         : ModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>
     {
-        private readonly ILogger<SentimentModelBuilder> _logger;
-
-        public SentimentModelBuilder(
-            MLContext context,
-            ILogger<SentimentModelBuilder> logger)
+        public SentimentModelBuilder(MLContext context):base(context)
         {
-            MLContext = context ?? new MLContext();
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> LoadDefaultData()
@@ -33,7 +26,7 @@ namespace Bet.Extensions.ML.Sentiment
             {
                 var newItem = new SentimentIssue
                 {
-                    Label = item.Label == 0 ? false : true,
+                    Label = item.Label != 0,
                     Text = item.comment
                 };
 

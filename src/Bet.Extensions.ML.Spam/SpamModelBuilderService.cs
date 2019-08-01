@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.Helpers;
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.Spam.Models;
 
@@ -20,6 +19,8 @@ namespace Bet.Extensions.ML.Spam
         private readonly IModelStorageProvider _storageProvider;
         private readonly object _lockObject = new object();
 
+        public string Name { get; set; }
+
         public SpamModelBuilderService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
             IModelStorageProvider storageProvider,
@@ -28,6 +29,8 @@ namespace Bet.Extensions.ML.Spam
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _modelBuilder = spamModelBuilder ?? throw new ArgumentNullException(nameof(spamModelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
+
+            Name = nameof(SpamModelBuilderService);
         }
 
         public async Task TrainModelAsync(CancellationToken cancellationToken)
@@ -54,8 +57,7 @@ namespace Bet.Extensions.ML.Spam
                 _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
                 _logger.LogInformation(evaluateResult.ToString());
 
-                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-spam-results.json", typeof(SpamModelBuilderService));
-                await _storageProvider.SaveResultsAsync(evaluateResult, fileLocation, cancellationToken);
+                await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
 
                 // 4. train the model
                 _logger.LogInformation("[TrainModel][Started]");
@@ -74,11 +76,9 @@ namespace Bet.Extensions.ML.Spam
 
             var sw = ValueStopwatch.StartNew();
 
-            var fileLocation = FileHelper.GetAbsolutePath("SpamModel.zip");
-
             var readStream = _modelBuilder.GetModelStream();
 
-            await _storageProvider.SaveModelAsync(fileLocation, readStream, cancellationToken);
+            await _storageProvider.SaveModelAsync(Name, readStream, cancellationToken);
 
             _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
         }

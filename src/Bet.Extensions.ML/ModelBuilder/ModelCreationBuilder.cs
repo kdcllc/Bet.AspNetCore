@@ -43,6 +43,11 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public abstract TrainingPipelineResult BuildTrainingPipeline();
 
+        public ModelCreationBuilder(MLContext mLContext)
+        {
+            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
+        }
+
         /// <inheritdoc/>
         public virtual TrainingPipelineResult BuildTrainingPipeline(Func<TrainingPipelineResult> builder)
         {

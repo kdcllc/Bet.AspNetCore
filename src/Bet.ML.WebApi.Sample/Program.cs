@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Certes;
+
+using Bet.ML.WebApi.Sample.Jobs;
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Bet.ML.WebApi.Sample
 {
@@ -17,7 +13,11 @@ namespace Bet.ML.WebApi.Sample
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
+            // begin start up jobs.
             await host.RunStartupJobsAync();
+
+            // start the server.
             await host.RunAsync();
         }
 
@@ -27,6 +27,11 @@ namespace Bet.ML.WebApi.Sample
                     .ConfigureWebHostDefaults(webBuilder =>
                     {
                        webBuilder.UseStartup<Startup>();
+
+                        webBuilder.ConfigureServices(services =>
+                        {
+                            services.AddStartupJob<LoadMLModelsJobs>();
+                        });
                     });
         }
     }
