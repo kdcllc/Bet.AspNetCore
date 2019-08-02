@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.Configuration
             var allConfigurations = config.GetDebugView();
             logger.Debug(allConfigurations);
         }
-
+#if NETSTANDARD2_0 || NETCOREAPP2_2
         /// <summary>
         /// Generates a human-readable view of the configuration showing where each value came from.
         /// In version 3.0 this can be utilized directly.
@@ -102,7 +102,7 @@ namespace Microsoft.Extensions.Configuration
 
             return (null, null);
         }
-
+#endif
         /// <summary>
         ///  Logging migration https://docs.microsoft.com/en-us/aspnet/core/migration/logging-nonaspnetcore?view=aspnetcore-2.2
         /// </summary>

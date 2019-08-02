@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
     <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
   </ItemGroup>
 
 </Project>

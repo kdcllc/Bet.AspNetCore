@@ -9,6 +9,11 @@ namespace Bet.Extensions.ML.ModelBuilder
     public interface IModelBuilderService
     {
         /// <summary>
+        /// Model Builder Service Name
+        /// </summary>
+        string  Name { get; set; }
+
+        /// <summary>
         /// Train model consist of:
         /// 1. Load dataset.
         /// 2. Build Training pipeline.

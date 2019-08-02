@@ -19,6 +19,8 @@ namespace Bet.Extensions.ML.Sentiment
         private readonly ILogger<SentimentModelBuilderService> _logger;
         private readonly object _lockObject = new object();
 
+        public string Name { get; set; }
+
         public SentimentModelBuilderService(
             IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             IModelStorageProvider storageProvider,
@@ -27,6 +29,8 @@ namespace Bet.Extensions.ML.Sentiment
             _modelBuilder = sentimentModelBuilder ?? throw new ArgumentNullException(nameof(sentimentModelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            Name = nameof(SentimentModelBuilderService);
         }
 
         public async Task TrainModelAsync(CancellationToken cancellationToken)
@@ -58,8 +62,7 @@ namespace Bet.Extensions.ML.Sentiment
                 _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
                 _logger.LogInformation(evaluateResult.ToString());
 
-                var fileLocation = FileHelper.GetAbsolutePath($"{DateTime.UtcNow.Ticks}-sentiment-results.json", typeof(SentimentModelBuilderService));
-                await _storageProvider.SaveResultsAsync(evaluateResult, fileLocation, cancellationToken);
+                await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
 
                 _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().Milliseconds);
 
@@ -72,10 +75,9 @@ namespace Bet.Extensions.ML.Sentiment
 
             var sw = ValueStopwatch.StartNew();
 
-            var fileLocation = FileHelper.GetAbsolutePath("SentimentModel.zip");
             var readStream = _modelBuilder.GetModelStream();
 
-            await _storageProvider.SaveModelAsync(fileLocation, readStream, cancellationToken);
+            await _storageProvider.SaveModelAsync(Name, readStream, cancellationToken);
 
             _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
         }

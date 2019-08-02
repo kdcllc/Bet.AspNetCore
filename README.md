@@ -5,7 +5,6 @@ This repo contains several projects that provide with extended functionality for
 1. `Bet.Extensions` generic functionality for `DotNetCore` in general.
     - `Bet.Extensions.Options` - includes Application Options and `Bind()` validations.
     - `Bet.Extensions.Logging` - includes shared/common logging functionality.
-    - `Bet.Extensions.ML` - includes Machine Learning library around [ML.NET](https://github.com/dotnet/machinelearning).
     - `Bet.Extensions.Hosting` - includes Generic Hosting functionality.
     - `Bet.Extensions.AzureVault` - includes Azure Vault functionality.
     - `Bet.Extensions` - includes extensions methods for `DotNetCore`.
@@ -16,6 +15,12 @@ This repo contains several projects that provide with extended functionality for
     - `Bet.AspNetCore.Logging` contains logging functionality for `AspNetCore` applications.
     - `Bet.AspNetCore` - default location for `AspNetCore`.
     - [`Bet.AspNetCore.ReCapture` - ability to verify users submissions.](./src/Bet.AspNetCore.ReCapture/README.md)
+
+3. `ML.NET - Machine Learning`  
+    - [`Bet.Extensions.ML`](./src/Bet.Extensions.ML/README.md) - includes Machine Learning library around [ML.NET](https://github.com/dotnet/machinelearning).
+    - [`Bet.Extensions.ML.Sentiment`](./src/Bet.Extensions.ML.Sentiment/README.md) - Sentiment self-contained prediction engine to be used with any DotNetCore applications.
+    - [`Bet.Extensions.ML.Spam`](./src/Bet.Extensions.ML.Spam/README.md) - Spam self-contained prediction engine to be used with any DotNetCore applications.
+    - [`Bet.ML.WebApi.Sample`](./src/Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
 
 ## Bet.Extensions.ML
 This library provides a helper classes for Microsoft C# based Machine Learning Library [ML.NET](https://github.com/dotnet/machinelearning).

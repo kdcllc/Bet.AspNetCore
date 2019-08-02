@@ -21,21 +21,13 @@ namespace System.Threading
             _lockRelease = Task.FromResult(new LockRelease(this));
         }
 
-        /// <summary>
-        /// Sets a lock.
-        /// </summary>
-        /// <returns>An asynchronous operation</returns>
-        public Task<LockRelease> LockAsync()
-        {
-            return LockAsync(CancellationToken.None);
-        }
 
         /// <summary>
         /// Sets a lock, which allows for cancellation, using a <see cref="CancellationToken"/>.
         /// </summary>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> which can be used to cancel the lock</param>
         /// <returns>An asynchronous operation</returns>
-        public Task<LockRelease> LockAsync(CancellationToken cancellationToken)
+        public Task<LockRelease> LockAsync(CancellationToken cancellationToken = default)
         {
             var waitTask = _asyncSemaphore.WaitAsync(cancellationToken);
             if (waitTask.IsCompleted)
