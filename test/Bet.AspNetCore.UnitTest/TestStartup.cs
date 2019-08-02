@@ -16,11 +16,13 @@ namespace Bet.AspNetCore.UnitTest
         }
 
         public void Configure(
-           IApplicationBuilder app,
+           IApplicationBuilder app
 #if NETCOREAPP2_2
-           IHostingEnvironment env)
+           , IHostingEnvironment env)
 #elif NETCOREAPP3_0
-           IWebHostEnvironment env)
+           , IWebHostEnvironment env)
+#else
+           )
 #endif
         {
             app.UseMvc();
