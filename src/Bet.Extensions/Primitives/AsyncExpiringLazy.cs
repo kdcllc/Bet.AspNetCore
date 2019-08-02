@@ -17,17 +17,17 @@ namespace System.Threading
             _valueProvider = vauleProvider ?? throw new ArgumentNullException(nameof(vauleProvider));
         }
 
-        public async Task<bool> IsValueCreated()
+        public async Task<bool> IsValueCreated(CancellationToken cancellationToken = default)
         {
-            using (await _valueLock.LockAsync().ConfigureAwait(false))
+            using (await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
                return IsValueCreatedInternal;
             }
         }
 
-        public async Task<T> Value()
+        public async Task<T> Value(CancellationToken cancellationToken = default)
         {
-            using(await _valueLock.LockAsync().ConfigureAwait(false))
+            using(await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
                 if (IsValueCreatedInternal)
                 {
@@ -40,9 +40,9 @@ namespace System.Threading
             }
         }
 
-        public async Task Invalidate()
+        public async Task Invalidate(CancellationToken cancellationToken = default)
         {
-            using(await _valueLock.LockAsync().ConfigureAwait(false))
+            using(await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
                 _value = default;
             }
