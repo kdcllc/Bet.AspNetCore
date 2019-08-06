@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading;
 
-using Microsoft.Extensions.Primitives;
-
-namespace Bet.Extensions.Primitives
+namespace Microsoft.Extensions.Primitives
 {
     /// <summary>
     /// Implements <see cref="IChangeToken"/>
     /// </summary>
-    public class ConfigurationReloadToken : IChangeToken
+    public class ReloadToken : IChangeToken
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 

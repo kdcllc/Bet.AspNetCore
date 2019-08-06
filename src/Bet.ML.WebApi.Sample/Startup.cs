@@ -9,6 +9,7 @@ using Bet.Extensions.ML.Sentiment;
 using Bet.Extensions.ML.Sentiment.Models;
 using Bet.Extensions.ML.Spam;
 using Bet.Extensions.ML.Spam.Models;
+using Bet.ML.WebApi.Sample.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+using Microsoft.ML;
 using Microsoft.OpenApi.Models;
 
 namespace Bet.ML.WebApi.Sample
@@ -59,9 +62,18 @@ namespace Bet.ML.WebApi.Sample
                 {
                     var storage = mlOptions.ServiceProvider.GetRequiredService<IModelStorageProvider>();
 
-                    var model = storage.LoadModelAsync(nameof(SpamModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
 
-                    return mlContext.Model.Load(model, out var inputSchema);
+                    var model = GetModel();
+
+                    ChangeToken.OnChange(() => storage.GetReloadToken(), () => model = GetModel());
+
+                    return model;
+
+                    ITransformer GetModel()
+                    {
+                        var model = storage.LoadModelAsync(nameof(SpamModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
+                        return mlContext.Model.Load(model, out var inputSchema);
+                    }
                 };
             }, "SpamModel");
 
@@ -71,11 +83,26 @@ namespace Bet.ML.WebApi.Sample
                 {
                     var storage = mlOptions.ServiceProvider.GetRequiredService<IModelStorageProvider>();
 
-                    var model = storage.LoadModelAsync(nameof(SentimentModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
+                    var model = GetModel();
 
-                    return mlContext.Model.Load(model, out var inputSchema);
+                    ChangeToken.OnChange(() => storage.GetReloadToken(), () => model = GetModel()) ;
+
+                    return model;
+
+                    ITransformer GetModel()
+                    {
+                        var model = storage.LoadModelAsync(nameof(SentimentModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
+                        return mlContext.Model.Load(model, out var inputSchema);
+                    }
+
                 };
             }, "SentimentModel");
+
+            services.AddScheduler(builder =>
+            {
+                builder.AddJob<RebuildMLModelScheduledJob, RebuildMLModelsOptions>();
+                builder.UnobservedTaskExceptionHandler = null;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

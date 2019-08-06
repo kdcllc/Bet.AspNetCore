@@ -30,7 +30,7 @@ namespace Bet.ML.WebApi.Sample
 
                         webBuilder.ConfigureServices(services =>
                         {
-                            services.AddStartupJob<LoadMLModelsJobs>();
+                            services.AddStartupJob<InitMLModelBuildJob>();
                         });
                     });
         }

@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -13,6 +13,18 @@ namespace Bet.Extensions.ML.ModelBuilder
     public class InMemoryModelStorageProvider : IModelStorageProvider
     {
         private readonly ConcurrentDictionary<string, MemoryStream> _modelStorage = new ConcurrentDictionary<string, MemoryStream>();
+        private ReloadToken _reloadToken;
+        private readonly object _lock = new object();
+
+        public InMemoryModelStorageProvider()
+        {
+            _reloadToken = new ReloadToken();
+        }
+
+        public IChangeToken GetReloadToken()
+        {
+            return _reloadToken;
+        }
 
         public Task<MemoryStream> LoadModelAsync(string name, CancellationToken cancellationToken)
         {
@@ -50,7 +62,17 @@ namespace Bet.Extensions.ML.ModelBuilder
 
         public Task SaveModelAsync(string name, MemoryStream stream, CancellationToken cancellationToken)
         {
-            return Task.Run(()=> _modelStorage.AddOrUpdate(name, stream, (_, __) => stream));
+            return Task.Run(() =>
+            {
+                var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
+
+                lock (_lock)
+                {
+                    _modelStorage.AddOrUpdate(name, stream, (_, __) => stream);
+                }
+
+                previousToken.OnReload();
+            });
         }
 
         public Task SaveModelResultAsync<TResult>(TResult result, string name, CancellationToken cancellationToken)

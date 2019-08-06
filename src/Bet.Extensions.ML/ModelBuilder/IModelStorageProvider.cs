@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 
 namespace Bet.Extensions.ML.ModelBuilder
 {
@@ -54,5 +55,11 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task SaveModelResultAsync<TResult>(TResult result, string name, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Raises the change token to be used with the model consumer.
+        /// </summary>
+        /// <returns></returns>
+        IChangeToken GetReloadToken();
     }
 }

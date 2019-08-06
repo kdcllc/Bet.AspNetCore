@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Bet.Extensions.ML.Helpers;
 
 using CsvHelper;
-
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -18,6 +18,14 @@ namespace Bet.Extensions.ML.ModelBuilder
     /// </summary>
     public class FileModelStorageProvider : IModelStorageProvider
     {
+        private ReloadToken _reloadToken;
+        private readonly object _lock = new object();
+
+        public FileModelStorageProvider()
+        {
+            _reloadToken = new ReloadToken();
+        }
+
         /// <summary>
         /// Loading the raw data from the file.
         /// </summary>
@@ -63,12 +71,19 @@ namespace Bet.Extensions.ML.ModelBuilder
         {
             return Task.Run(() =>
             {
-                var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+                var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
 
-                using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+                lock (_lock)
                 {
-                    stream.WriteTo(fs);
+                    var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+
+                    using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        stream.WriteTo(fs);
+                    }
                 }
+
+                previousToken.OnReload();
             },
             cancellationToken);
         }
@@ -85,10 +100,13 @@ namespace Bet.Extensions.ML.ModelBuilder
         {
             return Task.Run(() =>
             {
-                var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
+                lock (_lock)
+                {
+                    var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
 
-                var json = JsonConvert.SerializeObject(result, Formatting.Indented);
-                File.WriteAllText(fileLocation, json);
+                    var json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(fileLocation, json);
+                }
             },
             cancellationToken);
         }
@@ -123,6 +141,11 @@ namespace Bet.Extensions.ML.ModelBuilder
                 await fs.CopyToAsync(ms).ConfigureAwait(false);
                 return ms;
             }
+        }
+
+        public IChangeToken GetReloadToken()
+        {
+            return _reloadToken;
         }
     }
 }
