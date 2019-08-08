@@ -46,7 +46,7 @@ namespace Bet.AspNetCore.ReCapture.Google
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             dynamic jsonData = JObject.Parse(jsonResponse);
-            if (jsonData.success != true.ToString().ToLower())
+            if (jsonData.success != "true")
             {
                 return message;
             }
