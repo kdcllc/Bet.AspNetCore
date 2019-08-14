@@ -1,4 +1,8 @@
 # Bet.AspNetCore solution
+[![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
+[![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.svg)](https://www.nuget.org/packages?q=Bet.AspNetCore)
+[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.AspNetCore.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
+
 
 This repo contains several projects that provide with extended functionality for `DotNetCore` framework. The projects are split into two category:
 

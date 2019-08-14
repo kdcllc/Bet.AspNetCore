@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace AppAuthentication.Models
 {
     /// <summary>
-    /// Helper class that handles HTTP Bearer challenges
+    /// Helper class that handles HTTP Bearer challenges.
     /// </summary>
     internal class HttpBearerChallenge
     {
@@ -18,13 +18,15 @@ namespace AppAuthentication.Models
         private const string Bearer = "Bearer";
 
         public string AuthorizationServer { get; private set; }
+
         public string Resource { get; private set; }
+
         public string Scope { get; private set; }
 
         /// <summary>
-        /// Parses an HTTP Bearer challenge from Key Vault
+        /// Parses an HTTP Bearer challenge from Key Vault.
         /// </summary>
-        /// <param name="challenge">The value of the WWW-Authenticate header to parse</param>
+        /// <param name="challenge">The value of the WWW-Authenticate header to parse.</param>
         /// <returns></returns>
         internal static HttpBearerChallenge Parse(string challenge)
         {
@@ -114,7 +116,8 @@ namespace AppAuthentication.Models
         }
 
         /// <summary>
-        /// Create instance of HTTP Bearer Challenge
+        /// Initializes a new instance of the <see cref="HttpBearerChallenge"/> class.
+        /// Create instance of HTTP Bearer Challenge.
         /// </summary>
         /// <param name="authorization"></param>
         /// <param name="resource"></param>
@@ -127,4 +130,3 @@ namespace AppAuthentication.Models
         }
     }
 }
-

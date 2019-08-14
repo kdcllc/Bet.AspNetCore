@@ -11,18 +11,10 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
     public class UriOptionsSetup : IUriOptionsSetup
     {
         private readonly List<(string Name, string Value)> _headers = new List<(string Name, string Value)>();
-        internal IEnumerable<(string Name, string Value)> Headers => _headers;
-
-        public HttpMethod HttpMethod { get; private set; }
-
-        public TimeSpan Timeout { get; private set; }
-
-        public (int Min, int Max) ExpectedHttpCodes { get; private set; }
-
-        public Uri Uri { get; private set; }
 
         /// <summary>
-        /// Default values for
+        /// Initializes a new instance of the <see cref="UriOptionsSetup"/> class.
+        /// Default values for.
         /// </summary>
         /// <param name="uri"></param>
         public UriOptionsSetup(Uri uri = default)
@@ -36,6 +28,16 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
 
             Timeout = TimeSpan.FromSeconds(10);
         }
+
+        public HttpMethod HttpMethod { get; private set; }
+
+        public TimeSpan Timeout { get; private set; }
+
+        public (int Min, int Max) ExpectedHttpCodes { get; private set; }
+
+        public Uri Uri { get; private set; }
+
+        internal IEnumerable<(string Name, string Value)> Headers => _headers;
 
         /// <inheritdoc/>
         public IUriOptionsSetup AddUri(Uri uri)
@@ -80,7 +82,7 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
         {
             var code = (int)statusCode;
 
-            ExpectedHttpCodes = (code,code);
+            ExpectedHttpCodes = (code, code);
 
             return this;
         }

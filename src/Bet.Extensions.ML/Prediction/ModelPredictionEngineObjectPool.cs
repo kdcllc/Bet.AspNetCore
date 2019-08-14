@@ -25,7 +25,7 @@ namespace Bet.Extensions.ML.Prediction
         {
             _options = options() ?? throw new ArgumentNullException(nameof(options));
 
-            _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData,TPrediction>))
+            _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData, TPrediction>))
                 ?? throw new ArgumentNullException(nameof(loggerFactory));
 
             // get mlcontext
@@ -41,7 +41,6 @@ namespace Bet.Extensions.ML.Prediction
         public TPrediction Predict(TData dataSample)
         {
             // get instance of PredictionEngine from the object pool
-
             var predictionEngine = Pool.Get();
 
             try
@@ -60,7 +59,7 @@ namespace Bet.Extensions.ML.Prediction
             }
         }
 
-        private ObjectPool<PredictionEngine<TData,TPrediction>> CreatePredictionEngineObjectPool()
+        private ObjectPool<PredictionEngine<TData, TPrediction>> CreatePredictionEngineObjectPool()
         {
             var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, Model, _options, _logger);
 
@@ -70,7 +69,7 @@ namespace Bet.Extensions.ML.Prediction
             }
             else
             {
-                //default maximumRetained is Environment.ProcessorCount * 2, if not explicitly provided
+                // default maximumRetained is Environment.ProcessorCount * 2, if not explicitly provided
                 return new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy);
             }
         }

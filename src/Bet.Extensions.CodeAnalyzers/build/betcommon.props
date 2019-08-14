@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <PackageName>bet.extensions.codeanalyzers</PackageName>
+    <PackageVersion>3.1.2-pre</PackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSetLocation Condition=" '$(NuGetPackageRoot)' != '' ">$(NuGetPackageRoot)\$(PackageName)\$(PackageVersion)</CodeAnalysisRuleSetLocation>
+    <CodeAnalysisRuleSetLocation Condition=" '$(CodeAnalysisRuleSetLocation)' == '' and '$(SolutionDir)' != '' ">$(SolutionDir)\packages\$(PackageName).$(PackageVersion)</CodeAnalysisRuleSetLocation>
+    <CodeAnalysisRuleSetLocation Condition=" '$(CodeAnalysisRuleSetLocation)' == '' ">$([System.IO.Path]::GetDirectoryName($(MSBuildProjectDirectory)))\packages\$(PackageName).$(PackageVersion)</CodeAnalysisRuleSetLocation>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>$(CodeAnalysisRuleSetLocation)\betcommon.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(CodeAnalysisRuleSetLocation)\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+</Project>

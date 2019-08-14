@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using AppAuthentication.Helpers;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
+
+using AppAuthentication.Helpers;
 
 namespace AppAuthentication.Models
 {
@@ -65,6 +66,33 @@ namespace AppAuthentication.Models
             }
         }
 
+        /// <summary>
+        /// Return the access token as-is.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return _accessToken;
+        }
+
+        /// <summary>
+        /// Check if the token is about to expire.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAboutToExpire()
+        {
+            // Current time represented in seconds since 1/1/1970
+            var currentTime = (DateTime.UtcNow - UnixTimeEpoch).TotalSeconds;
+
+            // If the expiration time is greater than current time by more than 5 minutes, it is not about to expire
+            if (ExpiryTime > currentTime + (5 * 60))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         internal static DateTimeOffset UnixTimeEpoch => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         private static byte[] DecodeBytes(string arg)
@@ -89,33 +117,6 @@ namespace AppAuthentication.Models
             }
 
             return Convert.FromBase64String(s);
-        }
-
-        /// <summary>
-        /// Return the access token as-is
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return _accessToken;
-        }
-
-        /// <summary>
-        /// Check if the token is about to expire
-        /// </summary>
-        /// <returns></returns>
-        public bool IsAboutToExpire()
-        {
-            // Current time represented in seconds since 1/1/1970
-            var currentTime = (DateTime.UtcNow - UnixTimeEpoch).TotalSeconds;
-
-            // If the expiration time is greater than current time by more than 5 minutes, it is not about to expire
-            if (ExpiryTime > currentTime + 5 * 60)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

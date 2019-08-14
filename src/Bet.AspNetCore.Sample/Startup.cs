@@ -21,7 +21,7 @@ namespace Bet.AspNetCore.Sample
 {
     public class Startup
     {
-        private static readonly string AppName = "Bet.AspNetCore.Sample";
+        private const string AppName = "Bet.AspNetCore.Sample";
 
         public Startup(IConfiguration configuration)
         {
@@ -44,7 +44,8 @@ namespace Bet.AspNetCore.Sample
 
             services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
 
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(mlOptions =>
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
+                mlOptions =>
             {
                 mlOptions.CreateModel = (mlContext) =>
                 {
@@ -53,7 +54,7 @@ namespace Bet.AspNetCore.Sample
                         return mlContext.Model.Load(fileStream, out var inputSchema);
                     }
                 };
-            },"SpamModel");
+            }, "SpamModel");
 
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
@@ -73,7 +74,6 @@ namespace Bet.AspNetCore.Sample
             });
 
             services.AddDefaultIdentity<IdentityUser>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddHealthChecks()
@@ -114,29 +114,31 @@ namespace Bet.AspNetCore.Sample
 
             // Preview 6 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
             //  services.AddSwaggerGenWithApiVersion();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env) //, IApiVersionDescriptionProvider provider)
+            IWebHostEnvironment env) // , IApiVersionDescriptionProvider provider)
         {
-            app.UseIfElse(env.IsDevelopment(), dev =>
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseDeveloperListRegisteredServices();
-                return dev;
-            },
-            prod =>
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+            app.UseIfElse(
+                env.IsDevelopment(),
+                dev =>
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseDatabaseErrorPage();
+                    app.UseDeveloperListRegisteredServices();
+                    return dev;
+                },
+                prod =>
+                {
+                    app.UseExceptionHandler("/Error");
 
-                return prod;
-            });
+                    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                    app.UseHsts();
+
+                    return prod;
+                });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -168,16 +170,16 @@ namespace Bet.AspNetCore.Sample
 
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
 
-            // Preview 6 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
-            //app.UseSwaggerUI(options =>
-            //{
+            // Preview 8 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
+            // app.UseSwaggerUI(options =>
+            // {
             //    foreach (var description in provider.ApiVersionDescriptions)
             //    {
             //        options.SwaggerEndpoint(
             //            $"/swagger/{description.GroupName}/swagger.json",
             //            description.GroupName.ToUpperInvariant());
             //    }
-            //});
+            // });
         }
     }
 }

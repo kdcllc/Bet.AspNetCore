@@ -121,13 +121,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual void SaveModel(string modelRelativePath)
         {
-            SaveModel((mlContext, mlModel, path, modelInputSchema) =>
-            {
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+            SaveModel(
+                (mlContext, mlModel, path, modelInputSchema) =>
                 {
-                    mlContext.Model.Save(mlModel, modelInputSchema, fs);
-                }
-            }, modelRelativePath);
+                    using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        mlContext.Model.Save(mlModel, modelInputSchema, fs);
+                    }
+                }, modelRelativePath);
         }
 
         public virtual MemoryStream GetModelStream()

@@ -14,7 +14,7 @@ namespace Bet.Extensions.AzureStorage
         /// <returns></returns>
         public static T Convert<T>(this CloudQueueMessage message)
         {
-           return JsonConvert.DeserializeObject<T>(message.AsString);
+            return JsonConvert.DeserializeObject<T>(message.AsString);
         }
 
         /// <summary>

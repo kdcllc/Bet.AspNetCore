@@ -12,11 +12,11 @@ namespace System
         /// <returns></returns>
         public static string KeepAllLetters(this string input)
         {
-            return Regex.Replace(input, "[^A-Za-z]", "");
+            return Regex.Replace(input, "[^A-Za-z]", string.Empty);
         }
 
         /// <summary>
-        /// Converts string to Base64
+        /// Converts string to Base64.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

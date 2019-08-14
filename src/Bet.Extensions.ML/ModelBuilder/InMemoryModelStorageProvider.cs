@@ -44,7 +44,7 @@ namespace Bet.Extensions.ML.ModelBuilder
 
             if (_modelStorage.TryGetValue(name, out var stream))
             {
-                using(var reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream))
                 {
                     var obj = JsonConvert.DeserializeObject<TResult>(reader.ReadToEnd());
 
@@ -81,13 +81,13 @@ namespace Bet.Extensions.ML.ModelBuilder
 
             var json = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            using(var ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 var arr = Encoding.UTF8.GetBytes(json);
                 ms.Write(arr, 0, arr.Length);
                 ms.Position = 0;
 
-                _modelStorage.AddOrUpdate(name,ms,(_,__)=> ms);
+                _modelStorage.AddOrUpdate(name, ms, (_, __) => ms);
             }
 
             return Task.CompletedTask;

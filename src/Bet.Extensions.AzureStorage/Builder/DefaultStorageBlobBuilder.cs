@@ -8,12 +8,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bet.Extensions.AzureStorage.Builder
 {
-    ///<inheritdoc/>
+    /// <inheritdoc/>
     public class DefaultStorageBlobBuilder : IStorageBlobBuilder
     {
-        ///<inheritdoc/>
-        public IServiceCollection Services { get; }
-
         private readonly string _sectionAzureStorageName;
 
         /// <summary>
@@ -27,10 +24,13 @@ namespace Bet.Extensions.AzureStorage.Builder
             _sectionAzureStorageName = sectionAzureStorageName;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
+        public IServiceCollection Services { get; }
+
+        /// <inheritdoc/>
         public IStorageBlobBuilder AddBlobContainer<TOptions>(
             string sectionAzureStorageName = default,
-            Action<TOptions> configure = default) where TOptions: StorageBlobOptions
+            Action<TOptions> configure = default) where TOptions : StorageBlobOptions
         {
             var finalSectionAzureStorageName = (sectionAzureStorageName ?? _sectionAzureStorageName) ?? string.Empty;
 
@@ -43,13 +43,14 @@ namespace Bet.Extensions.AzureStorage.Builder
                 {
                     path = ConfigurationPath.Combine(path, typeof(TOptions).Name);
                 }
+
                 var section = config.GetSection(path);
                 section.Bind(options);
 
                 configure?.Invoke(options);
             });
 
-            Services.TryAddTransient<IStorageBlob<TOptions>,StorageBlob<TOptions>>();
+            Services.TryAddTransient<IStorageBlob<TOptions>, StorageBlob<TOptions>>();
 
             return this;
         }

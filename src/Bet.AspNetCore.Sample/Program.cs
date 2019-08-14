@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,8 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Bet.AspNetCore.Sample
 {
-    [SuppressMessage("Readability", "RCS1102", Justification = "Valid entry point to the application.")]
-    public class Program
+    public sealed class Program
     {
         public static void Main(string[] args)
         {
@@ -27,6 +25,7 @@ namespace Bet.AspNetCore.Sample
                             {
                                 // based on environment Development = dev; Production = prod prefix in Azure Vault.
                                 var envName = hostingContext.HostingEnvironment.EnvironmentName;
+
                                 var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
 
                                 // helpful to see what was retrieved from all of the configuration providers.

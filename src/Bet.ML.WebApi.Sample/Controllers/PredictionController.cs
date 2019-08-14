@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bet.ML.WebApi.Sample.Controllers
 {
-    //[Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PredictionController : ControllerBase
@@ -24,7 +24,7 @@ namespace Bet.ML.WebApi.Sample.Controllers
             _spamModel = spamModel ?? throw new ArgumentNullException(nameof(spamModel));
         }
 
-        [HttpPost()]
+        [HttpPost]
         public ActionResult<SentimentPrediction> GetSentiment(SentimentIssue input)
         {
             return _sentimentModel.Predict(input);

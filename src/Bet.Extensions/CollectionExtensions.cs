@@ -24,6 +24,7 @@ namespace System.Collections.Generic
                     {
                         chunk[i] = iter.Current;
                     }
+
                     yield return chunk;
                 }
             }

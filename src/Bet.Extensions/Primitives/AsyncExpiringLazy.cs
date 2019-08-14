@@ -10,24 +10,24 @@ namespace System.Threading
 
         private AsyncExpirationValue<T> _value;
 
-        private bool IsValueCreatedInternal => _value.Result != null && _value.ValidUntil > DateTimeOffset.UtcNow;
-
         public AsyncExpiringLazy(Func<AsyncExpirationValue<T>, Task<AsyncExpirationValue<T>>> vauleProvider)
         {
             _valueProvider = vauleProvider ?? throw new ArgumentNullException(nameof(vauleProvider));
         }
 
+        private bool IsValueCreatedInternal => _value.Result != null && _value.ValidUntil > DateTimeOffset.UtcNow;
+
         public async Task<bool> IsValueCreated(CancellationToken cancellationToken = default)
         {
             using (await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
-               return IsValueCreatedInternal;
+                return IsValueCreatedInternal;
             }
         }
 
         public async Task<T> Value(CancellationToken cancellationToken = default)
         {
-            using(await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
+            using (await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
                 if (IsValueCreatedInternal)
                 {
@@ -42,7 +42,7 @@ namespace System.Threading
 
         public async Task Invalidate(CancellationToken cancellationToken = default)
         {
-            using(await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
+            using (await _valueLock.LockAsync(cancellationToken).ConfigureAwait(false))
             {
                 _value = default;
             }

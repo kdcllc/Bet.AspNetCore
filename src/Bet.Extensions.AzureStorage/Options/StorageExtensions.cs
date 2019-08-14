@@ -14,6 +14,7 @@ namespace Bet.Extensions.AzureStorage.Options
             {
                 throw new ArgumentNullException("CloudStorageAccount");
             }
+
             var storageAccount = options.CloudStorageAccount.Value.GetAwaiter().GetResult();
 
             var client = storageAccount.CreateCloudBlobClient();

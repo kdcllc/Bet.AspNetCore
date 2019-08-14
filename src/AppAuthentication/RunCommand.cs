@@ -1,4 +1,7 @@
-﻿using AppAuthentication.AzureCli;
+﻿using System;
+using System.Drawing;
+using System.Threading.Tasks;
+using AppAuthentication.AzureCli;
 using AppAuthentication.Helpers;
 using AppAuthentication.VisualStudio;
 using McMaster.Extensions.CommandLineUtils;
@@ -8,24 +11,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Drawing;
-using System.Threading.Tasks;
 
 namespace AppAuthentication
 {
-    [Command("run",
+    [Command(
+        "run",
         Description = "Runs instance of the local server that returns authentication tokens.",
         ThrowOnUnexpectedArgument = false,
         AllowArgumentSeparator = true)]
     [HelpOption("--help")]
     internal class RunCommand
     {
-        [Option("-a|--authority",
+        [Option(
+            "-a|--authority",
             Description = "Authority Azure TenantId or Azure Directory ID")]
         public string Authority { get; private set; }
 
-        [Option("-r|--resource",
+        [Option(
+            "-r|--resource",
             Description = "Resource to authenticate against. Provided https://login.microsoftonline.com/{tenantId}. Default set to https://vault.azure.net/")]
         public string Resource { get; private set; }
 
@@ -37,31 +40,36 @@ namespace AppAuthentication
         /// --verbose               | (true, LogLevel.Information)
         /// --verbose:information   | (true, LogLevel.Information)
         /// --verbose:debug         | (true, LogLevel.Debug)
-        /// --verbose:trace         | (true, LogLevel.Trace)
+        /// --verbose:trace         | (true, LogLevel.Trace).
         /// </summary>
         [Option(Description = "Allows Verbose logging for the tool. Enable this to get tracing information. Default is false.")]
         public (bool HasValue, LogLevel level) Verbose { get; } = (false, LogLevel.Error);
 
-        [Option("-e|--environment",
+        [Option(
+            "-e|--environment",
             Description = "Specify Hosting Environment Name for the cli tool execution. The Default is Development")]
         public string HostingEnvironment { get; private set; }
 
-        [Option("-p|--port",
+        [Option(
+            "-p|--port",
             Description = "Specify Web Host port number otherwise it is automatically generated. The Default port if open is 5050.")]
         public int? Port { get; private set; }
 
-        [Option("-c|--config",
+        [Option(
+            "-c|--config",
             Description = "Allows to specify a configuration file besides appsettings.json to be specified. The Default appsetting.json located in the execution path.")]
         public string ConfigFile { get; private set; }
 
-        [Option("-t|--token-provider",
+        [Option(
+            "-t|--token-provider",
             Description = "The Azure CLI Access Token Provider to retrieve the Authentication Token. The Default provider is VisualStudio.")]
         public TokenProvider TokenProvider { get; } = TokenProvider.VisualStudio;
 
         [Option("-f|--fix", Description = "Fix command resets Environment Variables.")]
         public bool Fix { get; private set; }
 
-        [Option("-l|--local",
+        [Option(
+            "-l|--local",
             Description = "Setup MSI_ENDPOINT to be pointing to localhost. The Default is set to support Docker Containers only.")]
         public bool Local { get; set; }
 
@@ -93,8 +101,9 @@ namespace AppAuthentication
                 Console.WriteLine($"Active Port: {builderConfig.Port.ToString()}", Color.Green);
 
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)
+
                                 // header: Secret = MSI_SECRET
-                                //?resource=clientid=&api-version=2017-09-01
+                                // ?resource=clientid=&api-version=2017-09-01
                                 .Configure(app =>
                                 {
                                     app.Run(async (context) =>

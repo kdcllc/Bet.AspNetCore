@@ -28,6 +28,7 @@ namespace Bet.AspNetCore.ReCapture
             {
                 context.ModelState.AddModelError(string.Empty, result);
             }
+
             await base.OnActionExecutionAsync(context, next);
         }
     }

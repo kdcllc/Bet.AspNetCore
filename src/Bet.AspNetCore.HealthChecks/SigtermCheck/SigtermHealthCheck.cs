@@ -8,7 +8,6 @@ namespace Bet.AspNetCore.HealthChecks.SigtermCheck
 {
     public class SigtermHealthCheck : IHealthCheck
     {
-
 #if NETCOREAPP3_0
         private readonly IHostApplicationLifetime _applicationLifetime;
 

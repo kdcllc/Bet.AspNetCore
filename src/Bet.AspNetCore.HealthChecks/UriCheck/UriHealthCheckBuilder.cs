@@ -44,7 +44,7 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
                 throw new ArgumentNullException(nameof(optionsSetup));
             }
 
-            Services.Configure<UriHealthCheckOptions>(CheckName, option=>
+            Services.Configure<UriHealthCheckOptions>(CheckName, option =>
             {
                 option.UriOptions.Add(optionsSetup);
             });

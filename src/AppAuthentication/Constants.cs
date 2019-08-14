@@ -22,7 +22,7 @@
         public static readonly string MsiRunAsApp = "RunAs=App;";
 
         // https://docs.microsoft.com/en-us/azure/key-vault/service-to-service-authentication#connection-string-support
-        //RunAs=Developer; DeveloperTool=AzureCli
-        //RunAs=Developer; DeveloperTool=VisualStudio
+        // RunAs=Developer; DeveloperTool=AzureCli
+        // RunAs=Developer; DeveloperTool=VisualStudio
     }
 }

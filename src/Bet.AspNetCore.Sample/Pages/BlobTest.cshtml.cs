@@ -21,7 +21,7 @@ namespace Bet.AspNetCore.Sample.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             // TO TEST BLOB
-            await _storageBlob.AddAsync(new { content = "This is added to uploads" }, $"{Guid.NewGuid()}.json" );
+            await _storageBlob.AddAsync(new { content = "This is added to uploads" }, $"{Guid.NewGuid()}.json");
 
             return Page();
         }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
+using Microsoft.Extensions.Options;
 using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Microsoft.Extensions.Configuration
@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.Configuration
         }
 
         /// <summary>
-        ///  Attempts to bind the given object type instance to the configuration section
+        ///  Attempts to bind the given object type instance to the configuration section.
         /// </summary>
         /// <typeparam name="TOptions">The type of the configuration section to bind to.</typeparam>
         /// <param name="configuration">The configuration.</param>
@@ -57,6 +57,7 @@ namespace Microsoft.Extensions.Configuration
             {
                 ValidateDataAnnotation<TOptions>(section, key);
             }
+
             return (TOptions)section;
         }
 

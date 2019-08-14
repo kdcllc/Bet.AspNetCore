@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.Helpers;
 
 using CsvHelper;
+
 using Microsoft.Extensions.Primitives;
+
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -18,8 +19,9 @@ namespace Bet.Extensions.ML.ModelBuilder
     /// </summary>
     public class FileModelStorageProvider : IModelStorageProvider
     {
-        private ReloadToken _reloadToken;
         private readonly object _lock = new object();
+
+        private ReloadToken _reloadToken;
 
         public FileModelStorageProvider()
         {
@@ -69,23 +71,24 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <returns></returns>
         public Task SaveModelAsync(string name, MemoryStream stream, CancellationToken cancellationToken)
         {
-            return Task.Run(() =>
-            {
-                var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
-
-                lock (_lock)
+            return Task.Run(
+                () =>
                 {
-                    var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+                    var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
 
-                    using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+                    lock (_lock)
                     {
-                        stream.WriteTo(fs);
-                    }
-                }
+                        var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
 
-                previousToken.OnReload();
-            },
-            cancellationToken);
+                        using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+                        {
+                            stream.WriteTo(fs);
+                        }
+                    }
+
+                    previousToken.OnReload();
+                },
+                cancellationToken);
         }
 
         /// <summary>
@@ -98,7 +101,8 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <returns></returns>
         public Task SaveModelResultAsync<TResult>(TResult result, string name, CancellationToken cancellationToken)
         {
-            return Task.Run(() =>
+            return Task.Run(
+                () =>
             {
                 lock (_lock)
                 {
@@ -108,7 +112,7 @@ namespace Bet.Extensions.ML.ModelBuilder
                     File.WriteAllText(fileLocation, json);
                 }
             },
-            cancellationToken);
+                cancellationToken);
         }
 
         /// <summary>
@@ -129,6 +133,11 @@ namespace Bet.Extensions.ML.ModelBuilder
             }
         }
 
+        public IChangeToken GetReloadToken()
+        {
+            return _reloadToken;
+        }
+
         private async Task<MemoryStream> GetMemoryStream(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -141,11 +150,6 @@ namespace Bet.Extensions.ML.ModelBuilder
                 await fs.CopyToAsync(ms).ConfigureAwait(false);
                 return ms;
             }
-        }
-
-        public IChangeToken GetReloadToken()
-        {
-            return _reloadToken;
         }
     }
 }

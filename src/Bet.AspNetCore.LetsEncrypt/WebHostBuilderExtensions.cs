@@ -13,9 +13,9 @@ namespace Microsoft.AspNetCore.Hosting
         /// Use Let's Encrypt (<see href="https://letsencrpyt.org">https://letsencrpyt.org</see>)
         /// to automatically generate HTTPs certificates for this server.
         /// </summary>
-        /// <param name="hostBuilder">The web host builder</param>
-        /// <param name="configure">Options for configuring certificate generation</param>
-        /// <returns>The web host builder</returns>
+        /// <param name="hostBuilder">The web host builder.</param>
+        /// <param name="configure">Options for configuring certificate generation.</param>
+        /// <returns>IWebHostBuilder.</returns>
         public static IWebHostBuilder UseLetsEncrypt(
             this IWebHostBuilder hostBuilder,
             Action<LetsEncryptOptions> configure)

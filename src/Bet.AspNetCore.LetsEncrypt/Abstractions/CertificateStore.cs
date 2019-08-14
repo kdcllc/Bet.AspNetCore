@@ -18,9 +18,10 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
     /// <inheritdoc/>
     public class CertificateStore : ICertificateStore
     {
-        private LetsEncryptOptions _options;
         private readonly IEnumerable<ICertificateStoreProvider> _providers;
         private readonly ILogger<CertificateStore> _logger;
+
+        private LetsEncryptOptions _options;
 
         public CertificateStore(
             IOptionsMonitor<LetsEncryptOptions> options,
@@ -104,7 +105,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
         {
             _logger.LogTrace("Using Provider {0} to save...", storeType);
 
-            var tasks = providers.Select(x => x.SaveAsync(storeType, bytes ?? new byte[0], cancellationToken));
+            var tasks = providers.Select(x => x.SaveAsync(storeType, bytes ?? Array.Empty<byte>(), cancellationToken));
             await Task.WhenAll(tasks);
         }
 

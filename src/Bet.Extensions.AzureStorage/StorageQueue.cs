@@ -48,7 +48,7 @@ namespace Bet.Extensions.AzureStorage
                 throw new ArgumentNullException(nameof(message));
             }
 
-            await (await Queue).AddMessageAsync(message,cancellationToken);
+            await (await Queue).AddMessageAsync(message, cancellationToken);
         }
 
         public async Task SendAsync<T>(
@@ -200,6 +200,7 @@ namespace Bet.Extensions.AzureStorage
             {
                 _logger?.LogInformation("  - Using existing Azure Queue [{QueueName}] [{optionsName}].", options.QueueName, options);
             }
+
             sw.Stop();
 
             _logger?.LogInformation("  - {nameOf} ran for {seconds}", nameof(CreateCloudQueue), sw.Elapsed.TotalSeconds);

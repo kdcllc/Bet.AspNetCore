@@ -15,8 +15,8 @@ namespace Bet.AspNetCore.UnitTest
         {
             var options = new JObject
             {
-                {nameof(Id), Id.ToString() },
-                {nameof(Name), Name },
+                { nameof(Id), Id.ToString() },
+                { nameof(Name), Name },
             };
 
             return options.ToString(Formatting.Indented);

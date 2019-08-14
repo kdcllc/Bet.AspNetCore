@@ -1,8 +1,8 @@
-﻿using Bet.Extensions.Options;
+﻿using System;
+using System.Linq;
+using Bet.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

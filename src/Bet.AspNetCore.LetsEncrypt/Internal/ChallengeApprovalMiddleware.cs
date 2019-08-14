@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Bet.AspNetCore.LetsEncrypt.Abstractions;
@@ -34,7 +33,8 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
             {
                 _logger.LogInformation(
                     "The given challenge did not match {challengePath}",
-                    context.Request.Path.ToString(), token);
+                    context.Request.Path.ToString(),
+                    token);
                 await next(context);
                 return;
             }

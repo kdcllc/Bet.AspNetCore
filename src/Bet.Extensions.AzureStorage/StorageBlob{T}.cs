@@ -16,17 +16,17 @@ namespace Bet.Extensions.AzureStorage
     /// <inheritdoc />
     public class StorageBlob<TOptions> : IStorageBlob<TOptions> where TOptions : StorageBlobOptions
     {
+        private readonly StorageBlob _storage;
+
         /// <inheritdoc />
         public string Name { get; }
 
-        private readonly StorageBlob _storage;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="StorageBlob"/> class.
+        /// Initializes a new instance of the <see cref="StorageBlob{TOptions}"/> class.
         /// </summary>
         /// <param name="storageAccountOptions">The named <see cref="StorageAccountOptions"/>.</param>
         /// <param name="blobOptions">The named TOptions configurations.</param>
-        /// <param name="logger">The logger</param>
+        /// <param name="logger">The logger.</param>
         public StorageBlob(
             IOptionsMonitor<StorageAccountOptions> storageAccountOptions,
             IOptionsMonitor<TOptions> blobOptions,

@@ -9,7 +9,7 @@ namespace Bet.AspNetCore.Sample.Models
         [ColumnName("PredictedLabel")]
         public bool IsToxic { get; set; }
 
-        //Question:Isn't this column redundant? What we tell customers to do here?
+        // Question:Isn't this column redundant? What we tell customers to do here?
         [ColumnName("Score")]
         public float Score { get; set; }
     }

@@ -4,14 +4,14 @@ using System.Threading;
 namespace Microsoft.Extensions.Primitives
 {
     /// <summary>
-    /// Implements <see cref="IChangeToken"/>
+    /// Implements <see cref="IChangeToken"/>.
     /// </summary>
     public class ReloadToken : IChangeToken
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         /// <summary>
-        /// Indicates if this token will proactively raise callbacks. Callbacks are still guaranteed to be invoked, eventually.
+        /// Indicates if this token will pro-actively raise callbacks. Callbacks are still guaranteed to be invoked, eventually.
         /// </summary>
         public bool ActiveChangeCallbacks => true;
 

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AppAuthentication
 {
@@ -28,7 +28,7 @@ namespace AppAuthentication
         /// <summary>
         /// Execute the given process and return the result.
         /// </summary>
-        /// <param name="process">The process to execute</param>
+        /// <param name="process">The process to execute.</param>
         /// <returns>Returns the process output from the standard output stream.</returns>
         public Task<string> ExecuteAsync(Process process)
         {
@@ -42,7 +42,8 @@ namespace AppAuthentication
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
 
-            process.OutputDataReceived += (sender, e) => {
+            process.OutputDataReceived += (sender, e) =>
+            {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     output.AppendLine(e.Data);
@@ -51,7 +52,8 @@ namespace AppAuthentication
                 }
             };
 
-            process.ErrorDataReceived += (sender, e) => {
+            process.ErrorDataReceived += (sender, e) =>
+            {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
                     error.AppendLine(e.Data);
@@ -76,29 +78,29 @@ namespace AppAuthentication
             };
 
             // Used to kill the process if it doesn not respond for the given duration.
-            var cancellationTokenSource = new CancellationTokenSource(_timeOutDuration);
-
-            var cancellationToken = cancellationTokenSource.Token;
-
-            cancellationToken.Register(() =>
+            using (var cancellationTokenSource = new CancellationTokenSource(_timeOutDuration))
             {
-                if (!tcs.Task.IsCompleted)
+                var cancellationToken = cancellationTokenSource.Token;
+                cancellationToken.Register(() =>
                 {
-                    if (!process.HasExited)
+                    if (!tcs.Task.IsCompleted)
                     {
-                        process.Kill();
+                        if (!process.HasExited)
+                        {
+                            process.Kill();
+                        }
+
+                        tcs.TrySetException(new TimeoutException(TimeOutError));
                     }
+                });
 
-                    tcs.TrySetException(new TimeoutException(TimeOutError));
-                }
-            });
+                process.Start();
 
-            process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
 
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-
-            return tcs.Task;
+                return tcs.Task;
+            }
         }
     }
 }

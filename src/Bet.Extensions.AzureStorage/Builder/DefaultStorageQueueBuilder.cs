@@ -10,7 +10,7 @@ namespace Bet.Extensions.AzureStorage.Builder
 {
     public class DefaultStorageQueueBuilder : IStorageQueueBuilder
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public IServiceCollection Services { get; }
 
         private readonly string _sectionAzureStorageName;
@@ -26,10 +26,10 @@ namespace Bet.Extensions.AzureStorage.Builder
             _sectionAzureStorageName = sectionAzureStorageName;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public IStorageQueueBuilder AddQueue<TOptions>(
             string sectionAzureStorageName = default,
-            Action<TOptions> configure = default) where TOptions: StorageQueueOptions
+            Action<TOptions> configure = default) where TOptions : StorageQueueOptions
         {
             var finalSectionAzureStorageName = (sectionAzureStorageName ?? _sectionAzureStorageName) ?? string.Empty;
 
@@ -42,6 +42,7 @@ namespace Bet.Extensions.AzureStorage.Builder
                 {
                     path = ConfigurationPath.Combine(path, typeof(TOptions).Name);
                 }
+
                 var section = config.GetSection(path);
                 section.Bind(options);
 

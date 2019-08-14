@@ -1,5 +1,5 @@
-﻿using Microsoft.ML.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.ML.Data;
 
 namespace Bet.AspNetCore.Sample.Models
 {

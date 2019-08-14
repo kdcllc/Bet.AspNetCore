@@ -43,7 +43,7 @@ namespace Bet.Extensions.ML.Prediction
 
             var predictionEngine = _mlContext.Model.CreatePredictionEngine<TData, TPrediction>(_model);
 
-            _logger.Log(_options.LogLevel,"Time took to create the prediction engine: {elapsed}", sw.GetElapsedTime());
+            _logger.Log(_options.LogLevel, "Time took to create the prediction engine: {elapsed}", sw.GetElapsedTime());
 
             _references.Add(new WeakReference(predictionEngine));
             return predictionEngine;

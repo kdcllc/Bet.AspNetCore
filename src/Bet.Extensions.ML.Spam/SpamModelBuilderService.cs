@@ -19,8 +19,12 @@ namespace Bet.Extensions.ML.Spam
         private readonly IModelStorageProvider _storageProvider;
         private readonly object _lockObject = new object();
 
-        public string Name { get; set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpamModelBuilderService"/> class.
+        /// </summary>
+        /// <param name="spamModelBuilder"></param>
+        /// <param name="storageProvider"></param>
+        /// <param name="logger"></param>
         public SpamModelBuilderService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
             IModelStorageProvider storageProvider,
@@ -33,38 +37,41 @@ namespace Bet.Extensions.ML.Spam
             Name = nameof(SpamModelBuilderService);
         }
 
+        public string Name { get; set; }
+
         public async Task TrainModelAsync(CancellationToken cancellationToken)
         {
-                _logger.LogInformation("TrainModelAsync][Started]");
+            _logger.LogInformation("TrainModelAsync][Started]");
 
-                var sw = ValueStopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
-                // 1. load default ML data set
-                _logger.LogInformation("[LoadDataset][Started]");
-                _modelBuilder.LoadDefaultData().BuiltDataView();
-                _logger.LogInformation("[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed}",
-                    _modelBuilder.DataView.GetRowCount(),
-                    sw.GetElapsedTime().TotalMilliseconds);
+            // 1. load default ML data set
+            _logger.LogInformation("[LoadDataset][Started]");
+            _modelBuilder.LoadDefaultData().BuiltDataView();
+            _logger.LogInformation(
+                "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed}",
+                _modelBuilder.DataView.GetRowCount(),
+                sw.GetElapsedTime().TotalMilliseconds);
 
-                // 2. build training pipeline
-                _logger.LogInformation("[BuildTrainingPipeline][Started]");
-                var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
-                _logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed}", buildTrainingPipelineResult.ElapsedMilliseconds);
+            // 2. build training pipeline
+            _logger.LogInformation("[BuildTrainingPipeline][Started]");
+            var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
+            _logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed}", buildTrainingPipelineResult.ElapsedMilliseconds);
 
-                // 3. evaluate quality of the pipeline
-                _logger.LogInformation("[Evaluate][Started]");
-                var evaluateResult = _modelBuilder.Evaluate();
-                _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
-                _logger.LogInformation(evaluateResult.ToString());
+            // 3. evaluate quality of the pipeline
+            _logger.LogInformation("[Evaluate][Started]");
+            var evaluateResult = _modelBuilder.Evaluate();
+            _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
+            _logger.LogInformation(evaluateResult.ToString());
 
-                await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
+            await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
 
-                // 4. train the model
-                _logger.LogInformation("[TrainModel][Started]");
-                var trainModelResult = _modelBuilder.TrainModel();
-                _logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed}", trainModelResult.ElapsedMilliseconds);
+            // 4. train the model
+            _logger.LogInformation("[TrainModel][Started]");
+            var trainModelResult = _modelBuilder.TrainModel();
+            _logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed}", trainModelResult.ElapsedMilliseconds);
 
-                _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
+            _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
 
             await Task.CompletedTask;
         }
@@ -94,8 +101,8 @@ namespace Bet.Extensions.ML.Spam
 
             var tasks = new List<Task>
             {
-                ClassifyAsync(predictor, "That's a great idea. It should work.","ham", cancellationToken),
-                ClassifyAsync(predictor, "free medicine winner! congratulations","spam", cancellationToken),
+                ClassifyAsync(predictor, "That's a great idea. It should work.", "ham", cancellationToken),
+                ClassifyAsync(predictor, "free medicine winner! congratulations", "spam", cancellationToken),
                 ClassifyAsync(predictor, "Yes we should meet over the weekend!", "ham", cancellationToken),
                 ClassifyAsync(predictor, "you win pills and free entry vouchers", "spam", cancellationToken)
             };
@@ -111,28 +118,29 @@ namespace Bet.Extensions.ML.Spam
             string expectedResult,
             CancellationToken cancellationToken)
         {
-            return Task.Run(() =>
-            {
-                var input = new SpamInput { Message = text };
-
-                SpamPrediction prediction = null;
-                lock (_lockObject)
+            return Task.Run(
+                () =>
                 {
-                    prediction = predictor.Predict(input);
-                }
+                    var input = new SpamInput { Message = text };
 
-                var result = prediction.IsSpam == "spam" ? "spam" : "not spam";
+                    SpamPrediction prediction = null;
+                    lock (_lockObject)
+                    {
+                        prediction = predictor.Predict(input);
+                    }
 
-                if (prediction.IsSpam == expectedResult)
-                {
-                    _logger.LogInformation("[ClassifyAsync][Predict] result: '{0}' is {1}",  input.Message, result);
-                }
-                else
-                {
-                    _logger.LogWarning("[ClassifyAsync][Predict] result: '{0}' is {1}", input.Message, result);
-                }
-            },
-            cancellationToken);
+                    var result = prediction.IsSpam == "spam" ? "spam" : "not spam";
+
+                    if (prediction.IsSpam == expectedResult)
+                    {
+                        _logger.LogInformation("[ClassifyAsync][Predict] result: '{0}' is {1}", input.Message, result);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("[ClassifyAsync][Predict] result: '{0}' is {1}", input.Message, result);
+                    }
+                },
+                cancellationToken);
         }
     }
 }

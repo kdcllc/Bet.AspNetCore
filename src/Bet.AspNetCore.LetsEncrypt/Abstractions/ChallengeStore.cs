@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Bet.AspNetCore.LetsEncrypt.Abstractions
-
 {
     /// <inheritdoc/>
     public class ChallengeStore : IChallengeStore
@@ -64,7 +63,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Abstractions
 
             var bytes = json == null ? null : Encoding.UTF8.GetBytes(json);
 
-            var tasks = _providers.Select(p => p.SaveAsync(challenges.Token, bytes ?? new byte[0], cancellationToken));
+            var tasks = _providers.Select(p => p.SaveAsync(challenges.Token, bytes ?? Array.Empty<byte>(), cancellationToken));
 
             await Task.WhenAll(tasks);
         }

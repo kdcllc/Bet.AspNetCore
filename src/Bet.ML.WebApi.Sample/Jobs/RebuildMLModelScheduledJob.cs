@@ -1,12 +1,12 @@
-﻿using Bet.Extensions.ML.ModelBuilder;
-using CronScheduler.AspNetCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bet.Extensions.ML.ModelBuilder;
+using CronScheduler.AspNetCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bet.ML.WebApi.Sample.Jobs
 {

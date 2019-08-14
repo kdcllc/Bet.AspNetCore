@@ -93,16 +93,16 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        TrainModelResult TrainModel(Func<IDataView,TrainModelResult> builder);
+        TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder);
 
         /// <summary>
-        /// Evaluates ML model and returns results
+        /// Evaluates ML model and returns results.
         /// </summary>
         /// <returns></returns>
         TResult Evaluate();
 
         /// <summary>
-        /// Evaluates ML model and returns results
+        /// Evaluates ML model and returns results.
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
@@ -113,7 +113,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="modelRelativePath"></param>
-        void SaveModel(Action<MLContext, ITransformer,string, DataViewSchema> builder, string modelRelativePath);
+        void SaveModel(Action<MLContext, ITransformer, string, DataViewSchema> builder, string modelRelativePath);
 
         /// <summary>
         /// Saves ML model to a disk.

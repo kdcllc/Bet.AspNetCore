@@ -31,7 +31,7 @@ namespace Bet.AspNetCore.UnitTest.MachineLearning
 
             var stream = new MemoryStream();
             var modelBytes = Encoding.UTF8.GetBytes(modelText);
-            stream.Write(modelBytes,0,modelBytes.Length);
+            stream.Write(modelBytes, 0, modelBytes.Length);
             stream.Position = 0;
 
             await storage.SaveModelAsync(modelName, stream, cts.Token);

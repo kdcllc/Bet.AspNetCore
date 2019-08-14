@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6064A704-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B5340D45-2E08-42BE-B316-4B46EBEEFB69}"
 	ProjectSection(SolutionItems) = preProject
+		build\betcommon.ruleset = build\betcommon.ruleset
 		build\dependencies.props = build\dependencies.props
 		build\settings.props = build\settings.props
 		build\sources.props = build\sources.props
+		build\stylecop.json = build\stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BB9BCC1-2A94-4439-AE89-E99A79DF38DF}"
@@ -73,6 +75,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.LetsEncrypt", "src\Bet.AspNetCore.LetsEncrypt\Bet.AspNetCore.LetsEncrypt.csproj", "{2D33AF22-F2D7-4862-861B-8C67537E0A18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.ML.WebApi.Sample", "src\Bet.ML.WebApi.Sample\Bet.ML.WebApi.Sample.csproj", "{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.CodeAnalyzers", "src\Bet.Extensions.CodeAnalyzers\Bet.Extensions.CodeAnalyzers.csproj", "{6C09F73B-4A61-466A-8296-478F33CF05AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,6 +168,10 @@ Global
 		{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C09F73B-4A61-466A-8296-478F33CF05AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C09F73B-4A61-466A-8296-478F33CF05AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C09F73B-4A61-466A-8296-478F33CF05AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C09F73B-4A61-466A-8296-478F33CF05AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +198,7 @@ Global
 		{E2DB931C-8B88-4870-A7D7-D51C411C141A} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{2D33AF22-F2D7-4862-861B-8C67537E0A18} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA} = {D08248C1-62F0-4011-9CB2-406FDE28EEA3}
+		{6C09F73B-4A61-466A-8296-478F33CF05AB} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}
