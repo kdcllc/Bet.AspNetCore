@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!--C:\Users\Root\.nuget\packages-->
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeContentInPack>true</IncludeContentInPack>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Bet.Extensions.CodeAnalyzers.ruleset" />
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" IncludeAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4" IncludeAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\build\betcommon.ruleset" Link="betcommon.ruleset" PackagePath="\">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\build\stylecop.json" Link="stylecop.json" PackagePath="\">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="build\betcommon.props" PackagePath="build\" />
+    <Content Include="Bet.Extensions.CodeAnalyzers.props" />
+    <Content Include="Bet.Extensions.CodeAnalyzers.ruleset" />
+    <Content Include="stylecop.json" />
   </ItemGroup>
 </Project>
