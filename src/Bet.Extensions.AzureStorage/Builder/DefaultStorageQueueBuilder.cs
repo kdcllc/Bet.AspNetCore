@@ -10,13 +10,10 @@ namespace Bet.Extensions.AzureStorage.Builder
 {
     public class DefaultStorageQueueBuilder : IStorageQueueBuilder
     {
-        /// <inheritdoc/>
-        public IServiceCollection Services { get; }
-
         private readonly string _sectionAzureStorageName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultStorageBlobBuilder"/> class.
+        /// Initializes a new instance of the <see cref="DefaultStorageQueueBuilder"/> class.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="sectionAzureStorageName"></param>
@@ -25,6 +22,9 @@ namespace Bet.Extensions.AzureStorage.Builder
             Services = services ?? throw new ArgumentNullException(nameof(services));
             _sectionAzureStorageName = sectionAzureStorageName;
         }
+
+        /// <inheritdoc/>
+        public IServiceCollection Services { get; }
 
         /// <inheritdoc/>
         public IStorageQueueBuilder AddQueue<TOptions>(

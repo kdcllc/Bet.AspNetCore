@@ -5,7 +5,9 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Primitives;
+
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -13,8 +15,9 @@ namespace Bet.Extensions.ML.ModelBuilder
     public class InMemoryModelStorageProvider : IModelStorageProvider
     {
         private readonly ConcurrentDictionary<string, MemoryStream> _modelStorage = new ConcurrentDictionary<string, MemoryStream>();
-        private ReloadToken _reloadToken;
         private readonly object _lock = new object();
+
+        private ReloadToken _reloadToken;
 
         public InMemoryModelStorageProvider()
         {

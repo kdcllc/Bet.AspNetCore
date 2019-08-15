@@ -12,7 +12,7 @@ namespace Bet.Extensions.AzureStorage.Options
         {
             if (options.CloudStorageAccount == null)
             {
-                throw new ArgumentNullException("CloudStorageAccount");
+                throw new ArgumentNullException(nameof(options), "CloudStorageAccount can't be null");
             }
 
             var storageAccount = options.CloudStorageAccount.Value.GetAwaiter().GetResult();

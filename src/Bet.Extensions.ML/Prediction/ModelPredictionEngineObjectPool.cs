@@ -15,10 +15,6 @@ namespace Bet.Extensions.ML.Prediction
         private readonly MLContext _mlContext;
         private readonly ILogger _logger;
 
-        public ITransformer Model { get; }
-
-        public ObjectPool<PredictionEngine<TData, TPrediction>> Pool { get; private set; }
-
         public ModelPredictionEngineObjectPool(
            Func<ModelPredictionEngineOptions<TData, TPrediction>> options,
            ILoggerFactory loggerFactory)
@@ -37,6 +33,10 @@ namespace Bet.Extensions.ML.Prediction
             // create PredictionEngine Object Pool
             Pool = CreatePredictionEngineObjectPool();
         }
+
+        public ITransformer Model { get; }
+
+        public ObjectPool<PredictionEngine<TData, TPrediction>> Pool { get; private set; }
 
         public TPrediction Predict(TData dataSample)
         {

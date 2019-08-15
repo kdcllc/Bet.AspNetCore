@@ -23,31 +23,6 @@ namespace Bet.Extensions.ML.ModelBuilder
             CalculateMetrics();
         }
 
-        private void CalculateMetrics()
-        {
-            var metricsInMultipleFolds = _crossValResults.Select(r => r.Metrics);
-
-            var microAccuracyValues = metricsInMultipleFolds.Select(m => m.MicroAccuracy);
-            MicroAccuracyAverage = microAccuracyValues.Average();
-            MicroAccuraciesStdDeviation = CalculateStandardDeviation(microAccuracyValues);
-            MicroAccuraciesConfidenceInterval95 = CalculateConfidenceInterval95(microAccuracyValues);
-
-            var macroAccuracyValues = metricsInMultipleFolds.Select(m => m.MacroAccuracy);
-            MacroAccuracyAverage = macroAccuracyValues.Average();
-            MacroAccuraciesStdDeviation = CalculateStandardDeviation(macroAccuracyValues);
-            MacroAccuraciesConfidenceInterval95 = CalculateConfidenceInterval95(macroAccuracyValues);
-
-            var logLossValues = metricsInMultipleFolds.Select(m => m.LogLoss);
-            LogLossAverage = logLossValues.Average();
-            LogLossStdDeviation = CalculateStandardDeviation(logLossValues);
-            LogLossConfidenceInterval95 = CalculateConfidenceInterval95(logLossValues);
-
-            var logLossReductionValues = metricsInMultipleFolds.Select(m => m.LogLossReduction);
-            LogLossReductionAverage = logLossReductionValues.Average();
-            LogLossReductionStdDeviation = CalculateStandardDeviation(logLossReductionValues);
-            LogLossReductionConfidenceInterval95 = CalculateConfidenceInterval95(logLossReductionValues);
-        }
-
         public double MicroAccuracyAverage { get; set; }
 
         public double MicroAccuraciesStdDeviation { get; set; }
@@ -99,6 +74,31 @@ namespace Bet.Extensions.ML.ModelBuilder
             sb.Append("*       Average LogLossReduction: ").AppendFormat("{0:#.###}", LogLossReductionAverage).Append("  - Standard deviation: (").AppendFormat("{0:#.###}", LogLossReductionStdDeviation).Append(")  - Confidence Interval 95%: (").AppendFormat("{0:#.###}", LogLossReductionConfidenceInterval95).AppendLine(")");
             sb.AppendLine("*************************************************************************************************************");
             return sb.ToString();
+        }
+
+        private void CalculateMetrics()
+        {
+            var metricsInMultipleFolds = _crossValResults.Select(r => r.Metrics);
+
+            var microAccuracyValues = metricsInMultipleFolds.Select(m => m.MicroAccuracy);
+            MicroAccuracyAverage = microAccuracyValues.Average();
+            MicroAccuraciesStdDeviation = CalculateStandardDeviation(microAccuracyValues);
+            MicroAccuraciesConfidenceInterval95 = CalculateConfidenceInterval95(microAccuracyValues);
+
+            var macroAccuracyValues = metricsInMultipleFolds.Select(m => m.MacroAccuracy);
+            MacroAccuracyAverage = macroAccuracyValues.Average();
+            MacroAccuraciesStdDeviation = CalculateStandardDeviation(macroAccuracyValues);
+            MacroAccuraciesConfidenceInterval95 = CalculateConfidenceInterval95(macroAccuracyValues);
+
+            var logLossValues = metricsInMultipleFolds.Select(m => m.LogLoss);
+            LogLossAverage = logLossValues.Average();
+            LogLossStdDeviation = CalculateStandardDeviation(logLossValues);
+            LogLossConfidenceInterval95 = CalculateConfidenceInterval95(logLossValues);
+
+            var logLossReductionValues = metricsInMultipleFolds.Select(m => m.LogLossReduction);
+            LogLossReductionAverage = logLossReductionValues.Average();
+            LogLossReductionStdDeviation = CalculateStandardDeviation(logLossReductionValues);
+            LogLossReductionConfidenceInterval95 = CalculateConfidenceInterval95(logLossReductionValues);
         }
     }
 }

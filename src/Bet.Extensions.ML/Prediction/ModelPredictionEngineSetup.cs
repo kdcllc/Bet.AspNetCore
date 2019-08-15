@@ -13,8 +13,9 @@ namespace Bet.Extensions.ML.Prediction
         where TPrediction : class, new()
     {
         private readonly ILogger<MLContext> _logger;
-        private ModelPredictionEngineOptions<TData, TPrediction> _options;
         private readonly IServiceProvider _serviceProvider;
+
+        private ModelPredictionEngineOptions<TData, TPrediction> _options;
 
         public ModelPredictionEngineSetup(
             IServiceProvider serviceProvider,

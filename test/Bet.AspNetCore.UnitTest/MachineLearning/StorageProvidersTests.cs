@@ -24,27 +24,29 @@ namespace Bet.AspNetCore.UnitTest.MachineLearning
 
             var storage = provider.GetRequiredService<IModelStorageProvider>();
 
-            var cts = new CancellationTokenSource();
+            using (var cts = new CancellationTokenSource())
+            {
+                var modelName = "testModel";
+                var modelText = "This is test for the model memory stream";
 
-            var modelName = "testModel";
-            var modelText = "This is test for the model memory stream";
+                using (var stream = new MemoryStream())
+                {
+                    var modelBytes = Encoding.UTF8.GetBytes(modelText);
+                    stream.Write(modelBytes, 0, modelBytes.Length);
+                    stream.Position = 0;
 
-            var stream = new MemoryStream();
-            var modelBytes = Encoding.UTF8.GetBytes(modelText);
-            stream.Write(modelBytes, 0, modelBytes.Length);
-            stream.Position = 0;
+                    await storage.SaveModelAsync(modelName, stream, cts.Token);
+                }
 
-            await storage.SaveModelAsync(modelName, stream, cts.Token);
-
-            var savedStream = await storage.LoadModelAsync(modelName, cts.Token);
-
-            var reader = new StreamReader(savedStream);
-            var text = reader.ReadToEnd();
-
-            Assert.Equal(modelText, text);
-            cts.Dispose();
-            stream.Close();
-            savedStream.Close();
+                using (var savedStream = await storage.LoadModelAsync(modelName, cts.Token))
+                {
+                    using (var reader = new StreamReader(savedStream))
+                    {
+                        var text = reader.ReadToEnd();
+                        Assert.Equal(modelText, text);
+                    }
+                }
+            }
         }
     }
 }

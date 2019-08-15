@@ -2,7 +2,9 @@
 
 namespace System.Threading
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public class AsyncExpiringLazy<T>
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private readonly AsyncLock _valueLock = new AsyncLock();
 

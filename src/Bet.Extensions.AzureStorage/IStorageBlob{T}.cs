@@ -26,8 +26,8 @@ namespace Bet.Extensions.AzureStorage
         /// Adds an object to an Azure Blob Storage, as byte[].
         /// </summary>
         /// <param name="content">The array of bytes to be stored in Azure Storage Blob.</param>
-        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new <code>Guid</code> will be used.</param>
-        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to <code>application/octet-stream</code>.</param>
+        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new. <code>Guid</code> will be used.</param>
+        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to. <code>application/octet-stream</code>.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
         /// <returns>string: blob name.</returns>
         Task<string> AddAsync(byte[] content, string blobId = null, string contentType = null, CancellationToken cancellationToken = default);

@@ -10,18 +10,6 @@ namespace Bet.Extensions.AzureStorage
     {
         private readonly CloudBlockBlob _blockBlob;
 
-        public bool Exists { get; }
-
-        public long Length { get; }
-
-        public string PhysicalPath { get; }
-
-        public string Name { get; }
-
-        public DateTimeOffset LastModified { get; }
-
-        public bool IsDirectory { get; }
-
         public StorageFileInfo(IListBlobItem blob)
         {
             Exists = blob.Container.Exists();
@@ -44,6 +32,18 @@ namespace Bet.Extensions.AzureStorage
                     break;
             }
         }
+
+        public bool Exists { get; }
+
+        public long Length { get; }
+
+        public string PhysicalPath { get; }
+
+        public string Name { get; }
+
+        public DateTimeOffset LastModified { get; }
+
+        public bool IsDirectory { get; }
 
         public Stream CreateReadStream()
         {

@@ -13,6 +13,15 @@ namespace Bet.Extensions.ML.ModelBuilder
      where TOutput : class, new()
      where TResult : MetricsResult
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelCreationBuilder{TInput, TOutput, TResult}"/> class.
+        /// </summary>
+        /// <param name="mLContext"></param>
+        public ModelCreationBuilder(MLContext mLContext)
+        {
+            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
+        }
+
         /// <inheritdoc/>
         public virtual IDataView TrainingDataView { get; private set; }
 
@@ -40,13 +49,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual DataViewSchema TrainingSchema { get; set; }
 
-        /// <inheritdoc/>
         public abstract TrainingPipelineResult BuildTrainingPipeline();
-
-        public ModelCreationBuilder(MLContext mLContext)
-        {
-            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
-        }
 
         /// <inheritdoc/>
         public virtual TrainingPipelineResult BuildTrainingPipeline(Func<TrainingPipelineResult> builder)

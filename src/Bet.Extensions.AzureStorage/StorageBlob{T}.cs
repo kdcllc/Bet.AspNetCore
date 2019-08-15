@@ -18,9 +18,6 @@ namespace Bet.Extensions.AzureStorage
     {
         private readonly StorageBlob _storage;
 
-        /// <inheritdoc />
-        public string Name { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="StorageBlob{TOptions}"/> class.
         /// </summary>
@@ -40,6 +37,9 @@ namespace Bet.Extensions.AzureStorage
 
             _storage = new StorageBlob(blobOptions.CurrentValue as StorageBlobOptions, accountOptions, logger.CreateLogger(nameof(StorageBlob<TOptions>)));
         }
+
+        /// <inheritdoc />
+        public string Name { get; }
 
         /// <inheritdoc />
         public async Task<IEnumerable<CloudBlockBlob>> GetAllAsync(

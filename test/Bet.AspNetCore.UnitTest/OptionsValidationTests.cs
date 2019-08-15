@@ -66,12 +66,12 @@ namespace Bet.AspNetCore.UnitTest
                 { "FakeOptions:Name", string.Empty }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -80,7 +80,7 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
                 })
                 .Configure(app =>
                 {
@@ -103,12 +103,12 @@ namespace Bet.AspNetCore.UnitTest
                 { "FakeOptions2:Name", "dalet" }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -117,11 +117,11 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptionsWithDataAnnotations");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptionsWithDataAnnotations");
 
                     // services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration);
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(Configuration);
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(Configuration.GetSection("FakeOptions2"));
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(configuration.GetSection("FakeOptions2"));
 
 #if NETCOREAPP3_0
                     services.AddMvc(options => options.EnableEndpointRouting = false);
@@ -148,12 +148,12 @@ namespace Bet.AspNetCore.UnitTest
                 { "FakeOptions:Name", string.Empty }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -163,7 +163,7 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddOptions();
 
                     services.ConfigureWithValidation<FakeOptions>(
-                        Configuration,
+                        configuration,
                         opt => opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name),
                         "This didn't validated.");
                 })

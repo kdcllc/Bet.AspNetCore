@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <!-- bug in the SDK 3.0.100-preview4-011223-->
     <DepsFileGenerationMode>old</DepsFileGenerationMode>
+    <NoWarn>$(NoWarn);CA2000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

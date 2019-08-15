@@ -49,7 +49,7 @@ namespace Bet.AspNetCore.UnitTest
             var factoryMock = new Mock<IHttpClientFactory>();
             var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage()
             {
-                StatusCode = HttpStatusCode.OK,
+                StatusCode = HttpStatusCode.OK
             });
 
             factoryMock.Setup(x => x.CreateClient("Successful")).Returns(new HttpClient(fakeHttpMessageHandler));

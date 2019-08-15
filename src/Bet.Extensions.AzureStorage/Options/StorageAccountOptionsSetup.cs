@@ -16,8 +16,9 @@ namespace Bet.Extensions.AzureStorage.Options
         : IConfigureNamedOptions<StorageAccountOptions>, IPostConfigureOptions<StorageAccountOptions>
     {
         private readonly IConfiguration _configuration;
-        private StorageAccountOptions _options;
         private readonly ILogger<StorageAccountOptionsSetup> _logger;
+
+        private StorageAccountOptions _options;
 
         public StorageAccountOptionsSetup(
             IConfiguration configuration,
@@ -121,11 +122,13 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 // Create storage credentials using the initial token, and connect the callback function
                 // to renew the token just before it expires
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 var tokenCredential = new TokenCredential(
                     tokenAndFrequency.Token,
                     TokenRenewerAsync,
                     azureServiceTokenProvider,
                     tokenAndFrequency.Frequency.Value);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
                 var storageCredentials = new StorageCredentials(tokenCredential);
 

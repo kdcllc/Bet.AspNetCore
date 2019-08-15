@@ -11,8 +11,6 @@ namespace Bet.Extensions.AzureStorage
     {
         private readonly List<IListBlobItem> _blobs = new List<IListBlobItem>();
 
-        public bool Exists { get; set; }
-
         public StorageDirectoryContents(CloudBlobDirectory blob)
         {
             BlobContinuationToken continuationToken = null;
@@ -26,6 +24,8 @@ namespace Bet.Extensions.AzureStorage
             while (continuationToken != null);
             Exists = _blobs.Count > 0;
         }
+
+        public bool Exists { get; set; }
 
         public IEnumerator<IFileInfo> GetEnumerator()
         {
