@@ -11,6 +11,7 @@
       https://dotnetfeed.blob.core.windows.net/aspnet-aspnetcore-tooling/index.json;
       https://dotnetfeed.blob.core.windows.net/aspnet-aspnetcore/index.json;
       https://dotnetfeed.blob.core.windows.net/aspnet-blazor/index.json;
+      https://dotnetfeed.blob.core.windows.net/aspnet-aspnetcore-tooling/index.json
       https://api.nuget.org/v3/index.json;
     </RestoreSources>
   </PropertyGroup>

@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview7-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS build
-#ENV MSBuildSDKsPath=$DOTNET_ROOT/sdk/3.0.100-preview6-012264/Sdks
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS build
+
 WORKDIR /src
 COPY ["./Directory.Build.props", "Directory.Build.props"]
 COPY ["./Directory.Build.targets", "Directory.Build.targets"]
