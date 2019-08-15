@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -112,14 +113,15 @@ namespace Bet.AspNetCore.Sample
 
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 
-            // Preview 6 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
-            //  services.AddSwaggerGenWithApiVersion();
+            // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
+            services.AddSwaggerGenWithApiVersion();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env) // , IApiVersionDescriptionProvider provider)
+            IWebHostEnvironment env,
+            IApiVersionDescriptionProvider provider)
         {
             app.UseIfElse(
                 env.IsDevelopment(),
@@ -168,18 +170,18 @@ namespace Bet.AspNetCore.Sample
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
+            // app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
 
-            // Preview 8 is still broken https://github.com/microsoft/aspnet-api-versioning/issues/499
-            // app.UseSwaggerUI(options =>
-            // {
-            //    foreach (var description in provider.ApiVersionDescriptions)
-            //    {
-            //        options.SwaggerEndpoint(
-            //            $"/swagger/{description.GroupName}/swagger.json",
-            //            description.GroupName.ToUpperInvariant());
-            //    }
-            // });
+            // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint(
+                         $"/swagger/{description.GroupName}/swagger.json",
+                         description.GroupName.ToUpperInvariant());
+                }
+            });
         }
     }
 }
