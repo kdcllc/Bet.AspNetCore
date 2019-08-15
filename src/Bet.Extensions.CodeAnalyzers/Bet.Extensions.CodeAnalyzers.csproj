@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <!--C:\Users\Root\.nuget\packages-->
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0;netstandard2.0</TargetFrameworks>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" IncludeAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4" IncludeAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\build\betcommon.ruleset" Link="betcommon.ruleset" PackagePath="\">
