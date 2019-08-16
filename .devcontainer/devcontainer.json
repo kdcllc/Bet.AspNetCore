@@ -1,0 +1,22 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or the definition README at
+// https://github.com/microsoft/vscode-dev-containers/tree/master/containers/dotnetcore-latest
+{
+	"name": "Bet.AspNetCore",
+	"dockerFile": "Dockerfile",
+
+	// doesn't support https yet.
+	"appPort": [ 80, "5000" ],
+
+	// Uncomment the next line if you want to add in default container specific settings.json values
+	// "settings":  { "workbench.colorTheme": "Quiet Light" },
+
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "dotnet restore",
+
+	// Uncomment the next line to use a non-root user. See https://aka.ms/vscode-remote/containers/non-root-user.
+	// "runArgs": [ "-u", "1000" ],
+
+	"extensions": [
+		"ms-vscode.csharp"
+	]
+}
