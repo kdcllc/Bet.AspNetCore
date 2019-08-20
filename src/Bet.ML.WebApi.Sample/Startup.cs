@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
@@ -45,15 +46,17 @@ namespace Bet.ML.WebApi.Sample
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 
             // add ML.NET Models
-            services.AddSpamDetectionModelBuilder();
-            services.AddSentimentModelBuilder();
+            var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
+            services.AddSpamDetectionModelBuilder(spamInMemoryModelStorageProvider);
 
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>("SpamModel")
-                .WithStorageProvider<SpamInput, SpamPrediction, InMemoryModelStorageProvider>(nameof(SpamModelBuilderService));
+                .WithStorageProvider(nameof(SpamModelBuilderService), spamInMemoryModelStorageProvider);
 
-            // nameof(SentimentModelBuilderService)
+            var sentimentFileModeStorageProvider = new FileModelStorageProvider();
+            services.AddSentimentModelBuilder(sentimentFileModeStorageProvider);
+
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>("SentimentModel")
-                .WithStorageProvider<SentimentIssue, SentimentPrediction, InMemoryModelStorageProvider>(nameof(SentimentModelBuilderService));
+                .WithStorageProvider($"{nameof(SentimentModelBuilderService)}.zip", sentimentFileModeStorageProvider);
 
             services.AddScheduler(builder =>
             {

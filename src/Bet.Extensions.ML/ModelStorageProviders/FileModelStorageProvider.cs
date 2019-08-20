@@ -78,7 +78,8 @@ namespace Bet.Extensions.ML.ModelStorageProviders
 
                     lock (_lock)
                     {
-                        var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+                        // var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+                        var fileLocation = FileHelper.GetAbsolutePath($"{name}.zip");
 
                         using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
                         {
@@ -106,7 +107,8 @@ namespace Bet.Extensions.ML.ModelStorageProviders
             {
                 lock (_lock)
                 {
-                    var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
+                    // var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
+                    var fileLocation = FileHelper.GetAbsolutePath($"{name}.json");
 
                     var json = JsonConvert.SerializeObject(result, Formatting.Indented);
                     File.WriteAllText(fileLocation, json);
@@ -144,12 +146,11 @@ namespace Bet.Extensions.ML.ModelStorageProviders
 
             var fileLocation = FileHelper.GetAbsolutePath(name);
 
-            using (var fs = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
-            using (var ms = new MemoryStream())
-            {
-                await fs.CopyToAsync(ms).ConfigureAwait(false);
-                return ms;
-            }
+            var fs = new FileStream(fileLocation, FileMode.Open, FileAccess.Read);
+            var ms = new MemoryStream();
+
+            await fs.CopyToAsync(ms).ConfigureAwait(false);
+            return await Task.FromResult(ms);
         }
     }
 }

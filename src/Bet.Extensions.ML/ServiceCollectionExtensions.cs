@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Microsoft.ML;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -83,34 +84,41 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <typeparam name="TData"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
-        /// <typeparam name="TStorage"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="stroageName"></param>
+        /// <param name="storageName">The name of the ML model in the storage provider.</param>
+        /// <param name="modelStorageProvider">The model storage provider. The default model storage provider is <see cref="InMemoryModelStorageProvider"/>.</param>
         /// <returns></returns>
-        public static IModelPredictionEngineBuilder<TData, TPrediction> WithStorageProvider<TData, TPrediction, TStorage>(
+        public static IModelPredictionEngineBuilder<TData, TPrediction> WithStorageProvider<TData, TPrediction>(
             this IModelPredictionEngineBuilder<TData, TPrediction> builder,
-            string stroageName)
-            where TData : class where TPrediction : class, new() where TStorage : class, IModelStorageProvider
+            string storageName,
+            IModelStorageProvider modelStorageProvider = null)
+            where TData : class where TPrediction : class, new()
         {
-            builder.Services.AddSingleton(typeof(IModelStorageProvider), typeof(TStorage));
-
-            builder.Services.Configure<ModelPredictionEngineOptions<TData, TPrediction>>(builder.ModelName, (mlOptions) =>
+            builder.Services.Configure(builder.ModelName, (Action<ModelPredictionEngineOptions<TData, TPrediction>>)((mlOptions) =>
             {
                 mlOptions.CreateModel = (mlContext) =>
                 {
-                    // var storage = mlOptions.ServiceProvider.GetService(typeof(TStorage)) as IModelStorageProvider;
-                    var storage = mlOptions.ServiceProvider.GetRequiredService<IModelStorageProvider>();
+                    if (modelStorageProvider == null)
+                    {
+                        modelStorageProvider = new InMemoryModelStorageProvider();
+                    }
 
                     ChangeToken.OnChange(
-                        () => storage.GetReloadToken(),
+                        () => modelStorageProvider.GetReloadToken(),
                         () => mlOptions.Reload());
 
-                    var model = storage.LoadModelAsync(stroageName, CancellationToken.None).GetAwaiter().GetResult();
-                    return mlContext.Model.Load(model, out var inputSchema);
+                    return GetTransfomer(storageName, mlContext, modelStorageProvider);
                 };
-            });
+            }));
 
             return builder;
+        }
+
+        private static ITransformer GetTransfomer(string storageName, ML.MLContext mlContext, IModelStorageProvider storage)
+        {
+            var model = storage.LoadModelAsync(storageName, CancellationToken.None).GetAwaiter().GetResult();
+            var transformer = mlContext.Model.Load(model, out var inputSchema);
+            return transformer;
         }
     }
 }
