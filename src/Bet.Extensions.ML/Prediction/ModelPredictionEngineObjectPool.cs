@@ -1,76 +1,82 @@
 ﻿using System;
-
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Extensions.Primitives;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
 {
     public class ModelPredictionEngineObjectPool<TData, TPrediction>
-        : IModelPredictionEngine<TData, TPrediction>
+        : IModelPredictionEngine<TData, TPrediction>, IDisposable
         where TData : class
         where TPrediction : class, new()
     {
-        private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
-        private readonly MLContext _mlContext;
+        private readonly Func<ModelPredictionEngineOptions<TData, TPrediction>> _funcOptions;
         private readonly ILogger _logger;
+        private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private DefaultObjectPool<PredictionEngine<TData, TPrediction>> _pool;
+        private IDisposable _changeToken;
+        private ITransformer _model;
 
         public ModelPredictionEngineObjectPool(
            Func<ModelPredictionEngineOptions<TData, TPrediction>> options,
            ILoggerFactory loggerFactory)
         {
-            _options = options() ?? throw new ArgumentNullException(nameof(options));
+            _funcOptions = options ?? throw new ArgumentNullException(nameof(options));
 
             _logger = loggerFactory.CreateLogger(nameof(ModelPredictionEngineObjectPool<TData, TPrediction>))
                 ?? throw new ArgumentNullException(nameof(loggerFactory));
 
-            // get mlcontext
-            _mlContext = _options.MLContext();
+            _options = _funcOptions();
 
-            // get prediction model
-            Model = _options.CreateModel(_mlContext);
+            LoadPool();
 
-            // create PredictionEngine Object Pool
-            Pool = CreatePredictionEngineObjectPool();
+            _changeToken = ChangeToken.OnChange(
+                () => _options.GetReloadToken(),
+                () => LoadPool());
         }
 
-        public ITransformer Model { get; }
-
-        public ObjectPool<PredictionEngine<TData, TPrediction>> Pool { get; private set; }
-
-        public TPrediction Predict(TData dataSample)
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+        public void Dispose()
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
+#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
-            // get instance of PredictionEngine from the object pool
-            var predictionEngine = Pool.Get();
-
-            try
-            {
-                return predictionEngine.Predict(dataSample);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Predict failed: {ex}", ex.ToString());
-                throw;
-            }
-            finally
-            {
-                // release used PredictionEngine object into the Object pool.
-                Pool.Return(predictionEngine);
-            }
+            _changeToken?.Dispose();
         }
 
-        private ObjectPool<PredictionEngine<TData, TPrediction>> CreatePredictionEngineObjectPool()
+        public ITransformer GetModel()
         {
-            var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(_mlContext, Model, _options, _logger);
+            return _model;
+        }
+
+        public DefaultObjectPool<PredictionEngine<TData, TPrediction>> GetPredictionEnginePool()
+        {
+            if (_pool == null)
+            {
+                LoadPool();
+            }
+
+            return _pool;
+        }
+
+        private void LoadPool()
+        {
+            var mlContext = _options.MLContext();
+
+            Interlocked.Exchange(ref _model, _options.CreateModel(mlContext));
+
+            var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(mlContext, _model, _options, _logger);
 
             if (_options.MaximumObjectsRetained != -1)
             {
-                return new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy, _options.MaximumObjectsRetained);
+                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy, _options.MaximumObjectsRetained));
             }
             else
             {
                 // default maximumRetained is Environment.ProcessorCount * 2, if not explicitly provided
-                return new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy);
+                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy));
             }
         }
     }

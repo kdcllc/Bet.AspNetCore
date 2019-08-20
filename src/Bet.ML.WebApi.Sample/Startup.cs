@@ -48,50 +48,12 @@ namespace Bet.ML.WebApi.Sample
             services.AddSpamDetectionModelBuilder();
             services.AddSentimentModelBuilder();
 
-            // override the storage provider
-            services.AddSingleton<IModelStorageProvider, InMemoryModelStorageProvider>();
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>("SpamModel")
+                .WithStorageProvider<SpamInput, SpamPrediction, InMemoryModelStorageProvider>(nameof(SpamModelBuilderService));
 
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
-                mlOptions =>
-            {
-                mlOptions.CreateModel = (mlContext) =>
-                {
-                    var storage = mlOptions.ServiceProvider.GetRequiredService<IModelStorageProvider>();
-
-                    var model = GetModel();
-
-                    ChangeToken.OnChange(() => storage.GetReloadToken(), () => model = GetModel());
-
-                    return model;
-
-                    ITransformer GetModel()
-                    {
-                        var model = storage.LoadModelAsync(nameof(SpamModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
-                        return mlContext.Model.Load(model, out var inputSchema);
-                    }
-                };
-            }, "SpamModel");
-
-            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(
-                mlOptions =>
-            {
-                mlOptions.CreateModel = (mlContext) =>
-                {
-                    var storage = mlOptions.ServiceProvider.GetRequiredService<IModelStorageProvider>();
-
-                    var model = GetModel();
-
-                    ChangeToken.OnChange(() => storage.GetReloadToken(), () => model = GetModel());
-
-                    return model;
-
-                    ITransformer GetModel()
-                    {
-                        var model = storage.LoadModelAsync(nameof(SentimentModelBuilderService), CancellationToken.None).GetAwaiter().GetResult();
-                        return mlContext.Model.Load(model, out var inputSchema);
-                    }
-                };
-            }, "SentimentModel");
+            // nameof(SentimentModelBuilderService)
+            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>("SentimentModel")
+                .WithStorageProvider<SentimentIssue, SentimentPrediction, InMemoryModelStorageProvider>(nameof(SentimentModelBuilderService));
 
             services.AddScheduler(builder =>
             {
