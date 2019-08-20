@@ -19,7 +19,7 @@
     <ExtensionsVersion>[2.2.*, )</ExtensionsVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
     <AspNetCoreVersion>3.0.0-preview8.*</AspNetCoreVersion>
     <AspNetCoreVersion2>3.0.0-*</AspNetCoreVersion2>
     <EFCommonVersion>3.0.0-preview8.*</EFCommonVersion>
@@ -51,6 +51,10 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+
   </ItemGroup>
 
   <ItemGroup Label="Extensions">

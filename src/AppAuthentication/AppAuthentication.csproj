@@ -5,9 +5,13 @@
 		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<ToolCommandName>appauthentication</ToolCommandName>
 		<PackageId>appauthentication</PackageId>
-		<Description>A command-line tool that provides ability to get Authentication token for Docker Containers running locally.</Description>
+		<Description>
+      A command-line tool to enable authentication of Azure Vault when developing in local environment.
+      For example when VSCode Remote Containers are used this utility can be run to enable the authentication.
+      This tool is only functional for Docker Containers running locally.
+    </Description>
 		<PackAsTool>True</PackAsTool>
-		<PackageTags>Azure, Authentication, AppAuthentication, Azure Key Vault, Docker, Kubernetes</PackageTags>
+		<PackageTags>Azure, Authentication, AppAuthentication, Azure Key Vault, Docker, Kubernetes, VSCode Remote</PackageTags>
 		<WarningLevel>1</WarningLevel>
     <NoWarn>$(NoWarn);SA1203;SA1201;CA1802;SA1401;SA1214;SA1204</NoWarn>
 	</PropertyGroup>
