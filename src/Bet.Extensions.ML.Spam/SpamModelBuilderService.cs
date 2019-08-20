@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
+using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;

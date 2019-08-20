@@ -21,9 +21,4 @@
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ModelStorageProviders\" />
-  </ItemGroup>
-
-
 </Project>

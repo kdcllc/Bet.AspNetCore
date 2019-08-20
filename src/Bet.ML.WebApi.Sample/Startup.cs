@@ -1,7 +1,7 @@
 using System.Threading;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
-using Bet.Extensions.ML.ModelBuilder;
+using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment;
 using Bet.Extensions.ML.Sentiment.Models;
 using Bet.Extensions.ML.Spam;

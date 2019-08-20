@@ -12,7 +12,7 @@ using Microsoft.Extensions.Primitives;
 
 using Newtonsoft.Json;
 
-namespace Bet.Extensions.ML.ModelBuilder
+namespace Bet.Extensions.ML.ModelStorageProviders
 {
     /// <summary>
     /// The implementation of <see cref="IModelStorageProvider"/> for local file system.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Primitives;
 
-namespace Bet.Extensions.ML.ModelBuilder
+namespace Bet.Extensions.ML.ModelStorageProviders
 {
     /// <summary>
     /// ML model storage provider.
