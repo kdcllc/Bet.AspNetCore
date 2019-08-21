@@ -5,6 +5,11 @@
     <NoWarn>$(NoWarn);CA2208;</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Description>The collection of the functionality for Azure Storage, Blob, Queue and Table.</Description>
+    <PackageTags>dotnetcore, azure storage, azure blob, azure queue, azure table,</PackageTags>
+  </PropertyGroup>
+      
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
