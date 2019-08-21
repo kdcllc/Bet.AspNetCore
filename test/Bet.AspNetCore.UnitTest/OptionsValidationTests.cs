@@ -1,13 +1,16 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using System.Collections.Generic;
-using Xunit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
+
+using Xunit;
+
+using OptionsValidationException = Bet.Extensions.Options.OptionsValidationException;
 
 namespace Bet.AspNetCore.UnitTest
 {
@@ -18,26 +21,22 @@ namespace Bet.AspNetCore.UnitTest
         {
             var dic = new Dictionary<string, string>
             {
-                {"FakeOptions:Id", "-2" },
-                {"FakeOptions:Name", "" }
+                { "FakeOptions:Id", "-2" },
+                { "FakeOptions:Name", string.Empty }
             };
 
             var config = new ConfigurationBuilder().AddInMemoryCollection(dic).Build().GetSection(nameof(FakeOptions));
 
             var options = new FakeOptions();
 
-            void act() => config.Bind<FakeOptions>(options, opt =>
-            {
-                if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
-                {
-                    return true;
-                }
-                return false;
-            }, "Validation Failed");
+            void Act() => config.Bind<FakeOptions>(
+                options,
+                opt => opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name),
+                "Validation Failed");
 
             var formatted = options.Format();
 
-            Assert.Throws<OptionsValidationException>(act);
+            Assert.Throws<OptionsValidationException>(Act);
         }
 
         [Fact]
@@ -45,17 +44,17 @@ namespace Bet.AspNetCore.UnitTest
         {
             var dic = new Dictionary<string, string>
             {
-                {"FakeOptions:Id", "-2" },
-                {"FakeOptions:Name", "" }
+                { "FakeOptions:Id", "-2" },
+                { "FakeOptions:Name", string.Empty }
             };
 
             var config = new ConfigurationBuilder().AddInMemoryCollection(dic).Build().GetSection(nameof(FakeOptions));
 
             var options = new FakeOptionsWithDataAnnotations();
 
-            void act() => config.Bind<FakeOptionsWithDataAnnotations>(options);
+            void Act() => config.Bind<FakeOptionsWithDataAnnotations>(options);
 
-            Assert.Throws<OptionsValidationException>(act);
+            Assert.Throws<OptionsValidationException>(Act);
         }
 
         [Fact]
@@ -63,16 +62,16 @@ namespace Bet.AspNetCore.UnitTest
         {
             var dic = new Dictionary<string, string>
             {
-                {"FakeOptions:Id", "-2" },
-                {"FakeOptions:Name", "" }
+                { "FakeOptions:Id", "-2" },
+                { "FakeOptions:Name", string.Empty }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -81,7 +80,7 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptions");
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
                 })
                 .Configure(app =>
                 {
@@ -104,12 +103,12 @@ namespace Bet.AspNetCore.UnitTest
                 { "FakeOptions2:Name", "dalet" }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -118,11 +117,11 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration, sectionName: "FakeOptionsWithDataAnnotations");
-                    //services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptionsWithDataAnnotations");
 
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(Configuration);
-                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(Configuration.GetSection("FakeOptions2"));
+                    // services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(Configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions>(configuration);
+                    services.ConfigureWithDataAnnotationsValidation<FakeOptions2>(configuration.GetSection("FakeOptions2"));
 
 #if NETCOREAPP3_0
                     services.AddMvc(options => options.EnableEndpointRouting = false);
@@ -145,16 +144,16 @@ namespace Bet.AspNetCore.UnitTest
         {
             var dic = new Dictionary<string, string>
             {
-                {"FakeOptions:Id", "-2" },
-                {"FakeOptions:Name", "" }
+                { "FakeOptions:Id", "-2" },
+                { "FakeOptions:Name", string.Empty }
             };
 
-            IConfiguration Configuration = null;
+            IConfiguration configuration = null;
 
             var host = new WebHostBuilder()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
-                    Configuration = configBuiler.AddInMemoryCollection(dic).Build();
+                    configuration = configBuiler.AddInMemoryCollection(dic).Build();
                 })
                 .ConfigureServices((services) =>
                 {
@@ -163,14 +162,10 @@ namespace Bet.AspNetCore.UnitTest
                     services.AddMvcCore().AddApplicationPart(typeof(TestStartup).Assembly);
                     services.AddOptions();
 
-                    services.ConfigureWithValidation<FakeOptions>(Configuration, opt =>
-                    {
-                        if (opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name))
-                        {
-                            return true;
-                        }
-                        return false;
-                    }, "This didn't validated.");
+                    services.ConfigureWithValidation<FakeOptions>(
+                        configuration,
+                        opt => opt.Id > 0 && !string.IsNullOrWhiteSpace(opt.Name),
+                        "This didn't validated.");
                 })
                 .Configure(app =>
                 {
@@ -187,8 +182,8 @@ namespace Bet.AspNetCore.UnitTest
             {
                 { "FakeOptions:Id", "-2" },
                 { "FakeOptions:Name", string.Empty },
-                {"FakeOptions2:Id", "-2" },
-                {"FakeOptions2:Name", "" }
+                { "FakeOptions2:Id", "-2" },
+                { "FakeOptions2:Name", string.Empty }
             };
 
             IConfiguration configuration = null;
@@ -208,7 +203,7 @@ namespace Bet.AspNetCore.UnitTest
 
             void Act() => host.Run();
 
-            //Act();
+            // Act();
             Assert.Throws<OptionsValidationException>(() => Act());
         }
 

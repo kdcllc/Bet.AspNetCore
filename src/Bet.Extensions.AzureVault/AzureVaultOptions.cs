@@ -13,7 +13,7 @@ namespace Bet.AspNetCore.Options
     public class AzureVaultOptions : IOptionsFormatter
     {
         /// <summary>
-        /// Url for Azure Vault 'https://{name}.vault.azure.net/'
+        /// Url for Azure Vault 'https://{name}.vault.azure.net/'.
         /// </summary>
         [Url]
         public string BaseUrl { get; set; }
@@ -30,7 +30,7 @@ namespace Bet.AspNetCore.Options
         {
             var options = new JObject
             {
-                {nameof(BaseUrl), BaseUrl }
+                { nameof(BaseUrl), BaseUrl }
             };
 
             return options.ToString(Formatting.Indented);

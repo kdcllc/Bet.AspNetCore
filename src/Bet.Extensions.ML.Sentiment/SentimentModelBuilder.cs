@@ -12,7 +12,7 @@ namespace Bet.Extensions.ML.Sentiment
     public class SentimentModelBuilder
         : ModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>
     {
-        public SentimentModelBuilder(MLContext context):base(context)
+        public SentimentModelBuilder(MLContext context) : base(context)
         {
         }
 
@@ -41,7 +41,7 @@ namespace Bet.Extensions.ML.Sentiment
         {
             return BuildTrainingPipeline(() =>
             {
-                 // STEP 2: Common data process configuration with pipeline data transformations
+                // STEP 2: Common data process configuration with pipeline data transformations
                 var dataProcessPipeline = MLContext.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentIssue.Text));
 
                 // STEP 3: Set the training algorithm, then create and config the modelBuilder
@@ -54,11 +54,13 @@ namespace Bet.Extensions.ML.Sentiment
 
         public override BinaryClassificationMetricsResult Evaluate()
         {
-            return Evaluate((dataView, train) =>
+            return Evaluate((dataView, _) =>
             {
                 if (Model == null)
                 {
+#pragma warning disable CA2208 // Instantiate argument exceptions correctly
                     throw new ArgumentNullException(nameof(Model));
+#pragma warning restore CA2208 // Instantiate argument exceptions correctly
                 }
 
                 // STEP 5: Evaluate the model and show accuracy stats

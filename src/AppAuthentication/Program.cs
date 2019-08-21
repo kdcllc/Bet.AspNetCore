@@ -10,10 +10,11 @@ using Console = Colorful.Console;
 
 namespace AppAuthentication
 {
-    [Command(Name = Constants.CLIToolName,
-             Description = "Cli tool to help with Docker Container development with Azure MSI Identity.",
-             ThrowOnUnexpectedArgument = false,
-             AllowArgumentSeparator =true)]
+    [Command(
+        Name = Constants.CLIToolName,
+        Description = "Cli tool to help with Docker Container development with Azure MSI Identity.",
+        ThrowOnUnexpectedArgument = false,
+        AllowArgumentSeparator = true)]
     [Subcommand(typeof(RunCommand))]
     [HelpOption("-?")]
     [VersionOptionFromMember("--version", MemberName = nameof(GetVersion))]

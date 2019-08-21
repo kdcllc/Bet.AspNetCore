@@ -5,7 +5,7 @@ namespace AppAuthentication
     internal class WebHostBuilderOptions
     {
         /// <summary>
-        /// Default set to https://vault.azure.net/
+        /// Default set to https://vault.azure.net/.
         /// </summary>
         public string Resource { get; set; }
 

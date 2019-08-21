@@ -16,19 +16,23 @@ using Newtonsoft.Json;
 
 namespace Bet.Extensions.AzureStorage
 {
-    public class StorageBlob
+    public sealed class StorageBlob
     {
         private readonly StorageAccountOptions _storageAccountOptions;
         private readonly ILogger _logger;
 
         private readonly Lazy<Task<CloudBlobContainer>> _container;
 
-        public Task<CloudBlobContainer> Container => _container.Value;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StorageBlob"/> class.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="storageAccountOptions"></param>
+        /// <param name="logger"></param>
         public StorageBlob(
-                StorageBlobOptions options,
-                StorageAccountOptions storageAccountOptions,
-                ILogger logger = default)
+        StorageBlobOptions options,
+        StorageAccountOptions storageAccountOptions,
+        ILogger logger = default)
         {
             _storageAccountOptions = storageAccountOptions ?? throw new ArgumentNullException(nameof(storageAccountOptions));
 
@@ -37,6 +41,17 @@ namespace Bet.Extensions.AzureStorage
             _container = new Lazy<Task<CloudBlobContainer>>(() => CreateCloudBlobContainer(options));
         }
 
+        /// <summary>
+        /// Azure Blob Container.
+        /// </summary>
+        public Task<CloudBlobContainer> Container => _container.Value;
+
+        /// <summary>
+        /// Gets all blobs in the container.
+        /// </summary>
+        /// <param name="prefix">The prefix to be used for the search.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<IEnumerable<CloudBlockBlob>> GetAllAsync(
             string prefix = default,
             CancellationToken cancellationToken = default)
@@ -58,20 +73,32 @@ namespace Bet.Extensions.AzureStorage
                         result.Add(item as CloudBlockBlob);
                     }
                 }
-            } while (blobContinuationToken != null);
+            }
+            while (blobContinuationToken != null);
 
             return result;
         }
 
-        /// <inheritdoc  />
+        /// <summary>
+        /// Gets blob bytes based on the blob name in the container.
+        /// </summary>
+        /// <param name="blobName">The name of the blob.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<byte[]> GetBytesAsync(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-           return await (await GetAsync(blobName, cancellationToken)).ToByteArrayAsync();
+            return await (await GetAsync(blobName, cancellationToken)).ToByteArrayAsync();
         }
 
-        /// <inheritdoc  />
+        /// <summary>
+        /// Gets a single blob as stream based on blob's name.
+        /// </summary>
+        /// <param name="blobName">The name of the blob.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">Thrown when blob name is empty.</exception>
         public async Task<Stream> GetAsync(
             string blobName,
             CancellationToken cancellationToken = default)
@@ -95,7 +122,14 @@ namespace Bet.Extensions.AzureStorage
             return stream;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Get serialized type of the blob based on the name.
+        /// </summary>
+        /// <typeparam name="T">The type of the serialized object.</typeparam>
+        /// <param name="blobName">The name of the blob.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">Thrown when blob name is empty.</exception>
         public async Task<T> GetAsync<T>(
             string blobName,
             CancellationToken cancellationToken = default)
@@ -137,7 +171,14 @@ namespace Bet.Extensions.AzureStorage
             return JsonConvert.DeserializeObject<T>(data);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds byte array content to Azure Blob Container.
+        /// </summary>
+        /// <param name="content">The byte array.</param>
+        /// <param name="blobId">The id of the blob.</param>
+        /// <param name="contentType">The MIME type of the content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<string> AddAsync(
             byte[] content,
             string blobId = default,
@@ -155,16 +196,23 @@ namespace Bet.Extensions.AzureStorage
                 Position = 0
             })
             {
-                generatedBlobName = await AddAsync(stream,
-                                                   blobId,
-                                                   contentType,
-                                                   cancellationToken);
+                generatedBlobName = await AddAsync(
+                    stream,
+                    blobId,
+                    contentType,
+                    cancellationToken);
             }
 
             return generatedBlobName;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds Steam content to Azure Blob Container.
+        /// </summary>
+        /// <param name="content">The byte array.</param>
+        /// <param name="blobId">The id of the blob.</param>
+        /// <param name="contentType">The MIME type of the content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
             Stream content,
             string blobId = default,
@@ -197,7 +245,13 @@ namespace Bet.Extensions.AzureStorage
             return blob.Name;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds an object to Azure Blob Container.
+        /// </summary>
+        /// <param name="item">The object to be serialized to Azure Blob Container.</param>
+        /// <param name="blobId">The id of the blob.</param>
+        /// <param name="encoding">The encoding type.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
             object item,
             string blobId,
@@ -229,7 +283,12 @@ namespace Bet.Extensions.AzureStorage
             return await AddAsync(bytes, blobId, contentType, cancellationToken);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds the object to Azure Blob Container.
+        /// </summary>
+        /// <param name="item">The object to be serialized to Azure Blob Container.</param>
+        /// <param name="blobId">The id of the blob.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
             object item,
             string blobId = default,
@@ -243,7 +302,13 @@ namespace Bet.Extensions.AzureStorage
             return await AddAsync(item, blobId, Encoding.UTF8, cancellationToken);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds data from URI to Azure Blob Container.
+        /// </summary>
+        /// <param name="sourceUri"></param>
+        /// <param name="blobId">The id of the blob.</param>
+        /// <param name="contentType">The MIME type of the content.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
             Uri sourceUri,
             string blobId = default,
@@ -274,10 +339,10 @@ namespace Bet.Extensions.AzureStorage
 
             await blob.StartCopyAsync(sourceUri, cancellationToken);
 
-            bool copyInProgress = true;
+            var copyInProgress = true;
             while (copyInProgress)
             {
-                //  wait before we can check the if the copy has completed.
+                // wait before we can check the if the copy has completed.
                 await Task.Delay(500, cancellationToken);
 
                 await blob.FetchAttributesAsync(cancellationToken);
@@ -288,11 +353,19 @@ namespace Bet.Extensions.AzureStorage
             return blob.Name;
         }
 
-        /// <inheritdoc />
-        public async Task<IList<string>> AddBatchAsync<T>(IEnumerable<T> items,
-                                                          Encoding encoding,
-                                                          int batchSize = 25,
-                                                          CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Adds array of {T} objects to Azure Blob Container.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The array of {T} objects.</param>
+        /// <param name="encoding">The encoding to be used.</param>
+        /// <param name="batchSize">The batch size.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        public async Task<IList<string>> AddBatchAsync<T>(
+            IEnumerable<T> items,
+            Encoding encoding,
+            int batchSize = 25,
+            CancellationToken cancellationToken = default)
         {
             if (batchSize <= 0)
             {
@@ -317,7 +390,13 @@ namespace Bet.Extensions.AzureStorage
             return blobIds;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds the array of object to Azure Blob Container.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The array of objects.</param>
+        /// <param name="batchSize">The batch size. The default is 25.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<IList<string>> AddBatchAsync<T>(
             IEnumerable<T> items,
             int batchSize = 25,
@@ -326,7 +405,11 @@ namespace Bet.Extensions.AzureStorage
             return await AddBatchAsync(items, Encoding.UTF8, batchSize, cancellationToken);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Deletes the Blob from Azure Blob Container.
+        /// </summary>
+        /// <param name="blobName"></param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<bool> DeleteAsync(
             string blobName,
             CancellationToken cancellationToken = default)
@@ -347,7 +430,14 @@ namespace Bet.Extensions.AzureStorage
             return false;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Saves the byte array to the OS file system.
+        /// </summary>
+        /// <param name="data">The byte array blob.</param>
+        /// <param name="pathLocation">The location on OS.</param>
+        /// <param name="fileName">The file name.</param>
+        /// <param name="mode"></param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public async Task SaveAsync(
             byte[] data,
             string pathLocation,

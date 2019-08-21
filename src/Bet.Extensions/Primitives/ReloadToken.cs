@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Threading;
 
-using Microsoft.Extensions.Primitives;
-
-namespace Bet.Extensions.Primitives
+namespace Microsoft.Extensions.Primitives
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     /// <summary>
-    /// Implements <see cref="IChangeToken"/>
+    /// Implements <see cref="IChangeToken"/>.
     /// </summary>
-    public class ConfigurationReloadToken : IChangeToken
+    public class ReloadToken : IChangeToken
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         /// <summary>
-        /// Indicates if this token will proactively raise callbacks. Callbacks are still guaranteed to be invoked, eventually.
+        /// Indicates if this token will pro-actively raise callbacks. Callbacks are still guaranteed to be invoked, eventually.
         /// </summary>
         public bool ActiveChangeCallbacks => true;
 

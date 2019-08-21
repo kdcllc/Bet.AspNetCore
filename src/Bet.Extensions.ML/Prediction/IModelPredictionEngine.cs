@@ -1,20 +1,16 @@
-﻿using Microsoft.ML;
+﻿using Microsoft.Extensions.ObjectPool;
+using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
 {
     public interface IModelPredictionEngine<TData, TPrediction>
-        where TData : class where TPrediction : class
+        where TData : class where TPrediction : class, new()
     {
         /// <summary>
         /// The transformer holds the Machine Learning predictive model data.
         /// </summary>
-        ITransformer Model { get; }
+        ITransformer GetModel();
 
-        /// <summary>
-        /// Predict based on <see cref="Model"/> that was loaded.
-        /// </summary>
-        /// <param name="dataSample">The data sample to be predicted on.</param>
-        /// <returns></returns>
-        TPrediction Predict(TData dataSample);
+        DefaultObjectPool<PredictionEngine<TData, TPrediction>> GetPredictionEnginePool();
     }
 }

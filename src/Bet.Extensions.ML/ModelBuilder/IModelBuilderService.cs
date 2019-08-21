@@ -9,9 +9,9 @@ namespace Bet.Extensions.ML.ModelBuilder
     public interface IModelBuilderService
     {
         /// <summary>
-        /// Model Builder Service Name
+        /// Model Builder Service Name.
         /// </summary>
-        string  Name { get; set; }
+        string Name { get; set; }
 
         /// <summary>
         /// Train model consist of:

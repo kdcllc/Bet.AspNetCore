@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var registered = services.Select(x => x.ImplementationInstance).OfType<ConfigureNamedOptions<StorageAccountOptions>>();
 
-            if (!registered.Any() || (!registered.Any(p=> p.Name == azureStorageSectionName)) )
+            if (!registered.Any() || (!registered.Any(p => p.Name == azureStorageSectionName)))
             {
                 services.ConfigureOptions<StorageAccountOptionsSetup>();
 
@@ -60,6 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     path = ConfigurationPath.Combine(path, typeof(TOptions).Name);
                 }
+
                 var section = config.GetSection(path);
                 section.Bind(options);
 

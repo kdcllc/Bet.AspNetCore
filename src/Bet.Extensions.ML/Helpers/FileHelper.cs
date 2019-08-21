@@ -15,8 +15,8 @@ namespace Bet.Extensions.ML.Helpers
         {
             assemblyType = assemblyType ?? typeof(FileHelper);
 
-            var _dataRoot = new FileInfo(assemblyType.Assembly.Location);
-            var assemblyFolderPath = _dataRoot.Directory.FullName;
+            var dataRoot = new FileInfo(assemblyType.Assembly.Location);
+            var assemblyFolderPath = dataRoot.Directory.FullName;
 
             return Path.Combine(assemblyFolderPath, relativePath);
         }

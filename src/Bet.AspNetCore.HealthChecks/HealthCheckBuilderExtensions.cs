@@ -29,9 +29,11 @@ namespace Microsoft.Extensions.DependencyInjection
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
-            builder.Services.AddHttpClient(name,(sp, config) =>{
+            builder.Services.AddHttpClient(name, (sp, config) =>
+            {
                 config.BaseAddress = new Uri(baseUrl);
-            }).ConfigurePrimaryHttpMessageHandler(sp=> {
+            }).ConfigurePrimaryHttpMessageHandler(sp =>
+            {
                 var handler = new HttpClientHandler
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -43,6 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         {
                             throw new Exception("Time to renew the certificate!");
                         }
+
                         if (sslPolicyErrors == SslPolicyErrors.None)
                         {
                             return true;
@@ -65,7 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
         /// <param name="name">The name of the HealthCheck.</param>
-        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then.</param>
         /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
         /// <returns></returns>
         public static IHealthChecksBuilder AddSigtermCheck(
@@ -89,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
             {
-                //config.Timeout = TimeSpan.FromSeconds(10);
+                // config.Timeout = TimeSpan.FromSeconds(10);
             });
 
             var check = new UriHealthCheckBuilder(builder.Services, name);
@@ -107,7 +110,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
         /// <param name="name">The name of the HealthCheck.</param>
         /// <param name="registration">The <see cref="Action{UriHealthCheckBuilder}"/> delegate.</param>
-        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then.</param>
         /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
         /// <returns></returns>
         public static IHealthChecksBuilder AddUriHealthCheck(
@@ -120,14 +123,14 @@ namespace Microsoft.Extensions.DependencyInjection
             // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
             {
-                //config.Timeout = TimeSpan.FromSeconds(10);
+                // config.Timeout = TimeSpan.FromSeconds(10);
             });
 
             var check = new UriHealthCheckBuilder(builder.Services, name);
 
             registration(check);
 
-            builder.AddCheck<UriHealthCheck>(name,failureStatus,tags);
+            builder.AddCheck<UriHealthCheck>(name, failureStatus, tags);
 
             return builder;
         }
@@ -137,7 +140,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
         /// <param name="name">The name of the HealthCheck.</param>
-        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then.</param>
         /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
         /// <param name="thresholdInBytes">The Threshold in bytes. The default is 1073741824 bytes or 1Gig.</param>
         /// <returns></returns>

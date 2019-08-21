@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,15 +8,26 @@ using Bet.Extensions.ML.Helpers;
 
 using CsvHelper;
 
+using Microsoft.Extensions.Primitives;
+
 using Newtonsoft.Json;
 
-namespace Bet.Extensions.ML.ModelBuilder
+namespace Bet.Extensions.ML.ModelStorageProviders
 {
     /// <summary>
     /// The implementation of <see cref="IModelStorageProvider"/> for local file system.
     /// </summary>
     public class FileModelStorageProvider : IModelStorageProvider
     {
+        private readonly object _lock = new object();
+
+        private ReloadToken _reloadToken;
+
+        public FileModelStorageProvider()
+        {
+            _reloadToken = new ReloadToken();
+        }
+
         /// <summary>
         /// Loading the raw data from the file.
         /// </summary>
@@ -61,16 +71,25 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <returns></returns>
         public Task SaveModelAsync(string name, MemoryStream stream, CancellationToken cancellationToken)
         {
-            return Task.Run(() =>
-            {
-                var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
-
-                using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+            return Task.Run(
+                () =>
                 {
-                    stream.WriteTo(fs);
-                }
-            },
-            cancellationToken);
+                    var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
+
+                    lock (_lock)
+                    {
+                        // var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.zip");
+                        var fileLocation = FileHelper.GetAbsolutePath($"{name}.zip");
+
+                        using (var fs = new FileStream(fileLocation, FileMode.Create, FileAccess.Write, FileShare.Write))
+                        {
+                            stream.WriteTo(fs);
+                        }
+                    }
+
+                    previousToken.OnReload();
+                },
+                cancellationToken);
         }
 
         /// <summary>
@@ -83,14 +102,19 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <returns></returns>
         public Task SaveModelResultAsync<TResult>(TResult result, string name, CancellationToken cancellationToken)
         {
-            return Task.Run(() =>
+            return Task.Run(
+                () =>
             {
-                var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
+                lock (_lock)
+                {
+                    // var fileLocation = FileHelper.GetAbsolutePath($"{name}-{DateTime.UtcNow.Ticks}.json");
+                    var fileLocation = FileHelper.GetAbsolutePath($"{name}.json");
 
-                var json = JsonConvert.SerializeObject(result, Formatting.Indented);
-                File.WriteAllText(fileLocation, json);
+                    var json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(fileLocation, json);
+                }
             },
-            cancellationToken);
+                cancellationToken);
         }
 
         /// <summary>
@@ -111,18 +135,22 @@ namespace Bet.Extensions.ML.ModelBuilder
             }
         }
 
+        public IChangeToken GetReloadToken()
+        {
+            return _reloadToken;
+        }
+
         private async Task<MemoryStream> GetMemoryStream(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var fileLocation = FileHelper.GetAbsolutePath(name);
 
-            using (var fs = new FileStream(fileLocation, FileMode.Open, FileAccess.Read))
-            using (var ms = new MemoryStream())
-            {
-                await fs.CopyToAsync(ms).ConfigureAwait(false);
-                return ms;
-            }
+            var fs = new FileStream(fileLocation, FileMode.Open, FileAccess.Read);
+            var ms = new MemoryStream();
+
+            await fs.CopyToAsync(ms).ConfigureAwait(false);
+            return await Task.FromResult(ms);
         }
     }
 }

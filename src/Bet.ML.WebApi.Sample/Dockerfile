@@ -1,10 +1,10 @@
 # docker build --rm -f "src\Bet.ML.WebApi.Sample\Dockerfile" -t betregistry.azurecr.io/betmlwebapisample:latest .
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview7-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview8-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview8-buster AS build
 WORKDIR /src
 
 COPY ["./Directory.Build.props", "Directory.Build.props"]

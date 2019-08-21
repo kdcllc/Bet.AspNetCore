@@ -1,22 +1,23 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using AppAuthentication.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using AppAuthentication.Helpers;
+
 namespace AppAuthentication.VisualStudio
 {
     [DataContract]
     internal class VisualStudioTokenProviderFile
     {
-        private const string FormatExceptionMessage = "VisualStudio Token Provider File is not in the expected format.";
-
         [DataMember(Name = "TokenProviders")]
         public List<VisualStudioTokenProvider> TokenProviders;
+
+        private const string FormatExceptionMessage = "VisualStudio Token Provider File is not in the expected format.";
 
         public static VisualStudioTokenProviderFile Parse(string fileContents)
         {

@@ -19,7 +19,7 @@ namespace Serilog
         /// <param name="enableValidation">The option to enable or disable options validations on the startup.</param>
         /// <param name="applicationName">
         /// The name for the application logs in Azure Log Analytics. The name can't contain any characters.
-        /// The Default value is <see cref="WebHostDefaults.ApplicationKey"/>
+        /// The Default value is <see cref="WebHostDefaults.ApplicationKey"/>.
         /// </param>
         /// <param name="batchSize">The size of the batch to send to Azue Log Analytics.</param>
         /// <returns></returns>
@@ -73,13 +73,13 @@ namespace Serilog
                 // {
                 //    options.InstrumentationKey = instrumentId.InstrumentationKey;
                 // });
-
                 var telemetryClient = TelemetryConfiguration.Active;
 
                 if (appInsightConfig.EnableEvents)
                 {
                     loggerConfiguration.WriteTo.ApplicationInsights(telemetryClient, TelemetryConverter.Events);
                 }
+
                 if (appInsightConfig.EnableTraces)
                 {
                     loggerConfiguration.WriteTo.ApplicationInsights(telemetryClient, TelemetryConverter.Traces);

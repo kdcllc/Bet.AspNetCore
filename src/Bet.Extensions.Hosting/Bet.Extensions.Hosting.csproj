@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>The Collection of IHost related functionality used with GenericHost.</Description>
+    <Description>The collection of the IHost related functionality used with GenericHost.</Description>
     <PackageTags>dotnetcore, generic host, validation,options ,hosting ,extensions</PackageTags>
   </PropertyGroup>
 

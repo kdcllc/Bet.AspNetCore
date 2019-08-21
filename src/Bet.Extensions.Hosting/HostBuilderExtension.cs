@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.Hosting
         /// <returns></returns>
         public static IHostBuilder UseStartupFilter(this IHostBuilder hostBuilder)
         {
-            hostBuilder.ConfigureServices((context, services) =>
+            hostBuilder.ConfigureServices((_, services) =>
             {
                 var hostFilter = services.Select(x => x.ImplementationInstance).OfType<IValidationFilter>().FirstOrDefault();
 

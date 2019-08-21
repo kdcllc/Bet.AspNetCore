@@ -13,6 +13,15 @@ namespace Bet.Extensions.ML.ModelBuilder
      where TOutput : class, new()
      where TResult : MetricsResult
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelCreationBuilder{TInput, TOutput, TResult}"/> class.
+        /// </summary>
+        /// <param name="mLContext"></param>
+        public ModelCreationBuilder(MLContext mLContext)
+        {
+            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
+        }
+
         /// <inheritdoc/>
         public virtual IDataView TrainingDataView { get; private set; }
 
@@ -40,13 +49,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual DataViewSchema TrainingSchema { get; set; }
 
-        /// <inheritdoc/>
         public abstract TrainingPipelineResult BuildTrainingPipeline();
-
-        public ModelCreationBuilder(MLContext mLContext)
-        {
-            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
-        }
 
         /// <inheritdoc/>
         public virtual TrainingPipelineResult BuildTrainingPipeline(Func<TrainingPipelineResult> builder)
@@ -121,13 +124,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public virtual void SaveModel(string modelRelativePath)
         {
-            SaveModel((mlContext, mlModel, path, modelInputSchema) =>
-            {
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+            SaveModel(
+                (mlContext, mlModel, path, modelInputSchema) =>
                 {
-                    mlContext.Model.Save(mlModel, modelInputSchema, fs);
-                }
-            }, modelRelativePath);
+                    using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write))
+                    {
+                        mlContext.Model.Save(mlModel, modelInputSchema, fs);
+                    }
+                }, modelRelativePath);
         }
 
         public virtual MemoryStream GetModelStream()

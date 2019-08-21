@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
@@ -18,12 +20,10 @@ namespace Bet.Extensions.ML.Prediction
         where TPrediction : class, new()
     {
         private readonly MLContext _mlContext;
-
         private readonly ITransformer _model;
-
         private readonly ILogger _logger;
-
         private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private readonly List<WeakReference> _references = new List<WeakReference>();
 
         public ModelPredictionEnginePooledObjectPolicy(
             MLContext mlContext,
@@ -39,19 +39,19 @@ namespace Bet.Extensions.ML.Prediction
 
         public PredictionEngine<TData, TPrediction> Create()
         {
-            var watch = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var predictionEngine = _mlContext.Model.CreatePredictionEngine<TData, TPrediction>(_model);
 
-            watch.Stop();
-            _logger.Log(_options.LogLevel,"Time took to create the prediction engine: {elapsed}", watch.ElapsedMilliseconds);
+            _logger.Log(_options.LogLevel, "Time took to create the prediction engine: {elapsed}", sw.GetElapsedTime());
 
+            _references.Add(new WeakReference(predictionEngine));
             return predictionEngine;
         }
 
         public bool Return(PredictionEngine<TData, TPrediction> obj)
         {
-            return obj != null;
+            return _references.Any(x => x.Target == obj);
         }
     }
 }

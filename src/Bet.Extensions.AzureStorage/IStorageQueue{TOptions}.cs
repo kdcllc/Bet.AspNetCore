@@ -27,14 +27,14 @@ namespace Bet.Extensions.AzureStorage
         /// </summary>
         /// <param name="message">The <see cref="CloudQueueMessage"/> to be deleted from the queue.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>task</returns>
+        /// <returns>task.</returns>
         Task DeleteAsync(CloudQueueMessage message, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Deletes the Azure Storage Queue completely.
         /// </summary>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>task</returns>
+        /// <returns>task.</returns>
         Task DeleteQueueAsync(CancellationToken cancellationToken = default);
 
         /// <summary>

@@ -9,7 +9,8 @@ namespace System
         {
             return
         type.IsPrimitive
-        || new Type[] {
+        || new Type[]
+        {
             typeof(Enum),
             typeof(string),
             typeof(decimal),

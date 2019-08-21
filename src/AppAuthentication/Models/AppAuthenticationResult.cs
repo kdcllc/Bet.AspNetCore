@@ -1,43 +1,43 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Runtime.Serialization;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace AppAuthentication.Models
 {
     /// <summary>
-    /// Contains access token and other results from a token request call
+    /// Contains access token and other results from a token request call.
     /// </summary>
     internal class AppAuthenticationResult
     {
         /// <summary>
-        /// The access token returned from the token request
+        /// The access token returned from the token request.
         /// </summary>
         [DataMember]
         public string AccessToken { get; private set; }
 
         /// <summary>
-        /// The time when the access token expires
+        /// The time when the access token expires.
         /// </summary>
         [DataMember]
         public DateTimeOffset ExpiresOn { get; private set; }
 
         /// <summary>
-        /// The Resource URI of the receiving web service
+        /// The Resource URI of the receiving web service.
         /// </summary>
         [DataMember]
         public string Resource { get; private set; }
 
         /// <summary>
-        /// Indicates the token type value
+        /// Indicates the token type value.
         /// </summary>
         [DataMember]
         public string TokenType { get; private set; }
 
         /// <summary>
-        /// Return true when access token is near expiration
+        /// Return true when access token is near expiration.
         /// </summary>
         /// <returns></returns>
         internal bool IsNearExpiry()

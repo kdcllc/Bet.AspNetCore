@@ -1,10 +1,26 @@
 ﻿# Bet.Extensions.ML.Spam
 
+[![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
+[![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.ML.Spam.ML.svg)](https://www.nuget.org/packages?q=Bet.Extensions.ML.Spam.ML)
+
+Add the following to the project
+
+```csharp
+    dotnet add package Bet.Extensions.ML.Spam
+```
+
 This project is self contained ML.NET project to be used within other DotNetCore applications.
 
 ## Usage
 
-```
+For complete examples please refer to sample projects:
+
+1. [`Bet.AspNetCore.Sample`](../Bet.AspNetCore.Sample/README.md) - `AspNetCore` Web App with spam prediction models.
+2. [`Bet.ML.WebApi.Sample`](../Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
+3. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/README.md)
+
+
+```csharp
     // 1. register
     services.AddSpamDetectionModelBuilder();
     

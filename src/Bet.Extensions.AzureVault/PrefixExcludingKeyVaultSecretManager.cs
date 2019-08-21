@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Azure.KeyVault.Models;
+﻿using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 

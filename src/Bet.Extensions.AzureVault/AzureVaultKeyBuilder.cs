@@ -18,15 +18,15 @@ namespace Microsoft.Extensions.Configuration
     /// Known issues with running inside Docker container.
     /// https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/key-vault/service-to-service-authentication.md
     /// https://rahulpnath.com/blog/authenticating-with-azure-key-vault-using-managed-service-identity/
-    /// AzureServicesAuthConnectionString=RunAs=App;AppId=AppId;TenantId=TenantId;AppKey=Secret
+    /// AzureServicesAuthConnectionString=RunAs=App;AppId=AppId;TenantId=TenantId;AppKey=Secret.
     /// </summary>
     public static class AzureVaultKeyBuilder
     {
         internal static readonly Dictionary<string, string> Enviroments = new Dictionary<string, string>
         {
-            {"Development", "dev" },
-            {"Staging", "qa" },
-            {"Production", "prod" }
+            { "Development", "dev" },
+            { "Staging", "qa" },
+            { "Production", "prod" }
         };
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace Microsoft.Extensions.Configuration
 
                     var azureServiceTokenProvider = new AzureServiceTokenProvider();
 
-                    KeyVaultClient kv() => new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+                    KeyVaultClient Kv() => new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
-                    var keyVaultClient = policy.Execute(kv);
+                    var keyVaultClient = policy.Execute(Kv);
 
                     // load values that are not specific to the environment.
                     builder.AddAzureKeyVault(options.BaseUrl, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
@@ -139,18 +139,20 @@ namespace Microsoft.Extensions.Configuration
                     Enviroments.TryGetValue(hostingEnviromentName, out prefix);
                 }
 
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
                 foreach (var splitEndpoint in keyVaultEndpoints.Split(';'))
-                {
-                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                    var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                    builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
-
-                    if (!string.IsNullOrEmpty(prefix))
                     {
-                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
+                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
+
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
+                        }
                     }
-                }
             }
 
             return builder.Build();

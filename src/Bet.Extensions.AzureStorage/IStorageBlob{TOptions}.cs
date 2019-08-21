@@ -24,9 +24,10 @@ namespace Bet.Extensions.AzureStorage
 
         /// <summary>
         /// Adds an object to an Azure Blob Storage, as byte[].
+        /// </summary>
         /// <param name="content">The array of bytes to be stored in Azure Storage Blob.</param>
-        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new <code>Guid</code> will be used.</param>
-        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to <code>application/octet-stream</code>.</param>
+        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new. <code>Guid</code> will be used.</param>
+        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to. <code>application/octet-stream</code>.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
         /// <returns>string: blob name.</returns>
         Task<string> AddAsync(byte[] content, string blobId = null, string contentType = null, CancellationToken cancellationToken = default);
@@ -35,7 +36,7 @@ namespace Bet.Extensions.AzureStorage
         /// Adds an object to an Azure Blob Storage, as object type by serializing it to json and then storing it as json.
         /// </summary>
         /// <param name="item">The item to be stored as object type.</param>
-        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new <code>Guid</code> will be used.</param>
+        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new. <code>Guid</code> will be used.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
         /// <returns>string: blob name.</returns>
         Task<string> AddAsync(object item, string blobId = null, CancellationToken cancellationToken = default);
@@ -44,28 +45,28 @@ namespace Bet.Extensions.AzureStorage
         /// Adds an object to an Azure Blob Storage, as object type by serializing it to json and then storing it as json.
         /// </summary>
         /// <param name="item">The item to be stored as object type.</param>
-        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new <code>Guid</code> will be used.</param>
-        /// <param name="encoding">The encoding type to serialize the <code>item</code>.</param>
+        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new. <code>Guid</code> will be used.</param>
+        /// <param name="encoding">The encoding type to serialize the. <code>item</code>.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>string: blob name</returns>
+        /// <returns>string: blob name.</returns>
         Task<string> AddAsync(object item, string blobId, Encoding encoding, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds an object to an Azure Storage Blob via System.IO.Stream.
         /// </summary>
         /// <param name="content">The System.IO.Stream object instance.</param>
-        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new <code>Guid</code> will be used.</param>
-        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to <code>application/octet-stream</code>.</param>
+        /// <param name="blobId">Optional. The identifier/ name for the content to be stored on Azure. If not supplied,  then a new. <code>Guid</code> will be used.</param>
+        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to. <code>application/octet-stream</code>.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>string: blob name</returns>
+        /// <returns>string: blob name.</returns>
         Task<string> AddAsync(Stream content, string blobId = null, string contentType = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds an object to Azure Storage Blob from a URI.
         /// </summary>
         /// <param name="sourceUri">The source URI to upload.</param>
-        /// <param name="blobId">Optional. The identifier/name of this content to be stored on Azure. If not supplied, then a new <code>Guid</code> will be used.</param>
-        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to <code>application/octet-stream</code>.</param>
+        /// <param name="blobId">Optional. The identifier/name of this content to be stored on Azure. If not supplied, then a new. <code>Guid</code> will be used.</param>
+        /// <param name="contentType">Optional. What type of content exists in the file. If none is provided, then Azure defaults this value to. <code>application/octet-stream</code>.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
         /// <returns>string: blob name.</returns>
         Task<string> AddAsync(Uri sourceUri, string blobId = null, string contentType = null, CancellationToken cancellationToken = default);
@@ -85,7 +86,7 @@ namespace Bet.Extensions.AzureStorage
         /// </summary>
         /// <typeparam name="T">The type of the object in the collection.</typeparam>
         /// <param name="items">The list of the items.</param>
-        /// <param name="encoding">The encoding type to serialize the <code>item</code>.</param>
+        /// <param name="encoding">The encoding type to serialize the. <code>item</code>.</param>
         /// <param name="batchSize">The size of the batch to process at one time.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
         /// <returns>list of strings: blob name.</returns>
@@ -96,7 +97,7 @@ namespace Bet.Extensions.AzureStorage
         /// </summary>
         /// <param name="blobName">The name/identifier of the blob.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>task bool: result </returns>
+        /// <returns>task bool: result. </returns>
         Task<bool> DeleteAsync(string blobName, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<CloudBlockBlob>> GetAllAsync(string prefix = default, CancellationToken cancellationToken = default);
@@ -106,7 +107,7 @@ namespace Bet.Extensions.AzureStorage
         /// </summary>
         /// <param name="blobName">The name/identifier of the blob.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>Sytem.IO.Stream: object</returns>
+        /// <returns>Sytem.IO.Stream: object.</returns>
         Task<Stream> GetAsync(string blobName, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace Bet.Extensions.AzureStorage
         /// <typeparam name="T">The type of the item.</typeparam>
         /// <param name="blobName">The name/identifier of the blob.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>Sytem.IO.Stream: object</returns>
+        /// <returns>Sytem.IO.Stream: object.</returns>
         Task<T> GetAsync<T>(string blobName, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace Bet.Extensions.AzureStorage
         /// </summary>
         /// <param name="blobName">The name/identifier of the blob.</param>
         /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for a task to complete.</param>
-        /// <returns>byte[]: object</returns>
+        /// <returns>byte[]: object.</returns>
         Task<byte[]> GetBytesAsync(string blobName, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -134,7 +135,7 @@ namespace Bet.Extensions.AzureStorage
         /// <param name="fileName">The file name to be used to save.</param>
         /// <param name="mode">The mode of FileMode.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>task: void</returns>
+        /// <returns>task: void.</returns>
         Task SaveAsync(byte[] data, string pathLocation, string fileName, FileMode mode = FileMode.Create, CancellationToken cancellationToken = default);
     }
 }

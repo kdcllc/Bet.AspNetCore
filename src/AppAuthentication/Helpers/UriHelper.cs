@@ -10,10 +10,10 @@ namespace AppAuthentication.Helpers
 #pragma warning restore RCS1102 // Make class static.
     {
         /// <summary>
-        /// Given an Azure AD authority URL, returns the instance URL from it
+        /// Given an Azure AD authority URL, returns the instance URL from it.
         /// </summary>
-        /// <param name="authority">Azure AD authority e.g. https://login.microsoftonline.com/tenantID</param>
-        /// <returns>Instance URL if the authority is valid, else null</returns>
+        /// <param name="authority">Azure AD authority e.g. https://login.microsoftonline.com/tenantID.</param>
+        /// <returns>Instance URL if the authority is valid, else null.</returns>
         internal static string GetAzureAdInstanceByAuthority(string authority)
         {
             if (!string.IsNullOrWhiteSpace(authority))
@@ -39,10 +39,10 @@ namespace AppAuthentication.Helpers
         }
 
         /// <summary>
-        /// Given an Azure AD authority URL, returns the tenant from it
+        /// Given an Azure AD authority URL, returns the tenant from it.
         /// </summary>
-        /// <param name="authority">Azure AD authority e.g. https://login.microsoftonline.com/tenantID</param>
-        /// <returns>Tenant if the authority is valid and has tenant information, else null</returns>
+        /// <param name="authority">Azure AD authority e.g. https://login.microsoftonline.com/tenantID.</param>
+        /// <returns>Tenant if the authority is valid and has tenant information, else null.</returns>
         internal static string GetTenantByAuthority(string authority)
         {
             if (!string.IsNullOrWhiteSpace(authority))

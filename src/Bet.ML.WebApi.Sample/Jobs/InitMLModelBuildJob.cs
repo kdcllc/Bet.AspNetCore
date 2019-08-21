@@ -12,14 +12,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Bet.ML.WebApi.Sample.Jobs
 {
-    public class LoadMLModelsJobs : IStartupJob
+    public class InitMLModelBuildJob : IStartupJob
     {
         private readonly IEnumerable<IModelBuilderService> _modelBuilders;
-        private readonly ILogger<LoadMLModelsJobs> _logger;
+        private readonly ILogger<InitMLModelBuildJob> _logger;
 
-        public LoadMLModelsJobs(
+        public InitMLModelBuildJob(
             IEnumerable<IModelBuilderService> modelBuilders,
-            ILogger<LoadMLModelsJobs> logger)
+            ILogger<InitMLModelBuildJob> logger)
         {
             _modelBuilders = modelBuilders ?? throw new ArgumentNullException(nameof(modelBuilders));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -28,7 +28,7 @@ namespace Bet.ML.WebApi.Sample.Jobs
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             // 1. Build models
-            _logger.LogInformation("[Started][{startupJobName}] executing model builders total count: {numberOfModels}", nameof(LoadMLModelsJobs), _modelBuilders?.ToList()?.Count ?? 0);
+            _logger.LogInformation("[Started][{startupJobName}] executing model builders total count: {numberOfModels}", nameof(InitMLModelBuildJob), _modelBuilders?.ToList()?.Count ?? 0);
 
             var actualCount = 0;
             foreach (var modelBuilder in _modelBuilders)
@@ -49,7 +49,7 @@ namespace Bet.ML.WebApi.Sample.Jobs
                 }
             }
 
-            _logger.LogInformation("[Finished][{startupJobName}] executing total number successfully {numberOfModels}", nameof(LoadMLModelsJobs), actualCount);
+            _logger.LogInformation("[Finished][{startupJobName}] executing total number successfully {numberOfModels}", nameof(InitMLModelBuildJob), actualCount);
         }
     }
 }

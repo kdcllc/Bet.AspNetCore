@@ -3,7 +3,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.Extensions.ML.ModelBuilder
+using Microsoft.Extensions.Primitives;
+
+namespace Bet.Extensions.ML.ModelStorageProviders
 {
     /// <summary>
     /// ML model storage provider.
@@ -54,5 +56,11 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task SaveModelResultAsync<TResult>(TResult result, string name, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Raises the change token to be used with the model consumer.
+        /// </summary>
+        /// <returns></returns>
+        IChangeToken GetReloadToken();
     }
 }

@@ -21,5 +21,4 @@
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 
-
 </Project>

@@ -33,6 +33,9 @@ trim_trailing_whitespace = false
 # .NET Code Style Settings
 [*.{cs,csx,cake,vb}]
 
+[*.cshtml.cs]
+dotnet_diagnostic.SA1649.severity = none
+
 # "this." and "Me." qualifiers
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#this_and_me
 dotnet_style_qualification_for_field = false:warning

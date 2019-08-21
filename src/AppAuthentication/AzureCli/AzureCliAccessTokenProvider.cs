@@ -4,18 +4,19 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using Microsoft.Azure.Services.AppAuthentication;
-using AppAuthentication.Models;
-using AppAuthentication.Helpers.Microsoft.Azure.Services.AppAuthentication;
+using System.Threading.Tasks;
+
 using AppAuthentication.Helpers;
+using AppAuthentication.Models;
+
+using Microsoft.Azure.Services.AppAuthentication;
 
 namespace AppAuthentication.AzureCli
 {
     /// <summary>
     /// Gets a token using Azure CLI 2.0 for local development scenarios.
-    /// az account get-access-token --resource
+    /// az account get-access-token --resource.
     /// </summary>
     internal class AzureCliAccessTokenProvider : NonInteractiveAzureServiceTokenProviderBase, IAccessTokenProvider
     {
@@ -43,44 +44,6 @@ namespace AppAuthentication.AzureCli
         {
             _processManager = processManager;
             PrincipalUsed = new Principal { Type = "User" };
-        }
-
-        private ProcessStartInfo GetProcessStartInfo(string resource)
-        {
-            ProcessStartInfo startInfo;
-
-#if FullNetFx
-                 startInfo = new ProcessStartInfo
-                    {
-                        FileName = Path.Combine(Environment.SystemDirectory, Cmd),
-                        Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
-                    };
-
-            // Default install location for Az CLI is included. If developer has installed to non-default location, the path can be specified using AzureCliPath variable.
-            startInfo.EnvironmentVariables["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
-#else
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                startInfo = new ProcessStartInfo
-                {
-                    FileName = Path.Combine(EnvironmentHelper.SystemDirectory, Cmd),
-                    Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
-                };
-
-                startInfo.Environment["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
-            }
-            else
-            {
-                startInfo = new ProcessStartInfo
-                {
-                    FileName = Bash,
-                    Arguments = $"{GetTokenCommand} {ResourceArgumentName} {resource}"
-                };
-
-                startInfo.Environment["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)}:{AzureCliDefaultPath}";
-            }
-#endif
-            return startInfo;
         }
 
         public async Task<AuthenticationToken> GetAuthResultAsync(string resource, string authority)
@@ -129,6 +92,44 @@ namespace AppAuthentication.AzureCli
                 throw new Exception(
                     $"{nameof(AzureCliAccessTokenProvider)} not able to obtain the token for {ConnectionString} , {resource} , {authority}, {exp.Message}");
             }
+        }
+
+        private ProcessStartInfo GetProcessStartInfo(string resource)
+        {
+            ProcessStartInfo startInfo;
+
+#if FullNetFx
+                 startInfo = new ProcessStartInfo
+                    {
+                        FileName = Path.Combine(Environment.SystemDirectory, Cmd),
+                        Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
+                    };
+
+            // Default install location for Az CLI is included. If developer has installed to non-default location, the path can be specified using AzureCliPath variable.
+            startInfo.EnvironmentVariables["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                startInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(EnvironmentHelper.SystemDirectory, Cmd),
+                    Arguments = $"/c {GetTokenCommand} {ResourceArgumentName} {resource}"
+                };
+
+                startInfo.Environment["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)};{_azureCliDefaultPathWindows}";
+            }
+            else
+            {
+                startInfo = new ProcessStartInfo
+                {
+                    FileName = Bash,
+                    Arguments = $"{GetTokenCommand} {ResourceArgumentName} {resource}"
+                };
+
+                startInfo.Environment["PATH"] = $"{Environment.GetEnvironmentVariable(AzureCliPath)}:{AzureCliDefaultPath}";
+            }
+#endif
+            return startInfo;
         }
     }
 }

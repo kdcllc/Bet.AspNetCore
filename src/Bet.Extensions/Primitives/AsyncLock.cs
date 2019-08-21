@@ -14,6 +14,7 @@ namespace System.Threading
         private bool _disposed;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AsyncLock"/> class.
         /// Returns a new AsyncLock.
         /// </summary>
         public AsyncLock()
@@ -21,12 +22,11 @@ namespace System.Threading
             _lockRelease = Task.FromResult(new LockRelease(this));
         }
 
-
         /// <summary>
         /// Sets a lock, which allows for cancellation, using a <see cref="CancellationToken"/>.
         /// </summary>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> which can be used to cancel the lock</param>
-        /// <returns>An asynchronous operation</returns>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> which can be used to cancel the lock.</param>
+        /// <returns>An asynchronous operation.</returns>
         public Task<LockRelease> LockAsync(CancellationToken cancellationToken = default)
         {
             var waitTask = _asyncSemaphore.WaitAsync(cancellationToken);
@@ -50,9 +50,10 @@ namespace System.Threading
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
@@ -66,10 +67,14 @@ namespace System.Threading
             }
         }
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+#pragma warning disable CA1034 // Nested types should not be visible
         /// <summary>
         /// Used coordinate lock releases.
         /// </summary>
         public struct LockRelease : IDisposable
+#pragma warning restore CA1034 // Nested types should not be visible
+#pragma warning restore CA1815 // Override equals and operator equals on value types
         {
             private readonly AsyncLock _asyncLockRelease;
 
@@ -81,7 +86,6 @@ namespace System.Threading
             /// <summary>
             /// Closes and releases resources associated with <see cref="LockRelease"/>.
             /// </summary>
-            /// <returns>An asynchronous operation</returns>
             public void Dispose()
             {
                 _asyncLockRelease?._asyncSemaphore.Release();

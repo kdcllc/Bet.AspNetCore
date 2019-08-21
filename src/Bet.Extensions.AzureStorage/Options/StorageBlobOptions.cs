@@ -22,7 +22,7 @@ namespace Bet.Extensions.AzureStorage.Options
         /// Blob = 2,
         ///
         /// Unknown access type.
-        /// Unknown = 3
+        /// Unknown = 3.
         /// </summary>
         public BlobContainerPublicAccessType PublicAccessType { get; set; } = BlobContainerPublicAccessType.Off;
 

@@ -5,22 +5,21 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.AspNetCore.LetsEncrypt.Abstractions;
-using Bet.AspNetCore.LetsEncrypt.Options;
 
 using Certes;
 using Certes.Acme;
 using Certes.Acme.Resource;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Bet.AspNetCore.LetsEncrypt.Internal
 {
     internal class LetsEncryptService : ILetsEncryptService
     {
-        private IAcmeContext _acmeContext;
         private readonly ILogger<LetsEncryptService> _logger;
         private readonly IChallengeStore _challengeStore;
+
+        private IAcmeContext _acmeContext;
 
         public LetsEncryptService(
             IChallengeStore challengeStore,
@@ -73,32 +72,41 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
         }
 
         public async Task<(X509Certificate2 cert, byte[] rawCert)> AcquireNewCertificateForHosts(
-            string hostName,
-            CsrInfo certificateSigningRequest,
-            string certificateFriendlyName,
-            string certificatePassword,
-            CancellationToken cancellationToken)
+                string hostName,
+                CsrInfo certificateSigningRequest,
+                string certificateFriendlyName,
+                string certificatePassword,
+                CancellationToken cancellationToken)
         {
             _logger.LogInformation("Ordering LetsEncrypt certificate for hosts {0}.", new object[] { hostName });
             var order = await _acmeContext.NewOrder(new string[] { hostName });
-
             await ValidateOrderAsync(order, cancellationToken);
-
             var certificateBytes = await AcquireCertificateBytesFromOrderAsync(
                 order,
                 certificateSigningRequest,
                 certificateFriendlyName,
                 certificatePassword,
                 cancellationToken);
-
             if (certificateBytes == null)
             {
                 throw new InvalidOperationException("The certificate from the order was null.");
             }
 
             var certificate = new X509Certificate2(certificateBytes, certificatePassword);
-
             return (certificate, certificateBytes);
+        }
+
+        private static async Task<Challenge[]> ValidateChallengesAsync(IChallengeContext[] challengeContexts, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var challenges = await Task.WhenAll(challengeContexts.Select(x => x.Validate()));
+            while (challenges.Any(x => x.Status == ChallengeStatus.Pending))
+            {
+                await Task.Delay(1000);
+                challenges = await Task.WhenAll(challengeContexts.Select(x => x.Resource()));
+            }
+
+            return challenges;
         }
 
         private async Task<byte[]> AcquireCertificateBytesFromOrderAsync(
@@ -155,21 +163,5 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
                     new AggregateException(challengeExceptions));
             }
         }
-
-        private static async Task<Challenge[]> ValidateChallengesAsync(IChallengeContext[] challengeContexts, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var challenges = await Task.WhenAll(challengeContexts.Select(x => x.Validate()));
-
-            while (challenges.Any(x => x.Status == ChallengeStatus.Pending))
-            {
-                await Task.Delay(1000);
-                challenges = await Task.WhenAll(challengeContexts.Select(x => x.Resource()));
-            }
-
-            return challenges;
-        }
     }
 }
-

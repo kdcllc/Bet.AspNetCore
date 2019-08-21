@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+
 using AppAuthentication.Helpers;
 using AppAuthentication.Models;
+
 using Microsoft.Azure.Services.AppAuthentication;
 
 namespace AppAuthentication.VisualStudio
@@ -35,71 +37,6 @@ namespace AppAuthentication.VisualStudio
             _visualStudioTokenProviderFile = visualStudioTokenProviderFile;
             _processManager = processManager;
             PrincipalUsed = new Principal { Type = "User" };
-        }
-
-        /// <summary>
-        /// Gets the token provider file from user's local appdata folder.
-        /// </summary>
-        /// <returns></returns>
-        private VisualStudioTokenProviderFile GetTokenProviderFile()
-        {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(LocalAppDataPathEnv)))
-            {
-                throw new Exception(NoAppDataEnvironmentVariableError);
-            }
-
-            var tokenProviderPath = Path.Combine(Environment.GetEnvironmentVariable(LocalAppDataPathEnv),
-                TokenProviderFilePath);
-
-            if (!File.Exists(tokenProviderPath))
-            {
-                throw new Exception($"{TokenProviderFileNotFound} \"{tokenProviderPath}\"");
-            }
-
-            return VisualStudioTokenProviderFile.Parse(File.ReadAllText(tokenProviderPath));
-        }
-
-        /// <summary>
-        /// Gets a list of token provider executables to call to get token.
-        /// </summary>
-        /// <param name="visualStudioTokenProviderFile">Visual Studio Token provider file</param>
-        /// <param name="resource"></param>
-        /// <param name="tenant"></param>
-        /// <returns></returns>
-        private List<ProcessStartInfo> GetProcessStartInfos(VisualStudioTokenProviderFile visualStudioTokenProviderFile,
-            string resource, string tenant = default)
-        {
-            var processStartInfos = new List<ProcessStartInfo>();
-
-            foreach (var tokenProvider in visualStudioTokenProviderFile.TokenProviders)
-            {
-                // If file does not exist, the version of Visual Studio that set the token provider may be uninstalled.
-                if (File.Exists(tokenProvider.Path))
-                {
-                    var arguments = $"{ResourceArgumentName} {resource} ";
-
-                    if (tenant != default)
-                    {
-                        arguments += $"{TenantArgumentName} {tenant} ";
-                    }
-
-                    // Add the arguments set in the token provider file.
-                    if (tokenProvider.Arguments?.Count > 0)
-                    {
-                        arguments += string.Join(" ", tokenProvider.Arguments);
-                    }
-
-                    var startInfo = new ProcessStartInfo
-                    {
-                        FileName = tokenProvider.Path,
-                        Arguments = arguments
-                    };
-
-                    processStartInfos.Add(startInfo);
-                }
-            }
-
-            return processStartInfos;
         }
 
         public async Task<AuthenticationToken> GetAuthResultAsync(string resource, string authority)
@@ -181,6 +118,74 @@ namespace AppAuthentication.VisualStudio
                 throw new Exception(
                     $"{nameof(VisualStudioAccessTokenProvider)} not able to obtain the token for {ConnectionString} , {resource} , {authority}, {exp.Message}");
             }
+        }
+
+        /// <summary>
+        /// Gets the token provider file from user's local appdata folder.
+        /// </summary>
+        /// <returns></returns>
+        private VisualStudioTokenProviderFile GetTokenProviderFile()
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(LocalAppDataPathEnv)))
+            {
+                throw new Exception(NoAppDataEnvironmentVariableError);
+            }
+
+            var tokenProviderPath = Path.Combine(
+                Environment.GetEnvironmentVariable(LocalAppDataPathEnv),
+                TokenProviderFilePath);
+
+            if (!File.Exists(tokenProviderPath))
+            {
+                throw new Exception($"{TokenProviderFileNotFound} \"{tokenProviderPath}\"");
+            }
+
+            return VisualStudioTokenProviderFile.Parse(File.ReadAllText(tokenProviderPath));
+        }
+
+        /// <summary>
+        /// Gets a list of token provider executables to call to get token.
+        /// </summary>
+        /// <param name="visualStudioTokenProviderFile">Visual Studio Token provider file.</param>
+        /// <param name="resource"></param>
+        /// <param name="tenant"></param>
+        /// <returns></returns>
+        private List<ProcessStartInfo> GetProcessStartInfos(
+            VisualStudioTokenProviderFile visualStudioTokenProviderFile,
+            string resource,
+            string tenant = default)
+        {
+            var processStartInfos = new List<ProcessStartInfo>();
+
+            foreach (var tokenProvider in visualStudioTokenProviderFile.TokenProviders)
+            {
+                // If file does not exist, the version of Visual Studio that set the token provider may be uninstalled.
+                if (File.Exists(tokenProvider.Path))
+                {
+                    var arguments = $"{ResourceArgumentName} {resource} ";
+
+                    if (tenant != default)
+                    {
+                        arguments += $"{TenantArgumentName} {tenant} ";
+                    }
+
+                    // Add the arguments set in the token provider file.
+                    if (tokenProvider.Arguments?.Count > 0)
+                    {
+                        arguments += string.Join(" ", tokenProvider.Arguments);
+                    }
+
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = tokenProvider.Path,
+                        Arguments = arguments
+                    };
+
+                    processStartInfos.Add(startInfo);
+                }
+            }
+
+            return processStartInfos;
         }
     }
 }

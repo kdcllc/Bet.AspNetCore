@@ -77,7 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 #if NETCOREAPP3_0
         /// <summary>
-        /// Provides backward comp-ability for NetCore 2.x
+        /// Provides backward comp-ability for NetCore 2.x.
         /// </summary>
         /// <param name="environment"></param>
         /// <returns></returns>
@@ -87,5 +87,4 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 #endif
     }
-
 }

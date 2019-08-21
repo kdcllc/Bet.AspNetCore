@@ -4,7 +4,7 @@ namespace Bet.Extensions.ML.ModelBuilder
 {
     public class TrainingPipelineResult
     {
-        public TrainingPipelineResult(IEstimator<ITransformer> trainingPipeLine, string trainerName, long elapsedMilliseconds=default)
+        public TrainingPipelineResult(IEstimator<ITransformer> trainingPipeLine, string trainerName, long elapsedMilliseconds = default)
         {
             TrainingPipeLine = trainingPipeLine;
             ElapsedMilliseconds = elapsedMilliseconds;

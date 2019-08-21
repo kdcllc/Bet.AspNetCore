@@ -35,7 +35,7 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
         IUriOptionsSetup UseHttpMethod(HttpMethod httpMethod);
 
         /// <summary>
-        /// See more for Status Codes information: <see cref="!:https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"/>
+        /// See more for Status Codes information: <see cref="!:https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"/>.
         /// </summary>summary>
         IUriOptionsSetup UseExpectHttpCodes(int min, int max);
 

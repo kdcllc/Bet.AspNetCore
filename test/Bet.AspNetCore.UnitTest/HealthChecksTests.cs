@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bet.AspNetCore.UnitTest
@@ -22,7 +22,7 @@ namespace Bet.AspNetCore.UnitTest
                 {
                     services.AddHealthChecks().AddSigtermCheck("sigterm_check");
                 })
-                .Configure(app=>
+                .Configure(app =>
                 {
                     app.UseHealthChecks("/hc");
                 });
@@ -49,7 +49,7 @@ namespace Bet.AspNetCore.UnitTest
             var factoryMock = new Mock<IHttpClientFactory>();
             var fakeHttpMessageHandler = new FakeHttpMessageHandler(new HttpResponseMessage()
             {
-                StatusCode = HttpStatusCode.OK,
+                StatusCode = HttpStatusCode.OK
             });
 
             factoryMock.Setup(x => x.CreateClient("Successful")).Returns(new HttpClient(fakeHttpMessageHandler));

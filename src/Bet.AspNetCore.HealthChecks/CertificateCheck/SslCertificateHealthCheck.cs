@@ -23,8 +23,10 @@ namespace Bet.AspNetCore.HealthChecks.CertificateCheck
                 var checkName = context.Registration.Name;
                 var httpClient = _httpClientFactory.CreateClient(checkName);
 
-                var response = await httpClient.GetAsync("/", cancellationToken);
-                response.EnsureSuccessStatusCode();
+                using (var response = await httpClient.GetAsync("/", cancellationToken))
+                {
+                    response.EnsureSuccessStatusCode();
+                }
 
                 return new HealthCheckResult(HealthStatus.Healthy, $"{checkName}-{httpClient.BaseAddress}");
             }

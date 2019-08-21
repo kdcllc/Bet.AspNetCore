@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using AppAuthentication.Helpers;
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+
+using AppAuthentication.Helpers;
 
 namespace AppAuthentication.Models
 {
@@ -20,7 +21,7 @@ namespace AppAuthentication.Models
         {
             Unix,
             DateTimeString
-        };
+        }
 
         // VS token service and MSI endpoint return access_token
         [DataMember(Name = "access_token", IsRequired = false)]

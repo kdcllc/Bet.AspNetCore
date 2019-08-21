@@ -6,8 +6,6 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
 {
     public class DeveloperListRegisteredServicesOptions
     {
-        internal IReadOnlyList<ServiceDescriptor> Services { get; set; }
-
         /// <summary>
         /// The default path is "/di".
         /// </summary>
@@ -17,5 +15,7 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
         /// The default value is json output.
         /// </summary>
         public PathOutputOptions PathOutputOptions { get; set; } = PathOutputOptions.Json;
+
+        internal IReadOnlyList<ServiceDescriptor> Services { get; set; }
     }
 }

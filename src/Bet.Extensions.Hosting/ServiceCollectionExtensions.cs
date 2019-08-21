@@ -20,14 +20,15 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<CancellationToken, Task> execute,
             Action<TimedHostedServiceOptions> configure = null)
         {
-            services.AddTimedHostedService<DefaultTimedHostedService>(sp =>
-            {
-                var options = sp.GetRequiredService<IOptionsMonitor<TimedHostedServiceOptions>>();
-                var lifeCycleHooks = sp.GetRequiredService<IEnumerable<ITimedHostedLifeCycleHook>>();
-                var logger = sp.GetRequiredService<ILogger<ITimedHostedService>>();
-                return new DefaultTimedHostedService(execute, options, lifeCycleHooks, logger);
-            },
-            configure);
+            services.AddTimedHostedService<DefaultTimedHostedService>(
+                sp =>
+                {
+                    var options = sp.GetRequiredService<IOptionsMonitor<TimedHostedServiceOptions>>();
+                    var lifeCycleHooks = sp.GetRequiredService<IEnumerable<ITimedHostedLifeCycleHook>>();
+                    var logger = sp.GetRequiredService<ILogger<ITimedHostedService>>();
+                    return new DefaultTimedHostedService(execute, options, lifeCycleHooks, logger);
+                },
+                configure);
 
             return services;
         }
@@ -37,10 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Func<IServiceProvider, THostedService> implementationFactory,
             Action<TimedHostedServiceOptions> configure = null) where THostedService : class, ITimedHostedService
         {
-            services.Configure<TimedHostedServiceOptions>(options =>
-            {
-                configure?.Invoke(options);
-            });
+            services.Configure<TimedHostedServiceOptions>(options => configure?.Invoke(options));
 
             services.TryAddEnumerable(ServiceDescriptor.Singleton<ITimedHostedService>(implementationFactory));
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService>(implementationFactory));
@@ -52,10 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<TimedHostedServiceOptions> configure = null) where THostedService : class, ITimedHostedService, IHostedService
         {
-            services.Configure<TimedHostedServiceOptions>(options =>
-            {
-                configure?.Invoke(options);
-            });
+            services.Configure<TimedHostedServiceOptions>(options => configure?.Invoke(options));
 
             services.TryAddEnumerable(ServiceDescriptor.Singleton<ITimedHostedService, THostedService>());
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, THostedService>());

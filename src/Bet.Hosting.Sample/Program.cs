@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 namespace Bet.Hosting.Sample
 {
     /// <summary>
-    /// https://github.com/dotnet/machinelearning/blob/master/docs/code/MlNetCookBook.md
+    /// https://github.com/dotnet/machinelearning/blob/master/docs/code/MlNetCookBook.md.
     /// </summary>
-    internal class Program
+    internal sealed class Program
     {
         public static async Task Main(string[] args)
         {
@@ -45,4 +45,3 @@ namespace Bet.Hosting.Sample
         }
     }
 }
-

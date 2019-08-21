@@ -10,9 +10,6 @@ namespace Bet.AspNetCore.ReCapture.Google
     [HtmlTargetElement("google-recaptcha")]
     public class ReCaptchaTagHelper : TagHelper
     {
-        [HtmlAttributeName("key")]
-        public ModelExpression Key { get; set; }
-
         private readonly IOptionsMonitor<GoogleReCaptchaOptions> _options;
 
         public ReCaptchaTagHelper(IOptionsMonitor<GoogleReCaptchaOptions> options)
@@ -20,20 +17,22 @@ namespace Bet.AspNetCore.ReCapture.Google
             _options = options;
         }
 
+        [HtmlAttributeName("key")]
+        public ModelExpression Key { get; set; }
+
         /// <summary>
-        /// Generates html syntax:
+        /// Generates html syntax:.
         /// <![CDATA[
         /// <div class="g-recaptcha" data-sitekey="ReCaptchaKey"></div>
         /// ]]>
         /// </summary>
         /// <param name="context"></param>
         /// <param name="output"></param>
-        /// <returns></returns>
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
 
-            string key = null;
+            string key;
             if (Key != null)
             {
                 key = Key.Model?.ToString();
@@ -42,6 +41,7 @@ namespace Bet.AspNetCore.ReCapture.Google
             {
                 key = _options.CurrentValue.ClientKey;
             }
+
             output.Attributes.Add("class", "g-recaptcha");
             output.Attributes.Add("data-sitekey", key);
         }

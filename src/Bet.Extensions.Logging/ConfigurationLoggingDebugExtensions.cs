@@ -18,11 +18,12 @@ namespace Microsoft.Extensions.Configuration
         public static void DebugConfigurations(
             this IConfigurationRoot config)
         {
-            var logFactory = GetLoggerFactory();
-
-            var logger = logFactory.CreateLogger("Program");
-            var allConfigurations = config.GetDebugView();
-            logger.LogDebug(allConfigurations);
+            using (var logFactory = GetLoggerFactory())
+            {
+                var logger = logFactory.CreateLogger("Program");
+                var allConfigurations = config.GetDebugView();
+                logger.LogDebug(allConfigurations);
+            }
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Microsoft.Extensions.Configuration
         /// <summary>
         /// Generates a human-readable view of the configuration showing where each value came from.
         /// In version 3.0 this can be utilized directly.
-        /// https://github.com/aspnet/Extensions/blob/d7f8e253d414ce6053ad59b6f974621d5620c0da/src/Configuration/Config.Abstractions/src/ConfigurationRootExtensions.cs#L15-L74
+        /// https://github.com/aspnet/Extensions/blob/d7f8e253d414ce6053ad59b6f974621d5620c0da/src/Configuration/Config.Abstractions/src/ConfigurationRootExtensions.cs#L15-L74.
         /// </summary>
         /// <returns> The debug view. </returns>
         public static string GetDebugView(this IConfigurationRoot root)
@@ -56,17 +57,17 @@ namespace Microsoft.Extensions.Configuration
             {
                 foreach (var child in children)
                 {
-                    var (Value, Provider) = GetValueAndProvider(root, child.Path);
+                    var (value, provider) = GetValueAndProvider(root, child.Path);
 
-                    if (Provider != null)
+                    if (provider != null)
                     {
                         stringBuilder
                             .Append(indent)
                             .Append(child.Key)
                             .Append("=")
-                            .Append(Value)
+                            .Append(value)
                             .Append(" (")
-                            .Append(Provider)
+                            .Append(provider)
                             .AppendLine(")");
                     }
                     else
@@ -83,7 +84,7 @@ namespace Microsoft.Extensions.Configuration
 
             var builder = new StringBuilder();
 
-            RecurseChildren(builder, root.GetChildren(), "");
+            RecurseChildren(builder, root.GetChildren(), string.Empty);
 
             return builder.ToString();
         }
@@ -103,8 +104,9 @@ namespace Microsoft.Extensions.Configuration
             return (null, null);
         }
 #endif
+
         /// <summary>
-        ///  Logging migration https://docs.microsoft.com/en-us/aspnet/core/migration/logging-nonaspnetcore?view=aspnetcore-2.2
+        ///  Logging migration https://docs.microsoft.com/en-us/aspnet/core/migration/logging-nonaspnetcore?view=aspnetcore-2.2.
         /// </summary>
         /// <returns></returns>
         private static ILoggerFactory GetLoggerFactory()

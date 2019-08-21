@@ -16,8 +16,9 @@ namespace Bet.Extensions.AzureStorage.Options
         : IConfigureNamedOptions<StorageAccountOptions>, IPostConfigureOptions<StorageAccountOptions>
     {
         private readonly IConfiguration _configuration;
-        private StorageAccountOptions _options;
         private readonly ILogger<StorageAccountOptionsSetup> _logger;
+
+        private StorageAccountOptions _options;
 
         public StorageAccountOptionsSetup(
             IConfiguration configuration,
@@ -30,7 +31,7 @@ namespace Bet.Extensions.AzureStorage.Options
         public void Configure(StorageAccountOptions options)
         {
             var configPath = GetRootSectionPath(options);
-            configPath = ConfigurationPath.Combine(configPath,$"{options.OptionName}Account");
+            configPath = ConfigurationPath.Combine(configPath, $"{options.OptionName}Account");
             var section = _configuration.GetSection(configPath);
             section.Bind(options);
         }
@@ -46,7 +47,7 @@ namespace Bet.Extensions.AzureStorage.Options
             if (options.CloudStorageAccount == null)
             {
                 _options = options;
-                options.CloudStorageAccount = new Lazy<Task<CloudStorageAccount>>(()=> GetStorageAccountAsync());
+                options.CloudStorageAccount = new Lazy<Task<CloudStorageAccount>>(() => GetStorageAccountAsync());
             }
         }
 
@@ -59,7 +60,7 @@ namespace Bet.Extensions.AzureStorage.Options
         {
             var sw = Stopwatch.StartNew();
 
-            var (authResult,next) = await GetToken(state);
+            var (authResult, next) = await GetToken(state);
 
             sw.Stop();
 
@@ -84,7 +85,7 @@ namespace Bet.Extensions.AzureStorage.Options
         }
 
         // https://github.com/MicrosoftDocs/azure-docs/blob/941ccc038829a0be5fa8515ffba9956cfc02a5e6/articles/storage/common/storage-auth-aad-msi.md
-        private async Task<(AppAuthenticationResult result,TimeSpan ticks)> GetToken(object state)
+        private async Task<(AppAuthenticationResult result, TimeSpan ticks)> GetToken(object state)
         {
             // Specify the resource ID for requesting Azure AD tokens for Azure Storage.
             const string StorageResource = "https://storage.azure.com/";
@@ -93,11 +94,10 @@ namespace Bet.Extensions.AzureStorage.Options
             var authResult = await ((AzureServiceTokenProvider)state).GetAuthenticationResultAsync(StorageResource);
 
             // Renew the token 5 minutes before it expires.
-            var next = (authResult.ExpiresOn - DateTimeOffset.UtcNow) - TimeSpan.FromMinutes(5);
+            var next = authResult.ExpiresOn - DateTimeOffset.UtcNow - TimeSpan.FromMinutes(5);
 
             // debug purposes
-            //var next = (authResult.ExpiresOn - authResult.ExpiresOn) + TimeSpan.FromSeconds(15);
-
+            // var next = (authResult.ExpiresOn - authResult.ExpiresOn) + TimeSpan.FromSeconds(15);
             return (authResult, next);
         }
 
@@ -122,11 +122,13 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 // Create storage credentials using the initial token, and connect the callback function
                 // to renew the token just before it expires
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 var tokenCredential = new TokenCredential(
                     tokenAndFrequency.Token,
                     TokenRenewerAsync,
                     azureServiceTokenProvider,
                     tokenAndFrequency.Frequency.Value);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
                 var storageCredentials = new StorageCredentials(tokenCredential);
 
@@ -134,7 +136,7 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 _logger.LogInformation("Azure Storage Authentication with SAS Token.");
             }
-            else if(_options.Name != null
+            else if (_options.Name != null
                 && !string.IsNullOrEmpty(_options.Token))
             {
                 account = new CloudStorageAccount(new StorageCredentials(_options.Token), _options.Name, true);

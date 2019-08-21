@@ -1,10 +1,10 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using System.Drawing;
+using System.IO;
+using McMaster.Extensions.CommandLineUtils;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Drawing;
-using System.IO;
 using Console = Colorful.Console;
 
 namespace AppAuthentication
@@ -37,8 +37,8 @@ namespace AppAuthentication
             config.AddEnvironmentVariables(prefix: "ASPNETCORE_");
 
             // appsettings file or others
-            config.AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.json"), optional: true)
-                  .AddJsonFile(Path.Combine(fullPath, $"{(defaultConfigName).Split(".")[0]}.{options.HostingEnvironment}.json"), optional: true);
+            config.AddJsonFile(Path.Combine(fullPath, $"{defaultConfigName.Split(".")[0]}.json"), optional: true)
+                  .AddJsonFile(Path.Combine(fullPath, $"{defaultConfigName.Split(".")[0]}.{options.HostingEnvironment}.json"), optional: true);
 
             if (options.Arguments != null)
             {
@@ -55,7 +55,7 @@ namespace AppAuthentication
 
             builder
                 .UseKestrel()
-                .UseUrls(string.Format(Constants.HostUrl,Constants.MsiLocalhostUrl,options.Port))
+                .UseUrls(string.Format(Constants.HostUrl, Constants.MsiLocalhostUrl, options.Port))
                 .ConfigureLogging(logger =>
                 {
                     if (options.Verbose)

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.2;netstandard2.1;netcoreapp3.0;</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>The Collection of the Options Validations functionality for AspNetCore or GenericHost.</Description>
-    <PackageTags>aspnetcore,dotnetcore,configuration,validation,bind,options,hosting,extensions</PackageTags>
+    <Description>The collection of the functionality for Options Validations that can be utilized for AspNetCore or GenericHost.</Description>
+    <PackageTags>aspnetcore, dotnetcore, configuration, validation, bind, options, hosting, extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -12,14 +12,14 @@ namespace Bet.Extensions.Hosting.Abstractions
     /// </summary>
     public interface ITimedHostedService : IHostedService, IDisposable
     {
-        Task ExecuteOnceAsync(CancellationToken cancellationToken);
-
-        Task ExecuteAsync(CancellationToken cancellationToken);
-
         TimedHostedServiceOptions Options { get; }
 
         ILogger<ITimedHostedService> Logger { get; }
 
         Func<CancellationToken, Task> TaskToExecuteAsync { get; set; }
+
+        Task ExecuteOnceAsync(CancellationToken cancellationToken);
+
+        Task ExecuteAsync(CancellationToken cancellationToken);
     }
 }

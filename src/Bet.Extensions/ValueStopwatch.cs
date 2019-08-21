@@ -3,18 +3,20 @@
 
 namespace System.Diagnostics
 {
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct ValueStopwatch
+#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
 
         private readonly long _startTimestamp;
 
-        public bool IsActive => _startTimestamp != 0;
-
         private ValueStopwatch(long startTimestamp)
         {
             _startTimestamp = startTimestamp;
         }
+
+        public bool IsActive => _startTimestamp != 0;
 
         public static ValueStopwatch StartNew()
         {

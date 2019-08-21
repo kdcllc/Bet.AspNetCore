@@ -23,7 +23,7 @@ namespace Bet.AspNetCore.Sample.Controllers
             _spamModel = spamModel ?? throw new ArgumentNullException(nameof(spamModel));
         }
 
-        [HttpPost()]
+        [HttpPost]
         public ActionResult<SentimentPrediction> GetSentiment(SentimentObservation input)
         {
             return _sentimentModel.Predict(input);
@@ -34,7 +34,7 @@ namespace Bet.AspNetCore.Sample.Controllers
         [Route("spam")]
         public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
         {
-            return _spamModel.Predict(new SpamInput { Message = text});
+            return _spamModel.Predict(new SpamInput { Message = text });
         }
     }
 }

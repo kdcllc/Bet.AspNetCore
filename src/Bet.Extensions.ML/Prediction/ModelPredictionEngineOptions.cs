@@ -1,6 +1,7 @@
 ﻿using System;
-
+using System.Threading;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
@@ -14,6 +15,13 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
+        private ReloadToken _reloadToken;
+
+        public ModelPredictionEngineOptions()
+        {
+            _reloadToken = new ReloadToken();
+        }
+
         /// <summary>
         /// The instance of the service provider.
         /// </summary>
@@ -49,5 +57,20 @@ namespace Bet.Extensions.ML.Prediction
         /// The logging level for the <see cref="MLContext"/> for this instance of options.The default is <see cref="LogLevel.Trace"/>.
         /// </summary>
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
+
+        /// <summary>
+        /// Raises an event when the options have changed.
+        /// </summary>
+        /// <returns></returns>
+        public IChangeToken GetReloadToken()
+        {
+            return _reloadToken = new ReloadToken();
+        }
+
+        public void Reload()
+        {
+            var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
+            previousToken.OnReload();
+        }
     }
 }

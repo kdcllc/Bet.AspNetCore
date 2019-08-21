@@ -71,13 +71,14 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
                 sb.Append("\"Lifetime\": \"").Append(svc.Lifetime).Append("\",");
                 sb.Append("\"Instance\": \"").Append(svc.ImplementationType?.FullName).Append("\"");
                 sb.Append("}");
-                if (i < len-1)
+                if (i < len - 1)
                 {
                     sb.Append(",");
                 }
 
                 i++;
             }
+
             sb.Append("]");
 
             return sb.ToString();
@@ -99,6 +100,7 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
                 sb.Append("<td>").Append(svc.ImplementationType?.FullName).Append("</td>");
                 sb.Append("</tr>");
             }
+
             sb.Append("</tbody></table>");
 
             return sb.ToString();

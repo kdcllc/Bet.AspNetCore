@@ -12,6 +12,6 @@ namespace Bet.Extensions.Hosting.Abstractions
 
         Task OnRunOnceSucceededAsync(CancellationToken cancellationToken);
 
-        Task OnExceptionAsync(Exception error, CancellationToken cancellationToken);
+        Task OnExceptionAsync(Exception exception, CancellationToken cancellationToken);
     }
 }

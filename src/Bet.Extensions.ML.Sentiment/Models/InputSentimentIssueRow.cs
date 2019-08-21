@@ -1,5 +1,6 @@
 ﻿namespace Bet.Extensions.ML.Sentiment.Models
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter", Justification = "None")]
     internal class InputSentimentIssueRow
     {
         public int Label { get; set; }

@@ -10,34 +10,31 @@ namespace Bet.Extensions.Hosting.Abstractions
 {
     public abstract class TimedHostedService : ITimedHostedService
     {
-        private Timer _timer;
-
         private readonly IEnumerable<ITimedHostedLifeCycleHook> _lifeCycleHooks;
         private readonly CancellationTokenSource _cancellationCts;
         private readonly SemaphoreSlim _semaphoreSlim;
+        private Timer _timer;
 
-        public TimedHostedServiceOptions Options { get; private set; }
-        public ILogger<ITimedHostedService> Logger { get; }
-
-        public Func<CancellationToken,Task> TaskToExecuteAsync { get; set; }
-
-        public TimedHostedService(
+        protected TimedHostedService(
             IOptionsMonitor<TimedHostedServiceOptions> options,
             IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
             ILogger<ITimedHostedService> logger)
         {
             Options = options.CurrentValue;
 
-            options.OnChange(changedOptions =>
-            {
-                Options = changedOptions;
-            });
+            options.OnChange(changedOptions => Options = changedOptions);
 
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _lifeCycleHooks = lifeCycleHooks;
             _cancellationCts = new CancellationTokenSource();
             _semaphoreSlim = new SemaphoreSlim(1);
         }
+
+        public TimedHostedServiceOptions Options { get; private set; }
+
+        public ILogger<ITimedHostedService> Logger { get; }
+
+        public Func<CancellationToken, Task> TaskToExecuteAsync { get; set; }
 
         public virtual async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -49,17 +46,18 @@ namespace Bet.Extensions.Hosting.Abstractions
 
             foreach (var lifeCycleHook in _lifeCycleHooks)
             {
-                await lifeCycleHook.OnStartAsync(stoppingCts.Token);
+                await lifeCycleHook.OnStartAsync(stoppingCts.Token).ConfigureAwait(false);
             }
 
-            _timer = new Timer(async (state) => await ExecuteAsync(stoppingCts.Token), null, TimeSpan.Zero, Options.Interval);
+            _timer = new Timer(async (_) => await ExecuteAsync(stoppingCts.Token), null, TimeSpan.Zero, Options.Interval);
 
-           await Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
         public virtual async Task StopAsync(CancellationToken cancellationToken)
         {
             var stoppingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cancellationCts.Token);
+
             _timer?.Change(Timeout.Infinite, 0);
 
             foreach (var lifeCycleHook in _lifeCycleHooks)
@@ -69,14 +67,9 @@ namespace Bet.Extensions.Hosting.Abstractions
 
             // Signal cancellation to the executing method
             _cancellationCts.Cancel();
+            stoppingCts?.Dispose();
 
             await Task.CompletedTask;
-        }
-
-        public virtual void Dispose()
-        {
-            _timer?.Dispose();
-            _cancellationCts?.Cancel();
         }
 
         public virtual async Task ExecuteOnceAsync(CancellationToken cancellationToken)
@@ -129,6 +122,25 @@ namespace Bet.Extensions.Hosting.Abstractions
                 {
                     Logger.LogWarning(ex, $"Exception occurred: {ex.Message} - Continue");
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _timer?.Dispose();
+
+                _cancellationCts?.Cancel();
+                _cancellationCts?.Dispose();
+
+                _semaphoreSlim?.Dispose();
             }
         }
     }
