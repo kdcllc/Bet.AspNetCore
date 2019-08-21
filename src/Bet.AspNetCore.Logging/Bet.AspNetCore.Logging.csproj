@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of AspNetCore functionality for logging with Azure Appinsight and Azure Log Analyzer.</Description>
-    <PackageTags>aspnetcore,configuration,validation,bind,options,hosting,extensions</PackageTags>
+    <Description>The collection of AspNetCore functionality for logging with Azure Appinsight and Azure Log Analyzer.</Description>
+    <PackageTags>aspnetcore, serilog, options, hosting, extensions, azure insight, azure log analyzer</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

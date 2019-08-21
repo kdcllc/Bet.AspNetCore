@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of AspNetCore Middlewares for Production and Development purposes.</Description>
-    <PackageTags>aspnetcore,configuration,validation,bind,options,hosting,extensions</PackageTags>
+    <Description>The collection of AspNetCore Middlewares for Production and Development purposes.</Description>
+    <PackageTags>aspnetcore, middleware, hosting, extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,10 +1,21 @@
 ﻿# AppAuthentication Cli Tool
+
+[![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
+[![NuGet](https://img.shields.io/nuget/v/appauthentication.svg)](https://www.nuget.org/packages?q=appauthentication)
+
 This dotnet cli tool provides ability to accesses Azure Vault in Docker Container when this container is ran on the local machine.
 In addition if needed this cli tool can be enabled to retrieve tokens for local machine development.
+It can be utilized in conjunction with VSCode Remote Extensions.
 
 The tool was tested on:
+
 - On Windows 10 Visual Studio.NET or AzureCli Providers.
+
 - On Linux with Azure Cli only.
+
+```bash
+    dotnet tool install --global appauthentication
+```
 
 ## Usage with Local Docker development
 
@@ -12,7 +23,7 @@ The tool was tested on:
 
 Before running this cli tool please make sure that the docker-compose file for the project has the environment variables
 
-```
+```yml
     MSI_ENDPOINT={MSI_ENDPOINT}
     MSI_SECRET={MSI_SECRET}
 ```
@@ -41,7 +52,9 @@ Notes:
 - Retrieve Azure AD Directory Id by navigating to [Azure Portal](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Properties)
 
 - Run this CLI tool with the following sample command:
+
 `Default provider is Visual Studio provider`
+
 ```bash
     appauthentication run -a  https://login.microsoftonline.com/{companyDirectoryGuidId} -v
     

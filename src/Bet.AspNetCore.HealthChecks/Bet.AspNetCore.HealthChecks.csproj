@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Collection of HealthChecks functionality for AspNetCore or GenericHost.</Description>
-    <PackageTags>aspnetcore,dotnetcore,healthcheck,hosting,extensions</PackageTags>
+    <Description>The collection of the HealthChecks functionality for AspNetCore.</Description>
+    <PackageTags>aspnetcore, dotnetcore, healthcheck, hosting, extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

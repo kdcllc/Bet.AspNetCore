@@ -29,14 +29,14 @@ namespace Bet.AspNetCore.UnitTest.MachineLearning
                 var modelName = "testModel";
                 var modelText = "This is test for the model memory stream";
 
-                using (var stream = new MemoryStream())
-                {
-                    var modelBytes = Encoding.UTF8.GetBytes(modelText);
-                    stream.Write(modelBytes, 0, modelBytes.Length);
-                    stream.Position = 0;
+                var stream = new MemoryStream();
 
-                    await storage.SaveModelAsync(modelName, stream, cts.Token);
-                }
+                var modelBytes = Encoding.UTF8.GetBytes(modelText);
+                stream.Write(modelBytes, 0, modelBytes.Length);
+                stream.Position = 0;
+
+                await storage.SaveModelAsync(modelName, stream, cts.Token);
+
 
                 using (var savedStream = await storage.LoadModelAsync(modelName, cts.Token))
                 {
