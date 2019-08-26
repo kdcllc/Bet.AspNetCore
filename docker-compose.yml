@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bet.aspnetcore.build:
-    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
+    image: ${DOCKER_REGISTRY-}betaspnetcore:local
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,13 +10,13 @@ services:
         VERSION: ${VERSION}
 
   bet.aspnetcore.tests:
-    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
+    image: ${DOCKER_REGISTRY-}betaspnetcore:local
     entrypoint: dotnet test --logger trx --results-directory /var/temp
     volumes:
       - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
 
   bet.aspnetcore.nuget:
-    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
+    image: ${DOCKER_REGISTRY-}betaspnetcore:local
     entrypoint: cp -r /app/nugets /
     volumes:
        - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets
