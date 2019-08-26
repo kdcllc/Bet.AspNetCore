@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bet.aspnetcore.build:
-    image: ${DOCKER_REGISTRY-}betaspnetcore
+    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
     build:
       context: .
       dockerfile: Dockerfile
