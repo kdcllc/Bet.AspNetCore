@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
+      #args:
         # VERSION: "1.0.0-preview"
 
   bet.aspnetcore.tests:
