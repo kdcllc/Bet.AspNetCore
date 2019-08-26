@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VERSION: "1.0.0-preview"
+        # VERSION: "1.0.0-preview"
 
   bet.aspnetcore.tests:
     image: ${DOCKER_REGISTRY-}betaspnetcore:latest
