@@ -12,15 +12,11 @@ services:
   bet.aspnetcore.tests:
     image: ${DOCKER_REGISTRY-}betaspnetcore
     entrypoint: dotnet test --logger trx --results-directory /var/temp
-    depends_on:
-      - bet.aspnetcore.build
     volumes:
       - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
 
   bet.aspnetcore.nuget:
     image: ${DOCKER_REGISTRY-}betaspnetcore
     entrypoint: cp -r /app/nugets /
-    depends_on:
-      - bet.aspnetcore.build
     volumes:
        - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets
