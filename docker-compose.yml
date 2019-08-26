@@ -10,13 +10,13 @@ services:
         VERSION: "1.0.0-preview"
 
   bet.aspnetcore.tests:
-    image: ${DOCKER_REGISTRY-}betaspnetcore
+    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
     entrypoint: dotnet test --logger trx --results-directory /var/temp
     volumes:
       - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
 
   bet.aspnetcore.nuget:
-    image: ${DOCKER_REGISTRY-}betaspnetcore
+    image: ${DOCKER_REGISTRY-}betaspnetcore:latest
     entrypoint: cp -r /app/nugets /
     volumes:
        - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets
