@@ -11,8 +11,7 @@
   </PropertyGroup>
       
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
+
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+
 using Bet.Extensions.AzureStorage;
-using Bet.Extensions.AzureStorage.Builder;
 using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.Configuration;

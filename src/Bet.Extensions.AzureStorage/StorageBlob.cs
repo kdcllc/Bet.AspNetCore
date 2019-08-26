@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Bet.Extensions.AzureStorage
 {
-    public sealed class StorageBlob
+    internal sealed class StorageBlob
     {
         private readonly StorageAccountOptions _storageAccountOptions;
         private readonly ILogger _logger;

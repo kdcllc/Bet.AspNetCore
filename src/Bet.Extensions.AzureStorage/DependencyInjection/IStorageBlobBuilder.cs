@@ -4,7 +4,7 @@ using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bet.Extensions.AzureStorage.Builder
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Azure Storage Blob Builder.

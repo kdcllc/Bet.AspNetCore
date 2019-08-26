@@ -8,6 +8,8 @@
 
         public const string StorageQueues = nameof(StorageQueues);
 
+        public const string StorageTable = nameof(StorageTable);
+
         public const string StorageFileProviders = nameof(StorageFileProviders);
     }
 }
