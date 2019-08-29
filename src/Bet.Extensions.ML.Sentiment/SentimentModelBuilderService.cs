@@ -13,11 +13,11 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Sentiment
 {
-    public class SentimentModelBuilderService : IModelBuilderService
+    public class SentimentModelBuilderService : ModelBuilderService<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>
     {
         private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
-        private readonly ILogger<SentimentModelBuilderService> _logger;
+        private readonly ILogger _logger;
         private readonly object _lockObject = new object();
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Bet.Extensions.ML.Sentiment
         public SentimentModelBuilderService(
             IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             IModelStorageProvider storageProvider,
-            ILogger<SentimentModelBuilderService> logger)
+            ILogger logger) : base(sentimentModelBuilder, storageProvider, logger)
         {
             _modelBuilder = sentimentModelBuilder ?? throw new ArgumentNullException(nameof(sentimentModelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
@@ -38,12 +38,21 @@ namespace Bet.Extensions.ML.Sentiment
             Name = nameof(SentimentModelBuilderService);
         }
 
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
-        public async Task TrainModelAsync(CancellationToken cancellationToken)
+        /// <summary>
+        /// The following steps are executed in the pipeline:
+        /// 1. LoadDefaultData().BuiltDataView()
+        /// 2. BuildTrainingPipeline()
+        /// 3. TrainModel()
+        /// 4. Evaluate().
+        /// 5. SaveModelResultAsync()
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public override async Task TrainModelAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("TrainModelAsync][Started]");
-
             var sw = ValueStopwatch.StartNew();
 
             // 1. load default ML data set
@@ -70,27 +79,14 @@ namespace Bet.Extensions.ML.Sentiment
             _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
             _logger.LogInformation(evaluateResult.ToString());
 
+            // Save Results.
             await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
 
             _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().Milliseconds);
-
             await Task.CompletedTask;
         }
 
-        public async Task SaveModelAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("[SaveModelAsync][Started]");
-
-            var sw = ValueStopwatch.StartNew();
-
-            var readStream = _modelBuilder.GetModelStream();
-
-            await _storageProvider.SaveModelAsync(Name, readStream, cancellationToken);
-
-            _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
-        }
-
-        public async Task ClassifyTestAsync(CancellationToken cancellationToken)
+        public override async Task ClassifyTestAsync(CancellationToken cancellationToken)
         {
             // 5. predict on sample data
             _logger.LogInformation("[ClassifyTestAsync][Started]");
