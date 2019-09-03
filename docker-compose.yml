@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  bet.aspnetcore.build:
+    image: betaspnetcore:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION}
+
+  bet.aspnetcore.tests:
+    image: betaspnetcore:local
+    entrypoint: dotnet test --logger trx --results-directory /var/temp
+    volumes:
+      - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
+
+  bet.aspnetcore.nuget:
+    image: betaspnetcore:local
+    entrypoint: cp -r /app/nugets /
+    volumes:
+       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets

@@ -89,7 +89,7 @@ namespace Bet.Extensions.AzureStorage
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await (await GetAsync(blobName, cancellationToken)).ToByteArrayAsync();
+            return await (await GetAsync(blobName, cancellationToken))?.ToByteArrayAsync();
         }
 
         /// <summary>
