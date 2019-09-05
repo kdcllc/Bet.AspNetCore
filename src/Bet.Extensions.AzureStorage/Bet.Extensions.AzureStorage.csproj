@@ -9,7 +9,7 @@
     <Description>The collection of the functionality for Azure Storage, Blob, Queue and Table.</Description>
     <PackageTags>dotnetcore, azure storage, azure blob, azure queue, azure table,</PackageTags>
   </PropertyGroup>
-      
+
   <ItemGroup>
 
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
@@ -17,9 +17,11 @@
     <PackageReference Include="Microsoft.Azure.Storage.Blob" />
     <PackageReference Include="Microsoft.Azure.Storage.Queue" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Core" />
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>

@@ -86,6 +86,7 @@
   <ItemGroup Label="Microsoft.Azure.Storage">
     <PackageReference Update="Microsoft.Azure.Storage.Blob" Version="11.0.0" />
     <PackageReference Update="Microsoft.Azure.Storage.Queue" Version="11.0.0" />
+    <PackageReference Update="Microsoft.Azure.Cosmos.Table" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup Label="Unit Tests">

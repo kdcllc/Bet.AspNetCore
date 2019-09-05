@@ -95,5 +95,16 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return new DefaultStorageQueueBuilder(services, azureStorageSectionName);
         }
+
+        /// <summary>
+        /// Adds required default values for Azure Storage Table.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="azureStorageSectionName"></param>
+        /// <returns></returns>
+        public static IStorageTableBuilder AddStorageTable(this IServiceCollection services, string azureStorageSectionName = default)
+        {
+            return new DefaultStorageTableBuilder(services, azureStorageSectionName);
+        }
     }
 }

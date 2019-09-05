@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Primitives;
@@ -7,7 +8,7 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
 {
-    public class ModelPredictionEngineObjectPool<TData, TPrediction>
+    public sealed class ModelPredictionEngineObjectPool<TData, TPrediction>
         : IModelPredictionEngine<TData, TPrediction>, IDisposable
         where TData : class
         where TPrediction : class, new()
@@ -78,6 +79,12 @@ namespace Bet.Extensions.ML.Prediction
                 // default maximumRetained is Environment.ProcessorCount * 2, if not explicitly provided
                 Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy));
             }
+
+            _logger.LogDebug(
+                "[{className}][{methodName}] ML.NET Model name: {modelName}",
+                nameof(ModelPredictionEngineObjectPool<TData, TPrediction>),
+                nameof(LoadPool),
+                _options.ModelName);
         }
     }
 }
