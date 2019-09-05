@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>Machine Learning Library that builds Spam/Ham model to be used within AspNetCore Web Api project.</Description>
-    <PackageTags>aspnetcore, dotnet, machine, learning ,ml , artificial, intelligence, spam detection</PackageTags>
+    <PackageTags>aspnetcore, dotnet, machine learning, ml.net, artificial intelligence, spam detection prediction model, machine learning model</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

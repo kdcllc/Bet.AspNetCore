@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <Description>The Collection of the Machine Learning related functionality for AspNetCore or GenericHost.</Description>
-    <PackageTags>aspnetcore, dotnetcore ,machine, learning ,ml , artificial, intelligence, extensions</PackageTags>
+    <PackageTags>aspnetcore, dotnetcore, machine learning, ml.net, artificial intelligence, extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -75,7 +75,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.LetsEncrypt"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.ML.WebApi.Sample", "src\Bet.ML.WebApi.Sample\Bet.ML.WebApi.Sample.csproj", "{C8C77D66-8B0C-4600-8013-D5A4C8FDC6DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.AspNetCore.AzureStorage", "src\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj", "{919A6ABE-1E6E-4ADB-9A00-B14514AF3E04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.AspNetCore.AzureStorage", "src\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj", "{919A6ABE-1E6E-4ADB-9A00-B14514AF3E04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
