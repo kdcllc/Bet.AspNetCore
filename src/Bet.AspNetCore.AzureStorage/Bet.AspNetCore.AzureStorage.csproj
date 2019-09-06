@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>The collection of the functionality for Azure Storage, Blob, Queue and Table for AspNetCore.</Description>
+    <PackageTags>aspnetcore, dotnetcore, azure storage, azure blob, azure queue, azure table,</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
+  </ItemGroup>
+
+
+</Project>

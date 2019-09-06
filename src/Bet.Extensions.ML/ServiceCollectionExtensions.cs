@@ -66,7 +66,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.ConfigureOptions<ModelPredictionEngineSetup<TData, TPrediction>>();
 
-            services.Configure(modelName, options);
+            if (options != null)
+            {
+                services.Configure(modelName, options);
+            }
 
             services.AddSingleton<Func<ModelPredictionEngineOptions<TData, TPrediction>>>(provider => () =>
              {

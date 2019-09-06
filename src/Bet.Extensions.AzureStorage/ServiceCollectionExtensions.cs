@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+
 using Bet.Extensions.AzureStorage;
-using Bet.Extensions.AzureStorage.Builder;
 using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.Configuration;
@@ -94,6 +94,17 @@ namespace Microsoft.Extensions.DependencyInjection
             string azureStorageSectionName = default)
         {
             return new DefaultStorageQueueBuilder(services, azureStorageSectionName);
+        }
+
+        /// <summary>
+        /// Adds required default values for Azure Storage Table.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="azureStorageSectionName"></param>
+        /// <returns></returns>
+        public static IStorageTableBuilder AddStorageTable(this IServiceCollection services, string azureStorageSectionName = default)
+        {
+            return new DefaultStorageTableBuilder(services, azureStorageSectionName);
         }
     }
 }

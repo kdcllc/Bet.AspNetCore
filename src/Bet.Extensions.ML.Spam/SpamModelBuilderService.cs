@@ -13,9 +13,9 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Spam
 {
-    public class SpamModelBuilderService : IModelBuilderService
+    public class SpamModelBuilderService : ModelBuilderService<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>
     {
-        private readonly ILogger<SpamModelBuilderService> _logger;
+        private readonly ILogger _logger;
         private readonly IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
         private readonly object _lockObject = new object();
@@ -29,7 +29,7 @@ namespace Bet.Extensions.ML.Spam
         public SpamModelBuilderService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
             IModelStorageProvider storageProvider,
-            ILogger<SpamModelBuilderService> logger)
+            ILogger logger) : base(spamModelBuilder, storageProvider, logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _modelBuilder = spamModelBuilder ?? throw new ArgumentNullException(nameof(spamModelBuilder));
@@ -38,60 +38,9 @@ namespace Bet.Extensions.ML.Spam
             Name = nameof(SpamModelBuilderService);
         }
 
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
-        public async Task TrainModelAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("TrainModelAsync][Started]");
-
-            var sw = ValueStopwatch.StartNew();
-
-            // 1. load default ML data set
-            _logger.LogInformation("[LoadDataset][Started]");
-            _modelBuilder.LoadDefaultData().BuiltDataView();
-            _logger.LogInformation(
-                "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed}",
-                _modelBuilder.DataView.GetRowCount(),
-                sw.GetElapsedTime().TotalMilliseconds);
-
-            // 2. build training pipeline
-            _logger.LogInformation("[BuildTrainingPipeline][Started]");
-            var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
-            _logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed}", buildTrainingPipelineResult.ElapsedMilliseconds);
-
-            // 3. evaluate quality of the pipeline
-            _logger.LogInformation("[Evaluate][Started]");
-            var evaluateResult = _modelBuilder.Evaluate();
-            _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}", evaluateResult.ElapsedMilliseconds);
-            _logger.LogInformation(evaluateResult.ToString());
-
-            await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
-
-            // 4. train the model
-            _logger.LogInformation("[TrainModel][Started]");
-            var trainModelResult = _modelBuilder.TrainModel();
-            _logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed}", trainModelResult.ElapsedMilliseconds);
-
-            _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
-
-            await Task.CompletedTask;
-        }
-
-        public async Task SaveModelAsync(CancellationToken cancellationToken)
-        {
-            // 6. save to the file
-            _logger.LogInformation("[SaveModelAsync][Started]");
-
-            var sw = ValueStopwatch.StartNew();
-
-            var readStream = _modelBuilder.GetModelStream();
-
-            await _storageProvider.SaveModelAsync(Name, readStream, cancellationToken);
-
-            _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
-        }
-
-        public async Task ClassifyTestAsync(CancellationToken cancellationToken)
+        public override async Task ClassifyTestAsync(CancellationToken cancellationToken)
         {
             // 5. predict on sample data
             _logger.LogInformation("[ClassifyTestAsync][Started]");

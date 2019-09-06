@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <Description>Machine Learning Library that builds Sentiment model to be used within AspNetCore Web Api project.</Description>
-    <PackageTags>aspnetcore, dotnet, machine, learning ,ml , artificial, intelligence, sentiment assignment</PackageTags>
+    <PackageTags>aspnetcore, dotnet, machine learning, ml.net, artificial intelligence, sentiment prediction</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

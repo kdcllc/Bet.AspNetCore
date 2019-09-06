@@ -1,12 +1,12 @@
 ﻿using System;
-
+using Bet.Extensions.AzureStorage;
 using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Bet.Extensions.AzureStorage.Builder
+namespace Microsoft.Extensions.DependencyInjection
 {
     public class DefaultStorageQueueBuilder : IStorageQueueBuilder
     {

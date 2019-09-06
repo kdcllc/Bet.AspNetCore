@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Bet.Extensions.AzureStorage
 {
-    public sealed class StorageBlob
+    internal sealed class StorageBlob
     {
         private readonly StorageAccountOptions _storageAccountOptions;
         private readonly ILogger _logger;
@@ -89,7 +89,7 @@ namespace Bet.Extensions.AzureStorage
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await (await GetAsync(blobName, cancellationToken)).ToByteArrayAsync();
+            return await (await GetAsync(blobName, cancellationToken))?.ToByteArrayAsync();
         }
 
         /// <summary>

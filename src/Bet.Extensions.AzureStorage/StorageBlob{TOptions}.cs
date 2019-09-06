@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Bet.Extensions.AzureStorage
 {
     /// <inheritdoc />
-    public class StorageBlob<TOptions> : IStorageBlob<TOptions> where TOptions : StorageBlobOptions
+    public sealed class StorageBlob<TOptions> : IStorageBlob<TOptions> where TOptions : StorageBlobOptions
     {
         private readonly StorageBlob _storage;
 
