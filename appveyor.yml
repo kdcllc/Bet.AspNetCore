@@ -7,7 +7,7 @@ pull_requests:
 image: Visual Studio 2017
 ## temporary until 3.0.100-preview9-014004 sdk is installed
 install:
-  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.0.100-preview9-014004/3.0.100-preview9-014004-win-x64.zip"
+  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.0.100-preview9-014004/dotnet-sdk-3.0.100-preview9-014004-win-x64.zip"
   - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
   - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
   - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()
