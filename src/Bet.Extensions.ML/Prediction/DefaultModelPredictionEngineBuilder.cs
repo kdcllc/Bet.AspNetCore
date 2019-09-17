@@ -10,7 +10,7 @@ namespace Bet.Extensions.ML.Prediction
     {
         public DefaultModelPredictionEngineBuilder(IServiceCollection services, string modelName)
         {
-            Services = services ?? throw new ArgumentException(nameof(services));
+            Services = services ?? throw new ArgumentException("Can't be null", nameof(services));
             ModelName = modelName;
         }
 

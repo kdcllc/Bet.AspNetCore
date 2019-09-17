@@ -10,8 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
+      <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
+     <PackageReference Include="Microsoft.AspNetCore.Hosting" />
+     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" />
   </ItemGroup>
 
   <ItemGroup>

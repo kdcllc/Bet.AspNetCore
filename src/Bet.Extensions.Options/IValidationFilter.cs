@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Bet.Extensions.Options
 {
     /// <summary>
-    /// Implement this interface in order to create instances of validations for AspNetCore of Generic Host.
+    /// Implement this interface in order to create an instances of validations for AspNetCore of Generic Host.
     /// </summary>
     public interface IValidationFilter
     {

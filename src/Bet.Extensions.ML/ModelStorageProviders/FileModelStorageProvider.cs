@@ -146,7 +146,9 @@ namespace Bet.Extensions.ML.ModelStorageProviders
 
             var fileLocation = FileHelper.GetAbsolutePath(name);
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
             var fs = new FileStream(fileLocation, FileMode.Open, FileAccess.Read);
+#pragma warning restore CA2000 // Dispose objects before losing scope
             var ms = new MemoryStream();
 
             await fs.CopyToAsync(ms).ConfigureAwait(false);

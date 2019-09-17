@@ -51,11 +51,11 @@ namespace Bet.AspNetCore.HealthChecks.UriCheck
                         {
                             var response = await httpClient.SendAsync(requestMessage, linkedSource.Token);
 
-                            if (!((int)response.StatusCode >= option.ExpectedHttpCodes.Min && (int)response.StatusCode <= option.ExpectedHttpCodes.Max))
+                            if (!((int)response.StatusCode >= option.ExpectedHttpCodes.min && (int)response.StatusCode <= option.ExpectedHttpCodes.max))
                             {
                                 _isHealthy = false;
 
-                                var errorMessage = $"Discover endpoint #{index} is not responding with code in {option.ExpectedHttpCodes.Min}...{option.ExpectedHttpCodes.Max} range, the current status is {response.StatusCode}.";
+                                var errorMessage = $"Discover endpoint #{index} is not responding with code in {option.ExpectedHttpCodes.min}...{option.ExpectedHttpCodes.max} range, the current status is {response.StatusCode}.";
 
                                 _data.Add(option.Uri.ToString(), errorMessage);
                             }

@@ -1,5 +1,7 @@
 ﻿using System;
+
 using Bet.Extensions.Options;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 

@@ -22,6 +22,12 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <PackageReference Include="System.IO.Pipelines" />
+    <PackageReference Include="System.Diagnostics.EventLog" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
     <ProjectReference Include="..\..\src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />

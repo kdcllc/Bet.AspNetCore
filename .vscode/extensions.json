@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+      "ms-vscode.csharp",
+      "jchannon.csharpextensions",
+      "EditorConfig.EditorConfig",
+      "ms-vscode-remote.vscode-remote-extensionpack",
+      "docsmsft.docs-authoring-pack",
+      "ms-vscode.vscode-node-azure-pack",
+      "streetsidesoftware.code-spell-checker",
+      "formulahendry.dotnet-test-explorer",
+      "eamodio.gitlens"
+    ]
+  }
