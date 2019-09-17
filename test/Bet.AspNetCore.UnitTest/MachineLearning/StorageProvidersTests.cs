@@ -37,7 +37,6 @@ namespace Bet.AspNetCore.UnitTest.MachineLearning
 
                 await storage.SaveModelAsync(modelName, stream, cts.Token);
 
-
                 using (var savedStream = await storage.LoadModelAsync(modelName, cts.Token))
                 {
                     using (var reader = new StreamReader(savedStream))

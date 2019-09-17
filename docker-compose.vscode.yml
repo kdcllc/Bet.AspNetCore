@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  bet.aspnetcore.vscode:
+    image: kdcllc/dotnet:3.0-sdk-vscode-bionic
+    # Azure Key Vault Authentication global tool
+    # dotnet tool install --global appauthentication --version 1.2.2
+    # run this tool first then check the configuration
+    # docker-compose -f ./docker-compose.vscode.yml config
+    environment:
+      - MSI_ENDPOINT=${MSI_ENDPOINT}
+      - MSI_SECRET=${MSI_SECRET}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=9001
+    volumes:
+      - ..:/workspace
+      - ~/.ssh:/root/.ssh-localhost
+      # Forwards the local Docker socket to the container.
+      - /var/run/docker.sock:/var/run/docker.sock
+      # kubernetes
+      - $HOME/.kube:/root/.kube-localhost
+      # dotnet dev-certs https -ep C:\Users\Root\AppData\Roaming\ASP.NET\Https\WebApp30.pfx -p fea04367-1bda-4cde-8989-2d1e06dfa48d
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+    ports:
+      - "9000:80"
+      - "9001:443"
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity

@@ -9,7 +9,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Bet.ML.WebApi.Sample/Bet.ML.WebApi.Sample.csproj",
+                "${workspaceFolder}/Bet.AspNetCore.sln",
                 // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
                 // Do not generate summary otherwise it leads to duplicate errors in Problems panel

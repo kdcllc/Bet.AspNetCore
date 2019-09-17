@@ -5,15 +5,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Sample",
+            "name": ".NET Core WebApi Sample",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/Bet.ML.WebApi.Sample/bin/Debug/netcoreapp3.0/Bet.ML.WebApi.Sample.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/src/Bet.ML.WebApi.Sample/",
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://*:443;http://*:80"
+            },
+
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            },
+
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
         },
         {
             "name": ".NET Core Attach",

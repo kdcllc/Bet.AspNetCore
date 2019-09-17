@@ -1,22 +1,38 @@
 version: '3'
 
 services:
-  bet.aspnetcore.build:
-    image: betaspnetcore:local
+  bet.aspnetcore.webapi:
+    image: ${DOCKER_REGISTRY-}betaspnetcorewebapi
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: src/Bet.ML.WebApi.Sample/Dockerfile
       args:
-        VERSION: ${VERSION}
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        PROJECT_PATH: "/src/Bet.ML.WebApi.Sample/Bet.ML.WebApi.Sample.csproj"
+        SOLUTION_BASE: "false"
 
-  bet.aspnetcore.tests:
-    image: betaspnetcore:local
-    entrypoint: dotnet test --logger trx --results-directory /var/temp
-    volumes:
-      - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
+  bet.hosting:
+    image: ${DOCKER_REGISTRY-}bethosting
+    build:
+      context: .
+      dockerfile: src/Bet.Hosting.Sample/Dockerfile
+      args:
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        PROJECT_PATH: "/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj"
+        SOLUTION_BASE: "false"
 
-  bet.aspnetcore.nuget:
-    image: betaspnetcore:local
-    entrypoint: cp -r /app/nugets /
-    volumes:
-       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets
+  bet.aspnetcore.web:
+    image: ${DOCKER_REGISTRY-}betaspnetweb
+    build:
+      context: .
+      dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
+      args:
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
+        SOLUTION_BASE: "false"
