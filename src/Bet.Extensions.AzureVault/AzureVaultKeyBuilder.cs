@@ -47,11 +47,12 @@ namespace Microsoft.Extensions.Configuration
             string hostingEnviromentName,
             bool usePrefix = true,
             int tokenAuthRetry = 2,
-            string sectionName = "AzureVault"
-#if NETSTANDARD2_1
-            , TimeSpan? reloadInterval = null
+#if NETSTANDARD2_0
+            string sectionName = "AzureVault")
+#elif NETSTANDARD2_1
+            string sectionName = "AzureVault",
+            TimeSpan? reloadInterval = null)
 #endif
-            )
         {
             var config = builder.Build();
             var options = config.Bind<AzureVaultOptions>(sectionName);
@@ -190,11 +191,12 @@ namespace Microsoft.Extensions.Configuration
             this IConfigurationBuilder builder,
             string keyVaultEndpoints,
             bool usePrefix = true,
-            string hostingEnviromentName = null
-#if NETSTANDARD2_1
-            , TimeSpan? reloadInterval = null
+#if NETSTANDARD2_0
+            string hostingEnviromentName = null)
+#elif NETSTANDARD2_1
+            string hostingEnviromentName = null,
+            TimeSpan? reloadInterval = null)
 #endif
-            )
         {
             if (!string.IsNullOrEmpty(keyVaultEndpoints))
             {
