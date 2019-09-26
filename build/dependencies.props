@@ -18,9 +18,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.0.0-rc1.*</AspNetCoreVersion>
-    <EFCommonVersion>3.0.0-rc1.*</EFCommonVersion>
-    <ExtensionsVersion>3.0.0-rc1.*</ExtensionsVersion>
+    <AspNetCoreVersion>3.0.0</AspNetCoreVersion>
+    <EFCommonVersion>3.0.0</EFCommonVersion>
+    <ExtensionsVersion>3.0.0</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Microsoft.AspNetCore">
@@ -60,11 +60,11 @@
     <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="System.ComponentModel.Annotations" Version="4.6.0-*" />
-    <PackageReference Update="System.Diagnostics.EventLog" Version="4.6.0-rc1.*" />
-    <PackageReference Update="System.IO.Pipelines" Version="4.6.0-rc1.*" />
-    <PackageReference Update="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-*" />
-    <PackageReference Update="System.Text.Json" Version="4.6.0-rc1.*" />
+    <PackageReference Update="System.ComponentModel.Annotations" Version="4.6.0" />
+    <PackageReference Update="System.Diagnostics.EventLog" Version="4.6.0" />
+    <PackageReference Update="System.IO.Pipelines" Version="4.6.0" />
+    <PackageReference Update="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+    <PackageReference Update="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Extensions">

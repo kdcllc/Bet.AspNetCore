@@ -46,7 +46,7 @@ namespace Bet.Extensions.ML.Sentiment
         /// 2. BuildTrainingPipeline()
         /// 3. TrainModel()
         /// 4. Evaluate().
-        /// 5. SaveModelResultAsync()
+        /// 5. SaveModelResultAsync().
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
