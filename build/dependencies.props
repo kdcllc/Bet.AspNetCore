@@ -18,14 +18,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.0.0-rc1.*</AspNetCoreVersion>
-    <EFCommonVersion>3.0.0-rc1.*</EFCommonVersion>
-    <ExtensionsVersion>3.0.0-rc1.*</ExtensionsVersion>
+    <AspNetCoreVersion>3.0.0</AspNetCoreVersion>
+    <EFCommonVersion>3.0.0</EFCommonVersion>
+    <ExtensionsVersion>3.0.0</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Microsoft.AspNetCore">
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(EFCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(EFCommonVersion)" />
@@ -48,25 +47,31 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)"/>
   </ItemGroup>
 
-  <ItemGroup Label="" Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Update="System.ComponentModel.Annotations" Version="4.6.0-*" />
-    <PackageReference Update="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-*" />
-    <PackageReference Update="System.Diagnostics.EventLog" Version="4.6.0-rc1.*" />
-    <PackageReference Update="System.Text.Json" Version="4.6.0-rc1.*" />
-    <PackageReference Update="System.IO.Pipelines" Version="4.6.0-rc1.*" />
+  <ItemGroup Label="2.2" Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
+  </ItemGroup>
 
-    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion)" />
+  <ItemGroup Label="3.0" Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="3.0.0-preview4*" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="System.ComponentModel.Annotations" Version="4.6.0" />
+    <PackageReference Update="System.Diagnostics.EventLog" Version="4.6.0" />
+    <PackageReference Update="System.IO.Pipelines" Version="4.6.0" />
+    <PackageReference Update="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+    <PackageReference Update="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Extensions">
     <PackageReference Update="Microsoft.Extensions.Configuration.CommandLine" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)" />
     <PackageReference Update="Microsoft.Extensions.Http.Polly" Version="$(ExtensionsVersion)" />
@@ -114,7 +119,7 @@
     <PackageReference Update="Certes" Version="2.3.3" />
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
     <PackageReference Update="CsvHelper" Version="12.1.2" />
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.0"/>
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.1"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0-preview8.19405.7"/>
     <PackageReference Update="Microsoft.DataPrep" Version="0.0.1.6-preview" />

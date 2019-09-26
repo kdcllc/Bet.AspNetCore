@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class OptionsConfigurationServiceCollectionExtensions
     {
         /// <summary>
-        /// Registers a configuration instance which TOptions will bind against without passing <see cref="IConfiguration"/> into registration.
+        /// Registers a configuration instance which TOptions will bind against without passing <see cref="IConfiguration"/> into the registration.
         /// </summary>
         /// <typeparam name="TConfigureType"></typeparam>
         /// <typeparam name="TOptions"></typeparam>

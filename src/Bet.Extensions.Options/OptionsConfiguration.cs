@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 namespace Bet.Extensions.Options
 {
     /// <summary>
-    /// Used to configure the options binding from the configurations.
+    /// Use to configure the options binding from the configurations.
     /// </summary>
     /// <typeparam name="TOptions"></typeparam>
     public class OptionsConfiguration<TOptions> : IConfigureOptions<TOptions> where TOptions : class

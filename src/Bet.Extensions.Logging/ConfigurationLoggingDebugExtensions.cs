@@ -15,8 +15,7 @@ namespace Microsoft.Extensions.Configuration
         /// Displays all of the application configurations based on the Configuration Provider.
         /// </summary>
         /// <param name="config"></param>
-        public static void DebugConfigurations(
-            this IConfigurationRoot config)
+        public static void DebugConfigurations(this IConfigurationRoot config)
         {
             using (var logFactory = GetLoggerFactory())
             {
@@ -30,8 +29,7 @@ namespace Microsoft.Extensions.Configuration
         /// Displays all of the application configurations based on the Configuration Provider.
         /// </summary>
         /// <param name="config"></param>
-        public static void DebugConfigurationsWithSerilog(
-            this IConfigurationRoot config)
+        public static void DebugConfigurationsWithSerilog(this IConfigurationRoot config)
         {
             var logger = new LoggerConfiguration()
                                               .ReadFrom.Configuration(config)
@@ -112,7 +110,7 @@ namespace Microsoft.Extensions.Configuration
         private static ILoggerFactory GetLoggerFactory()
         {
             ILoggerFactory result = null;
-#if NETCOREAPP3_0
+#if NETSTANDARD2_1 || NETCOREAPP3_0
             result = LoggerFactory.Create(builder =>
             {
                 builder.AddDebug();
