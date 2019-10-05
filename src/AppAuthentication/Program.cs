@@ -5,14 +5,16 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 using McMaster.Extensions.CommandLineUtils;
+
 using Console = Colorful.Console;
 
 namespace AppAuthentication
 {
     [Command(
         Name = Constants.CLIToolName,
-        Description = "Cli tool to help with Docker Container development with Azure MSI Identity.",
+        Description = "Cli tool to help with Docker/Kuberbetes Local Containers Development for Microsoft Azure MSI Identity authentication.",
         ThrowOnUnexpectedArgument = false,
         AllowArgumentSeparator = true)]
     [Subcommand(typeof(RunCommand))]
@@ -41,15 +43,20 @@ namespace AppAuthentication
             }
         }
 
-        private int OnExecute(CommandLineApplication app, IConsole console)
+        private Task<int> OnExecuteAsync(CommandLineApplication app, IConsole console)
         {
             Console.WriteAscii(Constants.CLIToolName, Colorful.FigletFont.Default);
 
-            Console.WriteLine("This tool requires to have Visual Studio.NET Installed.", Color.Green);
+            console.WriteLine();
+            console.WriteLine(ConsoleColor.Green, "This tool requires to have Visual Studio.NET or Azure CLI Installed on Host Machine.");
 
-            Console.WriteLine("You must specify at a subcommand.", Color.Red);
+            console.WriteLine();
+            console.WriteLine(ConsoleColor.Red, "You must specify at a subcommand.");
+
+            console.WriteLine();
             app.ShowHelp();
-            return 1;
+
+            return Task.FromResult(1);
         }
 
         private static string GetVersion()
