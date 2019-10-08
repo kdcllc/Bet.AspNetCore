@@ -53,7 +53,7 @@ Notes:
 
 - Run this CLI tool with the following sample command:
 
-`Default provider is Visual Studio provider`
+`Default provider is AzureCli provider`
 
 ```bash
     appauthentication run -a  https://login.microsoftonline.com/{companyDirectoryGuidId} -v
@@ -65,7 +65,7 @@ Notes:
 
     #or azure cli
     
-    appauthentication run -a  {companyDirectoryGuidId} -v --token-provider AzureCli
+    appauthentication run -a  {companyDirectoryGuidId} -v --token-provider VisualStudio
 
 ```
 

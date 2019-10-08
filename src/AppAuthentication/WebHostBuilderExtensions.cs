@@ -1,10 +1,13 @@
 ﻿using System.Drawing;
 using System.IO;
+
 using McMaster.Extensions.CommandLineUtils;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Console = Colorful.Console;
 
 namespace AppAuthentication
@@ -71,13 +74,8 @@ namespace AppAuthentication
                     services.AddSingleton(options);
                     if (options.Verbose)
                     {
-                        services.AddLogging(x => x.AddFilter((loglevel) =>
-                        {
-                            return loglevel == options.Level;
-                        }));
+                        services.AddLogging(x => x.AddFilter((loglevel) => loglevel == options.Level));
                     }
-
-                    services.AddSingleton(PhysicalConsole.Singleton);
                 });
 
             return builder;

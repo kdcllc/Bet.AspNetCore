@@ -189,7 +189,8 @@ namespace Bet.AspNetCore.UnitTest
             IConfiguration configuration = null;
 
             var host = new HostBuilder()
-                .UseStartupFilter()
+                .UseStartupFilters()
+                .UseOptionValidation()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
                     configuration = configBuiler.AddInMemoryCollection(dic).Build();
@@ -223,7 +224,7 @@ namespace Bet.AspNetCore.UnitTest
             IConfiguration configuration = null;
 
             var hostBuilder = new HostBuilder()
-                .UseStartupFilter()
+                .UseOptionValidation()
                 .ConfigureAppConfiguration((hostingContext, configBuiler) =>
                 {
                     configuration = configBuiler.AddInMemoryCollection(dic).Build();

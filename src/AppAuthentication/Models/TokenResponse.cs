@@ -68,7 +68,7 @@ namespace AppAuthentication.Models
             }
             catch (Exception exp)
             {
-                throw new FormatException($"{TokenResponseFormatExceptionMessage} Exception Message: {exp.Message}");
+                throw new FormatException($"{TokenResponseFormatExceptionMessage} Exception:: {exp}");
             }
         }
     }

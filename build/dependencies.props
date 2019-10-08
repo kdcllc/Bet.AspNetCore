@@ -119,7 +119,7 @@
     <PackageReference Update="Certes" Version="2.3.3" />
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
     <PackageReference Update="CsvHelper" Version="12.1.2" />
-    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.1"/>
+    <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.2"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0-preview8.19405.7"/>
     <PackageReference Update="Microsoft.DataPrep" Version="0.0.1.6-preview" />

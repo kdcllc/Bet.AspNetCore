@@ -12,18 +12,20 @@ The collection of the IHost related functionality used with GenericHost.
     dotnet add package Bet.Extensions.Options
 ```
 
-[Usage Bet.Extensions.Options](./src/Bet.Extensions.Options/README.md).
+[Usage Bet.Extensions.Options](../../src/Bet.Extensions.Options/README.md).
 
-To enable validation use `UseStartupFilter` in `Program.cs`
+To enable validation use `UseOptionValidation` in `Program.cs`
 
 ```csharp
         var host = new HostBuilder()
-                .UseStartupFilter().Build();
+                .UseOptionValidation().Build();
 ```
 
 Usage of `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation` the same as in `IWebHost`
 
 ## `IHostStartupFilter`
+
+To enable registration of other services on the start up use `UseStartupFilters` in `Program.cs`
 
 By implementing and registering this interface with DI it is possible to trigger startup jobs for `IHost`.
 

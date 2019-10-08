@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Threading.Tasks;
 
 using AppAuthentication.AzureCli;
@@ -15,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
+
+using Console = Colorful.Console;
 
 namespace AppAuthentication
 {
@@ -66,8 +69,8 @@ namespace AppAuthentication
 
         [Option(
             "-t|--token-provider",
-            Description = "The Azure CLI Access Token Provider to retrieve the Authentication Token. The Default provider is VisualStudio.")]
-        public TokenProvider TokenProvider { get; } = TokenProvider.VisualStudio;
+            Description = "The Azure CLI Access Token Provider to retrieve the Authentication Token. The Default provider is AzureCli.")]
+        public TokenProvider TokenProvider { get; } = TokenProvider.AzureCli;
 
         [Option("-f|--fix", Description = "Fix command resets Environment Variables.")]
         public bool Fix { get; private set; }
@@ -79,7 +82,7 @@ namespace AppAuthentication
 
         public string[] RemainingArguments { get; }
 
-        private async Task<int> OnExecuteAsync()
+        private async Task<int> OnExecuteAsync(IConsole console)
         {
             if (Fix)
             {
@@ -102,7 +105,11 @@ namespace AppAuthentication
             {
                 builderConfig.Port = Port ?? ConsoleHandler.GetRandomUnusedPort();
 
-                Console.WriteLine($"Active Port: {builderConfig.Port.ToString()}", Color.Green);
+                console.WriteLine(
+                    ConsoleColor.Blue,
+                    "[{0}][Running on Port]:[{1}]",
+                    nameof(AppAuthentication).ToLower(CultureInfo.InvariantCulture),
+                    builderConfig.Port);
 
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)
 
@@ -110,23 +117,51 @@ namespace AppAuthentication
                                 // ?resource=clientid=&api-version=2017-09-01
                                 .Configure(app =>
                                 {
-                                    app.Run(async (context) =>
+                                    app.MapWhen(
+                                       context => context.Request.Path.Value.Contains("/oauth2"),
+                                       (IApplicationBuilder pp) =>
+                                       {
+                                           pp.Map("/oauth2/token", (IApplicationBuilder ppa) =>
+                                           {
+                                               ppa.Run(async (context) =>
+                                               {
+                                                   var logger = app.ApplicationServices.GetRequiredService<ILogger<Program>>();
+
+                                                   try
+                                                   {
+                                                       var provider = app.ApplicationServices.GetRequiredService<IAccessTokenProvider>();
+
+                                                       var requestResource = context.Request.Query["resource"].ToString();
+
+                                                       logger.LogDebug("[Request][QueryString][resource]:['{query}']", requestResource);
+
+                                                       var resource = !string.IsNullOrWhiteSpace(requestResource) ? requestResource : builderConfig.Resource;
+
+                                                       var token = await provider.GetAuthResultAsync(resource, builderConfig.Authority);
+
+                                                       var json = JsonConvert.SerializeObject(token);
+                                                       context.Response.Headers.Add("content-type", "application/json");
+
+                                                       logger.LogDebug("Sending response");
+
+                                                       await context.Response.WriteAsync(json);
+                                                   }
+                                                   catch (Exception ex)
+                                                   {
+                                                       logger.LogError("Error occurred processing the request: {0}", ex);
+
+                                                       context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                                                       await context.Response.WriteAsync(ex.ToString());
+                                                   }
+                                               });
+                                           });
+                                       });
+
+                                    app.Run(context =>
                                     {
-                                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Program>>();
-
-                                        var provider = app.ApplicationServices.GetRequiredService<IAccessTokenProvider>();
-
-                                        var requestResource = context.Request.Query["resource"].ToString();
-
-                                        logger.LogDebug("Request QueryString {query}", requestResource);
-
-                                        var resource = !string.IsNullOrWhiteSpace(context.Request.Query["resource"].ToString()) ? requestResource : builderConfig.Resource;
-
-                                        var token = await provider.GetAuthResultAsync(resource, builderConfig.Authority);
-
-                                        var json = JsonConvert.SerializeObject(token);
-
-                                        await context.Response.WriteAsync(json);
+                                        context.Response.Headers.Add("content-type", "text/html");
+                                        return context.Response.WriteAsync(@"<a href=""/hello"">hello</a> <a href=""/world"">world</a>");
                                     });
                                 })
                                 .ConfigureServices((hostingContext, services) =>
