@@ -74,12 +74,13 @@ namespace AppAuthentication.AzureCli
 
                 var authResult = Models.AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
 
+
                 var authenticationToken = new AuthenticationToken
                 {
                     AccessToken = authResult.AccessToken,
                     TokenType = authResult.TokenType,
                     Resource = authResult.Resource,
-                    ExpiresOn = tokenResponse.ExpiresOn,
+                    ExpiresOn = authResult.ExpiresOn.ToString(),
                     ExpiresIn = token.ExpiryTime.ToString(),
                     ExtExpiresIn = token.ExpiryTime.ToString(),
                     RefreshToken = tokenResponse.AccessToken2

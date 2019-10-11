@@ -85,7 +85,7 @@ namespace AppAuthentication.VisualStudio
                             AccessToken = authResult.AccessToken,
                             TokenType = authResult.TokenType,
                             Resource = authResult.Resource,
-                            ExpiresOn = tokenResponse.ExpiresOn,
+                            ExpiresOn = authResult.ExpiresOn.ToString(),
                             ExpiresIn = accessToken.ExpiryTime.ToString(),
                             ExtExpiresIn = accessToken.ExpiryTime.ToString(),
                             RefreshToken = tokenResponse.AccessToken,
