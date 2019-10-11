@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using AppAuthentication.AzureCli;
 using AppAuthentication.Helpers;
+using AppAuthentication.Models;
 using AppAuthentication.VisualStudio;
 
 using McMaster.Extensions.CommandLineUtils;
@@ -139,12 +140,13 @@ namespace AppAuthentication
 
                                                        var token = await provider.GetAuthResultAsync(resource, builderConfig.Authority);
 
-                                                       var json = JsonConvert.SerializeObject(token);
+                                                       var jsonResponse = JsonConvert.SerializeObject(token);
+
                                                        context.Response.Headers.Add("content-type", "application/json");
 
                                                        logger.LogDebug("Sending response");
 
-                                                       await context.Response.WriteAsync(json);
+                                                       await context.Response.WriteAsync(jsonResponse);
                                                    }
                                                    catch (Exception ex)
                                                    {

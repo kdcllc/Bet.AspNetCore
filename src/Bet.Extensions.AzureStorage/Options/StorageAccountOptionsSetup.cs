@@ -134,14 +134,14 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 account = new CloudStorageAccount(storageCredentials, _options.Name, string.Empty, true);
 
-                _logger.LogInformation("Azure Storage Authentication with SAS Token.");
+                _logger.LogInformation("Azure Storage Authentication with MSI Token.");
             }
             else if (_options.Name != null
                 && !string.IsNullOrEmpty(_options.Token))
             {
                 account = new CloudStorageAccount(new StorageCredentials(_options.Token), _options.Name, true);
 
-                _logger.LogInformation("Azure Storage Authentication with MSI Token.");
+                _logger.LogInformation("Azure Storage Authentication with SAS Token.");
             }
             else
             {
