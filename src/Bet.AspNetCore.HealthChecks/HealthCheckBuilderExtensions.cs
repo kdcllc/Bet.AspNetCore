@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Security;
 using System.Threading.Tasks;
 
+using Bet.AspNetCore.HealthChecks.AzureBlobStorage;
 using Bet.AspNetCore.HealthChecks.CertificateCheck;
 using Bet.AspNetCore.HealthChecks.MemoryCheck;
 using Bet.AspNetCore.HealthChecks.SigtermCheck;
@@ -22,6 +23,41 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class HealthCheckBuilderExtensions
     {
+        /// <summary>
+        /// Adds Azure Storage Health Check.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="name"></param>
+        /// <param name="containerName"></param>
+        /// <param name="setup"></param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public static IHealthChecksBuilder AddAzureBlobStorageCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            string containerName,
+            Action<StorageAccountOptions> setup,
+            HealthStatus? failureStatus = default,
+            IEnumerable<string> tags = default)
+        {
+            var options = new StorageAccountOptions();
+            setup?.Invoke(options);
+
+            builder.Services.AddOptions<StorageAccountOptions>(name)
+                .Configure((opt) =>
+                {
+                    opt.ConnectionString = options.ConnectionString;
+                    opt.ContainerName = containerName;
+                    opt.Name = options.Name;
+                    opt.Token = options.Token;
+                });
+
+            builder.AddCheck<AzureBlobStorageHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
+
+            return builder;
+        }
+
         public static IHealthChecksBuilder AddSslCertificateCheck(
             this IHealthChecksBuilder builder,
             string name,
