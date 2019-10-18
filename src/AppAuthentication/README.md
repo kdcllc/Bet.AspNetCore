@@ -3,6 +3,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/appauthentication.svg)](https://www.nuget.org/packages?q=appauthentication)
 
+![appauthentication debug in docker](../../img/appauthentication-docker-debug.gif)
+
 This dotnet cli tool provides ability to accesses Azure Vault in Docker Container when this container is ran on the local machine.
 In addition if needed this cli tool can be enabled to retrieve tokens for local machine development.
 It can be utilized in conjunction with VSCode Remote Extensions.
