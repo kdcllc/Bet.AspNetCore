@@ -74,7 +74,6 @@ namespace AppAuthentication.AzureCli
 
                 var authResult = Models.AppAuthenticationResult.Create(tokenResponse, TokenResponse.DateFormat.DateTimeString);
 
-
                 var authenticationToken = new AuthenticationToken
                 {
                     AccessToken = authResult.AccessToken,

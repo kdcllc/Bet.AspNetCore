@@ -11,7 +11,7 @@ The tool was tested on:
 
 - On Windows 10 Visual Studio.NET or AzureCli Providers.
 
-- On Linux with Azure Cli only.
+- On Linux with Azure Cli only. Install Azure Cli `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
 
 ```bash
     dotnet tool install --global appauthentication
@@ -57,14 +57,14 @@ Notes:
 
 ```bash
     appauthentication run -a  https://login.microsoftonline.com/{companyDirectoryGuidId} -v
-    
+
     #or
 
     appauthentication run -a  {companyDirectoryGuidId} -v
 
 
     #or azure cli
-    
+
     appauthentication run -a  {companyDirectoryGuidId} -v --token-provider VisualStudio
 
 ```
@@ -82,7 +82,7 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 ## Tools possible switches
 
 - --authority:authid or -a:authid
-- --verbose:debug 
+- --verbose:debug
 - --token-provider:AzureCli or -t:VisualStudio (default VisualStudio)
 - --environment:Production  or -e:Development
 - --resource:test or -r:someresource
@@ -90,3 +90,7 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 - --config:file or -c:appsettings.config
 - --fix or -f
 - --local or -l (default Docker)
+
+## Reference
+
+To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).

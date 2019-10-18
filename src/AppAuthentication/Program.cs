@@ -28,11 +28,6 @@ namespace AppAuthentication
             {
                 if (canCreateNew)
                 {
-                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        throw new ApplicationException($"{Constants.CLIToolName} doesn't support this operating system.");
-                    }
-
                     return await CommandLineApplication.ExecuteAsync<Program>(args);
                 }
                 else
