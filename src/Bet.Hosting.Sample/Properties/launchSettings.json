@@ -2,6 +2,9 @@
   "profiles": {
     "Bet.Hosting.Sample": {
       "commandName": "Project",
+
+      "commandLineArgs": "--runAsCronJob=true",
+
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

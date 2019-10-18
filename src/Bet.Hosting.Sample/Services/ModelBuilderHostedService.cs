@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting;
 using Bet.Extensions.Hosting.Abstractions;
-using Bet.Extensions.ML.ModelBuilder;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -29,22 +29,15 @@ namespace Bet.Hosting.Sample.Services
         public async Task RunModelGenertorsAsync(CancellationToken cancellationToken)
         {
             using var scope = _provider.CreateScope();
-            var modelBuilders = scope.ServiceProvider.GetRequiredService<IEnumerable<IModelBuilderService>>();
+            var job = scope.ServiceProvider.GetRequiredService<IModelBuildersJobService>();
 
-            foreach (var modelBuilder in modelBuilders)
+            try
             {
-                try
-                {
-                    await modelBuilder.TrainModelAsync(cancellationToken);
-
-                    await modelBuilder.ClassifyTestAsync(cancellationToken);
-
-                    await modelBuilder.SaveModelAsync(cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.Message);
-                }
+                await job.RunAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("{serviceName} failed with exception: {message}", nameof(ModelBuilderHostedService), ex.Message);
             }
         }
     }

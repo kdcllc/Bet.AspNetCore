@@ -7,10 +7,14 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddModelBuilderService(this IServiceCollection services)
+        /// <summary>
+        /// Adds timed service, that can be run in a Docker container.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddModelBuildersTimedService(this IServiceCollection services)
         {
-            services.AddSpamDetectionModelBuilder();
-            services.AddSentimentModelBuilder();
+            services.AddModelBuildersCronJobService();
 
             services.AddTimedHostedService<ModelBuilderHostedService>(options =>
             {
@@ -21,6 +25,18 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             return services;
+        }
+
+        /// <summary>
+        /// Adds this as Kubernetes CronJob.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddModelBuildersCronJobService(this IServiceCollection services)
+        {
+            return services.AddSpamDetectionModelBuilder()
+                          .AddSentimentModelBuilder()
+                          .AddScoped<IModelBuildersJobService, ModelBuildersJobService>();
         }
     }
 }

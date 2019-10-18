@@ -39,7 +39,7 @@ This repo contains several projects that provide with extended functionality for
 
 1. [`Bet.AspNetCore.Sample`](./src/Bet.AspNetCore.Sample/README.md) - `AspNetCore` Web App with spam prediction models.
 2. [`Bet.ML.WebApi.Sample`](./src/Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
-3. [`Bet.Hosting.Sample`](./src/Bet.Hosting.Sample/README.md)
+3. [`Bet.Hosting.Sample`](./src/Bet.Hosting.Sample/README.md) - DotNetCore Worker App that can run in Kubernetes as CronJob.
 
 ## Domain Driven Development - `Clean Architecture`
 

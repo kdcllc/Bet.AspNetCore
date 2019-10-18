@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Bet.Hosting.Sample.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +16,45 @@ namespace Bet.Hosting.Sample
     /// </summary>
     internal sealed class Program
     {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+        private static bool runAsCronJob = false;
 
-            host.Run();
+        /// <summary>
+        /// Run in two different ways:
+        /// 1. As Timed Hosted Service.
+        /// 2. As CronJob in Kubernetes Cluster. dotnet run -- --runAsCronJob=true.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static async Task<int> Main(string[] args)
+        {
+            using (var mutex = new Mutex(true, nameof(Program), out var canCreateNew))
+            {
+                if (canCreateNew)
+                {
+                    using var host = CreateHostBuilder(args).UseConsoleLifetime().Build();
+                    if (runAsCronJob)
+                    {
+                        await host.StartAsync();
+
+                        var scope = host.Services.CreateScope();
+                        var token = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
+
+                        var job = scope.ServiceProvider.GetRequiredService<IModelBuildersJobService>();
+                        await job.RunAsync(token.ApplicationStopping);
+
+                        await host.StopAsync();
+                        return 0;
+                    }
+
+                    await host.RunAsync();
+                    return 0;
+                }
+                else
+                {
+                    Console.WriteLine($"Only one instance of the {nameof(Program)} tool can be run at the same time.");
+                    return -1;
+                }
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)
@@ -32,6 +69,8 @@ namespace Bet.Hosting.Sample
                         hostingEnviromentName: envName,
                         usePrefix: false,
                         reloadInterval: TimeSpan.FromSeconds(30));
+
+                    runAsCronJob = configuration.GetValue<bool>(nameof(runAsCronJob));
 
                     // helpful to see what was retrieved from all of the configuration providers.
                     if (hostingContext.HostingEnvironment.IsDevelopment())
@@ -48,7 +87,14 @@ namespace Bet.Hosting.Sample
                 })
                 .ConfigureServices(services =>
                 {
-                    services.AddModelBuilderService();
+                    if (runAsCronJob)
+                    {
+                        services.AddModelBuildersCronJobService();
+                    }
+                    else
+                    {
+                        services.AddModelBuildersTimedService();
+                    }
                 });
         }
     }

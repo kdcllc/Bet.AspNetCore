@@ -1,0 +1,27 @@
+# https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mlmodelbuilder-job
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mlmodelbuilder-job
+            image: kdcllc/bet-hosting-sample:v1
+            command: ["./Bet.Hosting.Sample"]
+            env:
+              - name: MSI_ENDPOINT
+                value: http://host.docker.internal:5050/oauth2/token
+              - name: MSI_SECRET
+                value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+            args:
+            - "--runAsCronJob=true"
+          restartPolicy: OnFailure

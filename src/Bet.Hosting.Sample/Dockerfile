@@ -13,8 +13,6 @@ RUN dotnet publish "./src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj" -r linux
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
 FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0-alpine AS runtime
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
 COPY --from=builder /app/out ./
 ENTRYPOINT ["./Bet.Hosting.Sample"]
