@@ -60,4 +60,18 @@
     </None>
   </ItemGroup>
 
+  <PropertyGroup Label="Docker Variables">
+    <!-- change this value if the port is different -->
+    <MSI_ENDPOINT>http://host.docker.internal:5050/oauth2/token</MSI_ENDPOINT>
+    <MSI_SECRET>12ff91d5-1d3e-4ceb-9f48-cb3f5dabf40f</MSI_SECRET>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Docker Container Configurations">
+      <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+    <DockerfileContext>../../.</DockerfileContext>
+    <DockerfileFile>../../src/Bet.AspNetCore.Sample/Dockerfile</DockerfileFile>
+    <DockerfileRunArguments>-e MSI_ENDPOINT=$(MSI_ENDPOINT) -e MSI_SECRET=$(MSI_SECRET)</DockerfileRunArguments>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
 </Project>

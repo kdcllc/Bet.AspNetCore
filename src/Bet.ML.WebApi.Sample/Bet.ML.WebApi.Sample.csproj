@@ -22,4 +22,18 @@
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
   </ItemGroup>
 
+  <PropertyGroup Label="Docker Variables">
+    <!-- change this value if the port is different -->
+    <MSI_ENDPOINT>http://host.docker.internal:5050/oauth2/token</MSI_ENDPOINT>
+    <MSI_SECRET>b7f5a559-345a-4302-b42d-df8ffbc3a271</MSI_SECRET>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Docker Container Configurations">
+      <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+    <DockerfileContext>../../.</DockerfileContext>
+    <DockerfileFile>../../src/Bet.ML.WebApi.Sample/Dockerfile</DockerfileFile>
+    <DockerfileRunArguments>-e MSI_ENDPOINT=$(MSI_ENDPOINT) -e MSI_SECRET=$(MSI_SECRET)</DockerfileRunArguments>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
 </Project>

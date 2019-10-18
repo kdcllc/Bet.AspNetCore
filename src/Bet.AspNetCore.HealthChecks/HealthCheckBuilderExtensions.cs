@@ -26,12 +26,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds Azure Storage Health Check.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="name"></param>
-        /// <param name="containerName"></param>
-        /// <param name="setup"></param>
-        /// <param name="failureStatus"></param>
-        /// <param name="tags"></param>
+        /// <param name="builder">The hc builder.</param>
+        /// <param name="name">The name of the hc.</param>
+        /// <param name="containerName">The name of the container to be checked.</param>
+        /// <param name="setup">The setup action for the hc.</param>
+        /// <param name="failureStatus">The failure status to be returned. The default is 'HealthStatus.Degraded'.</param>
+        /// <param name="tags">The optional tags.</param>
         /// <returns></returns>
         public static IHealthChecksBuilder AddAzureBlobStorageCheck(
             this IHealthChecksBuilder builder,
@@ -58,10 +58,21 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Adds SSL Website Certificate check.
+        /// </summary>
+        /// <param name="builder">The hc builder.</param>
+        /// <param name="name">The name of the  hc.</param>
+        /// <param name="baseUrl">The website base url.</param>
+        /// <param name="beforeSslExpriesDays">The number of days before SSL expires.</param>
+        /// <param name="failureStatus">The failure status to be returned. The default is 'HealthStatus.Degraded'.</param>
+        /// <param name="tags">The optional tags.</param>
+        /// <returns></returns>
         public static IHealthChecksBuilder AddSslCertificateCheck(
             this IHealthChecksBuilder builder,
             string name,
             string baseUrl,
+            int beforeSslExpriesDays = 30,
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
@@ -77,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, cetChain, sslPolicyErrors) =>
                     {
                         var expirationDate = DateTime.Parse(certificate.GetExpirationDateString());
-                        if (expirationDate - DateTime.Today < TimeSpan.FromDays(30))
+                        if (expirationDate - DateTime.Today < TimeSpan.FromDays(beforeSslExpriesDays))
                         {
                             throw new Exception("Time to renew the certificate!");
                         }
@@ -95,7 +106,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return handler;
             });
 
-            builder.AddCheck<SslCertificateHealthCheck>(name, failureStatus, tags);
+            builder.AddCheck<SslCertificateHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
             return builder;
         }
 

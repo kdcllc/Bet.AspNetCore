@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,10 +11,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
   </ItemGroup>
+
+  <PropertyGroup Label="Docker Variables">
+    <!-- change this value if the port is different -->
+    <MSI_ENDPOINT>http://host.docker.internal:5050/oauth2/token</MSI_ENDPOINT>
+    <MSI_SECRET>94f48227-f2f7-41c7-b6df-749214ef2897</MSI_SECRET>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Docker Container Configurations">
+      <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+    <DockerfileContext>../../.</DockerfileContext>
+    <DockerfileFile>../../src/Bet.Hosting.Sample/Dockerfile</DockerfileFile>
+    <DockerfileRunArguments>-e MSI_ENDPOINT=$(MSI_ENDPOINT) -e MSI_SECRET=$(MSI_SECRET)</DockerfileRunArguments>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
 
 </Project>

@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Bet.Hosting.Sample": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

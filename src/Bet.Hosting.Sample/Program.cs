@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,36 +13,43 @@ namespace Bet.Hosting.Sample
     /// </summary>
     internal sealed class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            var host = new HostBuilder()
-                    .ConfigureLogging(logging =>
-                    {
-                        logging.AddConsole();
-                        logging.AddDebug();
-                    })
-                    .ConfigureAppConfiguration((hostContext, config) =>
-                    {
-                        config.AddEnvironmentVariables();
-                        config.AddJsonFile("appsettings.json", optional: true);
-                        config.AddCommandLine(args);
-                    })
-                    .ConfigureServices((hostContext, services) =>
-                    {
-                        services.AddModelBuilderService();
-                    })
-                    .UseConsoleLifetime()
-                    .Build();
+            var host = CreateHostBuilder(args).Build();
 
-            var hostedServices = host.Services;
+            host.Run();
+        }
 
-            using (host)
-            {
-                await host.StartAsync();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, configBuilder) =>
+                {
+                    // based on environment Development = dev; Production = prod prefix in Azure Vault.
+                    var envName = hostingContext.HostingEnvironment.EnvironmentName;
 
-                // Wait for the host to shutdown
-                await host.WaitForShutdownAsync();
-            }
+                    var configuration = configBuilder.AddAzureKeyVault(
+                        hostingEnviromentName: envName,
+                        usePrefix: false,
+                        reloadInterval: TimeSpan.FromSeconds(30));
+
+                    // helpful to see what was retrieved from all of the configuration providers.
+                    if (hostingContext.HostingEnvironment.IsDevelopment())
+                    {
+                        // var configuration = configBuilder.Build();
+                        configuration.DebugConfigurations();
+                    }
+                })
+                .ConfigureLogging((hostingContext, logger) =>
+                {
+                    logger.AddConfiguration(hostingContext.Configuration);
+                    logger.AddConsole();
+                    logger.AddDebug();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddModelBuilderService();
+                });
         }
     }
 }

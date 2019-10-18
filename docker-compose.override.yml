@@ -1,14 +1,38 @@
 version: '3.4'
 
 services:
-  bet.extensions.resilience:
+  bet.aspnetcore.web:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=9001
+      - ASPNETCORE_HTTPS_PORT=5001
+      - MSI_ENDPOINT=${MSI_ENDPOINT}
+      - MSI_SECRET=${MSI_SECRET}
     ports:
-      - "9000:80"
-      - "9002:443"
+      - "5000:80"
+      - "5001:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  bet.aspnetcore.webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=4001
+      - MSI_ENDPOINT=${MSI_ENDPOINT}
+      - MSI_SECRET=${MSI_SECRET}
+    ports:
+      - "4000:80"
+      - "4001:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  bet.hosting:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+      - MSI_ENDPOINT=${MSI_ENDPOINT}
+      - MSI_SECRET=${MSI_SECRET}
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
