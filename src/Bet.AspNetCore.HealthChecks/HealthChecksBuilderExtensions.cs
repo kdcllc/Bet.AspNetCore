@@ -13,7 +13,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class HealthCheckBuilderExtensions
+    public static class HealthChecksBuilderExtensions
     {
         /// <summary>
         /// Adds Azure Storage Health Check.
