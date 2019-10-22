@@ -7,6 +7,27 @@
     <NoWarn>$(NoWarn);CS1591;NU1605;</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Label="Docker">
+    <!-- kdcllc docker image specifics -->
+    <PROJECT_PATH></PROJECT_PATH>
+    <RUNTESTS>"false"</RUNTESTS>
+    <VERBOSE>"false"</VERBOSE>
+    <SOLUTION_BASE>"false"</SOLUTION_BASE>
+    <DOCKER_BUILD_ARGS>--build-arg RUNTESTS=$(RUNTESTS) --build-arg VERBOSE=$(VERBOSE) --build-arg SOLUTION_BASE=$(SOLUTION_BASE)</DOCKER_BUILD_ARGS>
+
+    <!-- MSI local dev -->
+    <MSI_ENDPOINT Condition=" '$(MSI_ENDPOINT)' == '' ">
+      http://host.docker.internal:5050/oauth2/token
+    </MSI_ENDPOINT>
+    <MSI_SECRET Condition=" '$(MSI_SECRET)' == '' ">
+      94f48227-f2f7-41c7-b6df-749214ef2897
+    </MSI_SECRET>
+
+    <DockerfileContext>../../.</DockerfileContext>
+    <DockerfileRunArguments>-e "MSI_ENDPOINT=$(MSI_ENDPOINT)" -e "MSI_SECRET=$(MSI_SECRET)"</DockerfileRunArguments>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
   <PropertyGroup Label="Nuget Package Settings">
     <Description>Collection of AspNetCore extensions and reusable functionality.</Description>
     <PackageProjectUrl>https://github.com/kdcllc/Bet.AspNetCore</PackageProjectUrl>

@@ -1,4 +1,5 @@
 <Project>
+
   <!-- Reference for the msbuild tags: https://docs.microsoft.com/en-us/dotnet/core/tools/csproj -->
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
