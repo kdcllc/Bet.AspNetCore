@@ -27,7 +27,7 @@ namespace Bet.AspNetCore.UnitTest
 
             app.UseHealthChecks("/healthy", new HealthCheckOptions
             {
-                ResponseWriter = HealthCheckBuilderExtensions.WriteResponse
+                ResponseWriter = HealthChecksApplicationBuilderExtensions.WriteResponse
             });
         }
     }
