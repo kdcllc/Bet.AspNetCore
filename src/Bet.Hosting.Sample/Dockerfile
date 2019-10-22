@@ -5,6 +5,9 @@
 # BUILD:        docker build --rm -f "src\Bet.Hosting.Sample\Dockerfile" -t kdcllc/bet-hosting-sample:v1 --build-arg PROJECT_PATH="/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj" --build-arg SOLUTION_BASE="false" .
 #
 #
+# RUN:          docker run -d --name bet.hosting.sample kdcllc/bet-hosting-sample:v1 --runAsCronJob=false
+#               docker push kdcllc/kdcllc/bet-hosting-sample:v1
+#
 #------------------------------------------------------------------------------------------------------------------------
 
 FROM kdcllc/dotnet:3.0-sdk-alpine as builder

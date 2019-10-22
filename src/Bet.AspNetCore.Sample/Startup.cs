@@ -142,7 +142,9 @@ namespace Bet.AspNetCore.Sample
                     return prod;
                 });
 
-            app.UseHttpsRedirection();
+            // when running in docker container without ssl disable this
+            // app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();

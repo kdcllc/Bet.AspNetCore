@@ -78,7 +78,8 @@ namespace Bet.ML.WebApi.Sample
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // when running in docker container without ssl disable this
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
