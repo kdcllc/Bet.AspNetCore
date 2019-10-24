@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Bet.AspNetCore.UnitTest.Factory
+namespace Bet.Extensions.UnitTest.DIFactory
 {
     public class FactoryTests
     {

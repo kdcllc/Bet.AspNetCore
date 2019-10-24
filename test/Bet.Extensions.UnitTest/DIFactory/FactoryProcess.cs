@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bet.AspNetCore.UnitTest.Factory
+namespace Bet.Extensions.UnitTest.DIFactory
 {
     public class FactoryProcess<T>
     {

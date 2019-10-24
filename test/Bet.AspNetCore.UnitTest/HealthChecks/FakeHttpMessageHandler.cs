@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.AspNetCore.UnitTest
+namespace Bet.AspNetCore.UnitTest.HealthChecks
 {
     public class FakeHttpMessageHandler : DelegatingHandler
     {

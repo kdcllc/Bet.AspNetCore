@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
-    <!-- bug in the SDK 3.0.100-preview4-011223-->
-    <DepsFileGenerationMode>old</DepsFileGenerationMode>
     <NoWarn>$(NoWarn);CA2000</NoWarn>
   </PropertyGroup>
 
@@ -20,6 +18,7 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -32,10 +31,11 @@
     <ProjectReference Include="..\..\src\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
     <ProjectReference Include="..\..\src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
     <ProjectReference Include="..\..\src\Bet.AspNetCore\Bet.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
-    <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\..\src\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HealthChecks\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Bet.AspNetCore.UnitTest.Controllers
+namespace Bet.AspNetCore.UnitTest.HealthChecks
 {
     [Route("api/[controller]")]
     public class HttpStatController : ControllerBase

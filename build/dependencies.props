@@ -104,6 +104,7 @@
     <PackageReference Update="Moq" Version="4.13.0" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Update="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup Label="Serilog">

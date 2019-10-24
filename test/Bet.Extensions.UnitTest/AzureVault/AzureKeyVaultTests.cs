@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Bet.AspNetCore.UnitTest
 {
-    public class AzureKeyVaultFuncTests
+    public class AzureKeyVaultTests
     {
         [Fact(Skip = "Integration Test")]
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using static Bet.AspNetCore.UnitTest.Factory.FactoryTests;
+using static Bet.Extensions.UnitTest.DIFactory.FactoryTests;
 
-namespace Bet.AspNetCore.UnitTest.Factory
+namespace Bet.Extensions.UnitTest.DIFactory
 {
     public class KeyFactoryProcess
     {

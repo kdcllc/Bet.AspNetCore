@@ -2,15 +2,19 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Moq;
+
 using Xunit;
 
-namespace Bet.AspNetCore.UnitTest
+namespace Bet.AspNetCore.UnitTest.HealthChecks
 {
     public class HealthChecksTests
     {
@@ -54,11 +58,39 @@ namespace Bet.AspNetCore.UnitTest
 
             factoryMock.Setup(x => x.CreateClient("Successful")).Returns(new HttpClient(fakeHttpMessageHandler));
             var hostBuilder = new WebHostBuilder()
-                .ConfigureTestServices(services =>
+                .Configure(app =>
                 {
-                    services.AddSingleton<IHttpClientFactory>(factoryMock.Object);
+#if NETCOREAPP2_2
+                    app.UseMvc();
 
-                    services.AddHealthChecks()
+                    app.UseHealthChecks("/healthy", new HealthCheckOptions
+                    {
+                        ResponseWriter = HealthChecksApplicationBuilderExtensions.WriteResponse
+                    });
+#elif NETCOREAPP3_0
+                    app.UseRouting();
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapHealthChecks("/healthy", new HealthCheckOptions
+                        {
+                            ResponseWriter = HealthChecksApplicationBuilderExtensions.WriteResponse
+                        });
+                    });
+#endif
+                })
+                .ConfigureServices(services =>
+                {
+#if NETCOREAPP2_2
+                   services.AddMvcCore()
+                     .AddApplicationPart(typeof(HealthChecksTests).Assembly);
+#elif NETCOREAPP3_0
+                   services.AddControllers()
+                    .AddApplicationPart(typeof(HealthChecksTests).Assembly);
+                   services.AddRouting();
+#endif
+                   services.AddSingleton<IHttpClientFactory>(factoryMock.Object);
+
+                   services.AddHealthChecks()
                     .AddUriHealthCheck("Successful", builder =>
                     {
                         builder.Add(options =>
@@ -69,12 +101,7 @@ namespace Bet.AspNetCore.UnitTest
                             .UseExpectedHttpCode(statusCode);
                         });
                     });
-
-#if NETCOREAPP3_0
-                    services.AddMvc(options => options.EnableEndpointRouting = false);
-#endif
-                })
-                .UseStartup<TestStartup>();
+                });
 
             var client = new TestServer(hostBuilder).CreateClient();
 

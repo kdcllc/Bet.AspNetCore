@@ -3,12 +3,12 @@ using Microsoft.Extensions.Hosting;
 
 using Xunit;
 
-namespace Bet.AspNetCore.UnitTest
+namespace Bet.Extensions.UnitTest.Hosting
 {
     public class HostUnitTests
     {
         [Fact]
-        public void Should_have_once_registration()
+        public void Should_Have_Register_Once_StartupFilters()
         {
             var host = new HostBuilder()
                 .UseStartupFilters()

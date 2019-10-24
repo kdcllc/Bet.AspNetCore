@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Bet.Extensions.UnitTest.Models;
+
 using Xunit;
 
-namespace Bet.AspNetCore.UnitTest
+namespace Bet.Extensions.UnitTest
 {
     public class AsyncExpiringLazyTests
     {

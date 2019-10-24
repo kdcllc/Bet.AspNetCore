@@ -1,4 +1,4 @@
-﻿namespace Bet.AspNetCore.UnitTest
+﻿namespace Bet.Extensions.UnitTest.Models
 {
     public class TokenResponse
     {

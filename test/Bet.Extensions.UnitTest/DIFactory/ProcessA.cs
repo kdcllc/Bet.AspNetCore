@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bet.AspNetCore.UnitTest.Factory
+namespace Bet.Extensions.UnitTest.DIFactory
 {
     public class ProcessA : IProcess
     {
