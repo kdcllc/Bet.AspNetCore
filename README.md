@@ -25,6 +25,7 @@ This repo contains several projects that provide with extended functionality for
 4. [`Bet.Extensions.Hosting`](./src/Bet.Extensions.Hosting/README.md) - extends generic functionality for `IHost`.
 5. [`Bet.Extensions.AzureVault`](./src/Bet.Extensions.AzureVault/README.md) - includes Azure Vault functionality.
 6. [`Bet.Extensions.AzureStorage`](./src/Bet.Extensions.AzureStorage/README.md) - includes MSI and regular access to Azure Storage Blob or Queue.
+7. [`Bet.Extensions.HealthChecks`](./src/Bet.Extensions.HealthChecks/README.md) - many useful HealChecks for Kubernetes.
 
 ## AspNetCore specific functionality
 

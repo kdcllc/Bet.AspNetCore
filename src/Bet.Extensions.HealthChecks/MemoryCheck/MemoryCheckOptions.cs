@@ -1,4 +1,4 @@
-﻿namespace Bet.AspNetCore.HealthChecks.MemoryCheck
+﻿namespace Bet.Extensions.HealthChecks.MemoryCheck
 {
     public class MemoryCheckOptions
     {

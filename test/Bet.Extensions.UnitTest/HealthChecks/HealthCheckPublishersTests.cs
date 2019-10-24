@@ -57,7 +57,7 @@ namespace Bet.Extensions.UnitTest.HealthChecks
 
             await publisher.PublishAsync(report, CancellationToken.None);
 
-            var response = TcpClientResponse(port);
+            var response = TcpClientResponse(port, "ping");
             Assert.Equal("ping", response);
             Assert.Equal(HealthStatus.Healthy, report.Status);
         }
@@ -95,8 +95,11 @@ namespace Bet.Extensions.UnitTest.HealthChecks
 
             await Task.Delay(TimeSpan.FromSeconds(2));
 
-            var response = TcpClientResponse(port);
-            Assert.Equal("ping", response);
+            var response1 = TcpClientResponse(port, "ping");
+            Assert.Equal("ping", response1);
+
+            var response2 = TcpClientResponse(port, "ping2");
+            Assert.Equal("ping2", response2);
 
             await host.StopAsync();
         }
@@ -137,11 +140,11 @@ namespace Bet.Extensions.UnitTest.HealthChecks
             await host.StopAsync();
         }
 
-        private static string TcpClientResponse(int port)
+        private static string TcpClientResponse(int port, string message)
         {
             using var client = new TcpClient("localhost", port);
             using var stream = client.GetStream();
-            var data = Encoding.ASCII.GetBytes("ping");
+            var data = Encoding.ASCII.GetBytes(message);
             stream.Write(data, 0, data.Length);
             data = new byte[256];
 

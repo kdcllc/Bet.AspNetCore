@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Bet.AspNetCore.HealthChecks.UriCheck
+namespace Bet.Extensions.HealthChecks.UriCheck
 {
     public interface IUriOptionsSetup
     {

@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bet.AspNetCore.HealthChecks.UriCheck
+namespace Bet.Extensions.HealthChecks.UriCheck
 {
     public interface IUriHealthCheckBuilder
     {

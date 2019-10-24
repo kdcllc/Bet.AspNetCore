@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
-namespace Bet.AspNetCore.HealthChecks.SigtermCheck
+namespace Bet.Extensions.HealthChecks.SigtermCheck
 {
     public class SigtermHealthCheck : IHealthCheck
     {
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 || NETSTANDARD2_1
         private readonly IHostApplicationLifetime _applicationLifetime;
 
         public SigtermHealthCheck(IHostApplicationLifetime applicationLifetime)

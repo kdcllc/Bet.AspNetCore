@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 
-namespace Bet.AspNetCore.HealthChecks.UriCheck
+namespace Bet.Extensions.HealthChecks.UriCheck
 {
     /// <summary>
     /// The class to provide configuration for the healthcheck request.

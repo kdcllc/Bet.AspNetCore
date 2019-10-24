@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bet.AspNetCore.HealthChecks.UriCheck
+namespace Bet.Extensions.HealthChecks.UriCheck
 {
     public class UriHealthCheckOptions
     {

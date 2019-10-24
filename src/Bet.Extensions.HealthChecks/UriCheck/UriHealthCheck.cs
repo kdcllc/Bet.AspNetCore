@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
-namespace Bet.AspNetCore.HealthChecks.UriCheck
+namespace Bet.Extensions.HealthChecks.UriCheck
 {
     public class UriHealthCheck : IHealthCheck
     {

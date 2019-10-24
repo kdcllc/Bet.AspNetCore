@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
-namespace Bet.AspNetCore.HealthChecks.MemoryCheck
+namespace Bet.Extensions.HealthChecks.MemoryCheck
 {
     /// <summary>
     /// HealthCheck for Garbage Collector memory usage for the application.

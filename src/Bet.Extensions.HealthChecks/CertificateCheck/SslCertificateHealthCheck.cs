@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Bet.AspNetCore.HealthChecks.CertificateCheck
+namespace Bet.Extensions.HealthChecks.CertificateCheck
 {
     public class SslCertificateHealthCheck : IHealthCheck
     {
