@@ -6,6 +6,7 @@ using Bet.Hosting.Sample.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -93,6 +94,11 @@ namespace Bet.Hosting.Sample
                     }
                     else
                     {
+                        services.AddHealthChecks()
+                                .AddMemoryHealthCheck()
+                                .AddCheck("Healthy_Check_Two", () => HealthCheckResult.Healthy())
+                                .AddSocketListener(8080)
+                                .AddLoggerPublisher();
                         services.AddModelBuildersTimedService();
                     }
                 });

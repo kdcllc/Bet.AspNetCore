@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.HealthChecks\Bet.Extensions.HealthChecks.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />

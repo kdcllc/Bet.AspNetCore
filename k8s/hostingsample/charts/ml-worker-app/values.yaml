@@ -1,0 +1,36 @@
+# Default values for ml-worker-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 80
+
+local:
+  enable: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+
+image:
+  repository: kdcllc/bet-hosting-sample
+  tag: v1
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+   cpu: 500m
+   memory: 170Mi
+  requests:
+   cpu: 250m
+   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

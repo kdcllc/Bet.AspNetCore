@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,18 +11,13 @@ namespace Bet.Extensions.HealthChecks.Publishers
 {
     public class SocketHealthCheckPublisher : IHealthCheckPublisher
     {
-        private readonly Thread _thread;
+        private readonly TcpListener _listener;
         private readonly ILogger<SocketHealthCheckPublisher> _logger;
+        private int _started;
 
         public SocketHealthCheckPublisher(int port, ILogger<SocketHealthCheckPublisher> logger)
         {
-            _thread = new Thread(() =>
-            {
-                var tcpListener = new TcpListener(IPAddress.Any, port);
-                tcpListener.Start();
-
-                StartListener(tcpListener);
-            });
+            _listener = new TcpListener(IPAddress.Any, port);
 
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         }
@@ -34,76 +28,80 @@ namespace Bet.Extensions.HealthChecks.Publishers
             {
                 if (report.Status == HealthStatus.Healthy)
                 {
-                    if (!_thread.IsAlive)
+                    if (_started == 0)
                     {
-                        _thread.Start();
+                        await ListenAsync();
                     }
                 }
                 else
                 {
-                    if (_thread.IsAlive)
-                    {
-                        _thread.Abort();
-                    }
+                    _listener.Stop();
                 }
-            }
-            catch (ThreadAbortException ex)
-            {
-                _logger.LogCritical("Socket Thread is aborted: {code} with HealthCheck status {status}", ex.ExceptionState, report.Status);
             }
             catch (Exception ex)
             {
-                _logger.LogCritical("Socket connection wasn't established: {message}", ex.Message);
+                _logger.LogCritical("Something went wrong with the Socket connection: {message}", ex.Message);
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Task.CompletedTask;
+        }
+
+        private async Task ListenAsync()
+        {
+            try
+            {
+                Interlocked.Increment(ref _started);
+
+                _listener.Start();
+
+                _logger.LogInformation("Waiting for a connection...");
+
+                // Continue listening.
+                TcpClient client = null;
+                while ((client = await _listener.AcceptTcpClientAsync()) != null
+                    && client.Connected)
+                {
+                    _logger.LogInformation("TcpSocket HealthCheck Client Connected...");
+
+                    await ProcessAsync(client);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical("SocketException terminated: {0}", ex);
+                _listener.Stop();
+
+                // reset count
+                Interlocked.Decrement(ref _started);
             }
 
             await Task.CompletedTask;
         }
 
-        private void StartListener(TcpListener tcpListener)
+        private async Task ProcessAsync(TcpClient client)
         {
-            try
-            {
-                while (true)
-                {
-                    _logger.LogDebug("Waiting for a connection...");
-
-                    var client = tcpListener.AcceptTcpClient();
-                    _logger.LogDebug("Connected!");
-
-                    var t = new Thread(new ParameterizedThreadStart(HandleConnection));
-                    t.Start(client);
-                }
-            }
-            catch (SocketException e)
-            {
-                _logger.LogCritical("SocketException terminated: {0}", e);
-                tcpListener.Stop();
-            }
-        }
-
-        private void HandleConnection(object obj)
-        {
-            var client = (TcpClient)obj;
-            var stream = client.GetStream();
-            var bytes = new byte[256];
+            var bytes = new byte[1024];
             int i;
             try
             {
-                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                using var stream = client.GetStream();
+                while ((i = await stream.ReadAsync(bytes, 0, bytes.Length)) != 0)
                 {
-                    var hex = BitConverter.ToString(bytes);
-                    var data = Encoding.ASCII.GetString(bytes, 0, i);
+                    // received.
+                    var data = bytes.ConvertToString(0, i);
+                    _logger.LogInformation("{threadId}: Data Received: {data}", Thread.CurrentThread.ManagedThreadId, data);
 
-                    _logger.LogDebug("{1}: Received: {0}", data, Thread.CurrentThread.ManagedThreadId);
-
-                    var reply = Encoding.ASCII.GetBytes(data);
-                    stream.Write(reply, 0, reply.Length);
-                    _logger.LogDebug("{1}: Sent: {0}", data, Thread.CurrentThread.ManagedThreadId);
+                    // send
+                    var reply = data.ToBytes();
+                    await stream.WriteAsync(reply, 0, reply.Length);
+                    _logger.LogInformation("{threadId}: Data Sent: {data}", Thread.CurrentThread.ManagedThreadId, data);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError("Exception: {0}", e.ToString());
+                _logger.LogError("ProcessAsync failed with : {message}", e.GetBaseException().Message);
                 client.Close();
             }
         }

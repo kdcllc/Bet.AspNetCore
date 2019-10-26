@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
@@ -63,6 +64,12 @@ namespace Bet.ML.WebApi.Sample
                 builder.AddJob<RebuildMLModelScheduledJob, RebuildMLModelsOptions>();
                 builder.UnobservedTaskExceptionHandler = null;
             });
+
+            // add healthchecks
+            services.AddHealthChecks()
+                .AddMemoryHealthCheck()
+                .AddSigtermCheck("sigterm_check")
+                .AddLoggerPublisher(new List<string> { "sigterm_check" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

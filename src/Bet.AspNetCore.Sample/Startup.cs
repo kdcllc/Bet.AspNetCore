@@ -100,7 +100,8 @@ namespace Bet.AspNetCore.Sample
                 {
                     options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
                 })
-                .AddSigtermCheck("Sigterm_shutdown_check");
+                .AddSigtermCheck("Sigterm_shutdown_check")
+                .AddLoggerPublisher();
 
             services.AddMvc().AddNewtonsoftJson();
 

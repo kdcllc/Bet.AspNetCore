@@ -27,9 +27,40 @@ Please follow the setup instruction per [K8.DotNetCore.Workshop](https://github.
     docker-compose -f "docker-compose.yml" up -d --build --no-recreate bet.hosting
 ```
 
+```bash
+    # display all of the nodes
+    kubectl get nodes
+
+    # locally only one node available
+    kubectl describe node docker-desktop
+```
+
+### Helm install
+
+Execute all of the commands from the solution folder.
+
+```bash
+
+    # install cron job
+    helm install k8s/hostingsample/charts/ml-cronjob --name mlcronjob
+
+    # delete cron job
+    helm delete  mlcronjob --purge
+
+    # install worker pod
+    helm install  k8s/hostingsample/charts/ml-worker-app --name mlworkerapp
+
+    # delete worker deployment
+    helm delete  mlworkerapp --purge
+```
+
+
+### Kubectl
+
+Installing simple yaml deployment for cron job:
+
 ```yaml
 # https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

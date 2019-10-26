@@ -40,7 +40,7 @@ namespace Bet.Extensions.UnitTest.HealthChecks
             });
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
-            var port = 8080;
+            var port = 8181;
 
             var publishers = new List<IHealthCheckPublisher>
             {
@@ -55,11 +55,34 @@ namespace Bet.Extensions.UnitTest.HealthChecks
 
             var publisher = services.GetServices<IHealthCheckPublisher>().OfType<SocketHealthCheckPublisher>().Single();
 
-            await publisher.PublishAsync(report, CancellationToken.None);
+            var response = string.Empty;
 
-            var response = TcpClientResponse(port, "ping");
-            Assert.Equal("ping", response);
-            Assert.Equal(HealthStatus.Healthy, report.Status);
+            var clientThread = new Thread(() =>
+            {
+                _output.WriteLine("client-started");
+
+                response = TcpClientResponse(port, "ping");
+
+                _output.WriteLine("client-stopped");
+            });
+
+            try
+            {
+                clientThread.Start();
+
+                _output.WriteLine("server-started");
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                await Task.Factory.StartNew(async () => await publisher.PublishAsync(report, cts.Token), cts.Token);
+
+                Thread.Sleep(TimeSpan.FromSeconds(4));
+
+                Assert.Equal("ping", response);
+                Assert.Equal(HealthStatus.Healthy, report.Status);
+            }
+            finally
+            {
+                _output.WriteLine("server-stopped");
+            }
         }
 
         [Fact]
@@ -80,8 +103,8 @@ namespace Bet.Extensions.UnitTest.HealthChecks
                     services.Configure<HealthCheckPublisherOptions>(options =>
                     {
                         options.Delay = TimeSpan.FromSeconds(1);
-                        options.Period = TimeSpan.FromSeconds(1);
-                        options.Timeout = TimeSpan.FromSeconds(1);
+                        options.Period = TimeSpan.FromSeconds(2);
+                        options.Timeout = TimeSpan.FromSeconds(2);
                     });
 
                     services.AddHealthChecks()
@@ -93,13 +116,15 @@ namespace Bet.Extensions.UnitTest.HealthChecks
 
             await host.StartAsync();
 
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             var response1 = TcpClientResponse(port, "ping");
             Assert.Equal("ping", response1);
 
             var response2 = TcpClientResponse(port, "ping2");
             Assert.Equal("ping2", response2);
+
+            await Task.Delay(TimeSpan.FromSeconds(4));
 
             await host.StopAsync();
         }
@@ -140,20 +165,28 @@ namespace Bet.Extensions.UnitTest.HealthChecks
             await host.StopAsync();
         }
 
-        private static string TcpClientResponse(int port, string message)
+        private string TcpClientResponse(int port, string message)
         {
-            using var client = new TcpClient("localhost", port);
-            using var stream = client.GetStream();
-            var data = Encoding.ASCII.GetBytes(message);
-            stream.Write(data, 0, data.Length);
-            data = new byte[256];
+            try
+            {
+                using var client = new TcpClient("localhost", port);
+                using var stream = client.GetStream();
+                var data = message.ToBytes();
+                stream.Write(data, 0, data.Length);
+                data = new byte[256];
 
-            var bytes = stream.Read(data, 0, data.Length);
-            var response = Encoding.ASCII.GetString(data, 0, bytes);
-            stream.Close();
-            client.Close();
+                var bytes = stream.Read(data, 0, data.Length);
+                var response = data.ConvertToString(0, bytes);
+                stream.Close();
+                client.Close();
 
-            return response;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         private ServiceProvider CreateService(
