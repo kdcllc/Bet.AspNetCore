@@ -9,12 +9,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Bet.Extensions.HealthChecks.Publishers
 {
+    /// <summary>
+    /// The health check publishers are run on a schedule and provide a convenient entry point.
+    /// </summary>
     public class SocketHealthCheckPublisher : IHealthCheckPublisher
     {
         private readonly TcpListener _listener;
         private readonly ILogger<SocketHealthCheckPublisher> _logger;
         private int _started;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SocketHealthCheckPublisher"/> class.
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="logger"></param>
         public SocketHealthCheckPublisher(int port, ILogger<SocketHealthCheckPublisher> logger)
         {
             _listener = new TcpListener(IPAddress.Any, port);
@@ -63,14 +71,14 @@ namespace Bet.Extensions.HealthChecks.Publishers
                 while ((client = await _listener.AcceptTcpClientAsync()) != null
                     && client.Connected)
                 {
-                    _logger.LogInformation("TcpSocket HealthCheck Client Connected...");
+                    _logger.LogInformation("[TcpSocket HealthCheck] Client Connected...");
 
                     await ProcessAsync(client);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogCritical("SocketException terminated: {0}", ex);
+                _logger.LogCritical("[TcpSocket HealthCheck] failed: {0}", ex);
                 _listener.Stop();
 
                 // reset count
