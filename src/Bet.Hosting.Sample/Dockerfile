@@ -6,7 +6,7 @@
 #
 #
 # RUN:          docker run -d --name bet.hosting.sample kdcllc/bet-hosting-sample:v1 --runAsCronJob=false
-#               docker push kdcllc/kdcllc/bet-hosting-sample:v1
+#               docker push kdcllc/bet-hosting-sample:v1
 #
 #------------------------------------------------------------------------------------------------------------------------
 

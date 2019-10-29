@@ -1,23 +1,24 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "apisample.fullname" . }}
+  name: {{ template "bet-api-sample.fullname" . }}
   labels:
-    app: {{ template "apisample.name" . }}
-    chart: {{ template "apisample.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "bet-api-sample.name" . }}
+    helm.sh/chart: {{ template "bet-api-sample.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "apisample.name" . }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ template "bet-api-sample.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "apisample.name" . }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "bet-api-sample.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        aadpodidbinding: {{ .Values.aadpodidbinding }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -29,12 +30,16 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /liveness
               port: http
+            initialDelaySeconds: 190
+            timeoutSeconds: 20
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthy
               port: http
+            initialDelaySeconds: 200
+            timeoutSeconds: 20
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

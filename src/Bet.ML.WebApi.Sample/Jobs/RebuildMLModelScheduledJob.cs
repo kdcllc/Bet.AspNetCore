@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Bet.Extensions.ML.ModelBuilder;
-using CronScheduler.AspNetCore;
+
+using CronScheduler.Extensions.Scheduler;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -46,12 +49,6 @@ namespace Bet.ML.WebApi.Sample.Jobs
                         await modelBuilder.ClassifyTestAsync(cancellationToken);
 
                         await modelBuilder.SaveModelAsync(cancellationToken);
-
-                        // TODO remove after testing ...
-                        if (actualCount > 1)
-                        {
-                            break;
-                        }
 
                         actualCount++;
                     }

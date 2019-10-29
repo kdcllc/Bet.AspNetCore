@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
 
-using CronScheduler.AspNetCore;
+using CronScheduler.Extensions.StartupInitializer;
 
 using Microsoft.Extensions.Logging;
 

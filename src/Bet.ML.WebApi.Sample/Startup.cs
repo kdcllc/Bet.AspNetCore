@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Threading;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.Extensions.ML.ModelStorageProviders;
@@ -15,8 +13,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
-using Microsoft.ML;
 using Microsoft.OpenApi.Models;
 
 namespace Bet.ML.WebApi.Sample
@@ -41,8 +37,6 @@ namespace Bet.ML.WebApi.Sample
             });
 
             services.AddControllers();
-
-            services.AddHealthChecks().AddSigtermCheck("Sigterm_shutdown_check");
 
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 
@@ -73,7 +67,10 @@ namespace Bet.ML.WebApi.Sample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             if (env.IsDevelopment())
             {
@@ -86,16 +83,18 @@ namespace Bet.ML.WebApi.Sample
             }
 
             // when running in docker container without ssl disable this
-            // app.UseHttpsRedirection();
+
+            var enableHttpsRedirection = configuration.GetValue<bool>("EnableHttpsRedirection");
+
+            if (enableHttpsRedirection)
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
 
             // app.UseAuthentication();
             // app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
 
             // returns 200 okay
             app.UseLivenessHealthCheck();
@@ -105,6 +104,11 @@ namespace Bet.ML.WebApi.Sample
 
             app.UseSwagger();
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

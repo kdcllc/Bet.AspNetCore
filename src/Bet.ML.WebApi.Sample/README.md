@@ -1,11 +1,55 @@
-﻿# AspNetCore WebApi Machine Learning Example for Sentiment and Spam predictions
+﻿# AspNetCore WebApi Machine Learning Example for `Sentiment` and `Spam` Ml model predictions
 
-This project demonstrates how to build Sentiment and Spam models on AspNetCore application
-start. Before any of the requests are served the models are build and become available to the consumption.
+This project demonstrates how to utilize `Sentiment` and `Spam` ML models with AspNetCore application.
 
-`Bet.Extensions.ML.Sentiment` and `Bet.Extensions.ML.Spam` project contain the default data to be used
-to generate the predictive models.
+The building of the models occurs on the launch of the application and the Http traffic is not served until the Initial job has been completed.
 
+These models can be found at the following projects:
+
+- [`Bet.Extensions.ML.Sentiment` Library](../../src/Bet.Extensions.ML.Sentiment/README.md)
+- [`Bet.Extensions.ML.Spam` Library](../../src/Bet.Extensions.ML.Spam/README.md)
+
+Both of the projects contain the default seeding data for generating the predictions.
+
+## On Startup job
+
+`InitMLModelBuildJob` - job creates the default models and stores them in Memory.
+
+Kubernetes pods health checks must be delayed due to model generation.
+
+## On going Model generation job
+
+`RebuildMLModelScheduledJob` - rebuilds model based on new data points that has been received.
+
+## Build and Deploy
+
+Testing K8 Cron Job in the local cluster please follow the setup instruction per [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).
+
+Make sure to execute all of the commands from the solution folder.
+
+1. Build the Image
+
+```bash
+    # builds and runs the container
+    docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d  bet.aspnetcore.webapi
+
+    # simply builds the image
+    docker-compose -f "docker-compose.yml" up -d --build --no-recreate  bet.aspnetcore.webapi
+
+    # publish if needed
+    docker push kdcllc/bet-aspnetcore-webapi-sample:v1
+```
+
+2. Helm Install
+
+```bash
+
+    # install web api
+     helm install bet-api-sample --set service.port=4000 -n betapisample
+
+    # delete web api
+    helm delete  betapisample --purge
+```
 ## Future work
 
 - To enable the functionality to accept new data point and storing them inside of SQLite or other storage.

@@ -9,13 +9,14 @@ available.
 
 This sample is fully containerized to be used as:
 
-1. As stand-alone Docker container that runs application every 30 min interval
+1. As stand-alone Docker container that runs application every 30 min interval. It utilizes `TcpListener` for Pod health checks.
 2. As [Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) with interval specified in the deployment.
 
+## Build and Deploy
 
-## Testing K8 Cron Job in the local cluster
+Testing K8 Cron Job in the local cluster please follow the setup instruction per [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).
 
-Please follow the setup instruction per [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).
+Make sure to execute all of the commands from the solution folder.
 
 1. Build the Image
 
@@ -25,19 +26,12 @@ Please follow the setup instruction per [K8.DotNetCore.Workshop](https://github.
 
     # simply builds the image
     docker-compose -f "docker-compose.yml" up -d --build --no-recreate bet.hosting
+
+    # publish if needed
+    docker push kdcllc/kdcllc/bet-hosting-sample:v1
 ```
 
-```bash
-    # display all of the nodes
-    kubectl get nodes
-
-    # locally only one node available
-    kubectl describe node docker-desktop
-```
-
-### Helm install
-
-Execute all of the commands from the solution folder.
+2. Helm Install
 
 ```bash
 
@@ -54,8 +48,9 @@ Execute all of the commands from the solution folder.
     helm delete  mlworkerapp --purge
 ```
 
+Or
 
-### Kubectl
+3. Install with Kubernetes
 
 Installing simple yaml deployment for cron job:
 

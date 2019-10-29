@@ -1,15 +1,15 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "websample.fullname" . -}}
+{{- $fullName := include "bet-api-sample.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "websample.name" . }}
-    chart: {{ template "websample.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "bet-api-sample.name" . }}
+    helm.sh/chart: {{ template "bet-api-sample.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

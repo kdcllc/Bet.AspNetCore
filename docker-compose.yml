@@ -2,6 +2,7 @@
 #
 # docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d --no-recreate bet.hosting
 #
+# docker-compose -f "docker-compose.yml"  up  -d --no-recreate bet.hosting
 #------------------------------------------------------------------------------------------------------------------------
 
 version: '3.4'

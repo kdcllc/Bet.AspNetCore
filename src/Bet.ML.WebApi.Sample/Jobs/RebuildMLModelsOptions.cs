@@ -1,4 +1,4 @@
-﻿using CronScheduler.AspNetCore;
+﻿using CronScheduler.Extensions.Scheduler;
 
 namespace Bet.ML.WebApi.Sample.Jobs
 {

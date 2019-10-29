@@ -1,6 +1,6 @@
 {
     "files.trimTrailingWhitespace": true,
-    
+
     "files.associations": {
         "*.*proj": "xml",
         "*.props": "xml",
@@ -10,5 +10,8 @@
     },
 
     "dotnet-test-explorer.enableTelemetry": false,
-    "dotnet-test-explorer.testProjectPath": "/test/**/*"
+    "dotnet-test-explorer.testProjectPath": "/test/**/*.csproj",
+    "dotnet-test-explorer.autoExpandTree": true,
+    "dotnet-test-explorer.pathForResultFile": "TestResults",
+    "dotnet-test-explorer.addProblems": true
 }
