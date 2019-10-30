@@ -102,14 +102,15 @@
 
   <ItemGroup Label="Unit Tests">
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Update="Moq" Version="4.13.0" />
+    <PackageReference Update="Moq" Version="4.13.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Update="coverlet.collector" Version="1.0.1" />
+    <PackageReference Update="coverlet.collector" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup Label="Serilog">
-    <PackageReference Update="Serilog" Version="2.8.0" />
+    <PackageReference Update="Serilog" Version="2.9.0" />
+    <PackageReference Update="Serilog.AspNetCore" Version="3.1.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.0.4" />
@@ -121,13 +122,14 @@
   <ItemGroup Label="Shared">
     <PackageReference Update="Certes" Version="2.3.3" />
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
-    <PackageReference Update="CsvHelper" Version="12.1.2" />
+    <PackageReference Update="CsvHelper" Version="12.1.3" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.2"/>
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0-preview8.19405.7"/>
     <PackageReference Update="Microsoft.DataPrep" Version="0.0.1.6-preview" />
     <PackageReference Update="Microsoft.ML" Version="1.3.1" />
     <PackageReference Update="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
+    <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Update="Polly" Version="7.1.1" />
     <PackageReference Update="CronScheduler.AspNetCore" Version="2.0.0" />

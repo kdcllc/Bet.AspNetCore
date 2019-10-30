@@ -4,6 +4,8 @@ This project demonstrates how to utilize `Sentiment` and `Spam` ML models with A
 
 The building of the models occurs on the launch of the application and the Http traffic is not served until the Initial job has been completed.
 
+[Live](https://betapi.kingdavidconsulting.com/swagger/index.html)
+
 These models can be found at the following projects:
 
 - [`Bet.Extensions.ML.Sentiment` Library](../../src/Bet.Extensions.ML.Sentiment/README.md)
@@ -50,6 +52,11 @@ Make sure to execute all of the commands from the solution folder.
     # delete web api
     helm delete  betapisample --purge
 ```
+
+## ML Model HealthCheck
+
+In a situation where the model is being build in the same container and the web api if the model generation fails the container should be restarted.
+
 ## Future work
 
 - To enable the functionality to accept new data point and storing them inside of SQLite or other storage.

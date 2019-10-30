@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment;
@@ -31,6 +32,13 @@ namespace Bet.ML.WebApi.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var instrumentId = Configuration.Bind<ApplicationInsightsOptions>("ApplicationInsights", true);
+
+            services.AddApplicationInsightsTelemetry(options =>
+            {
+                options.InstrumentationKey = instrumentId.InstrumentationKey;
+            });
+
             services.AddDeveloperListRegisteredServices(o =>
             {
                 o.PathOutputOptions = PathOutputOptions.Json;
@@ -81,8 +89,6 @@ namespace Bet.ML.WebApi.Sample
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            // when running in docker container without ssl disable this
 
             var enableHttpsRedirection = configuration.GetValue<bool>("EnableHttpsRedirection");
 
