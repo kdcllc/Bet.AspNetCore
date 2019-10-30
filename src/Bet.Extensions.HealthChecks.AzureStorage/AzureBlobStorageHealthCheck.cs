@@ -11,7 +11,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Bet.Extensions.HealthChecks.AzureBlobStorage
+namespace Bet.Extensions.HealthChecks.AzureStorage
 {
     public class AzureBlobStorageHealthCheck : IHealthCheck
     {

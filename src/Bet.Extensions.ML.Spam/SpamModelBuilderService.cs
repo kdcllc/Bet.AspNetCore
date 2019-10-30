@@ -59,7 +59,7 @@ namespace Bet.Extensions.ML.Spam
 
             await Task.WhenAll(tasks);
 
-            _logger.LogInformation("[ClassifyTestAsync][Ended] elapsed time: {elapsed}", sw.GetElapsedTime().TotalMilliseconds);
+            _logger.LogInformation("[ClassifyTestAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
         }
 
         private Task ClassifyAsync(

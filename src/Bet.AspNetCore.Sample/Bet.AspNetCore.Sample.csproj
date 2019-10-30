@@ -50,6 +50,7 @@
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.HealthChecks.ML\Bet.Extensions.HealthChecks.ML.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
   </ItemGroup>

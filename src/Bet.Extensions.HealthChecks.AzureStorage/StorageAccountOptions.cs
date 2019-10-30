@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Services.AppAuthentication;
 
-namespace Bet.Extensions.HealthChecks.AzureBlobStorage
+namespace Bet.Extensions.HealthChecks.AzureStorage
 {
     public class StorageAccountOptions
     {

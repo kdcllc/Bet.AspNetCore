@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Security;
 
-using Bet.Extensions.HealthChecks.AzureBlobStorage;
 using Bet.Extensions.HealthChecks.CertificateCheck;
 using Bet.Extensions.HealthChecks.MemoryCheck;
 using Bet.Extensions.HealthChecks.PingCheck;
@@ -21,41 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class HealthChecksBuilderExtensions
     {
-        /// <summary>
-        /// Adds Azure Storage Health Check.
-        /// </summary>
-        /// <param name="builder">The hc builder.</param>
-        /// <param name="name">The name of the hc.</param>
-        /// <param name="containerName">The name of the container to be checked.</param>
-        /// <param name="setup">The setup action for the hc.</param>
-        /// <param name="failureStatus">The failure status to be returned. The default is 'HealthStatus.Degraded'.</param>
-        /// <param name="tags">The optional tags.</param>
-        /// <returns></returns>
-        public static IHealthChecksBuilder AddAzureBlobStorageCheck(
-            this IHealthChecksBuilder builder,
-            string name,
-            string containerName,
-            Action<StorageAccountOptions> setup,
-            HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default)
-        {
-            var options = new StorageAccountOptions();
-            setup?.Invoke(options);
-
-            builder.Services.AddOptions<StorageAccountOptions>(name)
-                .Configure((opt) =>
-                {
-                    opt.ConnectionString = options.ConnectionString;
-                    opt.ContainerName = containerName;
-                    opt.Name = options.Name;
-                    opt.Token = options.Token;
-                });
-
-            builder.AddCheck<AzureBlobStorageHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
-
-            return builder;
-        }
-
         /// <summary>
         /// Adds SSL Website Certificate check.
         /// </summary>
