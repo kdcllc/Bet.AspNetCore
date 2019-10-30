@@ -8,6 +8,16 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class MachineLearningHealthChecksBuilderExtensions
     {
+        /// <summary>
+        ///  Add Machine Learning Health Check for ML.NET model.
+        /// </summary>
+        /// <typeparam name="TInput"></typeparam>
+        /// <typeparam name="TPrediction"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="name"></param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         public static IHealthChecksBuilder AddMachineLearningModelCheck<TInput, TPrediction>(
             this IHealthChecksBuilder builder,
             string name,

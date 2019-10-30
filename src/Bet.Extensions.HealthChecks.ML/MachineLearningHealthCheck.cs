@@ -7,6 +7,7 @@ using Bet.Extensions.ML.Prediction;
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Bet.Extensions.HealthChecks.ML
 {
@@ -33,9 +34,11 @@ namespace Bet.Extensions.HealthChecks.ML
 
                 var result = await Task.FromResult(_model.Predict(new TInput()));
 
+                var json = JsonConvert.SerializeObject(result);
+
                 var data = new Dictionary<string, object>
                 {
-                    { "result", result }
+                    { "result", json }
                 };
 
                 return new HealthCheckResult(HealthStatus.Healthy, name, data: data);

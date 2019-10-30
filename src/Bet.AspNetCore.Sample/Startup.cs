@@ -109,7 +109,7 @@ namespace Bet.AspNetCore.Sample
                     options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
                 })
                 .AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
-                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Spam_Check")
+                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
                 .AddSigtermCheck("sigterm_check")
                 .AddLoggerPublisher(new List<string> { "sigterm_check" });
 
