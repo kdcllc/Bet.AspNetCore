@@ -22,7 +22,7 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             command: {{ .Values.cronjob.command }}
-{{- if .Values.local.enable }}
+{{- if .Values.local.enabled }}
             env:
 {{ toYaml .Values.local.env | indent 14 -}}
 {{- end }}

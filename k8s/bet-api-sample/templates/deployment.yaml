@@ -24,6 +24,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- include "envariables" . | nindent 10 -}}
           ports:
             - name: http
               containerPort: 80
@@ -33,12 +35,14 @@ spec:
               path: /liveness
               port: http
             initialDelaySeconds: 190
+            periodSeconds: 10
             timeoutSeconds: 20
           readinessProbe:
             httpGet:
               path: /healthy
               port: http
             initialDelaySeconds: 200
+            periodSeconds: 10
             timeoutSeconds: 20
           resources:
 {{ toYaml .Values.resources | indent 12 }}

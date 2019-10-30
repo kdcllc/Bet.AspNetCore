@@ -30,3 +30,9 @@ Create chart name and version as used by the chart label.
 {{- define "bet-api-sample.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "envariables" -}}
+{{ if .Values.local.enabled }}
+{{ toYaml .Values.local.env }}
+{{ end }}
+{{- end -}}}}

@@ -23,7 +23,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{- if .Values.local.enable }}
+{{- if .Values.local.enabled }}
           env:
 {{ toYaml .Values.local.env | indent 10 -}}
 {{- end }}

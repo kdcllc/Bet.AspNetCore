@@ -1,6 +1,6 @@
 
 local:
-  enable: true
+  enabled: true
   env:
     - name: MSI_ENDPOINT
       value: http://host.docker.internal:5050/oauth2/token
