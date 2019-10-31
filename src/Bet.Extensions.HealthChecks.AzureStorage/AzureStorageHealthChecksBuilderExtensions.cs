@@ -25,23 +25,69 @@ namespace Microsoft.Extensions.DependencyInjection
             string containerName,
             Action<StorageAccountOptions> setup,
             HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default)
+            IEnumerable<string>? tags = default)
+        {
+            builder.Services.AddOptions<StorageAccountOptions>(name)
+                            .Configure((opt) =>
+                            {
+                                opt.ContainerName = containerName;
+                            });
+
+            RegisterOptions(builder, name, setup);
+
+            builder.AddCheck<AzureBlobStorageHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a queue check.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="name"></param>
+        /// <param name="queueName"></param>
+        /// <param name="setup"></param>
+        /// <param name="failureStatus"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public static IHealthChecksBuilder AddAzureQueuetorageCheck(
+            this IHealthChecksBuilder builder,
+            string name,
+            string queueName,
+            Action<StorageAccountOptions> setup,
+            HealthStatus? failureStatus = default,
+            IEnumerable<string>? tags = default)
+        {
+            builder.Services.AddOptions<StorageAccountOptions>(name)
+                            .Configure((opt) =>
+                            {
+                                opt.QueueName = queueName;
+                            });
+
+            RegisterOptions(builder, name, setup);
+
+            builder.AddCheck<AzureQueueStorageHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
+
+            return builder;
+        }
+
+        private static void RegisterOptions(
+            IHealthChecksBuilder builder,
+            string name,
+            Action<StorageAccountOptions> setup)
         {
             var options = new StorageAccountOptions();
             setup?.Invoke(options);
+
+            builder.Services.ConfigureOptions<StorageAccountOptionsSetup>();
 
             builder.Services.AddOptions<StorageAccountOptions>(name)
                 .Configure((opt) =>
                 {
                     opt.ConnectionString = options.ConnectionString;
-                    opt.ContainerName = containerName;
                     opt.Name = options.Name;
                     opt.Token = options.Token;
                 });
-
-            builder.AddCheck<AzureBlobStorageHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
-
-            return builder;
         }
     }
 }

@@ -2,21 +2,21 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
+using Microsoft.Azure.Storage.Queue;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.HealthChecks.AzureStorage
 {
-    public class AzureBlobStorageHealthCheck : IHealthCheck
+    public class AzureQueueStorageHealthCheck : IHealthCheck
     {
-        private IOptionsMonitor<StorageAccountOptions> _options;
-        private ILogger<AzureBlobStorageHealthCheck> _logger;
+        private readonly IOptionsMonitor<StorageAccountOptions> _options;
+        private readonly ILogger<AzureQueueStorageHealthCheck> _logger;
 
-        public AzureBlobStorageHealthCheck(
+        public AzureQueueStorageHealthCheck(
             IOptionsMonitor<StorageAccountOptions> options,
-            ILogger<AzureBlobStorageHealthCheck> logger)
+            ILogger<AzureQueueStorageHealthCheck> logger)
         {
             _options = options;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -26,7 +26,7 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
         {
             var checkName = context.Registration.Name;
             var options = _options.Get(checkName);
-            var fullCheckName = $"{checkName}-{options?.ContainerName}";
+            var fullCheckName = $"{checkName}-{options?.QueueName}";
 
             try
             {
@@ -35,16 +35,11 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
                 if (options?.CloudStorageAccount != null)
                 {
                     var cloudStorageAccount = await options.CloudStorageAccount.Value;
-
-                    var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-
-                    var cloudBlobContainer = cloudBlobClient.GetContainerReference(options.ContainerName);
-
-                    var serviceProperties = await cloudBlobClient.GetServicePropertiesAsync(
-                        new BlobRequestOptions(),
+                    var blobClient = cloudStorageAccount.CreateCloudQueueClient();
+                    var serviceProperties = await blobClient.GetServicePropertiesAsync(
+                        new QueueRequestOptions(),
                         operationContext: null,
                         cancellationToken: cancellationToken);
-
                     return new HealthCheckResult(HealthStatus.Healthy, fullCheckName);
                 }
 
@@ -53,6 +48,7 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
             catch (Exception ex)
             {
                 _logger.LogError(ex, "[HealthCheck][{healthCheckName}]", fullCheckName);
+
                 return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
             }
         }
