@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IHealthChecksBuilder builder,
             string name,
             HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default) where TInput : class, new() where TPrediction : class, new()
+            IEnumerable<string>? tags = default) where TInput : class, new() where TPrediction : class, new()
         {
             if (tags == default)
             {
