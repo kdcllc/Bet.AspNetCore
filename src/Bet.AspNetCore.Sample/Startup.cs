@@ -110,6 +110,10 @@ namespace Bet.AspNetCore.Sample
                 })
                 .AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
                 .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
+                .AddAzureBlobStorageCheck("files_check", "files", options =>
+                {
+                    options.Name = "betstorage";
+                })
                 .AddSigtermCheck("sigterm_check")
                 .AddLoggerPublisher(new List<string> { "sigterm_check" });
 

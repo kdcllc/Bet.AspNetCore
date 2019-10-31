@@ -57,7 +57,40 @@ namespace Microsoft.Extensions.Configuration
                 Enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
-            if (!string.IsNullOrWhiteSpace(options?.BaseUrl))
+            if (!string.IsNullOrWhiteSpace(options.BaseUrl)
+                && !string.IsNullOrWhiteSpace(options.ClientId)
+                && !string.IsNullOrWhiteSpace(options.ClientSecret))
+            {
+                var secret = options.ClientSecret.FromBase64String();
+
+                // load values that are not specific to the environment.
+                builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
+                {
+                    Manager = new PrefixExcludingKeyVaultSecretManager(),
+                    ReloadInterval = reloadInterval
+                });
+
+                if (!string.IsNullOrWhiteSpace(prefix))
+                {
+                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
+                    {
+                        Manager = new PrefixKeyVaultSecretManager(prefix),
+                        ReloadInterval = reloadInterval
+                    });
+                }
+                else
+                {
+                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
+                    {
+                        Manager = new DefaultKeyVaultSecretManager(),
+                        ReloadInterval = reloadInterval
+                    });
+                }
+
+                return builder.Build();
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.BaseUrl))
             {
                 try
                 {
@@ -114,37 +147,7 @@ namespace Microsoft.Extensions.Configuration
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(options?.ClientId)
-                && !string.IsNullOrWhiteSpace(options?.ClientSecret))
-            {
-                var secret = options.ClientSecret.FromBase64String();
-
-                // load values that are not specific to the environment.
-                builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
-                {
-                    Manager = new PrefixExcludingKeyVaultSecretManager(),
-                    ReloadInterval = reloadInterval
-                });
-
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
-                    {
-                        Manager = new PrefixKeyVaultSecretManager(prefix),
-                        ReloadInterval = reloadInterval
-                    });
-                }
-                else
-                {
-                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl, options.ClientId, secret)
-                    {
-                        Manager = new DefaultKeyVaultSecretManager(),
-                        ReloadInterval = reloadInterval
-                    });
-                }
-            }
-
-            return builder.Build();
+            return config;
         }
 
         /// <summary>
@@ -154,18 +157,19 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="keyVaultEndpoints">The default Azure Key Vaults values separated by ';'.</param>
         /// <param name="usePrefix">The default is true. It adds prefixed values from the vault.</param>
         /// <param name="hostingEnviromentName">The hosting environment that is matched to 'dev, stage or prod'.</param>
+        /// <param name="reloadInterval"></param>
         /// <returns></returns>
         public static IConfigurationRoot AddAzureKeyVaults(
             this IConfigurationBuilder builder,
             string keyVaultEndpoints,
             bool usePrefix = true,
-            string hostingEnviromentName = null,
+            string? hostingEnviromentName = null,
             TimeSpan? reloadInterval = null)
         {
             if (!string.IsNullOrEmpty(keyVaultEndpoints))
             {
                 var prefix = string.Empty;
-                if (usePrefix)
+                if (usePrefix && hostingEnviromentName != null)
                 {
                     Enviroments.TryGetValue(hostingEnviromentName, out prefix);
                 }

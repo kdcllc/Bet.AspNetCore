@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 
 namespace Bet.Extensions.Testing.Logging
 {
+#pragma warning disable CA2000 // Dispose objects before losing scope
     public static class XunitLoggerFactoryExtensions
     {
         public static ILoggingBuilder AddXunit(this ILoggingBuilder builder, ITestOutputHelper output)
@@ -45,4 +46,6 @@ namespace Bet.Extensions.Testing.Logging
             return loggerFactory;
         }
     }
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
 }

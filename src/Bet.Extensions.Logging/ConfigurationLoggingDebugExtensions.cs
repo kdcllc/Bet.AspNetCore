@@ -40,7 +40,6 @@ namespace Microsoft.Extensions.Configuration
             logger.Debug(allConfigurations);
         }
 
-
         /// <summary>
         ///  Logging migration https://docs.microsoft.com/en-us/aspnet/core/migration/logging-nonaspnetcore?view=aspnetcore-2.2.
         /// </summary>

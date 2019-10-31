@@ -30,7 +30,7 @@ namespace Bet.AspNetCore.Sample
                                 var configuration = configBuilder.AddAzureKeyVault(
                                     hostingEnviromentName: envName,
                                     usePrefix: false,
-                                    reloadInterval: TimeSpan.FromSeconds(10));
+                                    reloadInterval: null);
 
                                 // helpful to see what was retrieved from all of the configuration providers.
                                 if (hostingContext.HostingEnvironment.IsDevelopment())
@@ -41,7 +41,7 @@ namespace Bet.AspNetCore.Sample
 
                             webBuilder.UseSerilog((hostingContext, loggerConfiguration) =>
                             {
-                                var applicationName = $"BetWebApiSample-{hostingContext.HostingEnvironment.EnvironmentName}";
+                                var applicationName = $"BetWebSample-{hostingContext.HostingEnvironment.EnvironmentName}";
                                 loggerConfiguration
                                         .ReadFrom.Configuration(hostingContext.Configuration)
                                         .Enrich.FromLogContext()

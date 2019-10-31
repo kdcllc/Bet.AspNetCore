@@ -34,16 +34,23 @@ spec:
             httpGet:
               path: /liveness
               port: http
-            initialDelaySeconds: 190
-            periodSeconds: 10
-            timeoutSeconds: 20
+            initialDelaySeconds: 230
+            periodSeconds: 20
+            timeoutSeconds: 30
+#https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-startup-probes
+          startupProbe:
+            httpGet:
+              path: /liveness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 20
           readinessProbe:
             httpGet:
               path: /healthy
               port: http
-            initialDelaySeconds: 200
-            periodSeconds: 10
-            timeoutSeconds: 20
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 30
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

@@ -52,13 +52,15 @@ namespace Bet.ML.WebApi.Sample
             var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
             services.AddSpamDetectionModelBuilder(spamInMemoryModelStorageProvider);
 
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>("SpamModel")
+            var spamName = "SpamModel";
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
                 .WithStorageProvider(nameof(SpamModelBuilderService), spamInMemoryModelStorageProvider);
 
             var sentimentFileModeStorageProvider = new FileModelStorageProvider();
             services.AddSentimentModelBuilder(sentimentFileModeStorageProvider);
 
-            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>("SentimentModel")
+            var sentimentName = "SentimentModel";
+            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)
                 .WithStorageProvider($"{nameof(SentimentModelBuilderService)}.zip", sentimentFileModeStorageProvider);
 
             services.AddScheduler(builder =>
@@ -70,6 +72,8 @@ namespace Bet.ML.WebApi.Sample
             // add healthchecks
             services.AddHealthChecks()
                 .AddMemoryHealthCheck()
+                .AddMachineLearningModelCheck<SpamInput, SpamPrediction>($"{spamName}_check")
+                .AddMachineLearningModelCheck<SentimentIssue, SentimentPrediction>($"{sentimentName}_check")
                 .AddSigtermCheck("sigterm_check")
                 .AddLoggerPublisher(new List<string> { "sigterm_check" });
         }

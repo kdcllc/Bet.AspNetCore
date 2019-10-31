@@ -46,7 +46,7 @@ Make sure to execute all of the commands from the solution folder.
 
 ```bash
 
-    # install web api
+    # install web api in the local Kubernetes cluster
      helm install bet-api-sample --set service.port=4000 -n betapisample
 
     # delete web api
@@ -61,3 +61,4 @@ In a situation where the model is being build in the same container and the web 
 
 - To enable the functionality to accept new data point and storing them inside of SQLite or other storage.
 - To have a schedule job that rebuilds and verifies the models before making them available to predictive engine.
+- Off load the initial model generation to a pre-generated model so the app startup in the pod. It would require adding model loaders func into the `Bet.Extensions.ML`.

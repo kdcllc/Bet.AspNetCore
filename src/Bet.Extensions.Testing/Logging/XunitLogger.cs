@@ -67,7 +67,7 @@ namespace Bet.Extensions.Testing.Logging
             {
                 _output.WriteLine(message);
             }
-            catch (Exception)
+            catch
             {
                 // We could fail because we're on a background thread and our captured ITestOutputHelper is
                 // busted (if the test "completed" before the background thread fired).
