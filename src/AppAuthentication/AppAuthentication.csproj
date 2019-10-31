@@ -14,6 +14,8 @@
 		<PackageTags>Azure, Authentication, AppAuthentication, Azure Key Vault, Docker, Kubernetes, VSCode Remote</PackageTags>
 		<WarningLevel>1</WarningLevel>
     <NoWarn>$(NoWarn);SA1203;SA1201;CA1802;SA1401;SA1214;SA1204</NoWarn>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,7 +27,8 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
-		<PackageReference Include="Microsoft.Azure.Services.AppAuthentication"/>
+		<PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
 	</ItemGroup>
 
 	<ItemGroup>

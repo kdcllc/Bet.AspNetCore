@@ -93,6 +93,13 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 - --fix or -f
 - --local or -l (default Docker)
 
+
+## Testing from CLI
+
+```bash
+    dotnet run run --- -verbose:debug
+```
+
 ## Reference
 
 To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).

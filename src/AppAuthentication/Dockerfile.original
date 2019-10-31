@@ -1,0 +1,37 @@
+
+# BUILD: docker build --rm -f "src\AppAuthentication\Dockerfile" -t appauthentication:latest .
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 as build
+WORKDIR /app
+
+# copy csproj and restore as distinct layers
+COPY ./build ./build
+COPY ./Directory.Build.props ./Directory.Build.props
+COPY ./Directory.Build.targets ./Directory.Build.targets
+
+COPY ./src/AppAuthentication/AppAuthentication.csproj ./AppAuthentication/AppAuthentication.csproj
+COPY ./src/Bet.Extensions/Bet.Extensions.csproj ./Bet.Extensions/Bet.Extensions.csproj
+COPY ./src/Bet.AspNetCore/Bet.AspNetCore.csproj ./Bet.AspNetCore/Bet.AspNetCore.csproj
+COPY ./src/Bet.Extensions.Logging/Bet.Extensions.Logging.csproj ./Bet.Extensions.Logging/Bet.Extensions.Logging.csproj
+COPY ./src/Bet.Extensions.Options/Bet.Extensions.Options.csproj ./Bet.Extensions.Options/Bet.Extensions.Options.csproj
+
+WORKDIR /app/AppAuthentication
+
+RUN dotnet restore AppAuthentication.csproj
+
+# copy everything else and build app
+COPY ./src/AppAuthentication/  ./AppAuthentication/
+COPY ./src/Bet.Extensions/ ./Bet.Extensions/
+COPY ./src/Bet.AspNetCore/ ./Bet.AspNetCore/
+COPY ./src/Bet.Extensions.Logging/ ./Bet.Extensions.Logging/
+COPY ./src/Bet.Extensions.Options/ ./Bet.Extensions.Options/
+COPY .git ./.git
+
+RUN dotnet build AppAuthentication.csproj -c Release -f netcoreapp2.2   \
+    && /p:Version=1.0.0 -o out
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
+WORKDIR /app
+COPY --from=build /app/AppAuthentication/out ./
+ENTRYPOINT ["dotnet", "AppAuthentication.dll", "--verbose:debug"]
+

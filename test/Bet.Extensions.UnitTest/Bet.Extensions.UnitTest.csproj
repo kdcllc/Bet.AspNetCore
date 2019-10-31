@@ -13,21 +13,19 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+
+    <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="4.6.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion2)"/>
   </ItemGroup>
 
   <ItemGroup>
-      <ProjectReference Include="..\..\src\Bet.Extensions.HealthChecks\Bet.Extensions.HealthChecks.csproj" />
-      <ProjectReference Include="..\..\src\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
-      <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
-      <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
-      <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-      <ProjectReference Include="..\..\src\Bet.Extensions.Testing\Bet.Extensions.Testing.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <PackageReference Include="System.IO.Pipelines" />
-    <PackageReference Include="System.Diagnostics.EventLog" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion)" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.HealthChecks\Bet.Extensions.HealthChecks.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Testing\Bet.Extensions.Testing.csproj" />
   </ItemGroup>
 
 </Project>

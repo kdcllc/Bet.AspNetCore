@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <NoWarn>$(NoWarn);CA2208;</NoWarn>
   </PropertyGroup>
 
@@ -11,20 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" />
+    <PackageReference Include="Microsoft.Azure.KeyVault.Core" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" />
     <PackageReference Include="Microsoft.Azure.Storage.Queue" />
-    <PackageReference Include="Microsoft.Azure.KeyVault.Core" />
-    <PackageReference Include="Microsoft.Azure.Cosmos.Table" />
-  </ItemGroup>
-
-  <ItemGroup Label="" Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="System.Diagnostics.EventLog" />
-    <PackageReference Include="System.ComponentModel.Annotations" />
-    <PackageReference Include="System.Text.Json"  />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 
   <ItemGroup>

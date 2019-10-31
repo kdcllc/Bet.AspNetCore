@@ -2,14 +2,10 @@
   "profiles": {
     "AppAuthentication": {
       "commandName": "Project",
-      //"commandLineArgs": "run -a  {id} -v --token-provider AzureCli --azure https://{name}.vault.azure.net/",
-      //"commandLineArgs": "run -a  {id} -t AzureCli -l -v -r https://storage.azure.com/ "
-      //"commandLineArgs": "run -a  {id} --verbose:debug --token-provider:AzureCli --local --environment:Production ",
-      //"commandLineArgs": "run --authority:authid --verbose:debug --token-provider:AzureCli --environment:Production --resource:test --port:1010 --config:file --fix --local"
-      //"commandLineArgs": "run --authority:{id} --verbose:debug --local"
-
       "commandLineArgs": "run --verbose:debug"
-
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }
