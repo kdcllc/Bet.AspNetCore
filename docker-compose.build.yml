@@ -1,10 +1,9 @@
 # docker-compose -f "docker-compose.build.yml" up -d --force-recreate --build
-
 version: '3'
 
 services:
   bet.aspnetcore.build:
-    image: betaspnetcore:local
+    image: ${DOCKER_REGISTRY-}/betaspnetcore.nuget:v1
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,13 +11,13 @@ services:
         VERSION: ${VERSION}
 
   bet.aspnetcore.tests:
-    image: betaspnetcore:local
+    image: ${DOCKER_REGISTRY-}/betaspnetcore.nuget:v1
     entrypoint: dotnet test --logger trx --results-directory /var/temp
     volumes:
       - ${SYSTEM_DEFAULTWORKINGDIRECTORY:-.}/TestResults/:/var/temp
 
   bet.aspnetcore.nuget:
-    image: betaspnetcore:local
+    image: ${DOCKER_REGISTRY-}/betaspnetcore.nuget:v1
     entrypoint: cp -r /app/nugets /
     volumes:
-       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./nugets/}:/nugets
+       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./packages/}:/nugets

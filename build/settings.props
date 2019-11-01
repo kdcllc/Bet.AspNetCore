@@ -1,10 +1,39 @@
 <Project>
 
   <PropertyGroup Label="Basic Settings">
-    <VersionPrefix>1.4.3-preview</VersionPrefix>
+    <VersionPrefix>1.5.0-preview</VersionPrefix>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
     <NoWarn>$(NoWarn);CS1591;NU1605;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Docker">
+    <!-- kdcllc docker image specifics -->
+    <PROJECT_PATH></PROJECT_PATH>
+    <RUNTESTS>"false"</RUNTESTS>
+    <VERBOSE>"false"</VERBOSE>
+    <SOLUTION_BASE>"false"</SOLUTION_BASE>
+    <DOCKER_BUILD_ARGS>--build-arg RUNTESTS=$(RUNTESTS) --build-arg VERBOSE=$(VERBOSE) --build-arg SOLUTION_BASE=$(SOLUTION_BASE)</DOCKER_BUILD_ARGS>
+
+    <!-- MSI local dev -->
+    <MSI_ENDPOINT Condition="'$(MSI_ENDPOINT)' == '' ">
+      http://host.docker.internal:5050/oauth2/token
+    </MSI_ENDPOINT>
+    <MSI_SECRET Condition="'$(MSI_SECRET)' == '' ">
+      94f48227-f2f7-41c7-b6df-749214ef2897
+    </MSI_SECRET>
+
+    <DockerfileContext>../../.</DockerfileContext>
+    <DockerfileRunArguments>-e "MSI_ENDPOINT=$(MSI_ENDPOINT)" -e "MSI_SECRET=$(MSI_SECRET)"</DockerfileRunArguments>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Ownership Settings">
+    <Company>King David Consulting LLC</Company>
+    <Authors>kdcllc</Authors>
+    <Copyright>Copyright © King David Consulting LLC</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget Package Settings">
@@ -14,19 +43,18 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicense>https://github.com/kdcllc/Bet.AspNetCore/master/LICENSE</PackageLicense>
     <!-- Update to PackageIcon https://docs.microsoft.com/en-us/nuget/reference/nuspec#iconurl -->
-    <PackageIconUrl>https://github.com/kdcllc/Bet.AspNetCore/raw/master/img/logo64x64.png</PackageIconUrl>
+    <!-- <PackageIconUrl>https://github.com/kdcllc/Bet.AspNetCore/raw/master/build/logo64x64.png</PackageIconUrl> -->
+
+    <!-- https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu5048 -->
+    <PackageIcon>logo64x64.png</PackageIcon>
+
     <PackageTags>aspnetcore, dotnet, configuration, hosting, extensions, azure key vault, maching learning, ml.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' AND '$(LangVersion)' == '8.0'">
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+  <ItemGroup>
+      <None Include="..\..\build\logo64x64.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
 
   <PropertyGroup Label="SourceLink Settings">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

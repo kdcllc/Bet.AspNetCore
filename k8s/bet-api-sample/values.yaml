@@ -1,0 +1,49 @@
+local:
+  enabled: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+
+replicaCount: 1
+
+image:
+  repository: kdcllc/bet-aspnetcore-webapi-sample
+  tag: v1
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80
+
+#msi identity
+aadpodidbinding: somevalue
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  path: /
+  hosts:
+    - betapi.kingdavidconsulting.com
+  tls:
+   - secretName: bet-api-secret
+     hosts:
+       - betapi.kingdavidconsulting.com
+
+resources:
+  limits:
+   cpu: 500m
+   memory: 250Mi
+  requests:
+   cpu: 250m
+   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

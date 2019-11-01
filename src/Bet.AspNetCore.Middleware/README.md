@@ -2,6 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.Middleware.svg)](https://www.nuget.org/packages?q=Bet.AspNetCore.Middleware)
+[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.AspNetCore.Middleware.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
 
 The collection of AspNetCore Middlewares for Production and Development purposes.
 

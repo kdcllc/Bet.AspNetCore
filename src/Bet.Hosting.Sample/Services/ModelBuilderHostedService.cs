@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.Hosting;
 using Bet.Extensions.Hosting.Abstractions;
-using Bet.Extensions.ML.ModelBuilder;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,34 +14,30 @@ namespace Bet.Hosting.Sample.Services
 {
     public class ModelBuilderHostedService : TimedHostedService
     {
-        private readonly IEnumerable<IModelBuilderService> _modelBuilders;
+        private readonly IServiceProvider _provider;
 
         public ModelBuilderHostedService(
-            IEnumerable<IModelBuilderService> modelBuilders,
+            IServiceProvider provider,
             IOptionsMonitor<TimedHostedServiceOptions> options,
             IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
             ILogger<ITimedHostedService> logger) : base(options, lifeCycleHooks, logger)
         {
             TaskToExecuteAsync = (token) => RunModelGenertorsAsync(token);
-            _modelBuilders = modelBuilders ?? throw new ArgumentNullException(nameof(modelBuilders));
+            _provider = provider;
         }
 
         public async Task RunModelGenertorsAsync(CancellationToken cancellationToken)
         {
-            foreach (var modelBuilder in _modelBuilders)
+            using var scope = _provider.CreateScope();
+            var job = scope.ServiceProvider.GetRequiredService<IModelBuildersJobService>();
+
+            try
             {
-                try
-                {
-                    await modelBuilder.TrainModelAsync(cancellationToken);
-
-                    await modelBuilder.ClassifyTestAsync(cancellationToken);
-
-                    await modelBuilder.SaveModelAsync(cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.Message);
-                }
+                await job.RunAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("{serviceName} failed with exception: {message}", nameof(ModelBuilderHostedService), ex.Message);
             }
         }
     }

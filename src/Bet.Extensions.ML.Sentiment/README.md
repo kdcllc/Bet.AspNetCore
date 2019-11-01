@@ -1,7 +1,8 @@
 ﻿# Bet.Extensions.ML.Sentiment
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
-[![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.ML.Sentiment.ML.svg)](https://www.nuget.org/packages?q=Bet.Extensions.ML.Sentiment.ML)
+[![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.ML.Sentiment.svg)](https://www.nuget.org/packages?q=Bet.Extensions.ML.Sentiment)
+[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.Extensions.ML.Sentiment.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
 
 Add the following to the project
 
@@ -23,7 +24,7 @@ For complete examples please refer to sample projects:
 ```csharp
     // 1. register
     services.AddSentimentModelBuilder();
-    
+
     services.AddTimedHostedService<ModelBuilderHostedService>(options =>
     {
         options.Interval = TimeSpan.FromMinutes(30);
@@ -66,7 +67,7 @@ For complete examples please refer to sample projects:
             }
         }
     }
-    
+
     // 3. predict
     [Route("api/[controller]")]
     [ApiController]

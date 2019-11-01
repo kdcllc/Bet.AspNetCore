@@ -9,44 +9,46 @@
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
     <IdentityUIFrameworkVersion>Bootstrap4</IdentityUIFrameworkVersion>
 
+    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
     <!--- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2590 -->
     <NoWarn>$(NoWarn);SA1649</NoWarn>
-
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CronScheduler.AspNetCore" />
     <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
-
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
-
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
     <PackageReference Include="Microsoft.ML" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+    <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
-
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+    <ProjectReference Include="..\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.DataProtection\Bet.Extensions.DataProtection.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.HealthChecks.AzureStorage\Bet.Extensions.HealthChecks.AzureStorage.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.HealthChecks.ML\Bet.Extensions.HealthChecks.ML.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
   </ItemGroup>
@@ -59,5 +61,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <PropertyGroup Label="Docker">
+    <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+    <DockerfileFile>../../src/Bet.AspNetCore.Sample/Dockerfile</DockerfileFile>
+    <PROJECT_PATH>/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj</PROJECT_PATH>
+    <DockerfileBuildArguments>--build-arg PROJECT_PATH=$(PROJECT_PATH) $(DOCKER_BUILD_ARGS)</DockerfileBuildArguments>
+  </PropertyGroup>
 
 </Project>

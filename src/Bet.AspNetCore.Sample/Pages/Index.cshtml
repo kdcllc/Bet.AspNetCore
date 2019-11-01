@@ -4,10 +4,26 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://kingdavidconsulting.com"> King David Consulting LLC</a>.</p>
 
-    <p>User: demo@demo.com</p>
-    <p>Password: Demo2019!</p>
-</div>
+        <p>User: demo@demo.com</p>
+        <p>Password: Demo2019!</p>
+
+
+        @if (Model.ShowCookieValue)
+        {
+            <h2>Decrypted value from cookie:</h2>
+            <p>@Model.CookieValue</p>
+        }
+        else
+        {
+
+            <p>
+                <strong>No Test Cookie exists:</strong> refresh browser.
+            </p>
+        }
+
+
+    </div>

@@ -1,0 +1,29 @@
+{
+  "profiles": {
+    "Bet.ML.WebApi.Sample": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MSI_ENDPOINT": "http://localhost:5050/oauth2/token",
+        "MSI_SECRET": "94f48227-f2f7-41c7-b6df-749214ef2897"
+      },
+      "applicationUrl": "https://localhost:4001;http://localhost:4000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "4001"
+      },
+      "httpPort": 4000,
+      "useSSL": true,
+      "sslPort": 4001
+    }
+  }
+}
+

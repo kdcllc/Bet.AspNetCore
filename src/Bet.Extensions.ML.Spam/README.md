@@ -1,7 +1,8 @@
 ﻿# Bet.Extensions.ML.Spam
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
-[![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.ML.Spam.ML.svg)](https://www.nuget.org/packages?q=Bet.Extensions.ML.Spam.ML)
+[![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.ML.Spam.svg)](https://www.nuget.org/packages?q=Bet.Extensions.ML.Spam)
+[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.Extensions.ML.Spam.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
 
 Add the following to the project
 
@@ -23,7 +24,7 @@ For complete examples please refer to sample projects:
 ```csharp
     // 1. register
     services.AddSpamDetectionModelBuilder();
-    
+
     services.AddTimedHostedService<ModelBuilderHostedService>(options =>
     {
         options.Interval = TimeSpan.FromMinutes(30);
@@ -66,7 +67,7 @@ For complete examples please refer to sample projects:
             }
         }
     }
-    
+
     // 3. predict
 
     [Route("api/[controller]")]
@@ -88,6 +89,6 @@ For complete examples please refer to sample projects:
         {
             return _spamModel.Predict(new SpamInput { Message = text });
         }
-    }   
+    }
 
 ```

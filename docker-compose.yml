@@ -1,8 +1,27 @@
-version: '3'
+#------------------------------------------------------------------------------------------------------------------------
+#
+# docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d --no-recreate bet.hosting
+#
+# docker-compose -f "docker-compose.yml"  up  -d --no-recreate bet.hosting
+#------------------------------------------------------------------------------------------------------------------------
+
+version: '3.4'
 
 services:
+  bet.aspnetcore.web:
+    image: ${DOCKER_REGISTRY-}/bet-aspnetcore-web-sample:${TAG}
+    build:
+      context: .
+      dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
+      args:
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
+        SOLUTION_BASE: "false"
+
   bet.aspnetcore.webapi:
-    image: ${DOCKER_REGISTRY-}betaspnetcorewebapi
+    image: ${DOCKER_REGISTRY-}/bet-aspnetcore-webapi-sample:${TAG}
     build:
       context: .
       dockerfile: src/Bet.ML.WebApi.Sample/Dockerfile
@@ -14,7 +33,7 @@ services:
         SOLUTION_BASE: "false"
 
   bet.hosting:
-    image: ${DOCKER_REGISTRY-}bethosting
+    image: ${DOCKER_REGISTRY-}/bet-hosting-sample:${TAG}
     build:
       context: .
       dockerfile: src/Bet.Hosting.Sample/Dockerfile
@@ -23,16 +42,4 @@ services:
         VERBOSE: "false"
         #NUGET_RESTORE: "-f" #overides the --disable-parallel
         PROJECT_PATH: "/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj"
-        SOLUTION_BASE: "false"
-
-  bet.aspnetcore.web:
-    image: ${DOCKER_REGISTRY-}betaspnetweb
-    build:
-      context: .
-      dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
-      args:
-        RUNTESTS: "false"
-        VERBOSE: "false"
-        #NUGET_RESTORE: "-f" #overides the --disable-parallel
-        PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
         SOLUTION_BASE: "false"

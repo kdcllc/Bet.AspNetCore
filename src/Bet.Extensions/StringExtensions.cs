@@ -53,5 +53,20 @@ namespace System
 
             return Encoding.ASCII.GetString(bytes);
         }
+
+        /// <summary>
+        /// Converts string to bytes.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static byte[] ToBytes(this string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return null;
+            }
+
+            return Encoding.ASCII.GetBytes(s);
+        }
     }
 }

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+
+    <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="4.6.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion2)"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bet.Extensions.HealthChecks\Bet.Extensions.HealthChecks.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\src\Bet.Extensions.Testing\Bet.Extensions.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

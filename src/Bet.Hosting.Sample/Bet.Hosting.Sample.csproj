@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,13 +8,23 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.HealthChecks\Bet.Extensions.HealthChecks.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
   </ItemGroup>
 
+  <PropertyGroup Label="Docker">
+    <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+    <DockerfileFile>../../src/Bet.Hosting.Sample/Dockerfile</DockerfileFile>
+    <PROJECT_PATH>/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj</PROJECT_PATH>
+    <DockerfileBuildArguments>--build-arg PROJECT_PATH=$(PROJECT_PATH) $(DOCKER_BUILD_ARGS)</DockerfileBuildArguments>
+  </PropertyGroup>
 </Project>

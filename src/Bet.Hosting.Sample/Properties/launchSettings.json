@@ -1,0 +1,19 @@
+﻿{
+  "profiles": {
+    "Bet.Hosting.Sample": {
+      "commandName": "Project",
+      "commandLineArgs": "--runAsCronJob=true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    "Docker": {
+      "commandName": "Docker",
+      "commandLineArgs": "--runAsCronJob=true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

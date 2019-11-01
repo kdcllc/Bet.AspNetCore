@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "Bet.AspNetCore.Sample": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MSI_ENDPOINT": "http://localhost:5050/oauth2/token",
+        "MSI_SECRET": "94f48227-f2f7-41c7-b6df-749214ef2897"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    },
+
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "5001"
+      },
+      "httpPort": 5000,
+      "useSSL": true,
+      "sslPort": 5001
+    }
+  }
+}
