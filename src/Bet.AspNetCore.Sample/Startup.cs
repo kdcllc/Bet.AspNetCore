@@ -36,6 +36,14 @@ namespace Bet.AspNetCore.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddConfigurationValidation();
+
+            var enabledDataProtection = Configuration.GetValue<bool>("EnabledDataProtection");
+            if (enabledDataProtection)
+            {
+                services.AddDataProtectionAzureStorage();
+            }
+
             var instrumentId = Configuration.Bind<ApplicationInsightsOptions>("ApplicationInsights", true);
 
             services.AddApplicationInsightsTelemetry(options =>
@@ -47,8 +55,6 @@ namespace Bet.AspNetCore.Sample
             {
                 o.PathOutputOptions = PathOutputOptions.Json;
             });
-
-            services.AddConfigurationValidation();
 
             services.AddReCapture(Configuration);
 
@@ -158,7 +164,7 @@ namespace Bet.AspNetCore.Sample
                     return prod;
                 });
 
-            var enableHttpsRedirection = configuration.GetValue<bool>("EnableHttpsRedirection");
+            var enableHttpsRedirection = configuration.GetValue<bool>("EnabledHttpsRedirection");
 
             if (enableHttpsRedirection)
             {

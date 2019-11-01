@@ -53,9 +53,13 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)"/>
     <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion2)" />
-
     <PackageReference Update="Microsoft.AspNetCore.Connections.Abstractions" Version="$(AspNetCoreVersion)"/>
+  </ItemGroup>
 
+  <ItemGroup Label="DataProtection">
+    <PackageReference Update="Microsoft.Extensions.Configuration.AzureKeyVault" Version="$(ExtensionsVersion2)" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="$(ExtensionsVersion2)" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="$(ExtensionsVersion2)" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Extensions.Hosting">

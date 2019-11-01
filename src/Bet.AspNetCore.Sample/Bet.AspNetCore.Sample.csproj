@@ -45,6 +45,7 @@
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.DataProtection\Bet.Extensions.DataProtection.csproj" />
     <ProjectReference Include="..\Bet.Extensions.HealthChecks.AzureStorage\Bet.Extensions.HealthChecks.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.HealthChecks.ML\Bet.Extensions.HealthChecks.ML.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
