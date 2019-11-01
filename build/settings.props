@@ -49,8 +49,8 @@
     <!-- <PackageIcon>logo64x64.png</PackageIcon>
 
     <PackageTags>aspnetcore, dotnet, configuration, hosting, extensions, azure key vault, maching learning, ml.net</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup> -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
+  </PropertyGroup>
 
   <ItemGroup>
       <None Include="..\..\build\logo64x64.png" Pack="true" PackagePath=""/>
