@@ -12,6 +12,7 @@ This repo contains several projects that provide with extended functionality for
 2. [`Bet.Extensions.ML.Sentiment`](./src/Bet.Extensions.ML.Sentiment/README.md) - Sentiment self-contained prediction engine to be used with any DotNetCore applications.
 3. [`Bet.Extensions.ML.Spam`](./src/Bet.Extensions.ML.Spam/README.md) - Spam self-contained prediction engine to be used with any DotNetCore applications.
 4. [`Bet.ML.WebApi.Sample`](./src/Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
+5. [`Bet.Extensions.HealthChecks.ML`](./src/Bet.Extensions.HealthChecks.ML/README.md) provides with HealthChecks ML.NET Models.
 
 ## DotNet CLI global tools
 
@@ -26,6 +27,7 @@ This repo contains several projects that provide with extended functionality for
 5. [`Bet.Extensions.AzureVault`](./src/Bet.Extensions.AzureVault/README.md) - includes Azure Vault functionality.
 6. [`Bet.Extensions.AzureStorage`](./src/Bet.Extensions.AzureStorage/README.md) - includes MSI and regular access to Azure Storage Blob or Queue.
 7. [`Bet.Extensions.HealthChecks`](./src/Bet.Extensions.HealthChecks/README.md) - many useful HealChecks for Kubernetes.
+8. [`Bet.Extensions.HealthChecks.AzureStorage`](./src/Bet.Extensions.HealthChecks.AzureStorage/README.md) provides with HealthChecks Azure Storage
 
 ## AspNetCore specific functionality
 
@@ -37,6 +39,8 @@ This repo contains several projects that provide with extended functionality for
 6. [`Bet.AspNetCore.Middleware`](./src/Bet.AspNetCore.Middleware/README.md)
 
 ## Sample Applications
+
+All of the sample applications are deployable to local Kubernetes Cluster.
 
 1. [`Bet.AspNetCore.Sample`](./src/Bet.AspNetCore.Sample/README.md) - `AspNetCore` Web App with spam prediction models.
 2. [`Bet.ML.WebApi.Sample`](./src/Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
