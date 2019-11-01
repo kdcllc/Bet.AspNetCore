@@ -30,13 +30,80 @@ Make sure developer account and MSI account have `Storage Blob Data Contributor`
 
 ## Usage
 
-Razor Page Usage
+1. Add the following to `Startup.cs` `ConfigureServices` method:
 
 ```csharp
-
+    services.AddDataProtectionAzureStorage();
 ```
 
-MVC Controller
+2. Add options to `appsettings.json`:
+
+```json
+
+  "DataProtectionAzureStorage": {
+    "KeyVaultKeyId": "https://{name}.vault.azure.net/keys/{keyname}/{keyId}", // valut
+    "ConnectionString": "",
+    "Token": "",
+    "Name": "",
+    "ContainerName": "dataprotection",
+    "KeyBlobName": "some-keys.xml"
+  },
+```
+
+- Razor Page Usage
+
+```csharp
+public class IndexModel : PageModel
+    {
+        private const string CookieName = "TestCookie";
+
+        private readonly IDataProtector _dataProtector;
+
+        public IndexModel(IDataProtectionProvider dataProtectionProvider)
+        {
+            _dataProtector = dataProtectionProvider.CreateProtector("Test");
+        }
+
+        public string CookieValue { get; set; }
+
+        public bool ShowCookieValue => !string.IsNullOrEmpty(CookieValue);
+
+        public void OnGet()
+        {
+            if (!Request.Cookies.TryGetValue(CookieName, out var cookieValue))
+            {
+                var valueToSetInCookie = $"Some text set in cookie at {DateTime.Now.ToString()}";
+                var encryptedValue = _dataProtector.Protect(valueToSetInCookie);
+                Response.Cookies.Append(CookieName, encryptedValue, new Microsoft.AspNetCore.Http.CookieOptions
+                {
+                    IsEssential = true
+                });
+                return;
+            }
+
+            CookieValue = _dataProtector.Unprotect(cookieValue);
+        }
+    }
+```
+
+Page View:
+
+```html
+    @if (Model.ShowCookieValue)
+    {
+        <h2>Decrypted value from cookie:</h2>
+        <p>@Model.CookieValue</p>
+    }
+    else
+    {
+
+        <p>
+            <strong>No Test Cookie exists:</strong> refresh browser.
+        </p>
+    }
+```
+
+- MVC Controller
 
 ```csharp
 public class HomeController : Controller
