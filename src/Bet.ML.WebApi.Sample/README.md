@@ -13,12 +13,6 @@ These models can be found at the following projects:
 
 Both of the projects contain the default seeding data for generating the predictions.
 
-## On Startup job
-
-`InitMLModelBuildJob` - job creates the default models and stores them in Memory.
-
-Kubernetes pods health checks must be delayed due to model generation.
-
 ## On going Model generation job
 
 `RebuildMLModelScheduledJob` - rebuilds model based on new data points that has been received.

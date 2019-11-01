@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.LetsEncrypt.svg)](https://www.nuget.org/packages?q=Bet.AspNetCore.LetsEncrypt)
-
+[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.AspNetCore.LetsEncrypt.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
 Working progress ..... this library is not production ready...
 
 ## Setting up Azure DNS
@@ -30,12 +30,12 @@ certes az dns https://acme-v02.api.letsencrypt.org/acme/order/1/2 `
     {
         configure.Email = "email@domain.com";
         configure.HostNames = new[] { DomainName, "domain.com" };
-    
+
         configure.UseStagingServer = true;
-    
+
         configure.CertificateFriendlyName = DomainName;
         configure.CertificatePassword = "7A1FE7EE-8DAF-423D-B43B-A55E6794DCD9";
-    
+
         configure.CertificateSigningRequest = new CsrInfo()
         {
             CountryName = "US",

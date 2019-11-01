@@ -10,14 +10,12 @@
 #
 #------------------------------------------------------------------------------------------------------------------------
 
-FROM kdcllc/dotnet:3.0-sdk-buster as builder
-RUN dotnet publish "./src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj" -c Release  -o /app
+FROM kdcllc/dotnet:3.0-sdk-alpine as builder
+RUN dotnet publish "./src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
-# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS final
+FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0-alpine AS runtime
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-COPY --from=builder /app .
-ENTRYPOINT ["dotnet", "Bet.AspNetCore.Sample.dll"]
+COPY --from=builder /app/out ./
+ENTRYPOINT ["./Bet.AspNetCore.Sample"]
+

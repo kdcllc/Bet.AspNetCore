@@ -37,10 +37,10 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install web api in the local Kubernetes cluster
-     helm install bet-api-sample --set service.port=4000 -n betapisample
+     helm install bet-web-sample --set service.port=5000 -n betwebsample
 
     # delete web api
-    helm delete  betapisample --purge
+    helm delete  betwebsample --purge
 ```
 
 ## ML Model HealthCheck
