@@ -43,14 +43,14 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicense>https://github.com/kdcllc/Bet.AspNetCore/master/LICENSE</PackageLicense>
     <!-- Update to PackageIcon https://docs.microsoft.com/en-us/nuget/reference/nuspec#iconurl -->
-    <!-- <PackageIconUrl>https://github.com/kdcllc/Bet.AspNetCore/raw/master/build/logo64x64.png</PackageIconUrl> -->
+    <PackageIconUrl>https://github.com/kdcllc/Bet.AspNetCore/raw/master/build/logo64x64.png</PackageIconUrl>
 
     <!-- https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu5048 -->
-    <PackageIcon>logo64x64.png</PackageIcon>
+    <!-- <PackageIcon>logo64x64.png</PackageIcon>
 
     <PackageTags>aspnetcore, dotnet, configuration, hosting, extensions, azure key vault, maching learning, ml.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+  </PropertyGroup> -->
 
   <ItemGroup>
       <None Include="..\..\build\logo64x64.png" Pack="true" PackagePath=""/>
