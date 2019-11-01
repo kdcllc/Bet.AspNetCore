@@ -1,7 +1,11 @@
 using System;
+using System.Threading.Tasks;
+
+using Bet.AspNetCore.Sample.Data;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -10,9 +14,13 @@ namespace Bet.AspNetCore.Sample
 {
     public sealed class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunStartupJobsAync();
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)
@@ -48,6 +56,11 @@ namespace Bet.AspNetCore.Sample
                                         .WriteTo.Console()
                                         .AddApplicationInsights(hostingContext.Configuration)
                                         .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
+                            });
+
+                            webBuilder.ConfigureServices(services =>
+                            {
+                                services.AddStartupJob<SeedDatabaseStartupJob>();
                             });
 
                             webBuilder.UseStartup<Startup>();

@@ -10,6 +10,7 @@ using Bet.AspNetCore.Sample.Options;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -95,26 +96,26 @@ namespace Bet.AspNetCore.Sample
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddHealthChecks()
-                .AddSslCertificateCheck("kdcllc", "https://kingdavidconsulting.com")
-                .AddUriHealthCheck("200_check", builder =>
-                {
-                    builder.Add(option =>
-                    {
-                        option.AddUri("https://httpstat.us/200")
-                               .UseExpectedHttpCode(HttpStatusCode.OK);
-                    });
+                // .AddSslCertificateCheck("kdcllc", "https://kingdavidconsulting.com")
+                //.AddUriHealthCheck("200_check", builder =>
+                //{
+                //    builder.Add(option =>
+                //    {
+                //        option.AddUri("https://httpstat.us/200")
+                //               .UseExpectedHttpCode(HttpStatusCode.OK);
+                //    });
 
-                    builder.Add(option =>
-                    {
-                        option.AddUri("https://httpstat.us/203")
-                               .UseExpectedHttpCode(HttpStatusCode.NonAuthoritativeInformation);
-                    });
-                })
+                //    builder.Add(option =>
+                //    {
+                //        option.AddUri("https://httpstat.us/203")
+                //               .UseExpectedHttpCode(HttpStatusCode.NonAuthoritativeInformation);
+                //    });
+                //})
                 .AddUriHealthCheck("ms_check", uriOptions: (options) =>
                 {
                     options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
                 })
-                .AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
+                //.AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
                 .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
                 .AddAzureBlobStorageCheck("files_check", "files", options =>
                 {

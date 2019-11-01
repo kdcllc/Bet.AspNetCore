@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "bet-web-sample.fullname" . }}
   labels:
-    app: {{ template "bet-web-sample.name" . }}
-    chart: {{ template "bet-web-sample.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ template "bet-web-sample.name" . }}
+    helm.sh/chart: {{ template "bet-web-sample.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "bet-web-sample.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "bet-web-sample.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

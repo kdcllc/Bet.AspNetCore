@@ -30,7 +30,7 @@ ingress:
   hosts:
     - betweb.kingdavidconsulting.com
   tls:
-   - secretName: bet-api-secret
+   - secretName: bet-web-secret
      hosts:
        - betweb.kingdavidconsulting.com
 
