@@ -7,8 +7,8 @@ namespace System.Threading
     /// </summary>
     public class ActionOrAsyncFunc
     {
-        private readonly Action _action;
-        private readonly Func<Task> _asyncAction;
+        private readonly Action? _action;
+        private readonly Func<Task>? _asyncAction;
         private readonly bool _isAsync;
 
         public ActionOrAsyncFunc(Action action)
@@ -25,11 +25,13 @@ namespace System.Threading
 
         public async Task Invoke()
         {
-            if (_isAsync)
+            if (_isAsync
+                && _asyncAction != null)
             {
                 await _asyncAction();
             }
-            else
+            else if (!_isAsync
+                && _action != null)
             {
                 _action();
             }

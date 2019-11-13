@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
             string baseUrl,
             int beforeSslExpriesDays = 30,
             HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default)
+            IEnumerable<string>? tags = default)
         {
             builder.Services.AddHttpClient(name, (sp, config) =>
             {
@@ -84,7 +84,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IHealthChecksBuilder builder,
             string name,
             HealthStatus? failureStatus = null,
-            IEnumerable<string> tags = default)
+            IEnumerable<string>? tags = default)
         {
             builder.AddCheck<SigtermHealthCheck>(name, failureStatus, tags);
 
@@ -105,7 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection
             string name,
             Action<UriOptionsSetup> uriOptions,
             HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default)
+            IEnumerable<string>? tags = default)
         {
             // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
@@ -136,7 +136,7 @@ namespace Microsoft.Extensions.DependencyInjection
             string name,
             Action<UriHealthCheckBuilder> registration,
             HealthStatus? failureStatus = default,
-            IEnumerable<string> tags = default)
+            IEnumerable<string>? tags = default)
         {
             // TODO ability to add custom httpclient for the calls.
             var client = builder.Services.AddHttpClient(name, (sp, config) =>
@@ -165,9 +165,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHealthChecksBuilder AddMemoryHealthCheck(
                     this IHealthChecksBuilder builder,
                     string name = "memory",
-                    HealthStatus? failureStatus = null,
-                    IEnumerable<string> tags = null,
-                    long? thresholdInBytes = null)
+                    HealthStatus? failureStatus = default,
+                    IEnumerable<string>? tags = default,
+                    long? thresholdInBytes = default)
         {
             // Register a check of type GCInfo.
             builder.AddCheck<MemoryHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
@@ -196,7 +196,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IHealthChecksBuilder builder,
             string name,
             PingHealthCheckOptions options,
-            IEnumerable<string> tags = null)
+            IEnumerable<string>? tags = default)
         {
             builder.Services.Configure<PingHealthCheckOptions>(op =>
             {
@@ -232,7 +232,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="builder">The healthchecks builder.</param>
         /// <param name="exclude">The list of the names of the healthchecks to exclude.</param>
         /// <returns></returns>
-        public static IHealthChecksBuilder AddLoggerPublisher(this IHealthChecksBuilder builder, IList<string> exclude = null)
+        public static IHealthChecksBuilder AddLoggerPublisher(this IHealthChecksBuilder builder, IList<string>? exclude = default)
         {
             exclude ??= new List<string> { string.Empty };
 

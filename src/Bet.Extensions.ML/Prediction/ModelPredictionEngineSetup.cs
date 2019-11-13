@@ -15,7 +15,7 @@ namespace Bet.Extensions.ML.Prediction
         private readonly ILogger<MLContext> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        private ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private ModelPredictionEngineOptions<TData, TPrediction>? _options;
 
         public ModelPredictionEngineSetup(
             IServiceProvider serviceProvider,
@@ -48,7 +48,10 @@ namespace Bet.Extensions.ML.Prediction
 
         private void Log(object sender, LoggingEventArgs e)
         {
-            _logger.Log(_options.LogLevel, e.Message);
+            if (_options != null)
+            {
+                _logger.Log(_options.LogLevel, e.Message);
+            }
         }
     }
 }

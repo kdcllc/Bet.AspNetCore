@@ -17,7 +17,7 @@ namespace Bet.Extensions.HealthChecks.UriCheck
         /// Default values for.
         /// </summary>
         /// <param name="uri"></param>
-        public UriOptionsSetup(Uri uri = default)
+        public UriOptionsSetup(Uri uri = default!)
         {
             Uri = uri;
 

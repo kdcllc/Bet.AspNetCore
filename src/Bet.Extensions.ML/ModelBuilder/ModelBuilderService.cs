@@ -68,6 +68,12 @@ namespace Bet.Extensions.ML.ModelBuilder
             // 1. load default ML data set
             _logger.LogInformation("[LoadDataset][Started]");
             _modelBuilder.LoadDefaultData().BuiltDataView();
+
+            if (_modelBuilder?.DataView == null)
+            {
+                throw new NullReferenceException("DataView wasn't loaded");
+            }
+
             _logger.LogInformation(
                 "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed} ms",
                 _modelBuilder.DataView.GetRowCount(),

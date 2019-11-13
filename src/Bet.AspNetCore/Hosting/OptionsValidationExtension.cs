@@ -9,6 +9,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OptionsValidationExtension
     {
+        /// <summary>
+        /// Adds Options validations on Application Start.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection AddConfigurationValidation(this IServiceCollection services)
         {
             var webhostFilter = services.Select(x => x.ImplementationInstance as IValidationFilter).OfType<IValidationFilter>().FirstOrDefault();
@@ -17,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 webhostFilter = new OptionsValidationStartupFilter();
 
                 services.AddSingleton<IValidationFilter>(webhostFilter);
-                services.AddSingleton<IStartupFilter>(webhostFilter as IStartupFilter);
+                services.AddSingleton<IStartupFilter>((IStartupFilter)webhostFilter);
             }
 
             return services;

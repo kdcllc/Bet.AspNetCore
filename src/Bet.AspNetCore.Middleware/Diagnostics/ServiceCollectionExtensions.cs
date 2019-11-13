@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDeveloperListRegisteredServices(
             this IServiceCollection services,
-            Action<DeveloperListRegisteredServicesOptions> configure = null)
+            Action<DeveloperListRegisteredServicesOptions>? configure = null)
         {
             services.Configure<DeveloperListRegisteredServicesOptions>(c =>
             {

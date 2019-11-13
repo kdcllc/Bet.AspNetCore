@@ -13,7 +13,7 @@ namespace Bet.Extensions.Hosting.Abstractions
         private readonly IEnumerable<ITimedHostedLifeCycleHook> _lifeCycleHooks;
         private readonly CancellationTokenSource _cancellationCts;
         private readonly SemaphoreSlim _semaphoreSlim;
-        private Timer _timer;
+        private Timer? _timer;
 
         protected TimedHostedService(
             IOptionsMonitor<TimedHostedServiceOptions> options,
@@ -34,7 +34,7 @@ namespace Bet.Extensions.Hosting.Abstractions
 
         public ILogger<ITimedHostedService> Logger { get; }
 
-        public Func<CancellationToken, Task> TaskToExecuteAsync { get; set; }
+        public Func<CancellationToken, Task> TaskToExecuteAsync { get; set; } = (token) => Task.CompletedTask;
 
         public virtual async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -116,7 +116,7 @@ namespace Bet.Extensions.Hosting.Abstractions
                 if (Options.FailMode == FailMode.LogAndRetry)
                 {
                     Logger.LogWarning(ex, $"Exception occurred: {ex.Message} - Retrying");
-                    _timer.Change(Timeout.InfiniteTimeSpan, Options.RetryInterval);
+                    _timer?.Change(Timeout.InfiniteTimeSpan, Options.RetryInterval);
                 }
                 else
                 {

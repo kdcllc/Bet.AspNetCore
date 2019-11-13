@@ -228,7 +228,7 @@ namespace Bet.Extensions.UnitTest.HealthChecks
             {
                 builder.AddConsole();
                 builder.AddDebug();
-                builder.AddXunit(outputHelper,LogLevel.Debug);
+                builder.AddXunit(outputHelper, LogLevel.Debug);
             });
 #pragma warning restore CA2000 // Dispose objects before losing scope
 

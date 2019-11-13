@@ -38,7 +38,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
                 return Task.FromResult(result);
             }
 
-            return Task.FromResult<MemoryStream>(default);
+            return Task.FromResult<MemoryStream>(default!);
         }
 
         public Task<TResult> LoadModelResultAsync<TResult>(string name, CancellationToken cancellationToken)
@@ -55,7 +55,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
                 }
             }
 
-            return Task.FromResult<TResult>(default);
+            return Task.FromResult<TResult>(default!);
         }
 
         public Task<IEnumerable<TResult>> LoadRawDataAsync<TResult>(string name, CancellationToken cancellationToken)

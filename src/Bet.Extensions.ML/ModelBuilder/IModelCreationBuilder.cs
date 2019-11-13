@@ -16,18 +16,18 @@ namespace Bet.Extensions.ML.ModelBuilder
         where TOutput : class, new()
         where TResult : MetricsResult
     {
-        IDataView TrainingDataView { get; }
+        IDataView? TrainingDataView { get; }
 
-        IDataView TestDataView { get; }
+        IDataView? TestDataView { get; }
 
-        IEstimator<ITransformer> TrainingPipeLine { get; }
+        IEstimator<ITransformer>? TrainingPipeLine { get; }
 
         string TrainerName { get; }
 
         /// <summary>
         /// ML dataset that was loaded.
         /// </summary>
-        IDataView DataView { get; }
+        IDataView? DataView { get; }
 
         /// <summary>
         /// All of the records.
@@ -42,12 +42,12 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <summary>
         /// Model that was produced.
         /// </summary>
-        ITransformer Model { get; }
+        ITransformer? Model { get; }
 
         /// <summary>
         /// Input Training Schema.
         /// </summary>
-        DataViewSchema TrainingSchema { get; set; }
+        DataViewSchema? TrainingSchema { get; set; }
 
         /// <summary>
         /// Builds DataView object to be used for the training pipeline.
@@ -93,7 +93,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder);
+        TrainModelResult TrainModel(Func<IDataView?, TrainModelResult> builder);
 
         /// <summary>
         /// Evaluates ML model and returns results.
@@ -106,14 +106,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder);
+        TResult Evaluate(Func<IDataView?, IEstimator<ITransformer>?, TResult> builder);
 
         /// <summary>
         /// Saves ML model.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="modelRelativePath"></param>
-        void SaveModel(Action<MLContext, ITransformer, string, DataViewSchema> builder, string modelRelativePath);
+        void SaveModel(Action<MLContext, ITransformer?, string, DataViewSchema?> builder, string modelRelativePath);
 
         /// <summary>
         /// Saves ML model to a disk.

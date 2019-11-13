@@ -14,40 +14,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"  Version="$(ExtensionsVersion2)"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-  </ItemGroup>
-
-  <ItemGroup Label="Upgrade related references">
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.EventSource" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Options" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="$(ExtensionsVersion2)"/>
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="$(ExtensionsVersion2)"/>
   </ItemGroup>
 
   <ItemGroup>

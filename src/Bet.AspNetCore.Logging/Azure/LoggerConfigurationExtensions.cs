@@ -28,7 +28,7 @@ namespace Serilog
             IConfiguration configuration,
             string sectionName = "AzureLogAnalytics",
             bool enableValidation = true,
-            string applicationName = null,
+            string? applicationName = null,
             int batchSize = 10)
         {
             // write to Log Analytics

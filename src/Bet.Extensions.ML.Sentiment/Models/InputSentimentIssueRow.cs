@@ -7,6 +7,6 @@
 
         public double rev_id { get; set; }
 
-        public string comment { get; set; }
+        public string comment { get; set; } = string.Empty;
     }
 }

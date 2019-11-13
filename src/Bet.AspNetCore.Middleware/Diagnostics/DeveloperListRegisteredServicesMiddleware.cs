@@ -61,6 +61,11 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
         {
             sb.Append("[");
 
+            if (options.Services == null)
+            {
+                return string.Empty;
+            }
+
             var len = options.Services.Count;
             var i = 0;
 
@@ -88,10 +93,17 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
             StringBuilder sb,
             DeveloperListRegisteredServicesOptions options)
         {
+            if (options.Services == null)
+            {
+                sb.Append("No Services were setup");
+                return sb.ToString();
+            }
+
             sb.Append("<h1>All Services</h1>");
             sb.Append("<table><thead>");
             sb.Append("<tr><th>Type</th><th>Lifetime</th><th>Instance</th></tr>");
             sb.Append("</thead><tbody>");
+
             foreach (var svc in options.Services)
             {
                 sb.Append("<tr>");

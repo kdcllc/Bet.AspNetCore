@@ -16,9 +16,10 @@ namespace Bet.Extensions.ML.Prediction
         private readonly Func<ModelPredictionEngineOptions<TData, TPrediction>> _funcOptions;
         private readonly ILogger _logger;
         private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
-        private DefaultObjectPool<PredictionEngine<TData, TPrediction>> _pool;
-        private IDisposable _changeToken;
-        private ITransformer _model;
+        private readonly IDisposable _changeToken;
+
+        private DefaultObjectPool<PredictionEngine<TData, TPrediction>>? _pool;
+        private ITransformer? _model;
 
         public ModelPredictionEngineObjectPool(
            Func<ModelPredictionEngineOptions<TData, TPrediction>> options,
@@ -47,12 +48,12 @@ namespace Bet.Extensions.ML.Prediction
             _changeToken?.Dispose();
         }
 
-        public ITransformer GetModel()
+        public ITransformer? GetModel()
         {
             return _model;
         }
 
-        public DefaultObjectPool<PredictionEngine<TData, TPrediction>> GetPredictionEnginePool()
+        public DefaultObjectPool<PredictionEngine<TData, TPrediction>>? GetPredictionEnginePool()
         {
             if (_pool == null)
             {
@@ -66,9 +67,14 @@ namespace Bet.Extensions.ML.Prediction
         {
             var mlContext = _options.MLContext();
 
+            if (_options?.CreateModel == null)
+            {
+                throw new NullReferenceException("CreateModel wasn't provided...");
+            }
+
             Interlocked.Exchange(ref _model, _options.CreateModel(mlContext));
 
-            var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(mlContext, _model, _options, _logger);
+            var pooledObjectPolicy = new ModelPredictionEnginePooledObjectPolicy<TData, TPrediction>(mlContext, _model!, _options, _logger);
 
             if (_options.MaximumObjectsRetained != -1)
             {

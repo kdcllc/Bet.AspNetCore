@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,20 +11,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
-
     <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
     <PackageReference Include="Serilog.Sinks.AzureAnalytics" />
+  </ItemGroup>
+
+  <ItemGroup  Condition="'$(TargetFramework)' == 'netcoreapp3.0'" >
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
   </ItemGroup>
 
-  <ItemGroup>
-
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />

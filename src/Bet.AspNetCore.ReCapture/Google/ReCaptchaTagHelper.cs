@@ -18,7 +18,7 @@ namespace Bet.AspNetCore.ReCapture.Google
         }
 
         [HtmlAttributeName("key")]
-        public ModelExpression Key { get; set; }
+        public ModelExpression? Key { get; set; }
 
         /// <summary>
         /// Generates html syntax:.
@@ -32,10 +32,10 @@ namespace Bet.AspNetCore.ReCapture.Google
         {
             output.TagName = "div";
 
-            string key;
+            string? key;
             if (Key != null)
             {
-                key = Key.Model?.ToString();
+                key = Key.Model.ToString();
             }
             else
             {

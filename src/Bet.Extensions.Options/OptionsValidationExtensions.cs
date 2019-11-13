@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+
 using Bet.Extensions.Options;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -19,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection ConfigureWithDataAnnotationsValidation<TOptions>(
             this IServiceCollection services,
             IConfiguration configuration,
-            string sectionName = null) where TOptions : class, new()
+            string? sectionName = default) where TOptions : class, new()
         {
             var section = configuration as IConfigurationSection ?? (IConfigurationSection)GetConfigurationSection<TOptions>(configuration, sectionName);
 
@@ -41,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration,
             Func<TOptions, bool> validation,
             string failureMessage,
-            string sectionName = null) where TOptions : class, new()
+            string? sectionName = default) where TOptions : class, new()
         {
             var section = GetConfigurationSection<TOptions>(configuration, sectionName);
 
@@ -85,7 +87,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IConfiguration GetConfigurationSection<TOptions>(
             IConfiguration configuration,
-            string sectionName)
+            string? sectionName)
         {
             return configuration.GetSection(sectionName ?? typeof(TOptions).Name);
         }

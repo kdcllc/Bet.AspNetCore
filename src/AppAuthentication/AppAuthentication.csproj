@@ -28,7 +28,7 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
 		<PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" PrivateAssets="All"/>
 	</ItemGroup>
 
 	<ItemGroup>

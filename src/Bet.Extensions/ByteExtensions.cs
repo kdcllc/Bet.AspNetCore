@@ -8,17 +8,17 @@ namespace System
     {
         public static string ConvertToString(this byte[] bytes)
         {
-            return bytes == null || bytes.Length == 0 ? null : Encoding.ASCII.GetString(bytes);
+            return bytes == null || bytes.Length == 0 ? string.Empty : Encoding.ASCII.GetString(bytes);
         }
 
         public static string ConvertToString(this byte[] bytes, int index, int count)
         {
-            return bytes == null || bytes.Length == 0 ? null : Encoding.ASCII.GetString(bytes, index, count);
+            return bytes == null || bytes.Length == 0 ? string.Empty : Encoding.ASCII.GetString(bytes, index, count);
         }
 
         public static string ConvertToString(this IList<byte> lstBts)
         {
-            return lstBts == null || lstBts.Count == 0 ? null : lstBts.ToArray().ConvertToString();
+            return lstBts == null || lstBts.Count == 0 ? string.Empty : lstBts.ToArray().ConvertToString();
         }
     }
 }

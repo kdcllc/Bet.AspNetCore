@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace System.Threading
 {
     public class AsyncFunc<T>
     {
-        private readonly Func<T> _func;
-        private readonly Func<Task<T>> _funcTask;
+        private readonly Func<T>? _func;
+        private readonly Func<Task<T>>? _funcTask;
         private readonly bool _isFuncTask;
 
         public AsyncFunc(Func<T> func)
@@ -23,14 +22,18 @@ namespace System.Threading
 
         public async Task<T> Invoke()
         {
-            if (_isFuncTask)
+            if (_isFuncTask
+                && _funcTask != null)
             {
                 return await _funcTask();
             }
-            else
+            else if (!_isFuncTask
+                && _func != null)
             {
                 return await Task.FromResult(_func());
             }
+
+            return default!;
         }
     }
 }

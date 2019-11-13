@@ -81,26 +81,26 @@ namespace Bet.AspNetCore.UnitTest.HealthChecks
                 .ConfigureServices(services =>
                 {
 #if NETCOREAPP2_2
-                   services.AddMvcCore()
-                     .AddApplicationPart(typeof(HealthChecksTests).Assembly);
+                    services.AddMvcCore()
+                      .AddApplicationPart(typeof(HealthChecksTests).Assembly);
 #elif NETCOREAPP3_0
-                   services.AddControllers()
-                    .AddApplicationPart(typeof(HealthChecksTests).Assembly);
-                   services.AddRouting();
+                    services.AddControllers()
+                     .AddApplicationPart(typeof(HealthChecksTests).Assembly);
+                    services.AddRouting();
 #endif
-                   services.AddSingleton<IHttpClientFactory>(factoryMock.Object);
+                    services.AddSingleton<IHttpClientFactory>(factoryMock.Object);
 
-                   services.AddHealthChecks()
-                    .AddUriHealthCheck("Successful", builder =>
-                    {
-                        builder.Add(options =>
-                        {
-                            options
-                            .AddUri($"http://localhost/api/HttpStat/${statusCode}")
-                            .UseTimeout(TimeSpan.FromSeconds(60))
-                            .UseExpectedHttpCode(statusCode);
-                        });
-                    });
+                    services.AddHealthChecks()
+                     .AddUriHealthCheck("Successful", builder =>
+                     {
+                         builder.Add(options =>
+                         {
+                             options
+                             .AddUri($"http://localhost/api/HttpStat/${statusCode}")
+                             .UseTimeout(TimeSpan.FromSeconds(60))
+                             .UseExpectedHttpCode(statusCode);
+                         });
+                     });
                 });
 
             var client = new TestServer(hostBuilder).CreateClient();

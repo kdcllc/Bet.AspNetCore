@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 
 using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
@@ -10,7 +9,6 @@ using Bet.AspNetCore.Sample.Options;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +16,6 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 
 namespace Bet.AspNetCore.Sample
@@ -96,26 +93,10 @@ namespace Bet.AspNetCore.Sample
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddHealthChecks()
-                // .AddSslCertificateCheck("kdcllc", "https://kingdavidconsulting.com")
-                //.AddUriHealthCheck("200_check", builder =>
-                //{
-                //    builder.Add(option =>
-                //    {
-                //        option.AddUri("https://httpstat.us/200")
-                //               .UseExpectedHttpCode(HttpStatusCode.OK);
-                //    });
-
-                //    builder.Add(option =>
-                //    {
-                //        option.AddUri("https://httpstat.us/203")
-                //               .UseExpectedHttpCode(HttpStatusCode.NonAuthoritativeInformation);
-                //    });
-                //})
                 .AddUriHealthCheck("ms_check", uriOptions: (options) =>
                 {
                     options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
                 })
-                //.AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
                 .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
                 .AddAzureBlobStorageCheck("files_check", "files", options =>
                 {

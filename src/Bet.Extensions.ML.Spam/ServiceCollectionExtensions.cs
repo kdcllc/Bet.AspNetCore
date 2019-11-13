@@ -18,7 +18,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The DI services.</param>
         /// <param name="modelStorageProvider">The model storage provider.</param>
         /// <returns></returns>
-        public static IServiceCollection AddSpamDetectionModelBuilder(this IServiceCollection services, IModelStorageProvider modelStorageProvider = null)
+        public static IServiceCollection AddSpamDetectionModelBuilder(
+            this IServiceCollection services,
+            IModelStorageProvider? modelStorageProvider = default)
         {
             services.TryAddSingleton(new MLContext());
 
