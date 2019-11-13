@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTimedHostedService(
             this IServiceCollection services,
             Func<CancellationToken, Task> execute,
-            Action<TimedHostedServiceOptions> configure = null)
+            Action<TimedHostedServiceOptions>? configure = default)
         {
             services.AddTimedHostedService<DefaultTimedHostedService>(
                 sp =>
@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTimedHostedService<THostedService>(
             this IServiceCollection services,
             Func<IServiceProvider, THostedService> implementationFactory,
-            Action<TimedHostedServiceOptions> configure = null) where THostedService : class, ITimedHostedService
+            Action<TimedHostedServiceOptions>? configure = default) where THostedService : class, ITimedHostedService
         {
             services.Configure<TimedHostedServiceOptions>(options => configure?.Invoke(options));
 
@@ -48,7 +48,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddTimedHostedService<THostedService>(
             this IServiceCollection services,
-            Action<TimedHostedServiceOptions> configure = null) where THostedService : class, ITimedHostedService, IHostedService
+            Action<TimedHostedServiceOptions>? configure = default) where THostedService : class, ITimedHostedService, IHostedService
         {
             services.Configure<TimedHostedServiceOptions>(options => configure?.Invoke(options));
 

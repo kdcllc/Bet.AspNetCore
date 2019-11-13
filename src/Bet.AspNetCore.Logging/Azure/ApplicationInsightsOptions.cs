@@ -8,7 +8,7 @@ namespace Bet.AspNetCore.Logging.Azure
         /// Azure Instrumentation Key. Guid Type.
         /// </summary>
         [RegularExpression(@"^(\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1})$", ErrorMessage = "Must be valid Guid Id")]
-        public string InstrumentationKey { get; set; }
+        public string InstrumentationKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Enables Event tracing.

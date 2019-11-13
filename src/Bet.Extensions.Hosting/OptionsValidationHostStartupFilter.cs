@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.Hosting
     /// <inheritdoc/>
     public class OptionsValidationHostStartupFilter : IHostStartupFilter, IValidationFilter
     {
-        private IList<(Type type, string sectionName)> _optionsTypes;
+        private IList<(Type type, string sectionName)>? _optionsTypes;
 
         /// <inheritdoc/>
         public IList<(Type type, string sectionName)> OptionsTypes => _optionsTypes ?? (_optionsTypes = new List<(Type type, string sectionName)>());

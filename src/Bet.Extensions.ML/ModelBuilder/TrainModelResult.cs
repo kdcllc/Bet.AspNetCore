@@ -1,4 +1,5 @@
-﻿using Microsoft.ML;
+﻿using System;
+using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelBuilder
 {

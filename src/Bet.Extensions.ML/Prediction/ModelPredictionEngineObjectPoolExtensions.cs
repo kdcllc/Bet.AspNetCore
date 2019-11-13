@@ -1,4 +1,6 @@
-﻿namespace Bet.Extensions.ML.Prediction
+﻿using System;
+
+namespace Bet.Extensions.ML.Prediction
 {
     public static class ModelPredictionEngineObjectPoolExtensions
     {
@@ -6,7 +8,7 @@
             this IModelPredictionEngine<TData, TPrediction> modelPredictionEngine,
             TData dataSample) where TData : class where TPrediction : class, new()
         {
-            var modelPredictionEnginePool = modelPredictionEngine.GetPredictionEnginePool();
+            var modelPredictionEnginePool = modelPredictionEngine?.GetPredictionEnginePool() ?? throw new NullReferenceException("GetPredictionEnginePool() returned null");
             var pool = modelPredictionEnginePool.Get();
             try
             {

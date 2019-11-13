@@ -19,8 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddChangeTokenOptions<TOptions>(
             this IServiceCollection services,
             string sectionName,
-            string optionName = null,
-            Action<TOptions> configureAction = null) where TOptions : class, new()
+            string? optionName = default,
+            Action<TOptions>? configureAction = default) where TOptions : class, new()
         {
             if (optionName == null)
             {

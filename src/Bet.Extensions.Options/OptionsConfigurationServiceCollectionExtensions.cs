@@ -88,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection Configure<TOptions>(
             this IServiceCollection services,
-            string sectionName = default) where TOptions : class, new()
+            string? sectionName = default) where TOptions : class, new()
         {
             return services.Configure<TOptions>(_ => { }, sectionName);
         }
@@ -104,7 +104,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection Configure<TOptions>(
             this IServiceCollection services,
             Action<BinderOptions> configureBinder,
-            string sectionName = null)
+            string? sectionName = default)
             where TOptions : class, new()
         {
             if (services == null)

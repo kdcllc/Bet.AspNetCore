@@ -34,7 +34,11 @@ namespace Bet.Extensions.DataProtection.AzureStorage
             var cloudBlobContainer = CreateCloudBlobContainer(_dataProtectionOptions.Value, cloudStorageAccount).GetAwaiter().GetResult();
             var blob = cloudBlobContainer.GetBlockBlobReference(_dataProtectionOptions.Value.KeyBlobName);
 
+#if NETSTANDARD2_0
+            options.XmlRepository = new AzureBlobXmlRepository(() => (Microsoft.WindowsAzure.Storage.Blob.ICloudBlob)blob);
+#elif NETSTANDARD2_1
             options.XmlRepository = new AzureBlobXmlRepository(() => blob);
+#endif
         }
 
         private async Task<NewTokenAndFrequency> TokenRenewerAsync(object state, CancellationToken cancellationToken)

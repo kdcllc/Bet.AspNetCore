@@ -43,6 +43,39 @@ Make sure to execute all of the commands from the solution folder.
     helm delete  betwebsample --purge
 ```
 
+```csharp
+
+            services.AddHealthChecks()
+                 .AddSslCertificateCheck("kdcllc", "https://kingdavidconsulting.com")
+                .AddUriHealthCheck("200_check", builder =>
+                {
+                    builder.Add(option =>
+                    {
+                        option.AddUri("https://httpstat.us/200")
+                               .UseExpectedHttpCode(HttpStatusCode.OK);
+                    });
+
+                    builder.Add(option =>
+                    {
+                        option.AddUri("https://httpstat.us/203")
+                               .UseExpectedHttpCode(HttpStatusCode.NonAuthoritativeInformation);
+                    });
+                })
+                .AddUriHealthCheck("ms_check", uriOptions: (options) =>
+                {
+                    options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
+                })
+                .AddMachineLearningModelCheck<SpamInput, SpamPrediction>("Spam_Check")
+                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
+                .AddAzureBlobStorageCheck("files_check", "files", options =>
+                {
+                    options.Name = "betstorage";
+                })
+                .AddSigtermCheck("sigterm_check")
+                .AddLoggerPublisher(new List<string> { "sigterm_check" });
+```
+
+
 ## ML Model HealthCheck
 
 In a situation where the model is being build in the same container and the web api if the model generation fails the container should be restarted.

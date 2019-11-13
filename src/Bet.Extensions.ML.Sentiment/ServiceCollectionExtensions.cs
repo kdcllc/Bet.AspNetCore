@@ -1,5 +1,4 @@
-﻿using System;
-using Bet.Extensions.ML.ModelBuilder;
+﻿using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment;
 using Bet.Extensions.ML.Sentiment.Models;
@@ -18,7 +17,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The DI services.</param>
         /// <param name="modelStorageProvider">The model storage provider.</param>
         /// <returns></returns>
-        public static IServiceCollection AddSentimentModelBuilder(this IServiceCollection services, IModelStorageProvider modelStorageProvider = null)
+        public static IServiceCollection AddSentimentModelBuilder(
+            this IServiceCollection services,
+            IModelStorageProvider? modelStorageProvider = default)
         {
             services.TryAddSingleton(new MLContext());
 

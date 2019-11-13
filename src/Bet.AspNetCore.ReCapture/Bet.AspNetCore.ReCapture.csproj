@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
     <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'" >
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">

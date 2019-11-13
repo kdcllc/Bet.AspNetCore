@@ -11,12 +11,6 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-
-    <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
-    <PackageReference Include="System.Diagnostics.EventLog" Version="4.6.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(ExtensionsVersion2)"/>
   </ItemGroup>
 
   <ItemGroup>

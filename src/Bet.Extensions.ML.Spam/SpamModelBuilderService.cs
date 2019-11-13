@@ -73,7 +73,7 @@ namespace Bet.Extensions.ML.Spam
                 {
                     var input = new SpamInput { Message = text };
 
-                    SpamPrediction prediction = null;
+                    SpamPrediction? prediction = null;
                     lock (_lockObject)
                     {
                         prediction = predictor.Predict(input);

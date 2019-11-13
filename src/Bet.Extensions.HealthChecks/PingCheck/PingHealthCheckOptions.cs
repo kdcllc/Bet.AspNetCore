@@ -2,7 +2,7 @@
 {
     public class PingHealthCheckOptions
     {
-        public string Host { get; set; }
+        public string Host { get; set; } = string.Empty;
 
         public int Timeout { get; set; }
     }

@@ -67,7 +67,7 @@ namespace Bet.Extensions.HealthChecks.Publishers
                 _logger.LogInformation("Waiting for a connection...");
 
                 // Continue listening.
-                TcpClient client = null;
+                TcpClient? client = null;
                 while ((client = await _listener.AcceptTcpClientAsync()) != null
                     && client.Connected)
                 {

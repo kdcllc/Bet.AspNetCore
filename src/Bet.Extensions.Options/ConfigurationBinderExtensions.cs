@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.Configuration
         /// <returns>The bound object.</returns>
         public static TOptions Bind<TOptions>(
             this IConfiguration configuration,
-            string key = null,
+            string? key = default,
             bool enableValidation = true)
             where TOptions : class, new()
         {

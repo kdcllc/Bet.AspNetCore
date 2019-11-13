@@ -11,7 +11,7 @@ namespace Bet.Extensions.ML.Helpers
         /// <param name="relativePath">The path to the file in the Assembly directory.</param>
         /// <param name="assemblyType">The Assembly type. The default value is null resolves `FileHelper`.</param>
         /// <returns></returns>
-        public static string GetAbsolutePath(string relativePath, Type assemblyType = null)
+        public static string GetAbsolutePath(string relativePath, Type? assemblyType = null)
         {
             assemblyType = assemblyType ?? typeof(FileHelper);
 

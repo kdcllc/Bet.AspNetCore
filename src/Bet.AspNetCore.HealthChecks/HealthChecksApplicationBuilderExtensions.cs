@@ -23,7 +23,7 @@ namespace Microsoft.AspNetCore.Builder
         public static IApplicationBuilder UseLivenessHealthCheck(
             this IApplicationBuilder builder,
             string healthCheckPath = "/liveness",
-            HealthCheckOptions healthCheckOptions = default)
+            HealthCheckOptions? healthCheckOptions = default)
         {
             if (healthCheckOptions == default)
             {
@@ -39,7 +39,7 @@ namespace Microsoft.AspNetCore.Builder
         public static IApplicationBuilder UseHealthyHealthCheck(
             this IApplicationBuilder builder,
             string healthCheckPath = "/healthy",
-            HealthCheckOptions healthCheckOptions = default)
+            HealthCheckOptions? healthCheckOptions = default)
         {
             if (healthCheckOptions == default)
             {

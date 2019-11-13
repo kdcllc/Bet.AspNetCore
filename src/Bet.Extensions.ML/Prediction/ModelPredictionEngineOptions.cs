@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.ML;
@@ -25,7 +26,7 @@ namespace Bet.Extensions.ML.Prediction
         /// <summary>
         /// The instance of the service provider.
         /// </summary>
-        public IServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider? ServiceProvider { get; set; } = default;
 
         /// <summary>
         /// This is set up by DI process. The default value is <see cref="Constants.MLDefaultModelName"/>.
@@ -41,7 +42,7 @@ namespace Bet.Extensions.ML.Prediction
         /// Will contain the input schema for the model. If the model was saved without any
         /// description of the input, there will be no input schema. In this case this can be null.
         /// </summary>
-        public DataViewSchema InputSchema { get; set; }
+        public DataViewSchema? InputSchema { get; set; } = default;
 
         /// <summary>
         /// The number of maximum pools allowed for Object Pool. The default value is -1 which sets Environment.ProcessorCount * 2.
@@ -51,7 +52,7 @@ namespace Bet.Extensions.ML.Prediction
         /// <summary>
         /// The entry point to configure and load the actual Machine Learning Model.
         /// </summary>
-        public Func<MLContext, ITransformer> CreateModel { get; set; }
+        public Func<MLContext, ITransformer>? CreateModel { get; set; } = default;
 
         /// <summary>
         /// The logging level for the <see cref="MLContext"/> for this instance of options.The default is <see cref="LogLevel.Trace"/>.

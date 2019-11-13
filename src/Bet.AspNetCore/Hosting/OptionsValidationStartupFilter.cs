@@ -13,7 +13,7 @@ namespace Bet.AspNetCore.Hosting
 {
     public class OptionsValidationStartupFilter : IStartupFilter, IValidationFilter
     {
-        private IList<(Type type, string sectionName)> _optionsTypes;
+        private IList<(Type type, string sectionName)>? _optionsTypes;
 
         /// <summary>
         /// The type and configuration name of the options to validate.

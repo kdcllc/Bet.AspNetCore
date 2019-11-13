@@ -23,31 +23,31 @@ namespace Bet.Extensions.ML.ModelBuilder
         }
 
         /// <inheritdoc/>
-        public virtual IDataView TrainingDataView { get; private set; }
+        public virtual IDataView? TrainingDataView { get; private set; } = default;
 
         /// <inheritdoc/>
-        public virtual IDataView TestDataView { get; private set; }
+        public virtual IDataView? TestDataView { get; private set; } = default;
 
         /// <inheritdoc/>
-        public virtual IEstimator<ITransformer> TrainingPipeLine { get; private set; }
+        public virtual IEstimator<ITransformer>? TrainingPipeLine { get; private set; } = default;
 
         /// <inheritdoc/>
-        public virtual string TrainerName { get; private set; }
+        public virtual string TrainerName { get; private set; } = string.Empty;
 
         /// <inheritdoc/>
-        public virtual IDataView DataView { get; private set; }
+        public virtual IDataView? DataView { get; private set; } = default;
 
         /// <inheritdoc/>
         public virtual List<TInput> Records { get; set; } = new List<TInput>();
 
         /// <inheritdoc/>
-        public virtual ITransformer Model { get; private set; }
+        public virtual ITransformer? Model { get; private set; } = default;
 
         /// <inheritdoc/>
         public virtual MLContext MLContext { get; set; }
 
         /// <inheritdoc/>
-        public virtual DataViewSchema TrainingSchema { get; set; }
+        public virtual DataViewSchema? TrainingSchema { get; set; } = default;
 
         public abstract TrainingPipelineResult BuildTrainingPipeline();
 
@@ -89,7 +89,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         public abstract TResult Evaluate();
 
         /// <inheritdoc/>
-        public virtual TResult Evaluate(Func<IDataView, IEstimator<ITransformer>, TResult> builder)
+        public virtual TResult Evaluate(Func<IDataView?, IEstimator<ITransformer>?, TResult> builder)
         {
             var sw = ValueStopwatch.StartNew();
 
@@ -116,7 +116,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <inheritdoc/>
         public abstract IModelCreationBuilder<TInput, TOutput, TResult> LoadDefaultData();
 
-        public virtual void SaveModel(Action<MLContext, ITransformer, string, DataViewSchema> builder, string modelRelativePath)
+        public virtual void SaveModel(Action<MLContext, ITransformer?, string, DataViewSchema?> builder, string modelRelativePath)
         {
             builder(MLContext, Model, modelRelativePath, TrainingSchema);
         }
@@ -147,13 +147,18 @@ namespace Bet.Extensions.ML.ModelBuilder
         {
             return TrainModel((dataView) =>
             {
-                var model = TrainingPipeLine.Fit(dataView);
+                var model = TrainingPipeLine?.Fit(dataView);
+                if (model == null)
+                {
+                    throw new ArgumentNullException(nameof(dataView), "Training Model is Null");
+                }
+
                 return new TrainModelResult(model);
             });
         }
 
         /// <inheritdoc/>
-        public virtual TrainModelResult TrainModel(Func<IDataView, TrainModelResult> builder)
+        public virtual TrainModelResult TrainModel(Func<IDataView?, TrainModelResult> builder)
         {
             var sw = ValueStopwatch.StartNew();
 

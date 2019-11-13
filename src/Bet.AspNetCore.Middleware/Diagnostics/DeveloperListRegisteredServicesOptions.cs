@@ -16,6 +16,6 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
         /// </summary>
         public PathOutputOptions PathOutputOptions { get; set; } = PathOutputOptions.Json;
 
-        internal IReadOnlyList<ServiceDescriptor> Services { get; set; }
+        internal IReadOnlyList<ServiceDescriptor>? Services { get; set; }
     }
 }

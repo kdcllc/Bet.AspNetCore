@@ -9,8 +9,8 @@ namespace Bet.Extensions.ML.Prediction
         /// <summary>
         /// The transformer holds the Machine Learning predictive model data.
         /// </summary>
-        ITransformer GetModel();
+        ITransformer? GetModel();
 
-        DefaultObjectPool<PredictionEngine<TData, TPrediction>> GetPredictionEnginePool();
+        DefaultObjectPool<PredictionEngine<TData, TPrediction>>? GetPredictionEnginePool();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+
 using Bet.Extensions.ML;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Prediction;
@@ -57,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IModelPredictionEngineBuilder<TData, TPrediction> AddModelPredictionEngine<TData, TPrediction>(
             this IServiceCollection services,
-            Action<ModelPredictionEngineOptions<TData, TPrediction>> options = null,
+            Action<ModelPredictionEngineOptions<TData, TPrediction>>? options = default,
             string modelName = Constants.MLDefaultModelName)
             where TData : class where TPrediction : class, new()
         {
@@ -94,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IModelPredictionEngineBuilder<TData, TPrediction> WithStorageProvider<TData, TPrediction>(
             this IModelPredictionEngineBuilder<TData, TPrediction> builder,
             string storageName,
-            IModelStorageProvider modelStorageProvider = null)
+            IModelStorageProvider? modelStorageProvider = default)
             where TData : class where TPrediction : class, new()
         {
             builder.Services.Configure(builder.ModelName, (Action<ModelPredictionEngineOptions<TData, TPrediction>>)((mlOptions) =>
@@ -117,7 +118,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        private static ITransformer GetTransfomer(string storageName, ML.MLContext mlContext, IModelStorageProvider storage)
+        private static ITransformer GetTransfomer(string storageName, MLContext mlContext, IModelStorageProvider storage)
         {
             var model = storage.LoadModelAsync(storageName, CancellationToken.None).GetAwaiter().GetResult();
             var transformer = mlContext.Model.Load(model, out var inputSchema);

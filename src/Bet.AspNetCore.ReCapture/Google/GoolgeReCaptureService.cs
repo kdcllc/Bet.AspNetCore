@@ -51,7 +51,7 @@ namespace Bet.AspNetCore.ReCapture.Google
                 return message;
             }
 
-            return null;
+            return string.Empty;
         }
     }
 }
