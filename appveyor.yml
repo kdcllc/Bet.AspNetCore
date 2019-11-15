@@ -36,10 +36,10 @@ deploy:
     secure: jrexooMHJwdbj5MGacSL9fCj3g2haDXMarPEkiLpdIZmasb/zeMYb0NVofvi5HvJ
   on:
     branch: master
-- provider: GitHub
-  auth_token:
-    secure: dr3CAHeVEOYYA3iomPpKm6kloFkuIrYyw/MrtWI1xJpSME70pxAASHm47oSSnnbMTWbAXa0mnWzgjog7QaF+GQ==
-  artifact: /NuGet/
-  tag: v$(appveyor_build_version)
-  on:
-    branch: master
+# - provider: GitHub
+#   auth_token:
+#     secure: dr3CAHeVEOYYA3iomPpKm6kloFkuIrYyw/MrtWI1xJpSME70pxAASHm47oSSnnbMTWbAXa0mnWzgjog7QaF+GQ==
+#   artifact: /NuGet/
+#   tag: v$(appveyor_build_version)
+#   on:
+#     branch: master
