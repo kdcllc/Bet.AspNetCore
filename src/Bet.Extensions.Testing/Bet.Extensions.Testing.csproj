@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <Description>The Base Testing Framework for Unit, Functional and Integration Tests.</Description>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="xunit" />
     <PackageReference Include="Microsoft.Extensions.Logging" />

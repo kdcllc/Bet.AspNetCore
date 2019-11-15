@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (filter == null)
             {
                 throw new Exception("IValidationFilter wasn't added. For AspNetCore applications please add services.AddConfigurationValidation(); or for" +
-                    "Generic Host Use .UseStartupFilter(); ");
+                    "Generic Host Use .UseOptionValidation(); ");
             }
 
             filter.OptionsTypes.Add((type, sectionName));
