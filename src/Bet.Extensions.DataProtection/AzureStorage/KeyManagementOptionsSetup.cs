@@ -35,7 +35,7 @@ namespace Bet.Extensions.DataProtection.AzureStorage
             var blob = cloudBlobContainer.GetBlockBlobReference(_dataProtectionOptions.Value.KeyBlobName);
 
 #if NETSTANDARD2_0
-            options.XmlRepository = new AzureBlobXmlRepository(() => (Microsoft.WindowsAzure.Storage.Blob.ICloudBlob)blob);
+            options.XmlRepository = new AzureBlobXmlRepository(() => blob);
 #elif NETSTANDARD2_1
             options.XmlRepository = new AzureBlobXmlRepository(() => blob);
 #endif
