@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 using Newtonsoft.Json;
@@ -20,6 +22,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="healthCheckPath"></param>
         /// <param name="healthCheckOptions"></param>
         /// <returns></returns>
+        [Obsolete("Use " + nameof(MapLivenessHealthCheck))]
         public static IApplicationBuilder UseLivenessHealthCheck(
             this IApplicationBuilder builder,
             string healthCheckPath = "/liveness",
@@ -36,6 +39,35 @@ namespace Microsoft.AspNetCore.Builder
             return builder;
         }
 
+        /// <summary>
+        /// Map Healtheck Liveleness route.
+        /// Enable usage of the basic liveness check that returns 200 http status code.
+        /// Default registered health check is self.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="healthCheckPath"></param>
+        /// <param name="healthCheckOptions"></param>
+        /// <returns></returns>
+        public static IEndpointRouteBuilder MapLivenessHealthCheck(
+            this IEndpointRouteBuilder builder,
+            string healthCheckPath = "/liveness",
+            HealthCheckOptions? healthCheckOptions = null)
+        {
+            var options = healthCheckOptions ?? new HealthCheckOptions { Predicate = (p) => false };
+
+            builder.MapHealthChecks(healthCheckPath, options);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Use Healthcheck which returns a report of all registered healthchecks.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="healthCheckPath"></param>
+        /// <param name="healthCheckOptions"></param>
+        /// <returns></returns>
+        [Obsolete("Use " + nameof(MapHealthyHealthCheck))]
         public static IApplicationBuilder UseHealthyHealthCheck(
             this IApplicationBuilder builder,
             string healthCheckPath = "/healthy",
@@ -47,6 +79,25 @@ namespace Microsoft.AspNetCore.Builder
             }
 
             builder.UseHealthChecks(healthCheckPath, healthCheckOptions);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Use Healthcheck which returns a report of all registered healthchecks.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="healthCheckPath"></param>
+        /// <param name="healthCheckOptions"></param>
+        /// <returns></returns>
+        public static IEndpointRouteBuilder MapHealthyHealthCheck(
+            this IEndpointRouteBuilder builder,
+            string healthCheckPath = "/healthy",
+            HealthCheckOptions? healthCheckOptions = default)
+        {
+            var options = healthCheckOptions ?? new HealthCheckOptions { ResponseWriter = WriteResponse };
+
+            builder.MapHealthChecks(healthCheckPath, options);
 
             return builder;
         }

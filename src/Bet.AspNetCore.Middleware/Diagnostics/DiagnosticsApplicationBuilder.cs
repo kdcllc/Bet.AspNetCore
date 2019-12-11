@@ -37,7 +37,7 @@ namespace Microsoft.AspNetCore.Builder
             this IApplicationBuilder builder,
             Action<RequestProfilerModel>? configure = null)
         {
-            if ( configure == null)
+            if (configure == null)
             {
                 var logger = builder.ApplicationServices.GetRequiredService<ILogger<RequestResponseLoggingMiddleware>>();
 
