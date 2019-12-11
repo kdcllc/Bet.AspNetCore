@@ -33,11 +33,8 @@ namespace Bet.AspNetCore.UnitTest.HealthChecks
 
             var server = new TestServer(builder);
             var client = server.CreateClient();
-#if NETCOREAPP2_2
-            var appLifetime = server.Host.Services.GetService<Microsoft.AspNetCore.Hosting.IApplicationLifetime>();
-#else
+
             var appLifetime = server.Host.Services.GetService<IHostApplicationLifetime>();
-#endif
 
             appLifetime.StopApplication();
 
@@ -60,14 +57,6 @@ namespace Bet.AspNetCore.UnitTest.HealthChecks
             var hostBuilder = new WebHostBuilder()
                 .Configure(app =>
                 {
-#if NETCOREAPP2_2
-                    app.UseMvc();
-
-                    app.UseHealthChecks("/healthy", new HealthCheckOptions
-                    {
-                        ResponseWriter = HealthChecksApplicationBuilderExtensions.WriteResponse
-                    });
-#elif NETCOREAPP3_0
                     app.UseRouting();
                     app.UseEndpoints(endpoints =>
                     {
@@ -76,18 +65,12 @@ namespace Bet.AspNetCore.UnitTest.HealthChecks
                             ResponseWriter = HealthChecksApplicationBuilderExtensions.WriteResponse
                         });
                     });
-#endif
                 })
                 .ConfigureServices(services =>
                 {
-#if NETCOREAPP2_2
-                    services.AddMvcCore()
-                      .AddApplicationPart(typeof(HealthChecksTests).Assembly);
-#elif NETCOREAPP3_0
                     services.AddControllers()
                      .AddApplicationPart(typeof(HealthChecksTests).Assembly);
                     services.AddRouting();
-#endif
                     services.AddSingleton<IHttpClientFactory>(factoryMock.Object);
 
                     services.AddHealthChecks()

@@ -102,4 +102,6 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 
 ## Reference
 
-To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).
+- Using without 2.2 `ENV DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX=2`
+
+- To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).

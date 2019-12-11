@@ -7,15 +7,12 @@ using System.Text;
 
 namespace AppAuthentication.Helpers
 {
-#pragma warning disable RCS1102 // Make class static.
     /// <summary>
     /// Method to get system directory. This method has been added to .NET Standard 2.0, but since we target 1.4, need to write it.
     /// Gets the system directory to get the install path for Azure CLI.
     /// </summary>
-    internal class EnvironmentHelper
-#pragma warning restore RCS1102 // Make class static.
+    internal sealed class EnvironmentHelper
     {
-#if !FullNetFx
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
         private static extern int GetSystemDirectoryW([Out] StringBuilder lpBuffer, int jSize);
 
@@ -34,6 +31,5 @@ namespace AppAuthentication.Helpers
                 return sb.ToString();
             }
         }
-#endif
     }
 }

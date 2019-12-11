@@ -52,7 +52,6 @@ namespace Bet.AspNetCore.Middleware.Diagnostics
 
         public async Task<string> GetRequestBody(HttpRequest request)
         {
-
             request.EnableBuffering();
 
             using (var requestStream = _recyclableMemoryStreamManager.GetStream())

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bet.aspnetcore.vscode:
-    image: kdcllc/dotnet:3.0-sdk-vscode-bionic
+    image: kdcllc/dotnet-sdk-vscode:3.1-bionic
     # Azure Key Vault Authentication global tool
     # dotnet tool install --global appauthentication --version 1.2.2
     # run this tool first then check the configuration
