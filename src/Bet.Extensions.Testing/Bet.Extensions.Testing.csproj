@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>The Base Testing Framework for Unit, Functional and Integration Tests.</Description>
     <IsPackable>true</IsPackable>
   </PropertyGroup>

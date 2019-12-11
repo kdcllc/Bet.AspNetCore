@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -16,12 +16,8 @@
     <PackageReference Include="Serilog.Sinks.AzureAnalytics" />
   </ItemGroup>
 
-  <ItemGroup  Condition="'$(TargetFramework)' == 'netcoreapp3.0'" >
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,13 +1,13 @@
-version: 2.0.{build}
+version: 2.1.{build}
 branches:
     only:
       - master
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2019
-## temporary until 3.0.100 sdk is installed
+## temporary until 3.1.100 sdk is installed
 install:
-  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.0.100/dotnet-sdk-3.0.100-win-x64.zip"
+  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.1.100/dotnet-sdk-3.1.100-win-x64.zip"
   - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
   - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
   - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()

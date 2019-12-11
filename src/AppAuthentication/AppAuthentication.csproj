@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp2.2</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<ToolCommandName>appauthentication</ToolCommandName>
 		<PackageId>appauthentication</PackageId>
 		<Description>
@@ -19,14 +19,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Colorful.Console" />
 		<PackageReference Include="McMaster.Extensions.CommandLineUtils" />
-		<PackageReference Include="Microsoft.AspNetCore.Hosting" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
-		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
 		<PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" PrivateAssets="All"/>
 	</ItemGroup>

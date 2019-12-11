@@ -74,17 +74,5 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return condition ? ifAction(hostBuilder) : elseAction(hostBuilder);
         }
-
-#if NETCOREAPP3_0
-        /// <summary>
-        /// Provides backward comp-ability for NetCore 2.x.
-        /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
-        public static bool IsDevelopment(this IWebHostEnvironment environment)
-        {
-            return environment.EnvironmentName.Equals("Development", StringComparison.OrdinalIgnoreCase);
-        }
-#endif
     }
 }

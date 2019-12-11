@@ -104,13 +104,8 @@ namespace Bet.ML.WebApi.Sample
             app.UseRouting();
 
             // app.UseAuthentication();
+
             // app.UseAuthorization();
-
-            // returns 200 okay
-            app.UseLivenessHealthCheck();
-
-            // returns healthy if all healthcheks return healthy
-            app.UseHealthyHealthCheck();
 
             app.UseSwagger();
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
@@ -118,6 +113,10 @@ namespace Bet.ML.WebApi.Sample
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                // returns 200 okay
+                endpoints.MapLivenessHealthCheck();
+                endpoints.MapHealthyHealthCheck();
             });
         }
     }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0;</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -11,17 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' == 'netcoreapp3.0'" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" />
     <PackageReference Include="Newtonsoft.Json" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
   </ItemGroup>
 
   <ItemGroup>

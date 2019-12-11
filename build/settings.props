@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup Label="Basic Settings">
-    <VersionPrefix>2.0.1-preview</VersionPrefix>
+    <VersionPrefix>2.1.0-preview</VersionPrefix>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <LangVersion>latest</LangVersion>

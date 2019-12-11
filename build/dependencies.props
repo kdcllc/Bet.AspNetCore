@@ -18,46 +18,31 @@
     <ExtensionsVersion>2.2</ExtensionsVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.0.0</AspNetCoreVersion>
-    <EFCommonVersion>3.0.0</EFCommonVersion>
-    <ExtensionsVersion>3.0.0</ExtensionsVersion>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.1'">
+    <AspNetCoreVersion>3.1.0</AspNetCoreVersion>
+    <EFCommonVersion>3.1.0</EFCommonVersion>
+    <ExtensionsVersion>3.1.0</ExtensionsVersion>
   </PropertyGroup>
 
-  <ItemGroup Label="Microsoft.AspNetCore">
-    <PackageReference Update="Microsoft.AspNetCore.Connections.Abstractions" Version="$(AspNetCoreVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Hosting.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Http" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Http.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc" Version="$(AspNetCoreVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Razor" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel.Core" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Server.Kestrel" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.StaticFiles" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Hosting" Version="$(AspNetCoreVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="$(AspNetCoreVersion)" />
-  </ItemGroup>
-
-  <ItemGroup Label="Microsoft.AspNetCore Sample Applications" Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
+  <ItemGroup Label="Microsoft.AspNetCore Sample Applications" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="3.0.0-preview4*" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0"/>
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.0"/>
     <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)"/>
     <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Connections.Abstractions" Version="$(AspNetCoreVersion)"/>
   </ItemGroup>
 
   <ItemGroup Label="DataProtection">
-    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.0.0" />
-    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.0.0" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.0" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Extensions.Hosting">
@@ -103,12 +88,12 @@
   <ItemGroup Label="Microsoft.Azure.Storage">
     <PackageReference Update="Microsoft.Azure.Storage.Blob" Version="11.1.1" />
     <PackageReference Update="Microsoft.Azure.Storage.Queue" Version="11.1.1" />
-    <PackageReference Update="Microsoft.Azure.Cosmos.Table" Version="1.0.5" />
+    <PackageReference Update="Microsoft.Azure.Cosmos.Table" Version="1.0.6" />
     <PackageReference Update="Microsoft.Azure.Storage.Common" Version="11.1.1" />
   </ItemGroup>
 
   <ItemGroup Label="Unit Tests">
-    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.3.0" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Update="Moq" Version="4.13.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
@@ -129,7 +114,7 @@
   <ItemGroup Label="Shared">
     <PackageReference Update="Certes" Version="2.3.3" />
     <PackageReference Update="Colorful.Console" Version="1.2.9" />
-    <PackageReference Update="CsvHelper" Version="12.2.1" />
+    <PackageReference Update="CsvHelper" Version="12.2.2" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.4.4"/>
     <PackageReference Update="Microsoft.DataPrep" Version="0.0.1.6-preview" />
     <PackageReference Update="Microsoft.ML" Version="1.4.0" />
@@ -139,7 +124,7 @@
     <PackageReference Update="Polly" Version="7.1.1" />
     <PackageReference Update="CronScheduler.AspNetCore" Version="2.0.0" />
     <PackageReference Update="CronScheduler.Extensions" Version="2.0.0" />
-    <PackageReference Update="Microsoft.IO.RecyclableMemoryStream" Version="1.3.0" />
+    <PackageReference Update="Microsoft.IO.RecyclableMemoryStream" Version="1.3.2" />
   </ItemGroup>
 
   <ItemGroup Label="Swashbuckle">
@@ -149,12 +134,12 @@
   </ItemGroup>
 
   <ItemGroup Label="SourceLink">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup Label="Analyzers">
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.7" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.8" PrivateAssets="All" />
   </ItemGroup>
 </Project>

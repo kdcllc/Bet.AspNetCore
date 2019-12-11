@@ -8,7 +8,7 @@ namespace Bet.Extensions.HealthChecks.SigtermCheck
 {
     public class SigtermHealthCheck : IHealthCheck
     {
-#if NETCOREAPP3_0 || NETSTANDARD2_1
+#if NETCOREAPP3_1 || NETSTANDARD2_1
         private readonly IHostApplicationLifetime _applicationLifetime;
 
         public SigtermHealthCheck(IHostApplicationLifetime applicationLifetime)

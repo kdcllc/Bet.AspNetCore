@@ -10,7 +10,7 @@
 #               2. docker cp betaspnetcore.nuget:/app/nugets ${PWD}/packages
 #------------------------------------------------------------------------------------------------------------------------
 
-FROM kdcllc/dotnet:3.0-sdk-base-buster as builder
+FROM kdcllc/dotnet-sdk:3.1-buster as builder
 ARG VERSION
 WORKDIR /app
 

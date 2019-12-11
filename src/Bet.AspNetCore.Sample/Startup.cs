@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace Bet.AspNetCore.Sample
@@ -164,12 +165,6 @@ namespace Bet.AspNetCore.Sample
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // returns 200 okay
-            app.UseLivenessHealthCheck();
-
-            // returns healthy if all healthcheks return healthy
-            app.UseHealthyHealthCheck();
-
             app.UseSwagger();
 
             // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
@@ -184,11 +179,15 @@ namespace Bet.AspNetCore.Sample
             });
 
             // https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/
-            app.UseEndpoints(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapControllers();
-                routes.MapDefaultControllerRoute();
-                routes.MapRazorPages();
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+
+                // returns 200 okay
+                endpoints.MapLivenessHealthCheck();
+                endpoints.MapHealthyHealthCheck();
             });
         }
     }
