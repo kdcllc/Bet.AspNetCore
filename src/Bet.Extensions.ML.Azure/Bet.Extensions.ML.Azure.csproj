@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>The Collection of the Machine Learning related functionality for AspNetCore or GenericHost to be used with Azure Storage.</Description>
+    <PackageTags>AspNetCore, DotNetCore, Machine Learning, ML.NET, Artificial Intelligence, Extensions Azure Storage</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML\Bet.Extensions.ML.csproj" />
+  </ItemGroup>
+
+</Project>
