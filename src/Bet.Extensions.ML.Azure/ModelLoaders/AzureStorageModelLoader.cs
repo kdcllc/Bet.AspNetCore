@@ -20,22 +20,28 @@ namespace Bet.Extensions.ML
         private const int TimeoutMilliseconds = 60000;
 
         private readonly ILogger<AzureStorageModelLoader> _logger;
-        private readonly MLContext? _context;
+        private readonly MLContext _context;
         private readonly CancellationTokenSource _stopping;
         private Lazy<Task<CloudBlobContainer>> _container;
         private ModelReloadToken _reloadToken;
         private TimeSpan _interval;
-        private string _fileName;
-        private Task _pollingTask;
-        private ITransformer _model;
-        private string _eTag;
+        private string _fileName = string.Empty;
+        private Task? _pollingTask;
+        private ITransformer? _model;
+        private string _eTag = string.Empty;
 
         public AzureStorageModelLoader(
             IOptions<MLOptions> contextOptions,
             ILogger<AzureStorageModelLoader> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _context = contextOptions.Value?.MLContext;
+
+            if (contextOptions.Value?.MLContext == null)
+            {
+                throw new ArgumentNullException(nameof(contextOptions));
+            }
+
+            _context = contextOptions.Value.MLContext;
             _reloadToken = new ModelReloadToken();
             _stopping = new CancellationTokenSource();
         }
@@ -76,6 +82,9 @@ namespace Bet.Extensions.ML
             _interval = interval;
 
             _fileName = fileName;
+
+            // run for the first time
+            RunAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         internal async Task RunAsync()
@@ -110,7 +119,7 @@ namespace Bet.Extensions.ML
             }
             finally
             {
-                cancellation.Dispose();
+                cancellation?.Dispose();
             }
 
             // schedule a polling task only if none exists and a valid delay is specified
@@ -158,7 +167,7 @@ namespace Bet.Extensions.ML
                 {
                     await RunAsync();
                 }
-                catch (Exception)
+                catch
                 {
                     // Ignore
                 }

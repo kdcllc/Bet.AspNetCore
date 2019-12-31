@@ -128,9 +128,9 @@
   </ItemGroup>
 
   <ItemGroup Label="Swashbuckle">
-    <PackageReference Update="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
-    <PackageReference Update="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc2" />
-    <PackageReference Update="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc2" />
+    <PackageReference Update="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
+    <PackageReference Update="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc5" />
+    <PackageReference Update="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc5" />
   </ItemGroup>
 
   <ItemGroup Label="SourceLink">
