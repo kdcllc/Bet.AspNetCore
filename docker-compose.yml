@@ -8,8 +8,20 @@
 version: '3.4'
 
 services:
+  bet.extensions.base:
+    image: betextensionsbase:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+      args:
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        SOLUTION_BASE: "true"
+
   bet.aspnetcore.web:
     image: ${DOCKER_REGISTRY-}/bet-aspnetcore-web-sample:${TAG}
+    depends_on:
+      - bet.extensions.base
     build:
       context: .
       dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
@@ -22,6 +34,8 @@ services:
 
   bet.aspnetcore.webapi:
     image: ${DOCKER_REGISTRY-}/bet-aspnetcore-webapi-sample:${TAG}
+    depends_on:
+      - bet.extensions.base
     build:
       context: .
       dockerfile: src/Bet.ML.WebApi.Sample/Dockerfile
@@ -34,6 +48,8 @@ services:
 
   bet.hosting:
     image: ${DOCKER_REGISTRY-}/bet-hosting-sample:${TAG}
+    depends_on:
+      - bet.extensions.base
     build:
       context: .
       dockerfile: src/Bet.Hosting.Sample/Dockerfile

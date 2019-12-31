@@ -10,8 +10,8 @@
 #
 #------------------------------------------------------------------------------------------------------------------------
 
-FROM kdcllc/dotnet-sdk:3.1-alpine as builder
-RUN dotnet publish "./src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
+FROM betextensionsbase:v1 as builder
+RUN dotnet publish  "./src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
 FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1-alpine AS runtime
