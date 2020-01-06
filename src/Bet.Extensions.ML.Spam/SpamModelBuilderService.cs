@@ -10,6 +10,7 @@ using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace Bet.Extensions.ML.Spam
 {
@@ -46,6 +47,33 @@ namespace Bet.Extensions.ML.Spam
             _logger.LogInformation("[ClassifyTestAsync][Started]");
 
             var sw = ValueStopwatch.StartNew();
+
+            // start: batch predict
+            IEnumerable<SpamInput> dataToPredict = new[]
+            {
+                new SpamInput
+                {
+                    Message = "That's a great idea. It should work"
+                },
+
+                new SpamInput
+                {
+                    Message = "free medicine winner! congratulations"
+                },
+            };
+
+            var batchDataPredict = _modelBuilder.MLContext.Data.LoadFromEnumerable(dataToPredict);
+
+            var batchPredicts = _modelBuilder.Model.Transform(batchDataPredict);
+
+            var predictionsResults = _modelBuilder.MLContext.Data.CreateEnumerable<SpamPrediction>(batchPredicts, reuseRowObject: false);
+
+            foreach (var item in predictionsResults)
+            {
+                var result = item.IsSpam;
+            }
+
+            // end: batch predict
 
             var predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
 

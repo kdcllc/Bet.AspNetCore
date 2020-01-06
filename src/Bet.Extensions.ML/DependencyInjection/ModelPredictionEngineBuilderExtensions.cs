@@ -14,7 +14,7 @@ using Microsoft.ML;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class ModelPredictionEngineBuilderExtensions
     {
         /// <summary>
         /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPredictionEngineObjectPool{TData, TPrediction}"/> implementation.
@@ -39,7 +39,6 @@ namespace Microsoft.Extensions.DependencyInjection
                         {
                             var context = mlContext.Model.Load(fileStream, out var modelInputSchema);
                             options.InputSchema = modelInputSchema;
-
                             return context;
                         }
                     };

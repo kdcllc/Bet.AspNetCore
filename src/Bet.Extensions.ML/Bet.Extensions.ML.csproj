@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DependencyInjection\" />
+  </ItemGroup>
+
 </Project>
