@@ -1,0 +1,33 @@
+
+local:
+  enabled: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 80
+
+image:
+  repository: kdcllc/bet
+  tag: hosting
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+   cpu: 500m
+   memory: 350Mi
+  requests:
+   cpu: 250m
+   memory: 250Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

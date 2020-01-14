@@ -55,7 +55,7 @@ namespace Bet.ML.WebApi.Sample.Jobs
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.Message);
+                        _logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.ToString());
                     }
                 }
 

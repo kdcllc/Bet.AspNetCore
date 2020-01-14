@@ -4,12 +4,13 @@
 #               1. Build the image
 #               2. Run the container to get the packages out of the image.
 #
-# BUILD:        docker build --rm -f "Dockerfile.Base" -t betextensionsbase:v1 .
+# BUILD:        docker build --rm -f "Dockerfile.Base" -t kdcllc/bet:base --build-arg NUGET_RESTORE="-v=q" .
+#
 #
 #------------------------------------------------------------------------------------------------------------------------
 
 ARG SOLUTION_BASE="true"
-ARG NUGET_RESTORE="-v d"
+ARG NUGET_RESTORE="-v=q"
 ARG RUNTESTS
 ARG VERBOSE
 

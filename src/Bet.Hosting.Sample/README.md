@@ -28,7 +28,7 @@ Make sure to execute all of the commands from the solution folder.
     docker-compose -f "docker-compose.yml" up -d --build --no-recreate bet.hosting
 
     # publish if needed
-    docker push kdcllc/kdcllc/bet-hosting-sample:v1
+    docker push kdcllc/bet:hosting
 ```
 
 2. Helm Install
@@ -36,16 +36,16 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install cron job
-    helm install k8s/hostingsample/charts/ml-cronjob --name mlcronjob
+    helm install k8s/bethosting/charts/betcronjob --name betcronjob
 
     # delete cron job
-    helm delete  mlcronjob --purge
+    helm delete  betcronjob --purge
 
     # install worker pod
-    helm install  k8s/hostingsample/charts/ml-worker-app --name mlworkerapp
+    helm install  k8s/bethosting/charts/betworker --name betworker
 
     # delete worker deployment
-    helm delete  mlworkerapp --purge
+    helm delete  betworker --purge
 ```
 
 Or
@@ -71,7 +71,7 @@ spec:
         spec:
           containers:
           - name: mlmodelbuilder-job
-            image: kdcllc/bet-hosting-sample:v1
+            image: kdcllc/bet:hosting
             command: ["./Bet.Hosting.Sample"]
             env:
               - name: MSI_ENDPOINT

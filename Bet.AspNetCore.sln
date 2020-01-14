@@ -21,7 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B5340D45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BB9BCC1-2A94-4439-AE89-E99A79DF38DF}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
+		.env = .env
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
@@ -29,6 +31,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		clean.sh = clean.sh
 		Diagrams.pptx = Diagrams.pptx
 		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		docker-compose.build.yml = docker-compose.build.yml
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.vscode.yml = docker-compose.vscode.yml
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		Dockerfile.base = Dockerfile.base
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
@@ -89,7 +98,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.HealthChecks
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.DataProtection", "src\Bet.Extensions.DataProtection\Bet.Extensions.DataProtection.csproj", "{7A96D11A-8D20-4A1E-9E95-03F01D245576}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.ML.Azure", "src\Bet.Extensions.ML.Azure\Bet.Extensions.ML.Azure.csproj", "{A9473CEA-98A2-4FA6-8C95-E5CD6B68A3B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML.Azure", "src\Bet.Extensions.ML.Azure\Bet.Extensions.ML.Azure.csproj", "{A9473CEA-98A2-4FA6-8C95-E5CD6B68A3B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

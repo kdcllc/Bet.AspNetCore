@@ -33,7 +33,7 @@ Make sure to execute all of the commands from the solution folder.
     docker-compose -f "docker-compose.yml" up -d --build --no-recreate  bet.aspnetcore.webapi
 
     # publish if needed
-    docker push kdcllc/bet-aspnetcore-webapi-sample:v1
+    docker push kdcllc/bet:webapi
 ```
 
 2. Helm Install
@@ -41,7 +41,7 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install web api in the local Kubernetes cluster
-     helm install bet-api-sample --set service.port=4000 -n betapisample
+     helm install betwebapi --set service.port=4000 -n betwebapi
 
     # delete web api
     helm delete  betapisample --purge
