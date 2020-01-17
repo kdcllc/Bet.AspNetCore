@@ -17,26 +17,29 @@ namespace Bet.Extensions.ML.ModelCreation
         private readonly ISourceLoader<TInput> _sourceLoader;
         private readonly ModelBuilderOptions<TResult> _options;
 
-        private MLContext _mLContext;
         private List<TInput> _rawDataSet = new List<TInput>();
-        private IDataView? _dataView;
         private DataViewSchema? _trainingSchema;
         private IDataView? _trainingDataView;
         private IDataView? _testDataView;
         private IEstimator<ITransformer>? _trainingPipeLine;
         private string _trainerName = string.Empty;
-        private ITransformer? _model;
 
         public ModelBuilder(
             MLContext mLContext,
             ISourceLoader<TInput> sourceLoader,
             IOptions<ModelBuilderOptions<TResult>> options)
         {
-            _mLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
+            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
             _sourceLoader = sourceLoader ?? throw new ArgumentNullException(nameof(sourceLoader));
 
             _options = options.Value;
         }
+
+        public IDataView? DataView { get; private set; }
+
+        public MLContext MLContext { get; }
+
+        public ITransformer? Model { get; private set; }
 
         public virtual void LoadData(IEnumerable<TInput> records)
         {
@@ -60,13 +63,13 @@ namespace Bet.Extensions.ML.ModelCreation
             }
 
             // 2. create dataview
-            _dataView = _mLContext.Data.LoadFromEnumerable(_rawDataSet);
+            DataView = MLContext.Data.LoadFromEnumerable(_rawDataSet);
 
             // schema is used to save the file
-            _trainingSchema = _dataView.Schema;
+            _trainingSchema = DataView.Schema;
 
             // 3. split the dataset based on proportions
-            var trainTestSplit = _mLContext.Data.TrainTestSplit(_dataView, _options.TestSlipFraction);
+            var trainTestSplit = MLContext.Data.TrainTestSplit(DataView, _options.TestSlipFraction);
             _trainingDataView = trainTestSplit.TrainSet;
             _testDataView = trainTestSplit.TestSet;
         }
@@ -80,7 +83,7 @@ namespace Bet.Extensions.ML.ModelCreation
 
             var sw = ValueStopwatch.StartNew();
 
-            var result = _options.TrainingPipelineConfigurator(_mLContext);
+            var result = _options.TrainingPipelineConfigurator(MLContext);
 
             _trainingPipeLine = result.TrainingPipeLine;
             _trainerName = result.TrainerName;
@@ -100,12 +103,12 @@ namespace Bet.Extensions.ML.ModelCreation
 
             if (_testDataView == null
                 || _trainingPipeLine == null
-                || _model == null)
+                || Model == null)
             {
-                throw new ArgumentNullException($"{nameof(_testDataView)} or {nameof(_trainingPipeLine)} or {nameof(_model)} are null.");
+                throw new ArgumentNullException($"{nameof(_testDataView)} or {nameof(_trainingPipeLine)} or {nameof(Model)} are null.");
             }
 
-            var result = _options.EvaluateConfigurator(_mLContext, _model, _trainerName, _testDataView, _trainingPipeLine);
+            var result = _options.EvaluateConfigurator(MLContext, Model, _trainerName, _testDataView, _trainingPipeLine);
 
             result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
 
@@ -127,7 +130,7 @@ namespace Bet.Extensions.ML.ModelCreation
             }
 
             var result = _options.TrainModelConfigurator(_trainingDataView, _trainingPipeLine);
-            _model = result.Model;
+            Model = result.Model;
 
             result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
             return result;
@@ -137,7 +140,7 @@ namespace Bet.Extensions.ML.ModelCreation
         {
             var stream = new MemoryStream();
 
-            _mLContext.Model.Save(_model, _trainingSchema, stream);
+            MLContext.Model.Save(Model, _trainingSchema, stream);
             return stream;
         }
     }

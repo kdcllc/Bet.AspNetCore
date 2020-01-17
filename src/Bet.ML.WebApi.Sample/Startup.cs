@@ -57,7 +57,7 @@ namespace Bet.ML.WebApi.Sample
                 .WithStorageProvider(nameof(SpamModelBuilderService), spamInMemoryModelStorageProvider);
 
             var sentimentFileModeStorageProvider = new FileModelStorageProvider();
-            services.AddSentimentModelBuilder(sentimentFileModeStorageProvider);
+            services.AddSentimentModelBuilder(modelStorageProvider: sentimentFileModeStorageProvider);
 
             var sentimentName = "SentimentModel";
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)

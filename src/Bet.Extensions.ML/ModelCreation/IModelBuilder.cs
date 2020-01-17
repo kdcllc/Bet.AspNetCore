@@ -2,6 +2,7 @@
 using System.IO;
 
 using Bet.Extensions.ML.ModelCreation.Results;
+using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
@@ -9,6 +10,12 @@ namespace Bet.Extensions.ML.ModelCreation
         where TInput : class
         where TResult : MetricsResult
     {
+        IDataView? DataView { get; }
+
+        ITransformer? Model { get; }
+
+        MLContext MLContext { get; }
+
         void LoadAndBuildDataView();
 
         TrainingPipelineResult BuildTrainingPipeline();

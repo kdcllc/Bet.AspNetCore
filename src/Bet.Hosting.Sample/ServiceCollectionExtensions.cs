@@ -35,8 +35,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddModelBuildersCronJobService(this IServiceCollection services)
         {
             return services
-                        .AddSpamDetectionModelBuilder()
-                        .AddSentimentModelBuilder()
+                        //.AddSpamDetectionModelBuilder()
+                        //.AddSentimentModelBuilder()
+                        .AddSentimentModelEngine()
+
                         .AddScoped<IModelBuildersJobService, ModelBuildersJobService>();
         }
     }

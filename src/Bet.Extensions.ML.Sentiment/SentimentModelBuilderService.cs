@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.ModelBuilder;
-using Bet.Extensions.ML.ModelCreation;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment.Models;
 
@@ -18,7 +17,7 @@ namespace Bet.Extensions.ML.Sentiment
     public class SentimentModelBuilderService
         : ModelBuilderService<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult, SentimentModelBuilderServiceOptions>
     {
-        private readonly IModelBuilder<SentimentIssue, BinaryClassificationMetricsResult> _modelBuilder;
+        private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
         private readonly ILogger _logger;
         private readonly object _lockObject = new object();
@@ -33,7 +32,7 @@ namespace Bet.Extensions.ML.Sentiment
         /// <param name="optionsMonitor"></param>
         /// <param name="logger"></param>
         public SentimentModelBuilderService(
-            IModelBuilder<SentimentIssue, BinaryClassificationMetricsResult> sentimentModelBuilder,
+            IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             IModelStorageProvider storageProvider,
             IOptionsMonitor<SentimentModelBuilderServiceOptions> optionsMonitor,
             ILogger logger) : base(sentimentModelBuilder, storageProvider, optionsMonitor, logger)

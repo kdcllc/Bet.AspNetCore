@@ -18,11 +18,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds ML.NET based Sentiment model builder with <see cref="FileModelStorageProvider"/> as storage.
         /// </summary>
         /// <param name="services">The DI services.</param>
+        /// <param name="modelName"></param>
         /// <param name="modelStorageProvider">The model storage provider.</param>
         /// <param name="configure">The Model Builder configuration.</param>
         /// <returns></returns>
         public static IServiceCollection AddSentimentModelBuilder(
             this IServiceCollection services,
+            string modelName = "SentimentModel",
             IModelStorageProvider? modelStorageProvider = default,
             Action<SentimentModelBuilderServiceOptions>? configure = null)
         {
