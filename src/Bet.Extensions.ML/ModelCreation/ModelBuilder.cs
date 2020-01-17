@@ -11,12 +11,11 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
-    public class ModelEngine<TInput, TOutput, TResult> : IModelEngine<TInput, TResult> where TInput : class
-         where TOutput : class, new()
+    public class ModelBuilder<TInput, TResult> : IModelBuilder<TInput, TResult> where TInput : class
          where TResult : MetricsResult
     {
         private readonly ISourceLoader<TInput> _sourceLoader;
-        private readonly ModelEngineOptions<TResult> _options;
+        private readonly ModelBuilderOptions<TResult> _options;
 
         private MLContext _mLContext;
         private List<TInput> _rawDataSet = new List<TInput>();
@@ -25,12 +24,13 @@ namespace Bet.Extensions.ML.ModelCreation
         private IDataView? _trainingDataView;
         private IDataView? _testDataView;
         private IEstimator<ITransformer>? _trainingPipeLine;
+        private string _trainerName = string.Empty;
         private ITransformer? _model;
 
-        public ModelEngine(
+        public ModelBuilder(
             MLContext mLContext,
             ISourceLoader<TInput> sourceLoader,
-            IOptions<ModelEngineOptions<TResult>> options)
+            IOptions<ModelBuilderOptions<TResult>> options)
         {
             _mLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
             _sourceLoader = sourceLoader ?? throw new ArgumentNullException(nameof(sourceLoader));
@@ -75,7 +75,7 @@ namespace Bet.Extensions.ML.ModelCreation
         {
             if (_options.TrainingPipelineConfigurator == null)
             {
-                throw new ArgumentException($"{nameof(ModelEngineOptions<TResult>.TrainingPipelineConfigurator)} wasn't configured.");
+                throw new ArgumentException($"{nameof(ModelBuilderOptions<TResult>.TrainingPipelineConfigurator)} wasn't configured.");
             }
 
             var sw = ValueStopwatch.StartNew();
@@ -83,6 +83,7 @@ namespace Bet.Extensions.ML.ModelCreation
             var result = _options.TrainingPipelineConfigurator(_mLContext);
 
             _trainingPipeLine = result.TrainingPipeLine;
+            _trainerName = result.TrainerName;
 
             result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
             return result;
@@ -92,18 +93,19 @@ namespace Bet.Extensions.ML.ModelCreation
         {
             if (_options.EvaluateConfigurator == null)
             {
-                throw new ArgumentException($"{nameof(ModelEngineOptions<TResult>.EvaluateConfigurator)} wasn't configured.");
+                throw new ArgumentException($"{nameof(ModelBuilderOptions<TResult>.EvaluateConfigurator)} wasn't configured.");
             }
 
             var sw = ValueStopwatch.StartNew();
 
             if (_testDataView == null
-                || _trainingPipeLine == null)
+                || _trainingPipeLine == null
+                || _model == null)
             {
-                throw new ArgumentNullException($"{nameof(_testDataView)} or {nameof(_trainingPipeLine)} are have null values.");
+                throw new ArgumentNullException($"{nameof(_testDataView)} or {nameof(_trainingPipeLine)} or {nameof(_model)} are null.");
             }
 
-            var result = _options.EvaluateConfigurator(_testDataView, _trainingPipeLine);
+            var result = _options.EvaluateConfigurator(_mLContext, _model, _trainerName, _testDataView, _trainingPipeLine);
 
             result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;
 
@@ -114,17 +116,17 @@ namespace Bet.Extensions.ML.ModelCreation
         {
             if (_options.TrainModelConfigurator == null)
             {
-                throw new ArgumentException($"{nameof(ModelEngineOptions<TResult>.TrainModelConfigurator)} wasn't configured.");
+                throw new ArgumentException($"{nameof(ModelBuilderOptions<TResult>.TrainModelConfigurator)} wasn't configured.");
             }
 
             var sw = ValueStopwatch.StartNew();
 
-            if (_trainingDataView == null)
+            if (_trainingDataView == null || _trainingPipeLine == null)
             {
-                throw new ArgumentNullException($"{nameof(_trainingDataView)} is null.");
+                throw new ArgumentNullException($"{nameof(_trainingDataView)} or {_trainingPipeLine} are null.");
             }
 
-            var result = _options.TrainModelConfigurator(_trainingDataView);
+            var result = _options.TrainModelConfigurator(_trainingDataView, _trainingPipeLine);
             _model = result.Model;
 
             result.ElapsedMilliseconds = (long)sw.GetElapsedTime().TotalMilliseconds;

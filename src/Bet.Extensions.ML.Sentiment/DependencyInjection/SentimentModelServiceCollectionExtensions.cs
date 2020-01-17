@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment;
@@ -11,7 +12,7 @@ using Microsoft.ML;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class SentimentModelServiceCollectionExtensions
     {
         /// <summary>
         /// Adds ML.NET based Sentiment model builder with <see cref="FileModelStorageProvider"/> as storage.

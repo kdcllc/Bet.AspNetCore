@@ -1,18 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using Bet.Extensions.ML.ModelCreation.Results;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
-    public interface IModelEngine<TInput, TResult>
+    public interface IModelBuilder<TInput, TResult>
         where TInput : class
         where TResult : MetricsResult
     {
-        TrainingPipelineResult BuildTrainingPipeline();
-        TResult Evaluate();
-        Stream GetModelStream();
         void LoadAndBuildDataView();
-        void LoadData(IEnumerable<TInput> records);
+
+        TrainingPipelineResult BuildTrainingPipeline();
+
+        TResult Evaluate();
+
         TrainModelResult TrainModel();
+
+        Stream GetModelStream();
+
+        void LoadData(IEnumerable<TInput> records);
     }
 }
