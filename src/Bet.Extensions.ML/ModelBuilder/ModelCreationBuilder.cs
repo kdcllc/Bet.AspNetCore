@@ -8,10 +8,11 @@ using Microsoft.ML;
 namespace Bet.Extensions.ML.ModelBuilder
 {
     /// <inheritdoc/>
-    public abstract class ModelCreationBuilder<TInput, TOutput, TResult> : IModelCreationBuilder<TInput, TOutput, TResult>
-     where TInput : class
-     where TOutput : class, new()
-     where TResult : MetricsResult
+    public abstract class ModelCreationBuilder<TInput, TOutput, TResult>
+        : IModelCreationBuilder<TInput, TOutput, TResult>
+         where TInput : class
+         where TOutput : class, new()
+         where TResult : MetricsResult
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelCreationBuilder{TInput, TOutput, TResult}"/> class.
@@ -66,7 +67,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         }
 
         /// <inheritdoc/>
-        public virtual IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView(double testFraction = 0.1)
+        public virtual IModelCreationBuilder<TInput, TOutput, TResult> BuildDataView(double testFraction = 0.1)
         {
             if (Records.Count > 0)
             {
@@ -114,7 +115,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         }
 
         /// <inheritdoc/>
-        public abstract IModelCreationBuilder<TInput, TOutput, TResult> LoadDefaultData();
+        public abstract IModelCreationBuilder<TInput, TOutput, TResult> LoadData(string fileName = "");
 
         public virtual void SaveModel(Action<MLContext, ITransformer?, string, DataViewSchema?> builder, string modelRelativePath)
         {
@@ -134,7 +135,7 @@ namespace Bet.Extensions.ML.ModelBuilder
                 }, modelRelativePath);
         }
 
-        public virtual MemoryStream GetModelStream()
+        public virtual Stream GetModelStream()
         {
             var stream = new MemoryStream();
 

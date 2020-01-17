@@ -88,31 +88,34 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TData"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="storageName">The name of the ML model in the storage provider.</param>
+        /// <param name="modelFileName">The name of the ML model in the storage provider.</param>
         /// <param name="modelStorageProvider">The model storage provider. The default model storage provider is <see cref="InMemoryModelStorageProvider"/>.</param>
         /// <returns></returns>
         public static IModelPredictionEngineBuilder<TData, TPrediction> WithStorageProvider<TData, TPrediction>(
             this IModelPredictionEngineBuilder<TData, TPrediction> builder,
-            string storageName,
+            string modelFileName,
             IModelStorageProvider? modelStorageProvider = default)
             where TData : class where TPrediction : class, new()
         {
-            builder.Services.Configure(builder.ModelName, (Action<ModelPredictionEngineOptions<TData, TPrediction>>)((mlOptions) =>
-            {
-                mlOptions.CreateModel = (mlContext) =>
+            builder.Services.Configure(
+                builder.ModelName,
+                (Action<ModelPredictionEngineOptions<TData, TPrediction>>)(
+                mlOptions =>
                 {
-                    if (modelStorageProvider == null)
+                    mlOptions.CreateModel = (mlContext) =>
                     {
-                        modelStorageProvider = new InMemoryModelStorageProvider();
-                    }
+                        if (modelStorageProvider == null)
+                        {
+                            modelStorageProvider = new InMemoryModelStorageProvider();
+                        }
 
-                    ChangeToken.OnChange(
-                        () => modelStorageProvider.GetReloadToken(),
-                        () => mlOptions.Reload());
+                        ChangeToken.OnChange(
+                            () => modelStorageProvider.GetReloadToken(),
+                            () => mlOptions.Reload());
 
-                    return GetTransfomer(storageName, mlContext, modelStorageProvider);
-                };
-            }));
+                        return GetTransfomer(modelFileName, mlContext, modelStorageProvider);
+                    };
+                }));
 
             return builder;
         }

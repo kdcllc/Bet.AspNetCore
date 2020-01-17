@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML;
 
-namespace Bet.Extensions.ML.ModelBuilder
+namespace Bet.Extensions.ML.ModelCreation.Results
 {
     public class TrainModelResult
     {

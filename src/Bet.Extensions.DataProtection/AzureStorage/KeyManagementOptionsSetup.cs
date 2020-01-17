@@ -2,15 +2,24 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.DataProtection.AzureStorage;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Azure.Services.AppAuthentication;
+
+#if NETSTANDARD2_1
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.Azure.Storage.Blob;
+#endif
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+#if NETSTANDARD2_0
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
+#endif
 
 namespace Bet.Extensions.DataProtection.AzureStorage
 {
@@ -149,8 +158,11 @@ namespace Bet.Extensions.DataProtection.AzureStorage
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
 
             var cloudBlobContainer = cloudBlobClient.GetContainerReference(options.ContainerName);
-
+#if NETSTANDARD2_1
             var created = await cloudBlobContainer.CreateIfNotExistsAsync(cancellationToken);
+#elif NETSTANDARD2_0
+            var created = await cloudBlobContainer.CreateIfNotExistsAsync();
+#endif
             if (created)
             {
                 _logger?.LogInformation("  - No Azure Blob [{containerName}] found - so one was auto created.", options.ContainerName);

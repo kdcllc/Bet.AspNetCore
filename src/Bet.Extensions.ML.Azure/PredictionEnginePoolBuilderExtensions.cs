@@ -1,5 +1,5 @@
 ﻿using System;
-using Bet.Extensions.AzureStorage;
+
 using Bet.Extensions.AzureStorage.Options;
 using Bet.Extensions.ML;
 
@@ -10,6 +10,18 @@ namespace Microsoft.Extensions.ML
 {
     public static class PredictionEnginePoolBuilderExtensions
     {
+        /// <summary>
+        /// Adds Azure Blob Storage Provider with pooling checks for the updated models.
+        /// </summary>
+        /// <typeparam name="TData"></typeparam>
+        /// <typeparam name="TPrediction"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="modelName"></param>
+        /// <param name="containerName"></param>
+        /// <param name="fileName"></param>
+        /// <param name="setupStorage"></param>
+        /// <param name="interval"></param>
+        /// <returns></returns>
         public static PredictionEnginePoolBuilder<TData, TPrediction> FromAzureStorage<TData, TPrediction>(
             this PredictionEnginePoolBuilder<TData, TPrediction> builder,
             string modelName,

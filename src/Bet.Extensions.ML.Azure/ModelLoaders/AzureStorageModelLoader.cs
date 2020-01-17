@@ -89,7 +89,7 @@ namespace Bet.Extensions.ML
 
         internal async Task RunAsync()
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
             CancellationTokenSource? cancellation = null;
 
             try
@@ -107,7 +107,10 @@ namespace Bet.Extensions.ML
                     previousToken.OnReload();
                 }
 
-                _logger.LogInformation("[{loader}][Succeeded]-Time Elapsed {time}ms", nameof(AzureStorageModelLoader), sw.ElapsedMilliseconds);
+                _logger.LogInformation(
+                    "[{loader}][Succeeded]-Time Elapsed {time}ms",
+                    nameof(AzureStorageModelLoader),
+                    sw.GetElapsedTime().TotalMilliseconds);
             }
             catch (OperationCanceledException) when (!_stopping.IsCancellationRequested)
             {

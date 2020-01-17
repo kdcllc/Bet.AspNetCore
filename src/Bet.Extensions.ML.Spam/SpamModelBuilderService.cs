@@ -9,12 +9,13 @@ using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
-using Microsoft.ML.Data;
 
 namespace Bet.Extensions.ML.Spam
 {
-    public class SpamModelBuilderService : ModelBuilderService<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>
+    public class SpamModelBuilderService
+        : ModelBuilderService<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult, SpamModelBuilderServiceOptions>
     {
         private readonly ILogger _logger;
         private readonly IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> _modelBuilder;
@@ -26,20 +27,18 @@ namespace Bet.Extensions.ML.Spam
         /// </summary>
         /// <param name="spamModelBuilder"></param>
         /// <param name="storageProvider"></param>
+        /// <param name="optionsMonitor"></param>
         /// <param name="logger"></param>
         public SpamModelBuilderService(
             IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> spamModelBuilder,
             IModelStorageProvider storageProvider,
-            ILogger logger) : base(spamModelBuilder, storageProvider, logger)
+            IOptionsMonitor<SpamModelBuilderServiceOptions> optionsMonitor,
+            ILogger logger) : base(spamModelBuilder, storageProvider, optionsMonitor, logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _modelBuilder = spamModelBuilder ?? throw new ArgumentNullException(nameof(spamModelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
-
-            Name = nameof(SpamModelBuilderService);
         }
-
-        public override string Name { get; set; }
 
         public override async Task ClassifyTestAsync(CancellationToken cancellationToken)
         {
@@ -64,7 +63,7 @@ namespace Bet.Extensions.ML.Spam
 
             var batchDataPredict = _modelBuilder.MLContext.Data.LoadFromEnumerable(dataToPredict);
 
-            var batchPredicts = _modelBuilder.Model.Transform(batchDataPredict);
+            var batchPredicts = _modelBuilder.Model!.Transform(batchDataPredict);
 
             var predictionsResults = _modelBuilder.MLContext.Data.CreateEnumerable<SpamPrediction>(batchPredicts, reuseRowObject: false);
 
@@ -74,7 +73,6 @@ namespace Bet.Extensions.ML.Spam
             }
 
             // end: batch predict
-
             var predictor = _modelBuilder.MLContext.Model.CreatePredictionEngine<SpamInput, SpamPrediction>(_modelBuilder.Model);
 
             var tasks = new List<Task>

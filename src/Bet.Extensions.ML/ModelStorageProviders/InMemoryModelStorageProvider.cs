@@ -14,7 +14,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
 {
     public class InMemoryModelStorageProvider : IModelStorageProvider
     {
-        private readonly ConcurrentDictionary<string, MemoryStream> _modelStorage = new ConcurrentDictionary<string, MemoryStream>();
+        private readonly ConcurrentDictionary<string, Stream> _modelStorage = new ConcurrentDictionary<string, Stream>();
         private readonly object _lock = new object();
 
         private ReloadToken _reloadToken;
@@ -29,7 +29,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
             return _reloadToken;
         }
 
-        public Task<MemoryStream> LoadModelAsync(string name, CancellationToken cancellationToken)
+        public Task<Stream> LoadModelAsync(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -38,7 +38,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
                 return Task.FromResult(result);
             }
 
-            return Task.FromResult<MemoryStream>(default!);
+            return Task.FromResult<Stream>(default!);
         }
 
         public Task<TResult> LoadModelResultAsync<TResult>(string name, CancellationToken cancellationToken)
@@ -63,7 +63,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
             throw new NotImplementedException();
         }
 
-        public Task SaveModelAsync(string name, MemoryStream stream, CancellationToken cancellationToken)
+        public Task SaveModelAsync(string name, Stream stream, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {

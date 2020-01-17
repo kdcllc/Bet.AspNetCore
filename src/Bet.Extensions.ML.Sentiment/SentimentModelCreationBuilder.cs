@@ -9,14 +9,14 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Sentiment
 {
-    public class SentimentModelBuilder
+    public class SentimentModelCreationBuilder
         : ModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>
     {
-        public SentimentModelBuilder(MLContext context) : base(context)
+        public SentimentModelCreationBuilder(MLContext context) : base(context)
         {
         }
 
-        public override IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> LoadDefaultData()
+        public override IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> LoadData(string fileName = "")
         {
             var inputs = LoadFromEmbededResource.GetRecords<InputSentimentIssueRow>("Content.wikiDetoxAnnotated40kRows.tsv", delimiter: "\t", hasHeaderRecord: true);
 

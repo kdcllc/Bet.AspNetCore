@@ -11,7 +11,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <summary>
         /// Model Builder Service Name.
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Train model consist of:
@@ -20,6 +20,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// 3. Train the ML Model.
         /// 4. Evaluate the Model against test dataset.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task TrainModelAsync(CancellationToken cancellationToken);
 
@@ -32,6 +33,7 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <summary>
         /// Saves the ML model.
         /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task SaveModelAsync(CancellationToken cancellationToken);
     }

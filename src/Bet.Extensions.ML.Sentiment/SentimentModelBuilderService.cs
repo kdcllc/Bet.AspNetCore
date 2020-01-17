@@ -9,36 +9,42 @@ using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment.Models;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Sentiment
 {
-    public class SentimentModelBuilderService : ModelBuilderService<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult>
+    public class SentimentModelBuilderService
+        : ModelBuilderService<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult, SentimentModelBuilderServiceOptions>
     {
         private readonly IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
         private readonly ILogger _logger;
         private readonly object _lockObject = new object();
 
+        private SentimentModelBuilderServiceOptions _options;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SentimentModelBuilderService"/> class.
         /// </summary>
         /// <param name="sentimentModelBuilder"></param>
         /// <param name="storageProvider"></param>
+        /// <param name="optionsMonitor"></param>
         /// <param name="logger"></param>
         public SentimentModelBuilderService(
             IModelCreationBuilder<SentimentIssue, SentimentPrediction, BinaryClassificationMetricsResult> sentimentModelBuilder,
             IModelStorageProvider storageProvider,
-            ILogger logger) : base(sentimentModelBuilder, storageProvider, logger)
+            IOptionsMonitor<SentimentModelBuilderServiceOptions> optionsMonitor,
+            ILogger logger) : base(sentimentModelBuilder, storageProvider, optionsMonitor, logger)
         {
             _modelBuilder = sentimentModelBuilder ?? throw new ArgumentNullException(nameof(sentimentModelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            Name = nameof(SentimentModelBuilderService);
-        }
+            _options = optionsMonitor.CurrentValue;
 
-        public override string Name { get; set; }
+            optionsMonitor.OnChange(x => _options = x);
+        }
 
         /// <summary>
         /// The following steps are executed in the pipeline:
@@ -57,7 +63,7 @@ namespace Bet.Extensions.ML.Sentiment
 
             // 1. load default ML data set
             _logger.LogInformation("[LoadDataset][Started]");
-            _modelBuilder.LoadDefaultData().BuiltDataView();
+            _modelBuilder.LoadData(Options.ModelSourceFileName).BuildDataView();
 
             if (_modelBuilder?.DataView == null)
             {
@@ -65,30 +71,30 @@ namespace Bet.Extensions.ML.Sentiment
             }
 
             _logger.LogInformation(
-                "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed} ms",
+                "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed}ms",
                 _modelBuilder.DataView.GetRowCount(),
                 sw.GetElapsedTime().Milliseconds);
 
             // 2. build training pipeline
             _logger.LogInformation("[BuildTrainingPipeline][Started]");
             var buildTrainingPipelineResult = _modelBuilder.BuildTrainingPipeline();
-            _logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed} ms", buildTrainingPipelineResult.ElapsedMilliseconds);
+            _logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed}ms", buildTrainingPipelineResult.ElapsedMilliseconds);
 
             // 3. train the model
             _logger.LogInformation("[TrainModel][Started]");
             var trainModelResult = _modelBuilder.TrainModel();
-            _logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed} ms", trainModelResult.ElapsedMilliseconds);
+            _logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed}ms", trainModelResult.ElapsedMilliseconds);
 
             // 4. evaluate quality of the pipeline
             _logger.LogInformation("[Evaluate][Started]");
             var evaluateResult = _modelBuilder.Evaluate();
-            _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed} ms", evaluateResult.ElapsedMilliseconds);
+            _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}ms", evaluateResult.ElapsedMilliseconds);
             _logger.LogInformation(evaluateResult.ToString());
 
             // Save Results.
-            await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
+            await _storageProvider.SaveModelResultAsync(evaluateResult, _options.ModelResultFileName, cancellationToken);
 
-            _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().Milliseconds);
+            _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}ms", sw.GetElapsedTime().Milliseconds);
             await Task.CompletedTask;
         }
 

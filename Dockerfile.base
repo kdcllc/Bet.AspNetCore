@@ -4,7 +4,7 @@
 #               1. Build the image
 #               2. Run the container to get the packages out of the image.
 #
-# BUILD:        docker build --rm -f "Dockerfile.Base" -t kdcllc/bet:base --build-arg NUGET_RESTORE="-v=q" .
+# BUILD:        docker build --rm -f "Dockerfile.base" -t kdcllc/bet:base --build-arg NUGET_RESTORE="-v=q" .
 #
 #
 #------------------------------------------------------------------------------------------------------------------------

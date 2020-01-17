@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bet.Extensions.ML.ModelStorageProviders;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.ML.ModelBuilder
 {
@@ -15,40 +16,35 @@ namespace Bet.Extensions.ML.ModelBuilder
     /// <typeparam name="TInput">The type of the input ML.NET model.</typeparam>
     /// <typeparam name="TOutput">The output of the ML.NET model that is used for prediction.</typeparam>
     /// <typeparam name="TResult">The ML.NET result of the prediction.</typeparam>
-    public abstract class ModelBuilderService<TInput, TOutput, TResult> : IModelBuilderService
+    /// <typeparam name="TOptions"></typeparam>
+    public abstract class ModelBuilderService<TInput, TOutput, TResult, TOptions> : IModelBuilderService
         where TInput : class
         where TOutput : class, new()
         where TResult : MetricsResult
+        where TOptions : ModelBuilderServiceOptions
     {
         private readonly IModelCreationBuilder<TInput, TOutput, TResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
         private readonly ILogger _logger;
 
-        public ModelBuilderService(
+        protected ModelBuilderService(
             IModelCreationBuilder<TInput, TOutput, TResult> modelBuilder,
             IModelStorageProvider storageProvider,
+            IOptionsMonitor<TOptions> options,
             ILogger logger)
         {
             _modelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            Options = options.CurrentValue;
+
+            options.OnChange(x => Options = x);
         }
 
-        public abstract string Name { get; set; }
+        public TOptions Options { get; private set; }
 
-        public abstract Task ClassifyTestAsync(CancellationToken cancellationToken);
-
-        public virtual async Task SaveModelAsync(CancellationToken cancellationToken)
-        {
-            // 6. save to the file
-            _logger.LogInformation("[SaveModelAsync][Started]");
-            var sw = ValueStopwatch.StartNew();
-
-            var readStream = _modelBuilder.GetModelStream();
-            await _storageProvider.SaveModelAsync(Name, readStream, cancellationToken);
-
-            _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
-        }
+        public string Name => Options.ModelName;
 
         /// <summary>
         /// The following steps are executed in the pipeline:
@@ -62,12 +58,12 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// <returns></returns>
         public virtual async Task TrainModelAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("TrainModelAsync][Started]");
+            _logger.LogInformation("[TrainModelAsync][Started]");
             var sw = ValueStopwatch.StartNew();
 
             // 1. load default ML data set
             _logger.LogInformation("[LoadDataset][Started]");
-            _modelBuilder.LoadDefaultData().BuiltDataView();
+            _modelBuilder.LoadData(Options.ModelSourceFileName).BuildDataView();
 
             if (_modelBuilder?.DataView == null)
             {
@@ -89,7 +85,7 @@ namespace Bet.Extensions.ML.ModelBuilder
             var evaluateResult = _modelBuilder.Evaluate();
             _logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed} ms", evaluateResult.ElapsedMilliseconds);
             _logger.LogInformation(evaluateResult.ToString());
-            await _storageProvider.SaveModelResultAsync(evaluateResult, Name, cancellationToken);
+            await _storageProvider.SaveModelResultAsync(evaluateResult, Options.ModelResultFileName, cancellationToken);
 
             // 4. train the model
             _logger.LogInformation("[TrainModel][Started]");
@@ -98,6 +94,20 @@ namespace Bet.Extensions.ML.ModelBuilder
             _logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
 
             await Task.CompletedTask;
+        }
+
+        public abstract Task ClassifyTestAsync(CancellationToken cancellationToken);
+
+        public virtual async Task SaveModelAsync(CancellationToken cancellationToken)
+        {
+            // 6. save to the file
+            _logger.LogInformation("[SaveModelAsync][Started]");
+            var sw = ValueStopwatch.StartNew();
+
+            var readStream = _modelBuilder.GetModelStream();
+            await _storageProvider.SaveModelAsync(Options.ModelFileName, readStream, cancellationToken);
+
+            _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
         }
     }
 }

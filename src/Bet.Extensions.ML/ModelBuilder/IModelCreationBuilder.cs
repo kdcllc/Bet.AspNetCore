@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelBuilder
@@ -54,13 +55,14 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// </summary>
         /// <param name="testFraction">The fraction of data to go into the test set.</param>
         /// <returns></returns>
-        IModelCreationBuilder<TInput, TOutput, TResult> BuiltDataView(double testFraction = 0.1);
+        IModelCreationBuilder<TInput, TOutput, TResult> BuildDataView(double testFraction = 0.1);
 
         /// <summary>
         /// Loads dataset from embedded resource of the library.
         /// </summary>
+        /// <param name="fileName">The optional parameter for the file name.</param>
         /// <returns></returns>
-        IModelCreationBuilder<TInput, TOutput, TResult> LoadDefaultData();
+        IModelCreationBuilder<TInput, TOutput, TResult> LoadData(string fileName = "");
 
         /// <summary>
         /// Loads model dataset from <see cref="IEnumerable{T}"/>.
@@ -125,6 +127,6 @@ namespace Bet.Extensions.ML.ModelBuilder
         /// Get Binary stream of ML.NET model.
         /// </summary>
         /// <returns></returns>
-        MemoryStream GetModelStream();
+        Stream GetModelStream();
     }
 }

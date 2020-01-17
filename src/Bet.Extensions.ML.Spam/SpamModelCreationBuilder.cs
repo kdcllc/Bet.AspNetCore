@@ -9,14 +9,14 @@ namespace Bet.Extensions.ML.Spam
     /// <summary>
     /// https://github.com/dotnet/machinelearning-samples/blob/0ba74327e843c30eb02f01ca5d5d31ce77e84442/samples/csharp/getting-started/BinaryClassification_SpamDetection/SpamDetectionConsoleApp/Program.cs#L55.
     /// </summary>
-    public class SpamModelBuilder
+    public class SpamModelCreationBuilder
         : ModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult>
     {
-        public SpamModelBuilder(MLContext context) : base(context)
+        public SpamModelCreationBuilder(MLContext context) : base(context)
         {
         }
 
-        public override IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> LoadDefaultData()
+        public override IModelCreationBuilder<SpamInput, SpamPrediction, MulticlassClassificationFoldsAverageMetricsResult> LoadData(string fileName = "")
         {
             Records = LoadFromEmbededResource.GetRecords<SpamInput>("Content.SpamDetectionData.csv", delimiter: ",");
 
