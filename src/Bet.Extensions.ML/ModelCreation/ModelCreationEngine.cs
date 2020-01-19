@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.ModelStorageProviders;
 
 using Microsoft.Extensions.Logging;
@@ -11,24 +10,24 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
-    public class ModelEngine<TInput, TResult, TOptions> : IModelBuilderService
+    public class ModelCreationEngine<TInput, TResult, TOptions> : IModelCreationEngine
         where TInput : class
         where TResult : MetricsResult
-        where TOptions : ModelEngineOptions<TInput, TResult>
+        where TOptions : ModelCreationEngineOptions<TInput, TResult>
     {
-        private readonly IModelBuilder<TInput, TResult> _modelBuilder;
+        private readonly IModelDefinitionBuilder<TInput, TResult> _modelBuilder;
         private readonly IModelStorageProvider _storageProvider;
-        private readonly ILogger<ModelEngine<TInput, TResult, TOptions>> _logger;
+        private readonly ILogger<ModelCreationEngine<TInput, TResult, TOptions>> _logger;
 
         private TOptions _options;
         private ModelStorageProviderOptions _storageOptions;
 
-        public ModelEngine(
-            IModelBuilder<TInput, TResult> modelBuilder,
+        public ModelCreationEngine(
+            IModelDefinitionBuilder<TInput, TResult> modelBuilder,
             IModelStorageProvider storageProvider,
             IOptionsMonitor<TOptions> optionsMonitor,
             IOptionsMonitor<ModelStorageProviderOptions> optionsStorageMonitor,
-            ILogger<ModelEngine<TInput, TResult, TOptions>> logger)
+            ILogger<ModelCreationEngine<TInput, TResult, TOptions>> logger)
         {
             _modelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
             _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
@@ -54,32 +53,46 @@ namespace Bet.Extensions.ML.ModelCreation
         /// <returns></returns>
         public async Task TrainModelAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[TrainModelAsync][Started]");
             var sw = ValueStopwatch.StartNew();
 
-            await _options.TrainModelConfigurator(sw, _modelBuilder, _storageProvider, _storageOptions, _logger, cancellationToken);
+            _logger.LogInformation("[methodName][Started]", nameof(TrainModelAsync));
+
+            var data = await _options.DataLoader(_storageProvider, _storageOptions, cancellationToken);
+
+            var result = _options.TrainModelConfigurator(_modelBuilder, data, _logger);
+
+            await _storageProvider.SaveModelResultAsync(result, _storageOptions.ModelResultFileName, cancellationToken);
+
+            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(TrainModelAsync), sw.GetElapsedTime().TotalMilliseconds);
         }
 
         public async Task ClassifyTestAsync(CancellationToken cancellationToken)
         {
+            var sw = ValueStopwatch.StartNew();
+
+            _logger.LogInformation("[methodName][Started]", nameof(ClassifyTestAsync));
+
             if (_options.ClassifyTestConfigurator != null)
             {
                 await _options.ClassifyTestConfigurator(_modelBuilder, _logger, cancellationToken);
             }
 
+            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(ClassifyTestAsync), sw.GetElapsedTime().TotalMilliseconds);
+
             await Task.CompletedTask;
         }
 
-        public virtual async Task SaveModelAsync(CancellationToken cancellationToken)
+        public async Task SaveModelAsync(CancellationToken cancellationToken)
         {
             // 6. save to the file
-            _logger.LogInformation("[SaveModelAsync][Started]");
             var sw = ValueStopwatch.StartNew();
+
+            _logger.LogInformation("[methodName][Started]", nameof(SaveModelAsync));
 
             var readStream = _modelBuilder.GetModelStream();
             await _storageProvider.SaveModelAsync(_storageOptions.ModelFileName, readStream, cancellationToken);
 
-            _logger.LogInformation("[SaveModelAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
+            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(SaveModelAsync), sw.GetElapsedTime().TotalMilliseconds);
         }
     }
 }

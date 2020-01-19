@@ -49,19 +49,21 @@ namespace Bet.ML.WebApi.Sample
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 
             // add ML.NET Models
-            var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
-            services.AddSpamDetectionModelBuilder(spamInMemoryModelStorageProvider);
-
             var spamName = "SpamModel";
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
-                .WithStorageProvider(nameof(SpamModelBuilderService), spamInMemoryModelStorageProvider);
 
-            var sentimentFileModeStorageProvider = new FileModelStorageProvider();
-            services.AddSentimentModelBuilder(modelStorageProvider: sentimentFileModeStorageProvider);
+            var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
+            services.AddSpamModelEngine(modelName: spamName, modelStorageProvider: spamInMemoryModelStorageProvider);
+
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
+                .WithStorageProvider(nameof(spamName), spamInMemoryModelStorageProvider);
 
             var sentimentName = "SentimentModel";
+
+            var sentimentFileModeStorageProvider = new FileModelStorageProvider();
+            services.AddSentimentModelEngine(modelName: sentimentName, modelStorageProvider: sentimentFileModeStorageProvider);
+
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)
-                .WithStorageProvider($"{nameof(SentimentModelBuilderService)}.zip", sentimentFileModeStorageProvider);
+                .WithStorageProvider($"{nameof(sentimentName)}.zip", sentimentFileModeStorageProvider);
 
             services.AddScheduler(builder =>
             {

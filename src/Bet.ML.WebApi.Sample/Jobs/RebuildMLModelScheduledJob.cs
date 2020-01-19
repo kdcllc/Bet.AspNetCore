@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.ModelBuilder;
+using Bet.Extensions.ML.ModelCreation;
 
 using CronScheduler.Extensions.Scheduler;
 using CronScheduler.Extensions.StartupInitializer;
@@ -35,7 +35,7 @@ namespace Bet.ML.WebApi.Sample.Jobs
         {
             using (var scope = _provider.CreateScope())
             {
-                var modelBuilders = scope.ServiceProvider.GetRequiredService<IEnumerable<IModelBuilderService>>();
+                var modelBuilders = scope.ServiceProvider.GetRequiredService<IEnumerable<IModelCreationEngine>>();
 
                 // 1. Build models
                 _logger.LogInformation("[Started][{jobName}] executing model builders total count: {numberOfModels}", nameof(RebuildMLModelScheduledJob), modelBuilders?.ToList()?.Count ?? 0);

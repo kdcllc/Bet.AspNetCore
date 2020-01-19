@@ -15,6 +15,10 @@ namespace Bet.Extensions.ML.ModelCreation.DataLoaders
             _options = options.Value;
         }
 
+        /// <summary>
+        /// Loads multiple embedded lists.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TInput> LoadData()
         {
             var list = new List<TInput>();

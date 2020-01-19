@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.Extensions.ML.ModelBuilder
+namespace Bet.Extensions.ML.ModelCreation
 {
     /// <summary>
     /// ML model builder service provides with away to build/train/evaluate multiple ML models in the CI pipeline.
     /// </summary>
-    public interface IModelBuilderService
+    public interface IModelCreationEngine
     {
         /// <summary>
         /// Model Builder Service Name.

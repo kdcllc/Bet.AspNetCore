@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.Data;
-using Bet.Extensions.ML.ModelBuilder;
 using Bet.Extensions.ML.ModelCreation;
 using Bet.Extensions.ML.ModelCreation.DataLoaders;
+using Bet.Extensions.ML.ModelCreation.Results;
+using Bet.Extensions.ML.ModelCreation.Services;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Sentiment.Models;
 
@@ -31,16 +31,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 modelStorageProvider = new FileModelStorageProvider();
             }
 
-            services.AddScoped<IModelStorageProvider>(sp => modelStorageProvider);
+            services.AddScoped(sp => modelStorageProvider);
 
-            // adds embedded loader
+            // adds source loader for embedded locations
             services.TryAddTransient<ISourceLoader<SentimentIssue>, EmbeddedSourceLoader<SentimentIssue>>();
 
-            // configure the objects to get the data
+            // configures custom logic for retrieving the data from embedded sources.
             services.Configure<EmbeddedSourceLoaderOptions<SentimentIssue>>(options =>
             {
                 options.EmbeddedSourcesList.Add(new EmbeddedSources<SentimentIssue>
                 {
+                    // overrides default loading mechanism
                     Overrides = () =>
                     {
                         var inputs = LoadFromEmbededResource
@@ -64,11 +65,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             });
 
-            // adds model creation engine
-            services.TryAddScoped<IModelBuilder<SentimentIssue,
-                Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult>, ModelBuilder<SentimentIssue, Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult>>();
+            // adds IModelCreator for Sentiment ML.NET model.
+            services.TryAddScoped<IModelDefinitionBuilder<SentimentIssue,
+                BinaryClassificationMetricsResult>, ModelDefinitionBuilder<SentimentIssue, BinaryClassificationMetricsResult>>();
 
-            services.Configure<ModelBuilderOptions<Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult>>(options =>
+            // adds Configurations of for IModelCreator for Sentiment ML.NET model
+            services.Configure<ModelDefinitionBuilderOptions<BinaryClassificationMetricsResult>>(options =>
             {
                 options.TrainingPipelineConfigurator = (mlContext) =>
                 {
@@ -79,7 +81,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var trainer = mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label", featureColumnName: "Features");
                     var trainingPipeline = dataProcessPipeline.Append(trainer);
 
-                    return new Bet.Extensions.ML.ModelCreation.Results.TrainingPipelineResult(trainingPipeline, trainer.ToString());
+                    return new TrainingPipelineResult(trainingPipeline, trainer.ToString());
                 };
 
                 options.EvaluateConfigurator = (mlContext, model, trainerName, dataView, _) =>
@@ -88,90 +90,75 @@ namespace Microsoft.Extensions.DependencyInjection
                     var predictions = model.Transform(dataView);
                     var metrics = mlContext.BinaryClassification.Evaluate(data: predictions, labelColumnName: "Label", scoreColumnName: "Score");
 
-                    return new Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult(trainerName, metrics);
+                    return new BinaryClassificationMetricsResult(trainerName, metrics);
                 };
             });
 
-            services.AddOptions<ModelStorageProviderOptions>(modelName).Configure(x =>
+            services.AddOptions<ModelStorageProviderOptions>(modelName)
+                .Configure(x =>
             {
                 x.ModelName = modelName;
                 x.ModelResultFileName = $"{x.ModelName}.json";
                 x.ModelFileName = $"{x.ModelName}.zip";
             });
 
-            services.Configure<ModelEngineOptions<SentimentIssue, Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult>>(x =>
+            services.AddOptions<ModelCreationEngineOptions<SentimentIssue, BinaryClassificationMetricsResult>>()
+                .Configure<ISourceLoader<SentimentIssue>>((options, loader) =>
             {
-                x.ModelName = modelName;
+                options.ModelName = modelName;
 
-                x.TrainModelConfigurator = async (sw, modelBuilder, storageProvider, storageOptions, logger, cancellationToken) =>
+                options.DataLoader = async (storageProvider, storageOptions, cancellationToken) =>
                 {
-                    // 1. load default ML data set
-                    logger.LogInformation("[LoadDataset][Started]");
-
-                    modelBuilder.LoadAndBuildDataView();
-
-                    if (modelBuilder?.DataView == null)
-                    {
-                        throw new NullReferenceException("DataView wasn't loaded");
-                    }
-
-                    logger.LogInformation(
-                        "[LoadDataset][Count]: {rowsCount} - elapsed time: {elapsed}ms",
-                        modelBuilder.DataView.GetRowCount(),
-                        sw.GetElapsedTime().Milliseconds);
-
-                    // 2. build training pipeline
-                    logger.LogInformation("[BuildTrainingPipeline][Started]");
-                    var buildTrainingPipelineResult = modelBuilder.BuildTrainingPipeline();
-                    logger.LogInformation("[BuildTrainingPipeline][Ended] elapsed time: {elapsed}ms", buildTrainingPipelineResult.ElapsedMilliseconds);
-
-                    // 3. train the model
-                    logger.LogInformation("[TrainModel][Started]");
-                    var trainModelResult = modelBuilder.TrainModel();
-                    logger.LogInformation("[TrainModel][Ended] elapsed time: {elapsed}ms", trainModelResult.ElapsedMilliseconds);
-
-                    // 4. evaluate quality of the pipeline
-                    logger.LogInformation("[Evaluate][Started]");
-                    var evaluateResult = modelBuilder.Evaluate();
-                    logger.LogInformation("[Evaluate][Ended] elapsed time: {elapsed}ms", evaluateResult.ElapsedMilliseconds);
-                    logger.LogInformation(evaluateResult.ToString());
-
-                    // Save Results.
-                    await storageProvider.SaveModelResultAsync(evaluateResult, storageOptions.ModelResultFileName, cancellationToken);
-
-                    logger.LogInformation("[TrainModelAsync][Ended] elapsed time: {elapsed}ms", sw.GetElapsedTime().Milliseconds);
-                    await Task.CompletedTask;
+                    var data = loader.LoadData();
+                    return await Task.FromResult(data);
                 };
 
-                x.ClassifyTestConfigurator = async (modelBuilder, logger, cancellationToken) =>
+                options.TrainModelConfigurator = (modelBuilder, data, logger) =>
+                {
+                    // 1. load ML data set
+                    modelBuilder.LoadData(data);
+
+                    // 1. load default ML data set
+                    modelBuilder.BuildDataView();
+
+                    // 2. build training pipeline
+                    var buildTrainingPipelineResult = modelBuilder.BuildTrainingPipeline();
+
+                    // 3. train the model
+                    var trainModelResult = modelBuilder.TrainModel();
+
+                    // 4. evaluate quality of the pipeline
+                    var evaluateResult = modelBuilder.Evaluate();
+                    logger.LogInformation(evaluateResult.ToString());
+
+                    return evaluateResult;
+                };
+
+                options.ClassifyTestConfigurator = async (modelBuilder, logger, cancellationToken) =>
                 {
                     // 5. predict on sample data
-                    logger.LogInformation("[ClassifyTestAsync][Started]");
-
                     var sw = ValueStopwatch.StartNew();
-
-                    var predictor = modelBuilder.MLContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(modelBuilder.Model);
 
                     var tasks = new List<Task>
                     {
-                         SentimentModelEngineExtensions.ClassifyAsync(predictor, "This is a very rude movie", false, logger, cancellationToken),
-                         SentimentModelEngineExtensions.ClassifyAsync(predictor, "Hate All Of You're Work", true, logger, cancellationToken)
+                         SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
+                         SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
                     };
 
                     await Task.WhenAll(tasks);
-
-                    logger.LogInformation("[ClassifyTestAsync][Ended] elapsed time: {elapsed} ms", sw.GetElapsedTime().TotalMilliseconds);
                 };
             });
 
-            services.AddScoped<IModelBuilderService, ModelEngine<SentimentIssue,
-                Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult, ModelEngineOptions<SentimentIssue, Bet.Extensions.ML.ModelCreation.Results.BinaryClassificationMetricsResult>>>();
+            services.AddScoped<IModelCreationEngine, ModelCreationEngine<SentimentIssue,
+                BinaryClassificationMetricsResult, ModelCreationEngineOptions<SentimentIssue, BinaryClassificationMetricsResult>>>();
+
+            services.TryAddScoped<IMachineLearningService, MachineLearningService>();
 
             return services;
         }
 
         private static Task ClassifyAsync(
-            PredictionEngine<SentimentIssue, SentimentPrediction> predictor,
+            IModelDefinitionBuilder<SentimentIssue, BinaryClassificationMetricsResult> modelBuilder,
             string text,
             bool expectedResult,
             ILogger logger,
@@ -180,10 +167,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return Task.Run(
                 () =>
                 {
+                    var predictor = modelBuilder.MLContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(modelBuilder.Model);
+
                     var input = new SentimentIssue { Text = text };
 
-                    SentimentPrediction? prediction = null;
-                    prediction = predictor.Predict(input);
+                    var prediction = predictor.Predict(input);
 
                     var result = prediction.Prediction ? "Toxic" : "Non Toxic";
 

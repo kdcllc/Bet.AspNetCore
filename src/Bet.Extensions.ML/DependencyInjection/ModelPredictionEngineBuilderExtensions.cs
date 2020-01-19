@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 
 using Bet.Extensions.ML;
+using Bet.Extensions.ML.ModelCreation.Services;
 using Bet.Extensions.ML.ModelStorageProviders;
 using Bet.Extensions.ML.Prediction;
 

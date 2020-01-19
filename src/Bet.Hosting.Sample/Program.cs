@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Bet.Extensions.ML.ModelCreation.Services;
 using Bet.Hosting.Sample.Services;
 
 using Microsoft.Extensions.Configuration;
@@ -40,8 +40,8 @@ namespace Bet.Hosting.Sample
                         var scope = host.Services.CreateScope();
                         var token = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
 
-                        var job = scope.ServiceProvider.GetRequiredService<IModelBuildersJobService>();
-                        await job.RunAsync(token.ApplicationStopping);
+                        var job = scope.ServiceProvider.GetRequiredService<IMachineLearningService>();
+                        await job.BuildModelsAsync(token.ApplicationStopping);
 
                         await host.StopAsync();
                         return 0;
@@ -90,7 +90,7 @@ namespace Bet.Hosting.Sample
                 {
                     if (runAsCronJob)
                     {
-                        services.AddModelBuildersCronJobService();
+                        services.AddMachineLearningModels();
                     }
                     else
                     {
@@ -99,7 +99,7 @@ namespace Bet.Hosting.Sample
                                 .AddCheck("Healthy_Check_Two", () => HealthCheckResult.Healthy())
                                 .AddSocketListener(8080)
                                 .AddLoggerPublisher();
-                        services.AddModelBuildersTimedService();
+                        services.AddMachineLearningHostedService();
                     }
                 });
         }

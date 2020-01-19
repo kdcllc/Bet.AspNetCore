@@ -12,11 +12,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddModelBuildersTimedService(this IServiceCollection services)
+        public static IServiceCollection AddMachineLearningHostedService(this IServiceCollection services)
         {
-            services.AddModelBuildersCronJobService();
+            services.AddMachineLearningModels();
 
-            services.AddTimedHostedService<ModelBuilderHostedService>(options =>
+            services.AddTimedHostedService<MachineLearningHostedService>(options =>
             {
                 options.Interval = TimeSpan.FromMinutes(30);
 
@@ -32,14 +32,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddModelBuildersCronJobService(this IServiceCollection services)
+        public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
             return services
-                        //.AddSpamDetectionModelBuilder()
-                        //.AddSentimentModelBuilder()
-                        .AddSentimentModelEngine()
-
-                        .AddScoped<IModelBuildersJobService, ModelBuildersJobService>();
+                        .AddSpamModelEngine()
+                        .AddSentimentModelEngine();
         }
     }
 }
