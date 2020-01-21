@@ -31,7 +31,7 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
         public virtual async Task SaveModelResultAsync<TResult>(TResult result, CancellationToken cancellationToken)
         {
             var json = JsonConvert.SerializeObject(result, Formatting.Indented);
-            await SaveModelResultActionAsync(Options.ModelFileName, json, cancellationToken);
+            await SaveModelResultActionAsync(Options.ModelResultFileName, json, cancellationToken);
         }
 
         public virtual IChangeToken GetReloadToken()

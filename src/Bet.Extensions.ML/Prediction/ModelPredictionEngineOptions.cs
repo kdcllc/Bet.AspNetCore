@@ -16,12 +16,7 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
-        private ReloadToken _reloadToken;
-
-        public ModelPredictionEngineOptions()
-        {
-            _reloadToken = new ReloadToken();
-        }
+        private ReloadToken _reloadToken = new ReloadToken();
 
         /// <summary>
         /// The instance of the service provider.

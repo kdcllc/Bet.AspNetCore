@@ -50,7 +50,7 @@ namespace Bet.ML.WebApi.Sample
             var spamName = "SpamModel";
 
             var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
-            services.AddSpamModelEngine(modelName: spamName, modelStorageProvider: spamInMemoryModelStorageProvider);
+            services.AddSpamModelEngine(modelName: spamName);
 
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
                 .WithStorageProvider(nameof(spamName), spamInMemoryModelStorageProvider);
@@ -58,7 +58,7 @@ namespace Bet.ML.WebApi.Sample
             var sentimentName = "SentimentModel";
 
             var sentimentFileModeStorageProvider = new FileModelStorageProvider();
-            services.AddSentimentModelEngine(modelName: sentimentName, modelStorageProvider: sentimentFileModeStorageProvider);
+            services.AddSentimentModelEngine(modelName: sentimentName);
 
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)
                 .WithStorageProvider($"{nameof(sentimentName)}.zip", sentimentFileModeStorageProvider);

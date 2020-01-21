@@ -78,7 +78,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IModelPredictionEngine<TData, TPrediction>, ModelPredictionEngineObjectPool<TData, TPrediction>>();
 
-            return new DefaultModelPredictionEngineBuilder<TData, TPrediction>(services, modelName);
+            return new ModelPredictionEngineBuilder<TData, TPrediction>(services, modelName);
         }
 
         /// <summary>

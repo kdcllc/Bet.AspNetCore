@@ -2,11 +2,9 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public class ModelPredictionEngineBuilder<TInput, TPrediction> : IModelPredictionEngineBuilder<TInput, TPrediction>
-        where TInput : class
-        where TPrediction : class, new()
+    public class ModelCreationServiceBuilder : IModelCreationServiceBuilder
     {
-        public ModelPredictionEngineBuilder(IServiceCollection services, string modelName)
+        public ModelCreationServiceBuilder(IServiceCollection services, string modelName)
         {
             if (string.IsNullOrEmpty(modelName))
             {

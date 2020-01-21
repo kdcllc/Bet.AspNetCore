@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.ML.Helpers;
-
-using CsvHelper;
 
 using Microsoft.Extensions.Primitives;
 
