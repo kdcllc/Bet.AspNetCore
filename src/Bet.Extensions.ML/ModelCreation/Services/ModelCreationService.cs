@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Bet.Extensions.ML.ModelCreation.Services
 {
-    public class MachineLearningService : IMachineLearningService
+    public class ModelCreationService : IModelCreationService
     {
-        private readonly ILogger<MachineLearningService> _logger;
+        private readonly ILogger<ModelCreationService> _logger;
         private readonly IEnumerable<IModelCreationEngine> _modelBuilders;
 
-        public MachineLearningService(
+        public ModelCreationService(
             IEnumerable<IModelCreationEngine> modelBuilders,
-            ILogger<MachineLearningService> logger)
+            ILogger<ModelCreationService> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _modelBuilders = modelBuilders;
@@ -22,29 +22,25 @@ namespace Bet.Extensions.ML.ModelCreation.Services
 
         public async Task BuildModelsAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[Started Model Building]");
+            _logger.LogInformation("[Machine Learning][Started] Models Building");
 
             foreach (var modelBuilder in _modelBuilders)
             {
                 try
                 {
-                    _logger.LogInformation("[Started Model Building][{modelName}]", modelBuilder.Name);
-
                     await modelBuilder.TrainModelAsync(cancellationToken);
 
                     await modelBuilder.ClassifyTestAsync(cancellationToken);
 
                     await modelBuilder.SaveModelAsync(cancellationToken);
-
-                    _logger.LogInformation("[Ended Model Building][{modelName}]", modelBuilder.Name);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.Name, ex.ToString());
+                    _logger.LogError("failed with exception: {message}", ex.ToString());
                 }
             }
 
-            _logger.LogInformation("[Ended Model Building]");
+            _logger.LogInformation("[Machine Learning][Ended] Models Building");
         }
     }
 }

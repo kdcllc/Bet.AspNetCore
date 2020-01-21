@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.ModelStorageProviders;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
+using Bet.Extensions.ML.DataLoaders.SourceLoaders;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,31 +17,25 @@ namespace Bet.Extensions.ML.ModelCreation
         where TResult : MetricsResult
         where TOptions : ModelCreationEngineOptions<TInput, TResult>
     {
-        private readonly IModelDefinitionBuilder<TInput, TResult> _modelBuilder;
-        private readonly IModelStorageProvider _storageProvider;
+        private readonly IEnumerable<IModelDefinitionBuilder<TInput, TResult>> _modelBuilders;
         private readonly ILogger<ModelCreationEngine<TInput, TResult, TOptions>> _logger;
-
-        private TOptions _options;
-        private ModelStorageProviderOptions _storageOptions;
+        private readonly IOptionsFactory<SourceLoaderOptions<TInput>> _sourceLoaderOptionsFactory;
+        private readonly IOptionsMonitor<TOptions> _engineOptionsMonitor;
+        private readonly IOptionsFactory<ModelLoaderOptions> _modelLoaderOptions;
 
         public ModelCreationEngine(
-            IModelDefinitionBuilder<TInput, TResult> modelBuilder,
-            IModelStorageProvider storageProvider,
-            IOptionsMonitor<TOptions> optionsMonitor,
-            IOptionsMonitor<ModelStorageProviderOptions> optionsStorageMonitor,
+            IEnumerable<IModelDefinitionBuilder<TInput, TResult>> modelBuilders,
+            IOptionsFactory<SourceLoaderOptions<TInput>> sourceLoaderOptionsFactory,
+            IOptionsMonitor<TOptions> engineOptionsMonitor,
+            IOptionsFactory<ModelLoaderOptions> modelLoaderOptionsFactory,
             ILogger<ModelCreationEngine<TInput, TResult, TOptions>> logger)
         {
-            _modelBuilder = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-            _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
+            _modelBuilders = modelBuilders ?? throw new ArgumentNullException(nameof(modelBuilders));
+            _sourceLoaderOptionsFactory = sourceLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(sourceLoaderOptionsFactory));
+            _engineOptionsMonitor = engineOptionsMonitor;
+            _modelLoaderOptions = modelLoaderOptionsFactory;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _options = optionsMonitor.CurrentValue;
-            optionsMonitor.OnChange(x => _options = x);
-
-            _storageOptions = optionsStorageMonitor.Get(_options.ModelName);
         }
-
-        public string Name => _options.ModelName;
 
         /// <summary>
         /// The following steps are executed in the pipeline:
@@ -53,31 +49,51 @@ namespace Bet.Extensions.ML.ModelCreation
         /// <returns></returns>
         public async Task TrainModelAsync(CancellationToken cancellationToken)
         {
-            var sw = ValueStopwatch.StartNew();
+            foreach (var modelBuilder in _modelBuilders)
+            {
+                var sw = ValueStopwatch.StartNew();
 
-            _logger.LogInformation("[methodName][Started]", nameof(TrainModelAsync));
+                var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
+                var sourceLoaderOptions = _sourceLoaderOptionsFactory.Create(modelBuilder.ModelName);
+                var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
 
-            var data = await _options.DataLoader(_storageProvider, _storageOptions, cancellationToken);
+                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(TrainModelAsync), modelBuilder.ModelName);
 
-            var result = _options.TrainModelConfigurator(_modelBuilder, data, _logger);
+                var data = await engineOptions.DataLoader(sourceLoaderOptions.SourceLoader, cancellationToken);
 
-            await _storageProvider.SaveModelResultAsync(result, _storageOptions.ModelResultFileName, cancellationToken);
+                var result = engineOptions.TrainModelConfigurator(modelBuilder, data, _logger);
 
-            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(TrainModelAsync), sw.GetElapsedTime().TotalMilliseconds);
+                await modelLoaderOptions.ModalLoader.SaveModelResultAsync(result, cancellationToken);
+
+                _logger.LogInformation(
+                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
+                    nameof(TrainModelAsync),
+                    modelBuilder.ModelName,
+                    sw.GetElapsedTime().TotalMilliseconds);
+            }
         }
 
         public async Task ClassifyTestAsync(CancellationToken cancellationToken)
         {
-            var sw = ValueStopwatch.StartNew();
-
-            _logger.LogInformation("[methodName][Started]", nameof(ClassifyTestAsync));
-
-            if (_options.ClassifyTestConfigurator != null)
+            foreach (var modelBuilder in _modelBuilders)
             {
-                await _options.ClassifyTestConfigurator(_modelBuilder, _logger, cancellationToken);
-            }
+                var sw = ValueStopwatch.StartNew();
 
-            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(ClassifyTestAsync), sw.GetElapsedTime().TotalMilliseconds);
+                var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
+
+                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(ClassifyTestAsync), modelBuilder.ModelName);
+
+                if (engineOptions.ClassifyTestConfigurator != null)
+                {
+                    await engineOptions.ClassifyTestConfigurator(modelBuilder, _logger, cancellationToken);
+                }
+
+                _logger.LogInformation(
+                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
+                    nameof(ClassifyTestAsync),
+                    modelBuilder.ModelName,
+                    sw.GetElapsedTime().TotalMilliseconds);
+            }
 
             await Task.CompletedTask;
         }
@@ -85,14 +101,23 @@ namespace Bet.Extensions.ML.ModelCreation
         public async Task SaveModelAsync(CancellationToken cancellationToken)
         {
             // 6. save to the file
-            var sw = ValueStopwatch.StartNew();
+            foreach (var modelBuilder in _modelBuilders)
+            {
+                var sw = ValueStopwatch.StartNew();
 
-            _logger.LogInformation("[methodName][Started]", nameof(SaveModelAsync));
+                var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
 
-            var readStream = _modelBuilder.GetModelStream();
-            await _storageProvider.SaveModelAsync(_storageOptions.ModelFileName, readStream, cancellationToken);
+                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(SaveModelAsync), modelBuilder.ModelName);
 
-            _logger.LogInformation("[methodName][Ended] elapsed time: {elapsed}ms", nameof(SaveModelAsync), sw.GetElapsedTime().TotalMilliseconds);
+                var readStream = modelBuilder.GetModelStream();
+                await modelLoaderOptions.ModalLoader.SaveModelAsync(readStream, cancellationToken);
+
+                _logger.LogInformation(
+                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
+                    nameof(SaveModelAsync),
+                    modelBuilder.ModelName,
+                    sw.GetElapsedTime().TotalMilliseconds);
+            }
         }
     }
 }

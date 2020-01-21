@@ -1,8 +1,6 @@
 ﻿using System;
 
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Bet.Extensions.ML.Prediction
+namespace Microsoft.Extensions.DependencyInjection
 {
     public class DefaultModelPredictionEngineBuilder<TData, TPrediction> : IModelPredictionEngineBuilder<TData, TPrediction>
         where TData : class

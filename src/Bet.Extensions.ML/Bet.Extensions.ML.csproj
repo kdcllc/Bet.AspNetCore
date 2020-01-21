@@ -11,8 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DataLoaders\SourceData\**" />
+    <Compile Remove="ModelCreation\DataLoaders\**" />
     <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="DataLoaders\SourceData\**" />
+    <EmbeddedResource Remove="ModelCreation\DataLoaders\**" />
     <EmbeddedResource Remove="Services\**" />
+    <None Remove="DataLoaders\SourceData\**" />
+    <None Remove="ModelCreation\DataLoaders\**" />
     <None Remove="Services\**" />
   </ItemGroup>
 

@@ -40,7 +40,7 @@ namespace Bet.Hosting.Sample
                         var scope = host.Services.CreateScope();
                         var token = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
 
-                        var job = scope.ServiceProvider.GetRequiredService<IMachineLearningService>();
+                        var job = scope.ServiceProvider.GetRequiredService<IModelCreationService>();
                         await job.BuildModelsAsync(token.ApplicationStopping);
 
                         await host.StopAsync();

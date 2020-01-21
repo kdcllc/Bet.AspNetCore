@@ -29,7 +29,7 @@ namespace Bet.Hosting.Sample.Services
         public async Task BuildMachineLearningModels(CancellationToken cancellationToken)
         {
             using var scope = _provider.CreateScope();
-            var job = scope.ServiceProvider.GetRequiredService<IMachineLearningService>();
+            var job = scope.ServiceProvider.GetRequiredService<IModelCreationService>();
 
             try
             {

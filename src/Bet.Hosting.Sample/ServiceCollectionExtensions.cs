@@ -35,8 +35,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
             return services
-                        .AddSpamModelEngine()
-                        .AddSentimentModelEngine();
+                        .AddSpamModelEngine("SpamModel1", 0.2)
+                        .AddSpamModelEngine("SpamModel2", 0.5);
+                        //.AddSentimentModelEngine();
         }
     }
 }

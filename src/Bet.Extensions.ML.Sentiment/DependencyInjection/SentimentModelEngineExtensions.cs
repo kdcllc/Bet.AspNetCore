@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.Data;
+using Bet.Extensions.ML.DataLoaders.SourceLoaders;
+using Bet.Extensions.ML.DataLoaders.SourceLoaders.Embedded;
+using Bet.Extensions.ML.Helpers;
 using Bet.Extensions.ML.ModelCreation;
-using Bet.Extensions.ML.ModelCreation.DataLoaders;
 using Bet.Extensions.ML.ModelCreation.Results;
 using Bet.Extensions.ML.ModelCreation.Services;
 using Bet.Extensions.ML.ModelStorageProviders;
@@ -22,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSentimentModelEngine(
             this IServiceCollection services,
             string modelName = "SentimentModel",
+            double slipFraction = 0.1,
             IModelStorageProvider? modelStorageProvider = default)
         {
             services.TryAddSingleton(new MLContext());
@@ -34,36 +36,37 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped(sp => modelStorageProvider);
 
             // adds source loader for embedded locations
-            services.TryAddTransient<ISourceLoader<SentimentIssue>, EmbeddedSourceLoader<SentimentIssue>>();
+            services.TryAddTransient<SourceLoader<SentimentIssue>, EmbeddedSourceLoader<SentimentIssue>>();
 
             // configures custom logic for retrieving the data from embedded sources.
-            services.Configure<EmbeddedSourceLoaderOptions<SentimentIssue>>(options =>
-            {
-                options.EmbeddedSourcesList.Add(new EmbeddedSources<SentimentIssue>
-                {
-                    // overrides default loading mechanism
-                    Overrides = () =>
+            services.AddOptions<SourceLoaderFileOptions<SentimentIssue>>(modelName)
+                    .Configure(options =>
                     {
-                        var inputs = LoadFromEmbededResource
-                        .GetRecords<InputSentimentIssueRow>("Content.wikiDetoxAnnotated40kRows.tsv", delimiter: "\t", hasHeaderRecord: true);
-
-                        // convert int to boolean values
-                        var result = new List<SentimentIssue>();
-                        foreach (var item in inputs)
+                        options.Sources.Add(new SourceLoaderFile<SentimentIssue>
                         {
-                            var newItem = new SentimentIssue
+                            // overrides default loading mechanism
+                            CustomAction = () =>
                             {
-                                Label = item.Label != 0,
-                                Text = item.comment
-                            };
+                                var inputs = EmbeddedResourceHelper
+                                .GetRecords<InputSentimentIssueRow>("Content.wikiDetoxAnnotated40kRows.tsv", delimiter: "\t", hasHeaderRecord: true);
 
-                            result.Add(newItem);
-                        }
+                                // convert int to boolean values
+                                var result = new List<SentimentIssue>();
+                                foreach (var item in inputs)
+                                {
+                                    var newItem = new SentimentIssue
+                                    {
+                                        Label = item.Label != 0,
+                                        Text = item.comment
+                                    };
 
-                        return result;
-                    }
-                });
-            });
+                                    result.Add(newItem);
+                                }
+
+                                return result;
+                            }
+                        });
+                    });
 
             // adds IModelCreator for Sentiment ML.NET model.
             services.TryAddScoped<IModelDefinitionBuilder<SentimentIssue,
@@ -72,6 +75,10 @@ namespace Microsoft.Extensions.DependencyInjection
             // adds Configurations of for IModelCreator for Sentiment ML.NET model
             services.Configure<ModelDefinitionBuilderOptions<BinaryClassificationMetricsResult>>(options =>
             {
+                options.ModelName = modelName;
+
+                options.TestSlipFraction = slipFraction;
+
                 options.TrainingPipelineConfigurator = (mlContext) =>
                 {
                     // STEP 2: Common data process configuration with pipeline data transformations
@@ -96,63 +103,66 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddOptions<ModelStorageProviderOptions>(modelName)
                 .Configure(x =>
-            {
-                x.ModelName = modelName;
-                x.ModelResultFileName = $"{x.ModelName}.json";
-                x.ModelFileName = $"{x.ModelName}.zip";
-            });
-
-            services.AddOptions<ModelCreationEngineOptions<SentimentIssue, BinaryClassificationMetricsResult>>()
-                .Configure<ISourceLoader<SentimentIssue>>((options, loader) =>
-            {
-                options.ModelName = modelName;
-
-                options.DataLoader = async (storageProvider, storageOptions, cancellationToken) =>
                 {
-                    var data = loader.LoadData();
-                    return await Task.FromResult(data);
-                };
+                    x.ModelName = modelName;
+                    x.ModelResultFileName = $"{x.ModelName}.json";
+                    x.ModelFileName = $"{x.ModelName}.zip";
+                });
 
-                options.TrainModelConfigurator = (modelBuilder, data, logger) =>
+            services
+                .AddOptions<ModelCreationEngineOptions<SentimentIssue, BinaryClassificationMetricsResult>>()
+                .Configure(options =>
                 {
-                    // 1. load ML data set
-                    modelBuilder.LoadData(data);
+                    options.ModelName = modelName;
 
-                    // 1. load default ML data set
-                    modelBuilder.BuildDataView();
-
-                    // 2. build training pipeline
-                    var buildTrainingPipelineResult = modelBuilder.BuildTrainingPipeline();
-
-                    // 3. train the model
-                    var trainModelResult = modelBuilder.TrainModel();
-
-                    // 4. evaluate quality of the pipeline
-                    var evaluateResult = modelBuilder.Evaluate();
-                    logger.LogInformation(evaluateResult.ToString());
-
-                    return evaluateResult;
-                };
-
-                options.ClassifyTestConfigurator = async (modelBuilder, logger, cancellationToken) =>
-                {
-                    // 5. predict on sample data
-                    var sw = ValueStopwatch.StartNew();
-
-                    var tasks = new List<Task>
+                    options.DataLoader = async (loader, cancellationToken) =>
                     {
-                         SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
-                         SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        var data = loader.LoadData();
+                        return await Task.FromResult(data);
                     };
 
-                    await Task.WhenAll(tasks);
-                };
-            });
+                    options.TrainModelConfigurator = (modelBuilder, data, logger) =>
+                    {
+                        // 1. load ML data set
+                        modelBuilder.LoadData(data);
+
+                        // 1. load default ML data set
+                        modelBuilder.BuildDataView();
+
+                        // 2. build training pipeline
+                        var buildTrainingPipelineResult = modelBuilder.BuildTrainingPipeline();
+
+                        // 3. train the model
+                        var trainModelResult = modelBuilder.TrainModel();
+
+                        // 4. evaluate quality of the pipeline
+                        var evaluateResult = modelBuilder.Evaluate();
+                        logger.LogInformation(evaluateResult.ToString());
+
+                        return evaluateResult;
+                    };
+
+                    options.ClassifyTestConfigurator = async (modelBuilder, logger, cancellationToken) =>
+                    {
+                        // 5. predict on sample data
+                        var sw = ValueStopwatch.StartNew();
+
+                        var tasks = new List<Task>
+                        {
+                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
+                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
+                        };
+
+                        await Task.WhenAll(tasks);
+                    };
+                });
 
             services.AddScoped<IModelCreationEngine, ModelCreationEngine<SentimentIssue,
                 BinaryClassificationMetricsResult, ModelCreationEngineOptions<SentimentIssue, BinaryClassificationMetricsResult>>>();
 
-            services.TryAddScoped<IMachineLearningService, MachineLearningService>();
+            services.TryAddScoped<IModelCreationService, ModelCreationService>();
 
             return services;
         }

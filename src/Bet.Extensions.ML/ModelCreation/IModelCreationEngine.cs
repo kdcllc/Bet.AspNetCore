@@ -9,11 +9,6 @@ namespace Bet.Extensions.ML.ModelCreation
     public interface IModelCreationEngine
     {
         /// <summary>
-        /// Model Builder Service Name.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
         /// Train model consist of:
         /// 1. Load dataset.
         /// 2. Build Training pipeline.

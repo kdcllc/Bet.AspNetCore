@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.ModelStorageProviders;
+using Bet.Extensions.ML.DataLoaders.SourceLoaders;
 
 using Microsoft.Extensions.Logging;
 
@@ -15,10 +15,12 @@ namespace Bet.Extensions.ML.ModelCreation
     {
         public string ModelName { get; set; } = string.Empty;
 
-        public Func<IModelStorageProvider, ModelStorageProviderOptions, CancellationToken, Task<IEnumerable<TInput>>> DataLoader { get; set; }
-            = async (storageProvider, storageOptions, cancellationToken) =>
+        public Func<SourceLoader<TInput>, CancellationToken, Task<IEnumerable<TInput>>> DataLoader { get; set; }
+            = async (sourceLoader, cancellationToken) =>
         {
-            return await storageProvider.LoadRawDataAsync<TInput>(storageOptions.ModelSourceFileName, cancellationToken);
+            return await Task.Run(
+                () => sourceLoader.LoadData(),
+                cancellationToken);
         };
 
         public Func<IModelDefinitionBuilder<TInput, TResult>, IEnumerable<TInput>, ILogger, TResult> TrainModelConfigurator { get; set; }

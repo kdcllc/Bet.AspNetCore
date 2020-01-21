@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,15 +11,6 @@ namespace Bet.Extensions.ML.ModelStorageProviders
     /// </summary>
     public interface IModelStorageProvider
     {
-        /// <summary>
-        /// Loads Raw ML.NET data from the storage provider.
-        /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="fileName"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<IEnumerable<TResult>> LoadRawDataAsync<TResult>(string fileName, CancellationToken cancellationToken);
-
         /// <summary>
         /// Loads Saved Model and return a <see cref="MemoryStream"/>.
         /// </summary>

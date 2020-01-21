@@ -6,13 +6,13 @@ using System.IO;
 using Bet.Extensions.ML.ModelCreation.Results;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
-    public class ModelDefinitionBuilder<TInput, TResult> : IModelDefinitionBuilder<TInput, TResult> where TInput : class
-         where TResult : MetricsResult
+    public class ModelDefinitionBuilder<TInput, TResult> : IModelDefinitionBuilder<TInput, TResult>
+        where TInput : class
+        where TResult : MetricsResult
     {
         private readonly ModelDefinitionBuilderOptions<TResult> _options;
         private readonly ILogger<ModelDefinitionBuilder<TInput, TResult>> _logger;
@@ -27,14 +27,16 @@ namespace Bet.Extensions.ML.ModelCreation
 
         public ModelDefinitionBuilder(
             MLContext mLContext,
-            IOptions<ModelDefinitionBuilderOptions<TResult>> options,
+            ModelDefinitionBuilderOptions<TResult> options,
             ILogger<ModelDefinitionBuilder<TInput, TResult>> logger)
         {
             MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            _options = options.Value;
+            _options = options;
         }
+
+        public string ModelName => _options.ModelName;
 
         public MLContext MLContext { get; }
 

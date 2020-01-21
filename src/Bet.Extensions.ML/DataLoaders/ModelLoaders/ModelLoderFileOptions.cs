@@ -1,6 +1,6 @@
-﻿namespace Bet.Extensions.ML.ModelStorageProviders
+﻿namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
 {
-    public class ModelStorageProviderOptions
+    public class ModelLoderFileOptions
     {
         /// <summary>
         /// The name of the model to be build.

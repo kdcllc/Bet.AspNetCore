@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bet.Extensions.ML.ModelCreation.DataLoaders
+namespace Bet.Extensions.ML.DataLoaders.SourceLoaders
 {
     /// <summary>
     /// The Embedded Sources for the ML.NET Datasets.
     /// </summary>
     /// <typeparam name="TInput"></typeparam>
-    public class EmbeddedSources<TInput> where TInput : class
+    public class SourceLoaderFile<TInput> where TInput : class
     {
         /// <summary>
         /// The file name inside the embedded.
@@ -27,6 +27,6 @@ namespace Bet.Extensions.ML.ModelCreation.DataLoaders
         /// <summary>
         /// This property gives the ability to override the existing loading mechanism.
         /// </summary>
-        public Func<IEnumerable<TInput>>? Overrides { get; set; } = null;
+        public Func<IEnumerable<TInput>>? CustomAction { get; set; } = null;
     }
 }

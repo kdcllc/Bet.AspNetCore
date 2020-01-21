@@ -8,6 +8,8 @@ namespace Bet.Extensions.ML.ModelCreation
 {
     public class ModelDefinitionBuilderOptions<TResult> where TResult : MetricsResult
     {
+        public string ModelName { get; set; } = string.Empty;
+
         public double TestSlipFraction { get; set; } = 0.1;
 
         public Func<MLContext, TrainingPipelineResult>? TrainingPipelineConfigurator { get; set; }

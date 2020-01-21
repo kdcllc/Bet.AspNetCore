@@ -6,9 +6,9 @@ using System.Reflection;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-namespace Bet.Extensions.ML.Data
+namespace Bet.Extensions.ML.Helpers
 {
-    public sealed class LoadFromEmbededResource
+    public sealed class EmbeddedResourceHelper
     {
         public static List<TData> GetRecords<TData>(
             string fileName,
@@ -30,15 +30,7 @@ namespace Bet.Extensions.ML.Data
             string delimiter = ",",
             bool hasHeaderRecord = true) where TData : class
         {
-            var configReader = new Configuration
-            {
-                HasHeaderRecord = hasHeaderRecord,
-                Delimiter = delimiter,
-                BadDataFound = null,
-                HeaderValidated = null,
-                MissingFieldFound = null,
-            };
-
+            var configReader = FileHelper.GetConfiguration(delimiter, hasHeaderRecord);
             return GetRecords<TData>(fileName, configuration: configReader);
         }
     }

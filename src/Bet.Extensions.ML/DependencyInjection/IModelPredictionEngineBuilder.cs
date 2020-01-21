@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Bet.Extensions.ML.Prediction
+﻿namespace Microsoft.Extensions.DependencyInjection
 {
     public interface IModelPredictionEngineBuilder<TData, TPrediction>
-        where TData : class where TPrediction : class, new()
+        where TData : class
+        where TPrediction : class, new()
     {
         IServiceCollection Services { get; }
 

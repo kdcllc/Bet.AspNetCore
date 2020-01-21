@@ -11,9 +11,13 @@ namespace Bet.Extensions.ML.ModelCreation
         where TInput : class
         where TResult : MetricsResult
     {
+        string ModelName { get; }
+
         ITransformer? Model { get; }
 
         MLContext MLContext { get; }
+
+        void LoadData(IEnumerable<TInput> records);
 
         void BuildDataView();
 
@@ -24,7 +28,5 @@ namespace Bet.Extensions.ML.ModelCreation
         TrainModelResult TrainModel();
 
         Stream GetModelStream();
-
-        void LoadData(IEnumerable<TInput> records);
     }
 }

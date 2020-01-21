@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.Extensions.ML.ModelStorageProviders;
-using Bet.Extensions.ML.Sentiment;
 using Bet.Extensions.ML.Sentiment.Models;
-using Bet.Extensions.ML.Spam;
 using Bet.Extensions.ML.Spam.Models;
 using Bet.ML.WebApi.Sample.Jobs;
 

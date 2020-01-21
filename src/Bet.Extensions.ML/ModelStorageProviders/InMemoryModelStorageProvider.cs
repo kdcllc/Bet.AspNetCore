@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -56,11 +54,6 @@ namespace Bet.Extensions.ML.ModelStorageProviders
             }
 
             return Task.FromResult<TResult>(default!);
-        }
-
-        public Task<IEnumerable<TResult>> LoadRawDataAsync<TResult>(string name, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public Task SaveModelAsync(string name, Stream stream, CancellationToken cancellationToken)

@@ -26,27 +26,6 @@ namespace Bet.Extensions.ML.ModelStorageProviders
         }
 
         /// <summary>
-        /// Loading the raw data from the file.
-        /// </summary>
-        /// <typeparam name="TResult">The result set of the retrieved values.</typeparam>
-        /// <param name="fileName">The absolute path to the '.csv' or '.tsv'.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        public Task<IEnumerable<TResult>> LoadRawDataAsync<TResult>(string fileName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var fileLocation = FileHelper.GetAbsolutePath(fileName);
-
-            using var reader = new StreamReader(fileLocation);
-            using var csv = new CsvReader(reader);
-            csv.Configuration.HeaderValidated = null;
-            csv.Configuration.MissingFieldFound = null;
-
-            return Task.FromResult(csv.GetRecords<TResult>());
-        }
-
-        /// <summary>
         /// Loads previous saved model into <see cref="MemoryStream"/>.
         /// </summary>
         /// <param name="fileName"></param>
@@ -121,7 +100,7 @@ namespace Bet.Extensions.ML.ModelStorageProviders
             return _reloadToken;
         }
 
-        private async Task<MemoryStream> GetMemoryStream(string name, CancellationToken cancellationToken)
+        private async Task<Stream> GetMemoryStream(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
