@@ -56,10 +56,16 @@
       <None Include="..\..\build\logo64x64.png" Pack="true" PackagePath=""/>
   </ItemGroup> -->
 
+  <!-- https://github.com/dotnet/sdk/issues/1458#issuecomment-576961024-->
   <PropertyGroup Label="SourceLink Settings">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Embedded</DebugType>
+    <EmbedAllSources>True</EmbedAllSources>
   </PropertyGroup>
+
 </Project>
