@@ -17,16 +17,17 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SpamModelEngineExtensions
     {
-        public static IServiceCollection AddSpamModelEngine(
+        public static IServiceCollection AddSpamModelCreationService<TModelLoader>(
             this IServiceCollection services,
             string modelName = "SpamModel",
             double testSlipFraction = 0.1)
+                where TModelLoader : ModelLoader
         {
             // create builder for the named model
             var builder = services.AddModelCreationService<SpamInput, MulticlassClassificationFoldsAverageMetricsResult>(modelName);
 
             // 1. adds 2 embedded sources to source loader interface
-            builder.AddSources<SpamInput, EmbeddedSourceLoader<SpamInput>>(options =>
+            builder.AddSources<SpamInput, MulticlassClassificationFoldsAverageMetricsResult, EmbeddedSourceLoader<SpamInput>>(options =>
             {
                 options.Sources.Add(new SourceLoaderFile<SpamInput>
                 {
@@ -44,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             // 2. adds model loader for saving the model and model results
-            builder.AddModelLoader<InMemoryModelLoader>();
+            builder.AddModelLoader<SpamInput, MulticlassClassificationFoldsAverageMetricsResult, TModelLoader>();
 
             // 3. adds model creation configuration
             builder.ConfigureModel<SpamInput, MulticlassClassificationFoldsAverageMetricsResult>(

@@ -1,6 +1,10 @@
-﻿namespace Microsoft.Extensions.DependencyInjection
+﻿using Bet.Extensions.ML.ModelCreation;
+
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public interface IModelCreationServiceBuilder
+    public interface IModelCreationServiceBuilder<TInput, TResult>
+            where TInput : class
+            where TResult : MetricsResult
     {
         IServiceCollection Services { get; }
 

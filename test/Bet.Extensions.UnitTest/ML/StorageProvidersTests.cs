@@ -2,12 +2,13 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Bet.Extensions.ML.DataLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
-using Bet.Extensions.ML.ModelStorageProviders;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
+
 using Xunit;
 
 namespace Bet.Extensions.UnitTest.ML

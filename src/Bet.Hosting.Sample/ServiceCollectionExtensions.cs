@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Bet.Extensions.Hosting.Abstractions;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Hosting.Sample.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -35,9 +36,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
             return services
-                        .AddSpamModelEngine("SpamModel1", 0.2)
-                        .AddSpamModelEngine("SpamModel2", 0.5);
-                        //.AddSentimentModelEngine();
+                        .AddSpamModelCreationService<InMemoryModelLoader>("SpamModel1", 0.2)
+                        .AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5)
+                        .AddSentimentModelCreationService<FileModelLoader>();
         }
     }
 }

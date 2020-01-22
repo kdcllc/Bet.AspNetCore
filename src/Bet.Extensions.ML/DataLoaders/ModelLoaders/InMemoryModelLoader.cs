@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
@@ -13,22 +11,20 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
 
-            SaveModelActionAsync = async (fileName, stream, cancellationToken) =>
+            SaveFunc = async (fileName, stream, cancellationToken) =>
             {
                 await _storage.SaveAsync(fileName, stream, cancellationToken);
 
                 await Task.CompletedTask;
             };
 
-            SaveModelResultActionAsync = async (fileName, json, cancellationToken) =>
+            SaveResultFunc = async (fileName, json, cancellationToken) =>
             {
                 await _storage.SaveAsync(json, fileName, cancellationToken);
                 await Task.CompletedTask;
             };
+
+            LoadFunc = (fileName, cancellationToken) => storage.LoadAsync(fileName, cancellationToken);
         }
-
-        protected override Func<string, Stream, CancellationToken, Task> SaveModelActionAsync { get; set; }
-
-        protected override Func<string, string, CancellationToken, Task> SaveModelResultActionAsync { get; set; }
     }
 }

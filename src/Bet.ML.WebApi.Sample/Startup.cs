@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
-using Bet.Extensions.ML.ModelStorageProviders;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.Sentiment.Models;
 using Bet.Extensions.ML.Spam.Models;
 using Bet.ML.WebApi.Sample.Jobs;
@@ -48,20 +48,16 @@ namespace Bet.ML.WebApi.Sample
 
             // add ML.NET Models
             var spamName = "SpamModel";
-
-            var spamInMemoryModelStorageProvider = new InMemoryModelStorageProvider();
-            services.AddSpamModelEngine(modelName: spamName);
+            services.AddSpamModelCreationService<InMemoryModelLoader>(modelName: spamName);
 
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
-                .WithStorageProvider(nameof(spamName), spamInMemoryModelStorageProvider);
+                    .From<SpamInput, SpamPrediction, InMemoryModelLoader>();
 
             var sentimentName = "SentimentModel";
-
-            var sentimentFileModeStorageProvider = new FileModelStorageProvider();
-            services.AddSentimentModelEngine(modelName: sentimentName);
+            services.AddSentimentModelCreationService<FileModelLoader>(modelName: sentimentName);
 
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)
-                .WithStorageProvider($"{nameof(sentimentName)}.zip", sentimentFileModeStorageProvider);
+                .From<SentimentIssue, SentimentPrediction, FileModelLoader>();
 
             services.AddScheduler(builder =>
             {

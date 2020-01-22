@@ -18,14 +18,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class SentimentModelEngineExtensions
     {
-        public static IServiceCollection AddSentimentModelEngine(
+        public static IServiceCollection AddSentimentModelCreationService<TModelLoader>(
             this IServiceCollection services,
             string modelName = "SentimentModel",
             double testSlipFraction = 0.1)
+            where TModelLoader : ModelLoader
         {
             var builder = services.AddModelCreationService<SentimentIssue, BinaryClassificationMetricsResult>(modelName);
 
-            builder.AddSources<SentimentIssue, EmbeddedSourceLoader<SentimentIssue>>(options =>
+            builder.AddSources<SentimentIssue, BinaryClassificationMetricsResult, EmbeddedSourceLoader<SentimentIssue>>(options =>
             {
                 options.Sources.Add(new SourceLoaderFile<SentimentIssue>
                 {
@@ -53,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             });
 
-            builder.AddModelLoader<FileModelLoader>();
+            builder.AddModelLoader<SentimentIssue, BinaryClassificationMetricsResult, TModelLoader>();
 
             builder.ConfigureModel<SentimentIssue, BinaryClassificationMetricsResult>(
                 testSlipFraction,

@@ -1,7 +1,7 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
-    public interface IModelPredictionEngineBuilder<TData, TPrediction>
-        where TData : class
+    public interface IModelPredictionEngineBuilder<TInput, TPrediction>
+        where TInput : class
         where TPrediction : class, new()
     {
         IServiceCollection Services { get; }

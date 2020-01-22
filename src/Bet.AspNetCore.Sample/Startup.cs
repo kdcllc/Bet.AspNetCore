@@ -60,16 +60,17 @@ namespace Bet.AspNetCore.Sample
             services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
 
             services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
+                "SpamModel",
                 mlOptions =>
-            {
-                mlOptions.CreateModel = (mlContext) =>
                 {
-                    using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
+                    mlOptions.CreateModel = (mlContext) =>
                     {
-                        return mlContext.Model.Load(fileStream, out var inputSchema);
-                    }
-                };
-            }, "SpamModel");
+                        using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
+                        {
+                            return mlContext.Model.Load(fileStream, out var inputSchema);
+                        }
+                    };
+                });
 
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
