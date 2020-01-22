@@ -6,22 +6,18 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
+namespace Bet.Extensions.ML.DataLoaders
 {
-    public class InMemoryModelLoaderStorage
+    public class InMemoryStorage
     {
         private readonly ConcurrentDictionary<string, Stream> _modelStorage = new ConcurrentDictionary<string, Stream>();
-        private readonly object _lock = new object();
 
         public Task SaveAsync(string name, Stream stream, CancellationToken cancellationToken)
         {
             return Task.Run(
                 () =>
                 {
-                    lock (_lock)
-                    {
-                        _modelStorage.AddOrUpdate(name, stream, (_, __) => stream);
-                    }
+                  _modelStorage.AddOrUpdate(name, stream, (_, __) => stream);
                 },
                 cancellationToken);
         }

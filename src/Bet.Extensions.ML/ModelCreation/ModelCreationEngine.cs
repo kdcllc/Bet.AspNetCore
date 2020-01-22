@@ -63,7 +63,7 @@ namespace Bet.Extensions.ML.ModelCreation
 
                 var result = engineOptions.TrainModelConfigurator(modelBuilder, data, _logger);
 
-                await modelLoaderOptions.ModalLoader.SaveModelResultAsync(result, cancellationToken);
+                await modelLoaderOptions.ModalLoader.SaveResultAsync(result, cancellationToken);
 
                 _logger.LogInformation(
                     "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
@@ -110,7 +110,7 @@ namespace Bet.Extensions.ML.ModelCreation
                 _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(SaveModelAsync), modelBuilder.ModelName);
 
                 var readStream = modelBuilder.GetModelStream();
-                await modelLoaderOptions.ModalLoader.SaveModelAsync(readStream, cancellationToken);
+                await modelLoaderOptions.ModalLoader.SaveAsync(readStream, cancellationToken);
 
                 _logger.LogInformation(
                     "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",

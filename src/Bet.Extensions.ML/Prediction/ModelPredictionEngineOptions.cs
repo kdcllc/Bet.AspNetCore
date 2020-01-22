@@ -24,9 +24,9 @@ namespace Bet.Extensions.ML.Prediction
         public IServiceProvider? ServiceProvider { get; set; } = default;
 
         /// <summary>
-        /// This is set up by DI process. The default value is <see cref="Constants.MLDefaultModelName"/>.
+        /// This is set up by DI process. The default value is empty string.
         /// </summary>
-        public string ModelName { get; set; } = Constants.MLDefaultModelName;
+        public string ModelName { get; set; } = string.Empty;
 
         /// <summary>
         /// Machine Learning Model Specific Context. The default value is set to a new instance.

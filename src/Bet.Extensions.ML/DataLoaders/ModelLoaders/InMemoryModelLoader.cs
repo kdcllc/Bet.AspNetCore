@@ -7,9 +7,9 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
 {
     public class InMemoryModelLoader : ModelLoader
     {
-        private readonly InMemoryModelLoaderStorage _storage;
+        private readonly InMemoryStorage _storage;
 
-        public InMemoryModelLoader(InMemoryModelLoaderStorage storage)
+        public InMemoryModelLoader(InMemoryStorage storage)
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
 

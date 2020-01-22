@@ -19,7 +19,7 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
 
         protected abstract Func<string, string, CancellationToken, Task> SaveModelResultActionAsync { get; set; }
 
-        public virtual async Task SaveModelAsync(Stream stream, CancellationToken cancellationToken)
+        public virtual async Task SaveAsync(Stream stream, CancellationToken cancellationToken)
         {
             var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
 
@@ -28,7 +28,7 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
             previousToken.OnReload();
         }
 
-        public virtual async Task SaveModelResultAsync<TResult>(TResult result, CancellationToken cancellationToken)
+        public virtual async Task SaveResultAsync<TResult>(TResult result, CancellationToken cancellationToken)
         {
             var json = JsonConvert.SerializeObject(result, Formatting.Indented);
             await SaveModelResultActionAsync(Options.ModelResultFileName, json, cancellationToken);

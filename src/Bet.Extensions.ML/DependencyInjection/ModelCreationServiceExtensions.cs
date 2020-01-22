@@ -1,4 +1,6 @@
 ﻿using System;
+
+using Bet.Extensions.ML.DataLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.SourceLoaders;
 using Bet.Extensions.ML.ModelCreation;
@@ -25,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddScoped<IModelCreationService, ModelCreationService>();
 
-            services.TryAddSingleton<InMemoryModelLoaderStorage, InMemoryModelLoaderStorage>();
+            services.TryAddSingleton<InMemoryStorage, InMemoryStorage>();
 
             return new ModelCreationServiceBuilder(services, modelName);
         }
