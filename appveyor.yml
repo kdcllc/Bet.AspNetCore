@@ -14,6 +14,7 @@ install:
   - ps: (New-Object System.Net.WebClient).DownloadFile($urlCurrent, $tempFileCurrent)
   - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFileCurrent, $env:DOTNET_INSTALL_DIR)
   - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+
 nuget:
   disable_publish_on_pr: true
 
@@ -36,10 +37,3 @@ deploy:
     secure: jrexooMHJwdbj5MGacSL9fCj3g2haDXMarPEkiLpdIZmasb/zeMYb0NVofvi5HvJ
   on:
     branch: master
-# - provider: GitHub
-#   auth_token:
-#     secure: dr3CAHeVEOYYA3iomPpKm6kloFkuIrYyw/MrtWI1xJpSME70pxAASHm47oSSnnbMTWbAXa0mnWzgjog7QaF+GQ==
-#   artifact: /NuGet/
-#   tag: v$(appveyor_build_version)
-#   on:
-#     branch: master
