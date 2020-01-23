@@ -47,8 +47,8 @@
     <!-- https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu5048 -->
     <PackageIcon>icon.png</PackageIcon>
 
-    <PackageTags>aspnetcore, dotnet, configuration, hosting, extensions, azure key vault, machine learning, ml.net</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>aspnetcore, dotnet, configuration, hosting, extensions, azure key vault, maching learning, ml.net</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="SourceLink Settings">
@@ -57,7 +57,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <DebugSymbols>True</DebugSymbols>
+    <!-- https://github.com/kdcllc/Bet.AspNetCore/issues/103 -->
     <DebugType>Embedded</DebugType>
     <EmbedAllSources>True</EmbedAllSources>
   </PropertyGroup>

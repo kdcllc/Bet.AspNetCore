@@ -5,28 +5,31 @@ branches:
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2019
-## temporary until 3.1.100 sdk is installed
+## temporary until 3.1.101 sdk is installed
 install:
-  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.1.100/dotnet-sdk-3.1.100-win-x64.zip"
+  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/3.1.101/dotnet-sdk-3.1.101-win-x64.zip"
   - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
   - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
   - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()
   - ps: (New-Object System.Net.WebClient).DownloadFile($urlCurrent, $tempFileCurrent)
   - ps: Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory($tempFileCurrent, $env:DOTNET_INSTALL_DIR)
   - ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+
 nuget:
   disable_publish_on_pr: true
 
 build_script:
+  - ps: dotnet nuget locals --clear all
   - ps: dotnet restore Bet.AspNetCore.sln -v quiet
-  - ps: dotnet build Bet.AspNetCore.sln /p:configuration=Release /p:Version=$($env:appveyor_build_version)
+  - ps: dotnet build Bet.AspNetCore.sln  --no-restore -p:configuration=Release -p:Version=$($env:appveyor_build_version) -p:GeneratePackageOnBuild=true
+  - ps: dotnet pack Bet.AspNetCore.sln  --no-build -p:configuration=Release -p:Version=$($env:appveyor_build_version) -o packages
 
 test_script:
   - ps: dotnet test test/Bet.AspNetCore.UnitTest/Bet.AspNetCore.UnitTest.csproj -c Release --no-build
   - ps: dotnet test test/Bet.Extensions.UnitTest/Bet.Extensions.UnitTest.csproj -c Release --no-build
 
 artifacts:
-- path: .\src\**\*.nupkg
+- path: .\packages\**\*.nupkg
   name: NuGet package
 
 deploy:
@@ -36,10 +39,3 @@ deploy:
     secure: jrexooMHJwdbj5MGacSL9fCj3g2haDXMarPEkiLpdIZmasb/zeMYb0NVofvi5HvJ
   on:
     branch: master
-# - provider: GitHub
-#   auth_token:
-#     secure: dr3CAHeVEOYYA3iomPpKm6kloFkuIrYyw/MrtWI1xJpSME70pxAASHm47oSSnnbMTWbAXa0mnWzgjog7QaF+GQ==
-#   artifact: /NuGet/
-#   tag: v$(appveyor_build_version)
-#   on:
-#     branch: master
