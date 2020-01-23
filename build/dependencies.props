@@ -13,15 +13,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
-    <AspNetCoreVersion>2.2</AspNetCoreVersion>
-    <EFCommonVersion>2.2</EFCommonVersion>
-    <ExtensionsVersion>2.2</ExtensionsVersion>
+    <AspNetCoreVersion>2.2.0</AspNetCoreVersion>
+    <EFCommonVersion>2.2.0</EFCommonVersion>
+    <ExtensionsVersion>2.2.0</ExtensionsVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.1.0</AspNetCoreVersion>
-    <EFCommonVersion>3.1.0</EFCommonVersion>
-    <ExtensionsVersion>3.1.0</ExtensionsVersion>
+    <AspNetCoreVersion>3.1.1</AspNetCoreVersion>
+    <EFCommonVersion>3.1.1</EFCommonVersion>
+    <ExtensionsVersion>3.1.1</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Microsoft.AspNetCore Sample Applications" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
@@ -41,8 +41,8 @@
   </ItemGroup>
 
   <ItemGroup Label="DataProtection">
-    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="3.1.0" />
-    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="3.1.0" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureKeyVault" Version="$(AspNetCoreVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Extensions.Hosting">

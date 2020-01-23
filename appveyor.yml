@@ -19,8 +19,9 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
+  - ps: dotnet nuget locals --clear all
   - ps: dotnet restore Bet.AspNetCore.sln -v quiet
-  - ps: dotnet build Bet.AspNetCore.sln -p:configuration=Release -p:Version=$($env:appveyor_build_version) -p:GeneratePackageOnBuild=true -o packages
+  - ps: dotnet build Bet.AspNetCore.sln  --no-restore -p:configuration=Release -p:Version=$($env:appveyor_build_version) -p:GeneratePackageOnBuild=true -v:diag -o packages
 
 test_script:
   - ps: dotnet test test/Bet.AspNetCore.UnitTest/Bet.AspNetCore.UnitTest.csproj -c Release --no-build
