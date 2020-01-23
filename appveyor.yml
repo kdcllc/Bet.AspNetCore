@@ -21,7 +21,8 @@ nuget:
 build_script:
   - ps: dotnet nuget locals --clear all
   - ps: dotnet restore Bet.AspNetCore.sln -v quiet
-  - ps: dotnet build Bet.AspNetCore.sln  --no-restore -p:configuration=Release -p:Version=$($env:appveyor_build_version) -p:GeneratePackageOnBuild=true -v:diag -o packages
+  - ps: dotnet build Bet.AspNetCore.sln  --no-restore -p:configuration=Release -p:Version=$($env:appveyor_build_version) -p:GeneratePackageOnBuild=true
+  - ps: dotnet pack Bet.AspNetCore.sln  --no-build -p:configuration=Release -p:Version=$($env:appveyor_build_version) -o packages
 
 test_script:
   - ps: dotnet test test/Bet.AspNetCore.UnitTest/Bet.AspNetCore.UnitTest.csproj -c Release --no-build
