@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ModelPredictionEngineBuilderExtensions
     {
         /// <summary>
-        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPredictionEngineObjectPool{TData, TPrediction}"/> implementation.
+        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPoolLoader{TData, TPrediction}"/> implementation.
         /// </summary>
         /// <typeparam name="TInput"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
@@ -48,18 +48,18 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPredictionEngineObjectPool{TData, TPrediction}"/> implementation.
+        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPoolLoader{TData, TPrediction}"/> implementation.
         /// </summary>
         /// <typeparam name="TInput"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
         /// <param name="services"></param>
         /// <param name="modelName"></param>
-        /// <param name="options">The Default values for the Named Machine Learning model.</param>
+        /// <param name="configure">The Default values for the Named Machine Learning model.</param>
         /// <returns></returns>
         public static IModelPredictionEngineBuilder<TInput, TPrediction> AddModelPredictionEngine<TInput, TPrediction>(
             this IServiceCollection services,
             string modelName,
-            Action<ModelPredictionEngineOptions<TInput, TPrediction>>? options = default)
+            Action<ModelPredictionEngineOptions<TInput, TPrediction>>? configure = default)
                 where TInput : class
                 where TPrediction : class, new()
         {
@@ -68,17 +68,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.ConfigureOptions<ModelPredictionEngineSetup<TInput, TPrediction>>();
 
-            if (options != null)
-            {
-                services.Configure(modelName, options);
-            }
+            services.AddOptions<ModelPredictionEngineOptions<TInput, TPrediction>>(modelName)
+                    .Configure(options =>
+                    {
+                        configure?.Invoke(options);
+                    });
 
-            services.AddSingleton<Func<ModelPredictionEngineOptions<TInput, TPrediction>>>(provider => () =>
-             {
-                 return provider.GetRequiredService<IOptionsMonitor<ModelPredictionEngineOptions<TInput, TPrediction>>>().Get(modelName);
-             });
-
-            services.AddSingleton<IModelPredictionEngine<TInput, TPrediction>, ModelPredictionEngineObjectPool<TInput, TPrediction>>();
+            services.AddSingleton<IModelPredictionEngine<TInput, TPrediction>, ModelPredictionEngine<TInput, TPrediction>>();
 
             return new ModelPredictionEngineBuilder<TInput, TPrediction>(services, modelName);
         }

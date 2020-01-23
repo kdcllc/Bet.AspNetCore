@@ -15,7 +15,7 @@ namespace Bet.AspNetCore.Sample.Pages
         }
 
         /// <summary>
-        /// https://www.joeaudette.com/blog/2018/08/28/gdpr---adding-a-revoke-consent-button-in-aspnet-core
+        /// https://www.joeaudette.com/blog/2018/08/28/gdpr---adding-a-revoke-consent-button-in-aspnet-core.
         /// </summary>
         /// <returns></returns>
         public IActionResult OnPostWithdraw()

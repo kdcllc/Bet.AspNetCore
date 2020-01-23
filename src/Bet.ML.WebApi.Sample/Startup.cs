@@ -100,9 +100,7 @@ namespace Bet.ML.WebApi.Sample
             app.UseRouting();
 
             // app.UseAuthentication();
-
             // app.UseAuthorization();
-
             app.UseSwagger();
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AppName} API v1"));
 

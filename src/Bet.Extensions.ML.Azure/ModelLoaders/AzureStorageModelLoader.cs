@@ -22,7 +22,7 @@ namespace Bet.Extensions.ML
         private readonly ILogger<AzureStorageModelLoader> _logger;
         private readonly MLContext _context;
         private readonly CancellationTokenSource _stopping;
-        private Lazy<Task<CloudBlobContainer>> _container;
+        private Lazy<Task<CloudBlobContainer>>? _container;
         private ModelReloadToken _reloadToken;
         private TimeSpan _interval;
         private string _fileName = string.Empty;
@@ -46,7 +46,7 @@ namespace Bet.Extensions.ML
             _stopping = new CancellationTokenSource();
         }
 
-        public override ITransformer GetModel()
+        public override ITransformer? GetModel()
         {
             if (_pollingTask == null)
             {
@@ -89,6 +89,11 @@ namespace Bet.Extensions.ML
 
         internal async Task RunAsync()
         {
+            if (_container == null)
+            {
+                throw new ArgumentNullException($"{nameof(_container)} can't be null");
+            }
+
             var sw = ValueStopwatch.StartNew();
             CancellationTokenSource? cancellation = null;
 
@@ -134,6 +139,11 @@ namespace Bet.Extensions.ML
 
         internal async Task LoadModelAsync(string blobName, CancellationToken cancellationToken = default)
         {
+            if (_container == null)
+            {
+                throw new ArgumentNullException($"{nameof(_container)} can't be null");
+            }
+
             try
             {
                 var blob = (await _container.Value).GetBlockBlobReference(blobName);

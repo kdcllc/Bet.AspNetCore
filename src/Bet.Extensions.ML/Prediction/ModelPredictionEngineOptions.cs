@@ -47,7 +47,7 @@ namespace Bet.Extensions.ML.Prediction
         /// <summary>
         /// The entry point to configure and load the actual Machine Learning Model.
         /// </summary>
-        public Func<MLContext, ITransformer>? CreateModel { get; set; } = default;
+        public Func<MLContext, ITransformer>? CreateModel { get; set; }
 
         /// <summary>
         /// The logging level for the <see cref="MLContext"/> for this instance of options.The default is <see cref="LogLevel.Trace"/>.

@@ -72,7 +72,7 @@ namespace Bet.Extensions.UnitTest.HealthChecks
 
                 _output.WriteLine("server-started");
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                await Task.Factory.StartNew(async () => await publisher.PublishAsync(report, cts.Token), cts.Token);
+                await Task.Factory.StartNew(async () => await publisher.PublishAsync(report, cts.Token), cts.Token, TaskCreationOptions.None, TaskScheduler.Default);
 
                 Thread.Sleep(TimeSpan.FromSeconds(4));
 
