@@ -29,11 +29,6 @@ namespace Bet.Extensions.ML.Prediction
         public string ModelName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Machine Learning Model Specific Context. The default value is set to a new instance.
-        /// </summary>
-        public Func<MLContext> MLContext { get; set; } = () => new MLContext();
-
-        /// <summary>
         /// Will contain the input schema for the model. If the model was saved without any
         /// description of the input, there will be no input schema. In this case this can be null.
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using Bet.Extensions.ML;
 using Bet.Extensions.ML.DataLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.SourceLoaders;
@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             where TInput : class
             where TResult : MetricsResult
         {
-            services.TryAddSingleton(new MLContext());
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<MLContextOptions>, PostMLContextOptionsSetup>());
 
             services.AddOptions();
 
@@ -125,7 +125,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // allows to add multiple instances of the typed object
             builder.Services.AddTransient<IModelDefinitionBuilder<TInput, TResult>>(sp =>
             {
-                var mlContext = sp.GetRequiredService<MLContext>();
+                var mlContext = sp.GetRequiredService<IOptions<MLContextOptions>>();
                 var options = sp.GetRequiredService<IOptionsMonitor<ModelDefinitionBuilderOptions<TResult>>>().Get(builder.ModelName);
                 var logger = sp.GetRequiredService<ILogger<ModelDefinitionBuilder<TInput, TResult>>>();
 

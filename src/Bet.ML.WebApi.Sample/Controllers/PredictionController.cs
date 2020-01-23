@@ -27,7 +27,7 @@ namespace Bet.ML.WebApi.Sample.Controllers
         [HttpPost]
         public ActionResult<SentimentPrediction> GetSentiment(SentimentIssue input)
         {
-            return _sentimentModel.Predict(input);
+            return _sentimentModel.Predict(Models.SentimentModel, input);
         }
 
         // GET /api/prediction/spam?text=Hello World
@@ -35,7 +35,7 @@ namespace Bet.ML.WebApi.Sample.Controllers
         [Route("spam")]
         public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
         {
-            return _spamModel.Predict(new SpamInput { Message = text });
+            return _spamModel.Predict(Models.SpamModel, new SpamInput { Message = text });
         }
     }
 }

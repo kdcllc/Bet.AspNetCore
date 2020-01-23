@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 
 using Bet.Extensions.ML;
@@ -21,58 +20,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TInput"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
         /// <param name="services"></param>
-        /// <param name="mlModelPath">The path to the ML model file.</param>
-        /// <param name="modelName">The Unique ML model name. The default <see cref="Constants.MLDefaultModelName"/>.</param>
-        /// <returns></returns>
-        public static IModelPredictionEngineBuilder<TInput, TPrediction> AddModelPredictionEngine<TInput, TPrediction>(
-            this IServiceCollection services,
-            string mlModelPath,
-            string modelName)
-                where TInput : class
-                where TPrediction : class, new()
-        {
-            return services.AddModelPredictionEngine<TInput, TPrediction>(
-                modelName,
-                options =>
-                {
-                    options.CreateModel = (mlContext) =>
-                    {
-                        using (var fileStream = File.OpenRead(mlModelPath))
-                        {
-                            var context = mlContext.Model.Load(fileStream, out var modelInputSchema);
-                            options.InputSchema = modelInputSchema;
-                            return context;
-                        }
-                    };
-                });
-        }
-
-        /// <summary>
-        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPoolLoader{TData, TPrediction}"/> implementation.
-        /// </summary>
-        /// <typeparam name="TInput"></typeparam>
-        /// <typeparam name="TPrediction"></typeparam>
-        /// <param name="services"></param>
         /// <param name="modelName"></param>
-        /// <param name="configure">The Default values for the Named Machine Learning model.</param>
         /// <returns></returns>
         public static IModelPredictionEngineBuilder<TInput, TPrediction> AddModelPredictionEngine<TInput, TPrediction>(
             this IServiceCollection services,
-            string modelName,
-            Action<ModelPredictionEngineOptions<TInput, TPrediction>>? configure = default)
+            string modelName = "")
                 where TInput : class
                 where TPrediction : class, new()
         {
             // enables with generic host
             services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
 
-            services.ConfigureOptions<ModelPredictionEngineSetup<TInput, TPrediction>>();
-
-            services.AddOptions<ModelPredictionEngineOptions<TInput, TPrediction>>(modelName)
-                    .Configure(options =>
-                    {
-                        configure?.Invoke(options);
-                    });
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<MLContextOptions>, PostMLContextOptionsSetup>());
 
             services.AddSingleton<IModelPredictionEngine<TInput, TPrediction>, ModelPredictionEngine<TInput, TPrediction>>();
 
@@ -80,18 +39,23 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IModelPredictionEngineBuilder<TInput, TPrediction> From<TInput, TPrediction, TLoader>(
-            this IModelPredictionEngineBuilder<TInput, TPrediction> builder)
+            this IModelPredictionEngineBuilder<TInput, TPrediction> builder,
+            Action<ModelLoderFileOptions>? configure = default)
             where TInput : class
             where TPrediction : class, new()
             where TLoader : ModelLoader
         {
-            builder.AddModelLoader<TInput, TPrediction, TLoader>();
+            builder.AddModelLoader<TInput, TPrediction, TLoader>(configure);
 
             builder.Services
                     .AddOptions<ModelPredictionEngineOptions<TInput, TPrediction>>(builder.ModelName)
                     .Configure<IServiceProvider>(
                       (mlOptions, sp) =>
                       {
+                          mlOptions.ModelName = builder.ModelName;
+
+                          mlOptions.ServiceProvider = sp;
+
                           mlOptions.CreateModel = (mlContext) =>
                           {
                               var loader = sp.GetRequiredService<IOptionsMonitor<ModelLoaderOptions>>()
@@ -109,7 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IModelPredictionEngineBuilder<TInput, TPrediction> AddModelLoader<TInput, TPrediction, TLoader>(
+        private static IModelPredictionEngineBuilder<TInput, TPrediction> AddModelLoader<TInput, TPrediction, TLoader>(
            this IModelPredictionEngineBuilder<TInput, TPrediction> builder,
            Action<ModelLoderFileOptions>? configure = null,
            ServiceLifetime serviceLifetime = ServiceLifetime.Transient)

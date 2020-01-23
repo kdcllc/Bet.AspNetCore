@@ -6,6 +6,7 @@ using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
 using Bet.AspNetCore.Sample.Models;
 using Bet.AspNetCore.Sample.Options;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -57,19 +59,20 @@ namespace Bet.AspNetCore.Sample
 
             services.AddReCapture(Configuration);
 
-            services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
-
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
-                "SpamModel",
-                mlOptions =>
+            // add sentiment model
+            services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>(MLModels.SentimentModel)
+                .From<SentimentObservation, SentimentPrediction, FileModelLoader>(options =>
                 {
-                    mlOptions.CreateModel = (mlContext) =>
-                    {
-                        using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
-                        {
-                            return mlContext.Model.Load(fileStream, out var inputSchema);
-                        }
-                    };
+                    options.ModelFileName = "MLContent/SentimentModel.zip";
+                });
+
+            // add spam model
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
+                MLModels.SpamModel)
+                .From<SpamInput, SpamPrediction, FileModelLoader>(
+                options =>
+                {
+                    options.ModelFileName = "MLContent/SpamModel.zip";
                 });
 
             // configure Options for the App.
@@ -99,7 +102,16 @@ namespace Bet.AspNetCore.Sample
                 {
                     options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
                 })
-                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
+                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>(
+                $"{MLModels.SentimentModel}_check",
+                options =>
+                {
+                    options.ModelName = MLModels.SentimentModel;
+                    options.SampleData = new SentimentObservation
+                    {
+                        SentimentText = "This is a very rude movie"
+                    };
+                })
                 .AddAzureBlobStorageCheck("files_check", "files", options =>
                 {
                     options.Name = "betstorage";
@@ -156,6 +168,8 @@ namespace Bet.AspNetCore.Sample
             }
 
             app.UseStaticFiles();
+
+            app.UseSerilogRequestLogging();
 
             app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 

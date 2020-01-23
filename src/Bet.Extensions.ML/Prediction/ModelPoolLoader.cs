@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.ML;
 
@@ -14,6 +16,7 @@ namespace Bet.Extensions.ML.Prediction
     {
         private readonly ILogger _logger;
         private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private readonly MLContext _mlContext;
         private readonly IDisposable _changeToken;
 
         private DefaultObjectPool<PredictionEngine<TData, TPrediction>> _pool;
@@ -22,6 +25,9 @@ namespace Bet.Extensions.ML.Prediction
         public ModelPoolLoader(ModelPredictionEngineOptions<TData, TPrediction> options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
+
+            _mlContext = _options.ServiceProvider.GetRequiredService<IOptions<MLContextOptions>>().Value.MLContext
+                ?? throw new ArgumentNullException("MLContext is missing");
 
             _logger = _options.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(ModelPoolLoader<TData, TPrediction>));
 
@@ -51,21 +57,19 @@ namespace Bet.Extensions.ML.Prediction
 
         private void LoadPool()
         {
-            var mlContext = _options.MLContext();
-
             if (_options.CreateModel == null)
             {
                 throw new NullReferenceException("CreateModel wasn't provided...");
             }
 
-            Interlocked.Exchange(ref _model, _options.CreateModel(mlContext));
+            Interlocked.Exchange(ref _model, _options.CreateModel(_mlContext));
 
             if (_model == null)
             {
                 throw new NullReferenceException("Model wasn't created");
             }
 
-            var pooledObjectPolicy = new ModelPredictionEnginePoolPolicy<TData, TPrediction>(mlContext, _model);
+            var pooledObjectPolicy = new ModelPredictionEnginePoolPolicy<TData, TPrediction>(_mlContext, _model);
 
             if (_options.MaximumObjectsRetained != -1)
             {

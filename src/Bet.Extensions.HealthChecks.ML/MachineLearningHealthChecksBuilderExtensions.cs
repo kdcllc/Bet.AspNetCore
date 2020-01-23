@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Bet.Extensions.HealthChecks.ML;
 
@@ -15,14 +16,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TPrediction"></typeparam>
         /// <param name="builder"></param>
         /// <param name="name"></param>
+        /// <param name="configure"></param>
         /// <param name="failureStatus"></param>
         /// <param name="tags"></param>
         /// <returns></returns>
         public static IHealthChecksBuilder AddMachineLearningModelCheck<TInput, TPrediction>(
             this IHealthChecksBuilder builder,
             string name,
+            Action<MachineLearningHealthCheckOptions<TInput>>? configure = null,
             HealthStatus? failureStatus = default,
-            IEnumerable<string>? tags = default) where TInput : class, new() where TPrediction : class, new()
+            IEnumerable<string>? tags = default)
+                where TInput : class, new()
+                where TPrediction : class, new()
         {
             if (tags == default)
             {
@@ -30,6 +35,14 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             builder.AddCheck<MachineLearningHealthCheck<TInput, TPrediction>>(name, failureStatus ?? HealthStatus.Unhealthy, tags);
+
+            // Configure named options to pass the threshold into the check.
+            builder.Services.Configure<MachineLearningHealthCheckOptions<TInput>>(
+                name,
+                options =>
+                {
+                    configure?.Invoke(options);
+                });
 
             return builder;
         }

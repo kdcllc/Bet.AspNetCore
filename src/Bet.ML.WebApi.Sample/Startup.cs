@@ -46,17 +46,16 @@ namespace Bet.ML.WebApi.Sample
 
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 
-            // add ML.NET Models
-            var spamName = "SpamModel";
-            services.AddSpamModelCreationService<InMemoryModelLoader>(modelName: spamName);
+            // add spam model
+            services.AddSpamModelCreationService<InMemoryModelLoader>(Models.SpamModel);
 
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(spamName)
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(Models.SpamModel)
                     .From<SpamInput, SpamPrediction, InMemoryModelLoader>();
 
-            var sentimentName = "SentimentModel";
-            services.AddSentimentModelCreationService<FileModelLoader>(modelName: sentimentName);
+            // add sentiment model
+            services.AddSentimentModelCreationService<FileModelLoader>(Models.SentimentModel);
 
-            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(sentimentName)
+            services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(Models.SentimentModel)
                 .From<SentimentIssue, SentimentPrediction, FileModelLoader>();
 
             services.AddScheduler(builder =>
@@ -68,8 +67,26 @@ namespace Bet.ML.WebApi.Sample
             // add healthchecks
             services.AddHealthChecks()
                 .AddMemoryHealthCheck()
-                .AddMachineLearningModelCheck<SpamInput, SpamPrediction>($"{spamName}_check")
-                .AddMachineLearningModelCheck<SentimentIssue, SentimentPrediction>($"{sentimentName}_check")
+                .AddMachineLearningModelCheck<SpamInput, SpamPrediction>(
+                $"{Models.SpamModel}_check",
+                options =>
+                {
+                    options.ModelName = Models.SpamModel;
+                    options.SampleData = new SpamInput
+                    {
+                        Message = "That's a great idea. It should work."
+                    };
+                })
+                .AddMachineLearningModelCheck<SentimentIssue, SentimentPrediction>(
+                $"{Models.SentimentModel}_check",
+                options =>
+                {
+                    options.ModelName = Models.SentimentModel;
+                    options.SampleData = new SentimentIssue
+                    {
+                        Text = "This is a very rude movie"
+                    };
+                })
                 .AddSigtermCheck("sigterm_check")
                 .AddLoggerPublisher(new List<string> { "sigterm_check" });
         }

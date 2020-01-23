@@ -26,7 +26,7 @@ namespace Bet.AspNetCore.Sample.Controllers
         [HttpPost]
         public ActionResult<SentimentPrediction> GetSentiment(SentimentObservation input)
         {
-            return _sentimentModel.Predict(input);
+            return _sentimentModel.Predict(MLModels.SentimentModel, input);
         }
 
         // GET /api/prediction/spam?text=Hello World
@@ -34,7 +34,7 @@ namespace Bet.AspNetCore.Sample.Controllers
         [Route("spam")]
         public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
         {
-            return _spamModel.Predict(new SpamInput { Message = text });
+            return _spamModel.Predict(MLModels.SpamModel, new SpamInput { Message = text });
         }
     }
 }

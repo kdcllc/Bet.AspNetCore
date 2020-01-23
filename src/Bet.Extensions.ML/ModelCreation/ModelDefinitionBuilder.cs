@@ -6,6 +6,7 @@ using System.IO;
 using Bet.Extensions.ML.ModelCreation.Results;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace Bet.Extensions.ML.ModelCreation
@@ -26,11 +27,11 @@ namespace Bet.Extensions.ML.ModelCreation
         private string _trainerName = string.Empty;
 
         public ModelDefinitionBuilder(
-            MLContext mLContext,
+            IOptions<MLContextOptions> mLContext,
             ModelDefinitionBuilderOptions<TResult> options,
             ILogger<ModelDefinitionBuilder<TInput, TResult>> logger)
         {
-            MLContext = mLContext ?? throw new ArgumentNullException(nameof(mLContext));
+            MLContext = mLContext.Value.MLContext ?? throw new ArgumentNullException(nameof(mLContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _options = options;
