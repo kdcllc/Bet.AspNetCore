@@ -11,39 +11,15 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
 {
     public abstract class ModelLoader
     {
-        private ReloadToken _reloadToken = new ReloadToken();
-
         protected virtual ModelLoderFileOptions Options { get; set; } = default!;
-
-        protected Func<string, Stream, CancellationToken, Task>? SaveFunc { get; set; }
-
-        protected Func<string, CancellationToken, Task<Stream>>? LoadFunc { get; set; }
 
         protected Func<string, string, CancellationToken, Task>? SaveResultFunc { get; set; }
 
-        public virtual async Task SaveAsync(Stream stream, CancellationToken cancellationToken)
-        {
-            if (SaveFunc == null)
-            {
-                throw new ArgumentNullException($"{nameof(SaveFunc)} is not configured in the provider.");
-            }
+        protected Func<string, CancellationToken, Task<Stream>>? LoadFunc { get; set; }
 
-            var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
+        public abstract Task SaveAsync(Stream stream, CancellationToken cancellationToken);
 
-            await SaveFunc(Options.ModelFileName, stream, cancellationToken);
-
-            previousToken.OnReload();
-        }
-
-        public virtual Task<Stream> LoadModelAsync(CancellationToken cancellationToken)
-        {
-            if (LoadFunc == null)
-            {
-                throw new ArgumentNullException($"{nameof(LoadFunc)} is not configured in the provider.");
-            }
-
-            return LoadFunc(Options.ModelFileName, cancellationToken);
-        }
+        public abstract Task<Stream> LoadAsync(CancellationToken cancellationToken);
 
         public virtual Task<TResult> LoadeResultAsync<TResult>(CancellationToken cancellationToken)
         {
@@ -77,14 +53,14 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
             await SaveResultFunc(Options.ModelResultFileName, json, cancellationToken);
         }
 
-        public virtual IChangeToken GetReloadToken()
-        {
-            return _reloadToken;
-        }
+        public abstract IChangeToken GetReloadToken();
 
         public virtual void Setup(ModelLoderFileOptions options)
         {
             Options = options;
+            Polling();
         }
+
+        protected abstract void Polling();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using Bet.Extensions.ML;
 using Bet.Extensions.ML.DataLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
@@ -10,7 +11,6 @@ using Bet.Extensions.ML.ModelCreation.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.ML;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

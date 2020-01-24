@@ -65,7 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
                                () => loader.GetReloadToken(),
                                () => mlOptions.Reload());
 
-                              var model = loader.LoadModelAsync(CancellationToken.None).GetAwaiter().GetResult();
+                              var model = loader.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
                               return mlContext.Model.Load(model, out var inputSchema);
                           };
                       });
@@ -89,16 +89,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 builder.ModelName,
                 options =>
                 {
-                    if (configure == null)
-                    {
-                        options.ModelName = builder.ModelName;
-                        options.ModelResultFileName = $"{options.ModelName}.json";
-                        options.ModelFileName = $"{options.ModelName}.zip";
-                    }
-                    else
-                    {
-                        configure?.Invoke(options);
-                    }
+                    options.ModelName = builder.ModelName;
+                    options.ModelResultFileName = $"{options.ModelName}.json";
+                    options.ModelFileName = $"{options.ModelName}.zip";
+
+                    // overrides the defaults
+                    configure?.Invoke(options);
                 });
 
             // adds model loader options to be used.

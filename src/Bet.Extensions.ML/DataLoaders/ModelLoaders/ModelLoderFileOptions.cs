@@ -1,4 +1,6 @@
-﻿namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
+﻿using System;
+
+namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
 {
     public class ModelLoderFileOptions
     {
@@ -10,5 +12,9 @@
         public string ModelFileName { get; set; } = string.Empty;
 
         public string ModelResultFileName { get; set; } = string.Empty;
+
+        public bool WatchForChanges { get; set; } = false;
+
+        public TimeSpan? ReloadInterval { get; set; }
     }
 }

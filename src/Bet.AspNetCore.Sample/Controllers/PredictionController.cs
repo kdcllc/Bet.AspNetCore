@@ -31,13 +31,18 @@ namespace Bet.AspNetCore.Sample.Controllers
 
         [HttpGet]
         [Route("batchsentiment")]
-        public IActionResult BatchSentiment()
+        public IActionResult BatchSentiment([FromQuery]SentimentObservation[] samples)
         {
             var input = new List<SentimentObservation>
             {
                 new SentimentObservation { SentimentText = "This is a very rude movie" },
                 new SentimentObservation { SentimentText = "Hate All Of You're Work" },
             };
+
+            if (samples != null)
+            {
+                input.AddRange(samples);
+            }
 
             var results = _sentimentModel.Predict(MLModels.SentimentModel, input);
             return Ok(results);

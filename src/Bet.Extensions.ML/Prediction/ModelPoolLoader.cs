@@ -27,7 +27,7 @@ namespace Bet.Extensions.ML.Prediction
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             _mlContext = _options.ServiceProvider.GetRequiredService<IOptions<MLContextOptions>>().Value.MLContext
-                ?? throw new ArgumentNullException("MLContext is missing");
+                ?? throw new NullReferenceException("MLContext instance is missing");
 
             _logger = _options.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(ModelPoolLoader<TData, TPrediction>));
 
@@ -81,7 +81,7 @@ namespace Bet.Extensions.ML.Prediction
                 Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy));
             }
 
-            _logger.LogDebug(
+            _logger.LogInformation(
                 "[{className}][{methodName}] ML.NET Model name: {modelName}",
                 nameof(ModelPoolLoader<TData, TPrediction>),
                 nameof(LoadPool),

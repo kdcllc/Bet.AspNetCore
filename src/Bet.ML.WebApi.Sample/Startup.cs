@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace Bet.ML.WebApi.Sample
 {
@@ -56,7 +57,10 @@ namespace Bet.ML.WebApi.Sample
             services.AddSentimentModelCreationService<FileModelLoader>(Models.SentimentModel);
 
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(Models.SentimentModel)
-                .From<SentimentIssue, SentimentPrediction, FileModelLoader>();
+                    .From<SentimentIssue, SentimentPrediction, FileModelLoader>(options =>
+                    {
+                        options.WatchForChanges = true;
+                    });
 
             services.AddScheduler(builder =>
             {
@@ -113,6 +117,8 @@ namespace Bet.ML.WebApi.Sample
             {
                 app.UseHttpsRedirection();
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
