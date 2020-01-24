@@ -16,9 +16,14 @@ namespace Bet.Extensions.ML.Prediction
 
         private bool _disposed = false;
 
-        public ModelPredictionEngine(IOptionsFactory<ModelPredictionEngineOptions<TInput, TPrediction>> optionsFactory)
+        public ModelPredictionEngine(
+            IOptionsFactory<ModelPredictionEngineOptions<TInput, TPrediction>> optionsFactory,
+            IOptions<MLContextOptions> mlContextOptions)
         {
             _optionsFactory = optionsFactory ?? throw new ArgumentNullException(nameof(optionsFactory));
+
+            MLContext = mlContextOptions.Value.MLContext ?? throw new ArgumentNullException(nameof(mlContextOptions));
+
             var defaultOptions = _optionsFactory.Create(string.Empty);
             if (defaultOptions.CreateModel != null)
             {
@@ -27,6 +32,8 @@ namespace Bet.Extensions.ML.Prediction
 
             _namedPools = new Dictionary<string, ModelPoolLoader<TInput, TPrediction>>();
         }
+
+        public MLContext MLContext { get; private set; }
 
         public void Dispose()
         {

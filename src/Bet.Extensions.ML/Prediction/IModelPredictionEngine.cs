@@ -12,6 +12,11 @@ namespace Bet.Extensions.ML.Prediction
         where TPrediction : class, new()
     {
         /// <summary>
+        /// Gets <see cref="MLContext"/> instance.
+        /// </summary>
+        MLContext MLContext { get; }
+
+        /// <summary>
         /// The transformer holds the Machine Learning predictive model data.
         /// </summary>
         ITransformer GetModel();

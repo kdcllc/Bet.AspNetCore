@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using Bet.AspNetCore.Sample.Models;
 using Bet.Extensions.ML.Prediction;
 using Bet.Extensions.ML.Spam.Models;
@@ -24,15 +24,29 @@ namespace Bet.AspNetCore.Sample.Controllers
         }
 
         [HttpPost]
-        public ActionResult<SentimentPrediction> GetSentiment(SentimentObservation input)
+        public ActionResult<SentimentPrediction> Sentiment(SentimentObservation input)
         {
             return _sentimentModel.Predict(MLModels.SentimentModel, input);
         }
 
+        [HttpGet]
+        [Route("batchsentiment")]
+        public IActionResult BatchSentiment()
+        {
+            var input = new List<SentimentObservation>
+            {
+                new SentimentObservation { SentimentText = "This is a very rude movie" },
+                new SentimentObservation { SentimentText = "Hate All Of You're Work" },
+            };
+
+            var results = _sentimentModel.Predict(MLModels.SentimentModel, input);
+            return Ok(results);
+        }
+
         // GET /api/prediction/spam?text=Hello World
         [HttpGet]
-        [Route("spam")]
-        public ActionResult<SpamPrediction> PredictSpam([FromQuery]string text)
+        [Route(nameof(Spam))]
+        public ActionResult<SpamPrediction> Spam([FromQuery]string text)
         {
             return _spamModel.Predict(MLModels.SpamModel, new SpamInput { Message = text });
         }
