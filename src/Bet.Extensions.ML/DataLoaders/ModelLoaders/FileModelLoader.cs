@@ -95,7 +95,11 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
                 _watcher.NotifyFilter = NotifyFilters.LastWrite;
                 _watcher.Changed += WatcherChanged;
 
-                _logger.LogInformation("[{provideName}][Watching] {fileName}", nameof(FileModelLoader), Options.ModelFileName);
+                _logger.LogInformation(
+                    "[{provideName}][Watching] {modelName}-{fileName}",
+                    nameof(FileModelLoader),
+                    Options.ModelName,
+                    Options.ModelFileName);
             }
         }
 

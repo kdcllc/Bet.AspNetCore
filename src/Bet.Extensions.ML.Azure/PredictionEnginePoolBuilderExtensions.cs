@@ -2,8 +2,11 @@
 
 using Bet.Extensions.AzureStorage.Options;
 using Bet.Extensions.ML;
+using Bet.Extensions.ML.Azure;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.ML
@@ -19,29 +22,35 @@ namespace Microsoft.Extensions.ML
         /// <param name="modelName"></param>
         /// <param name="containerName"></param>
         /// <param name="fileName"></param>
-        /// <param name="setupStorage"></param>
         /// <param name="interval"></param>
+        /// <param name="azureStorageSectionName"></param>
+        /// <param name="setupStorage"></param>
         /// <returns></returns>
         public static PredictionEnginePoolBuilder<TData, TPrediction> FromAzureStorage<TData, TPrediction>(
             this PredictionEnginePoolBuilder<TData, TPrediction> builder,
             string modelName,
             string containerName,
             string fileName,
-            Action<StorageAccountOptions> setupStorage,
-            TimeSpan interval) where TData : class
+            TimeSpan interval,
+            string azureStorageSectionName = "",
+            Action<StorageAccountOptions>? setupStorage = null) where TData : class
            where TPrediction : class, new()
         {
-            builder.Services.Configure<StorageAccountOptions>(modelName, o => setupStorage?.Invoke(o));
-            builder.Services.ConfigureOptions<StorageAccountOptionsSetup>();
+            builder.Services.AddAzureStorage(azureStorageSectionName, setupStorage);
 
-            builder.Services.AddTransient<AzureStorageModelLoader, AzureStorageModelLoader>();
+            builder.Services.TryAddTransient<AzureStorageModelLoader, AzureStorageModelLoader>();
+
             builder.Services.AddOptions<PredictionEnginePoolOptions<TData, TPrediction>>(modelName)
-                .Configure<AzureStorageModelLoader, IOptionsMonitor<StorageAccountOptions>>((opt, loader, monitor) =>
+                .Configure<IServiceProvider, AzureStorageModelLoader>((options, sp, loader) =>
                 {
-                    var storageOptions = monitor.Get(modelName);
+                    var storageOptions = sp.GetRequiredService<IOptionsMonitor<StorageAccountOptions>>().Get(azureStorageSectionName);
+                    var mlOptions = sp.GetRequiredService<IOptions<MLOptions>>().Value;
+                    var logger = sp.GetRequiredService<ILogger<AzureBlobContainerLoader>>();
 
-                    loader.Start(storageOptions, containerName, fileName, interval);
-                    opt.ModelLoader = loader;
+                    var containerLoader = new AzureBlobContainerLoader(containerName, mlOptions, storageOptions, logger);
+
+                    loader.Start(containerLoader, fileName, interval);
+                    options.ModelLoader = loader;
                 });
             return builder;
         }

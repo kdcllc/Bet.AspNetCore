@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Threading;
+
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -16,8 +17,6 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
-        private ReloadToken _reloadToken = new ReloadToken();
-
         /// <summary>
         /// The instance of the service provider.
         /// </summary>
@@ -44,6 +43,8 @@ namespace Bet.Extensions.ML.Prediction
         /// </summary>
         public Func<MLContext, ITransformer>? CreateModel { get; set; }
 
+        public ModelLoader? ModelLoader { get; set; }
+
         /// <summary>
         /// The logging level for the <see cref="MLContext"/> for this instance of options.The default is <see cref="LogLevel.Trace"/>.
         /// </summary>
@@ -55,13 +56,12 @@ namespace Bet.Extensions.ML.Prediction
         /// <returns></returns>
         public IChangeToken GetReloadToken()
         {
-            return _reloadToken = new ReloadToken();
-        }
+            if (ModelLoader == null)
+            {
+                throw new NullReferenceException($"{nameof(ModelLoader)} must be set");
+            }
 
-        public void Reload()
-        {
-            var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
-            previousToken.OnReload();
+            return ModelLoader.GetReloadToken();
         }
     }
 }

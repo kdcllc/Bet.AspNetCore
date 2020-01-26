@@ -33,7 +33,7 @@ namespace Bet.Extensions.ML.Prediction
             _namedPools = new Dictionary<string, ModelPoolLoader<TInput, TPrediction>>();
         }
 
-        public MLContext MLContext { get; private set; }
+        public MLContext MLContext { get; }
 
         public void Dispose()
         {
@@ -105,11 +105,11 @@ namespace Bet.Extensions.ML.Prediction
             if (string.IsNullOrEmpty(modelName)
                 && _defaultPool != null)
             {
-                _defaultPool.PredictionEnginePool.Return(engine);
+                _defaultPool?.PredictionEnginePool?.Return(engine);
             }
             else
             {
-                _namedPools[modelName].PredictionEnginePool.Return(engine);
+                _namedPools[modelName]?.PredictionEnginePool?.Return(engine);
             }
         }
 

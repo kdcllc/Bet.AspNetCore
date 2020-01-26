@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 
 namespace Bet.Extensions.AzureStorage.Options
 {

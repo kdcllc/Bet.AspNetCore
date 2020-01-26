@@ -12,8 +12,9 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.AzureStorage.Options
 {
-    public class StorageAccountOptionsSetup
-        : IConfigureNamedOptions<StorageAccountOptions>, IPostConfigureOptions<StorageAccountOptions>
+    public class StorageAccountOptionsSetup :
+        IConfigureNamedOptions<StorageAccountOptions>,
+        IPostConfigureOptions<StorageAccountOptions>
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<StorageAccountOptionsSetup> _logger;
@@ -32,6 +33,9 @@ namespace Bet.Extensions.AzureStorage.Options
         {
             var configPath = GetRootSectionPath(options);
             configPath = ConfigurationPath.Combine(configPath, $"{options.OptionName}Account");
+
+            Log.DebugInfo(_logger, nameof(Configure), configPath);
+
             var section = _configuration.GetSection(configPath);
             section.Bind(options);
         }
@@ -44,9 +48,10 @@ namespace Bet.Extensions.AzureStorage.Options
 
         public void PostConfigure(string name, StorageAccountOptions options)
         {
+            _options = options;
+
             if (options.CloudStorageAccount == null)
             {
-                _options = options;
                 options.CloudStorageAccount = new Lazy<Task<CloudStorageAccount>>(() => GetStorageAccountAsync());
             }
         }
@@ -58,26 +63,23 @@ namespace Bet.Extensions.AzureStorage.Options
 
         private async Task<NewTokenAndFrequency> TokenRenewerAsync(object state, CancellationToken cancellationToken)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var (authResult, next) = await GetToken(state);
 
-            sw.Stop();
-
-            _logger.LogInformation("Azure Storage Authentication duration: {0}", sw.Elapsed.TotalSeconds);
+            _logger.LogInformation("[Azure Storage][Authentication] Eclipsed: {elapsed}sec", sw.GetElapsedTime().TotalSeconds);
 
             if (next.Ticks < 0)
             {
                 next = default;
 
-                _logger.LogInformation("Azure Storage Authentication Renewing Token...");
+                _logger.LogInformation("[Azure Storage][Authentication Renewing Token] Started...");
 
-                var swr = Stopwatch.StartNew();
+                var swr = ValueStopwatch.StartNew();
 
                 (authResult, next) = await GetToken(state);
 
-                swr.Stop();
-                _logger.LogInformation("Azure Storage Authentication Renewing Token duration: {0}", swr.Elapsed.TotalSeconds);
+                _logger.LogInformation("[Azure Storage][Authentication Renewing Token] Elapsed: {elapsed}sec", swr.GetElapsedTime().TotalSeconds);
             }
 
             // Return the new token and the next refresh time.
@@ -109,7 +111,7 @@ namespace Bet.Extensions.AzureStorage.Options
             {
                 account = cloudStorageAccount;
 
-                _logger.LogInformation("Azure Storage Authentication with ConnectionString.");
+                _logger.LogInformation("[Azure Storage][Authentication] Using ConnectionString.");
             }
             else if (_options.Name != null
                 && string.IsNullOrEmpty(_options.Token))
@@ -134,14 +136,14 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 account = new CloudStorageAccount(storageCredentials, _options.Name, string.Empty, true);
 
-                _logger.LogInformation("Azure Storage Authentication with MSI Token.");
+                _logger.LogInformation("[Azure Storage][Authentication] Using MSI Token.");
             }
             else if (_options.Name != null
                 && !string.IsNullOrEmpty(_options.Token))
             {
                 account = new CloudStorageAccount(new StorageCredentials(_options.Token), _options.Name, true);
 
-                _logger.LogInformation("Azure Storage Authentication with SAS Token.");
+                _logger.LogInformation("[Azure Storage][Authentication] Using SAS Token.");
             }
             else
             {
@@ -149,6 +151,24 @@ namespace Bet.Extensions.AzureStorage.Options
             }
 
             return account;
+        }
+
+        internal static class Log
+        {
+            public static class EventIds
+            {
+                public static readonly EventId DebugInfo = new EventId(100, nameof(DebugInfo));
+            }
+
+            private static readonly Action<ILogger, string, string, Exception> _debugInfo = LoggerMessage.Define<string, string>(
+                Microsoft.Extensions.Logging.LogLevel.Debug,
+                EventIds.DebugInfo,
+                "[Azure Storage][{methodName}] {debugInfo}");
+
+            public static void DebugInfo(ILogger logger, string methodName, string debugInfo)
+            {
+                _debugInfo(logger, methodName, debugInfo, null);
+            }
         }
     }
 }

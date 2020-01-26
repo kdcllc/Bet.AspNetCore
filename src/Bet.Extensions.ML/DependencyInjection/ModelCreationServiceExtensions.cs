@@ -79,16 +79,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 builder.ModelName,
                 options =>
                 {
-                    if (configure == null)
-                    {
-                        options.ModelName = builder.ModelName;
-                        options.ModelResultFileName = $"{options.ModelName}.json";
-                        options.ModelFileName = $"{options.ModelName}.zip";
-                    }
-                    else
-                    {
-                        configure?.Invoke(options);
-                    }
+                    options.ModelName = builder.ModelName;
+                    options.WatchForChanges = false;
+                    options.ModelResultFileName = $"{options.ModelName}.json";
+                    options.ModelFileName = $"{options.ModelName}.zip";
+
+                    configure?.Invoke(options);
                 });
 
             // adds model loader options to be used.

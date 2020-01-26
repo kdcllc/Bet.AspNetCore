@@ -54,7 +54,16 @@ namespace Bet.ML.WebApi.Sample
                     .From<SpamInput, SpamPrediction, InMemoryModelLoader>();
 
             // add sentiment model
-            services.AddSentimentModelCreationService<FileModelLoader>(Models.SentimentModel);
+            services.AddSentimentModelCreationService<FileModelLoader>(
+                $"{Models.SentimentModel}-builder",
+                configure: options =>
+            {
+                var builderModelName = $"{Models.SentimentModel}-builder";
+                options.ModelName = builderModelName;
+                options.WatchForChanges = false;
+                options.ModelResultFileName = $"{Models.SentimentModel}.json";
+                options.ModelFileName = $"{Models.SentimentModel}.zip";
+            });
 
             services.AddModelPredictionEngine<SentimentIssue, SentimentPrediction>(Models.SentimentModel)
                     .From<SentimentIssue, SentimentPrediction, FileModelLoader>(options =>

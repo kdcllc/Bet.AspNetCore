@@ -23,6 +23,14 @@ namespace Bet.Extensions.ML.ModelCreation
         private readonly IOptionsMonitor<TOptions> _engineOptionsMonitor;
         private readonly IOptionsFactory<ModelLoaderOptions> _modelLoaderOptions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelCreationEngine{TInput, TResult, TOptions}"/> class.
+        /// </summary>
+        /// <param name="modelBuilders"></param>
+        /// <param name="sourceLoaderOptionsFactory"></param>
+        /// <param name="engineOptionsMonitor"></param>
+        /// <param name="modelLoaderOptionsFactory"></param>
+        /// <param name="logger"></param>
         public ModelCreationEngine(
             IEnumerable<IModelDefinitionBuilder<TInput, TResult>> modelBuilders,
             IOptionsFactory<SourceLoaderOptions<TInput>> sourceLoaderOptionsFactory,
@@ -33,7 +41,7 @@ namespace Bet.Extensions.ML.ModelCreation
             _modelBuilders = modelBuilders ?? throw new ArgumentNullException(nameof(modelBuilders));
             _sourceLoaderOptionsFactory = sourceLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(sourceLoaderOptionsFactory));
             _engineOptionsMonitor = engineOptionsMonitor;
-            _modelLoaderOptions = modelLoaderOptionsFactory;
+            _modelLoaderOptions = modelLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(modelLoaderOptionsFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -49,15 +57,15 @@ namespace Bet.Extensions.ML.ModelCreation
         /// <returns></returns>
         public async Task TrainModelAsync(CancellationToken cancellationToken)
         {
+            // usually 1 type per model is registered
             foreach (var modelBuilder in _modelBuilders)
             {
                 var sw = ValueStopwatch.StartNew();
+                Log.StartProcess(_logger, nameof(TrainModelAsync), modelBuilder.ModelName);
 
                 var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
                 var sourceLoaderOptions = _sourceLoaderOptionsFactory.Create(modelBuilder.ModelName);
                 var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
-
-                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(TrainModelAsync), modelBuilder.ModelName);
 
                 var data = await engineOptions.DataLoader(sourceLoaderOptions.SourceLoader, cancellationToken);
 
@@ -65,11 +73,7 @@ namespace Bet.Extensions.ML.ModelCreation
 
                 await modelLoaderOptions.ModalLoader.SaveResultAsync(result, cancellationToken);
 
-                _logger.LogInformation(
-                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
-                    nameof(TrainModelAsync),
-                    modelBuilder.ModelName,
-                    sw.GetElapsedTime().TotalMilliseconds);
+                Log.EndProcess(_logger, nameof(TrainModelAsync), modelBuilder.ModelName, sw.GetElapsedTime());
             }
         }
 
@@ -78,21 +82,16 @@ namespace Bet.Extensions.ML.ModelCreation
             foreach (var modelBuilder in _modelBuilders)
             {
                 var sw = ValueStopwatch.StartNew();
+                Log.StartProcess(_logger, nameof(ClassifyTestAsync), modelBuilder.ModelName);
 
                 var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
-
-                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(ClassifyTestAsync), modelBuilder.ModelName);
 
                 if (engineOptions.ClassifyTestConfigurator != null)
                 {
                     await engineOptions.ClassifyTestConfigurator(modelBuilder, _logger, cancellationToken);
                 }
 
-                _logger.LogInformation(
-                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
-                    nameof(ClassifyTestAsync),
-                    modelBuilder.ModelName,
-                    sw.GetElapsedTime().TotalMilliseconds);
+                Log.EndProcess(_logger, nameof(ClassifyTestAsync), modelBuilder.ModelName, sw.GetElapsedTime());
             }
 
             await Task.CompletedTask;
@@ -104,20 +103,49 @@ namespace Bet.Extensions.ML.ModelCreation
             foreach (var modelBuilder in _modelBuilders)
             {
                 var sw = ValueStopwatch.StartNew();
+                Log.StartProcess(_logger, nameof(SaveModelAsync), modelBuilder.ModelName);
 
                 var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
-
-                _logger.LogInformation("[{methodName}][Started] Model:{modelName}", nameof(SaveModelAsync), modelBuilder.ModelName);
 
                 var readStream = modelBuilder.GetModelStream();
                 await modelLoaderOptions.ModalLoader.SaveAsync(readStream, cancellationToken);
 
-                _logger.LogInformation(
-                    "[{methodName}][Ended] Model:{modelName} - elapsed time: {elapsed}ms",
-                    nameof(SaveModelAsync),
-                    modelBuilder.ModelName,
-                    sw.GetElapsedTime().TotalMilliseconds);
+                Log.EndProcess(_logger, nameof(SaveModelAsync), modelBuilder.ModelName, sw.GetElapsedTime());
             }
         }
+
+#nullable disable
+#pragma warning disable SA1201 // Elements should appear in the correct order
+        internal static class Log
+        {
+            public static class EventIds
+            {
+                public static readonly EventId StartProcess = new EventId(100, nameof(StartProcess));
+                public static readonly EventId EndProcess = new EventId(101, nameof(EndProcess));
+            }
+
+            private static readonly Action<ILogger, string, string, Exception> _startProcess = LoggerMessage.Define<string, string>(
+                LogLevel.Debug,
+                EventIds.StartProcess,
+                "[{methodName}][Started] Model: {modelName};");
+
+            private static readonly Action<ILogger, string, string, double, Exception> _endProcess = LoggerMessage.Define<string, string, double>(
+                LogLevel.Debug,
+                EventIds.EndProcess,
+                "[{methodName}][Ended] Model: {modelName}; elapsed time: {elapsed}ms");
+
+            public static void StartProcess(ILogger logger, string methodName, string modelName)
+            {
+                _startProcess(logger, methodName, modelName, null);
+            }
+
+            public static void EndProcess(ILogger logger, string methodName, string modelName, TimeSpan time)
+            {
+                _endProcess(logger, methodName, modelName, time.TotalMilliseconds, null);
+            }
+        }
+#pragma warning restore SA1201 // Elements should appear in the correct order
+#nullable restore
+
     }
 }

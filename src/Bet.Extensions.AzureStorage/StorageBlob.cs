@@ -462,7 +462,7 @@ namespace Bet.Extensions.AzureStorage
             StorageBlobOptions options,
             CancellationToken cancellationToken = default)
         {
-            var sw = Stopwatch.StartNew();
+            var sw = ValueStopwatch.StartNew();
 
             var cloudStorageAccount = await _storageAccountOptions.CloudStorageAccount.Value;
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
@@ -472,20 +472,18 @@ namespace Bet.Extensions.AzureStorage
             var created = await cloudBlobContainer.CreateIfNotExistsAsync(cancellationToken);
             if (created)
             {
-                _logger?.LogInformation("  - No Azure Blob [{blobName}] found - so one was auto created.", options.ContainerName);
+                _logger?.LogInformation("[Azure Blob] No Azure Blob [{blobName}] found - so one was auto created.", options.ContainerName);
             }
             else
             {
-                _logger?.LogInformation("  - Using existing Azure Blob [{blobName}] [{optionsName}].", options.ContainerName, options);
+                _logger?.LogInformation("[Azure Blob] Using existing Azure Blob [{blobName}] [{optionsName}].", options.ContainerName, options);
             }
 
             await cloudBlobContainer.SetPermissionsAsync(
                 new BlobContainerPermissions { PublicAccess = options.PublicAccessType },
                 cancellationToken);
 
-            sw.Stop();
-
-            _logger?.LogInformation("  - {nameOf} ran for {seconds}", nameof(CreateCloudBlobContainer), sw.Elapsed.TotalSeconds);
+            _logger?.LogInformation("[Azure Blob][{methodName}] Elapsed: {seconds}sec", nameof(CreateCloudBlobContainer), sw.GetElapsedTime().TotalSeconds);
             return cloudBlobContainer;
         }
     }

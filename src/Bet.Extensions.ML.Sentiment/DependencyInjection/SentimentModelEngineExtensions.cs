@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSentimentModelCreationService<TModelLoader>(
             this IServiceCollection services,
             string modelName = "SentimentModel",
-            double testSlipFraction = 0.1)
+            double testSlipFraction = 0.1,
+            Action<ModelLoderFileOptions>? configure = null)
             where TModelLoader : ModelLoader
         {
             var builder = services.AddModelCreationService<SentimentIssue, BinaryClassificationMetricsResult>(modelName);
@@ -54,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 });
             });
 
-            builder.AddModelLoader<SentimentIssue, BinaryClassificationMetricsResult, TModelLoader>();
+            builder.AddModelLoader<SentimentIssue, BinaryClassificationMetricsResult, TModelLoader>(configure);
 
             builder.ConfigureModel<SentimentIssue, BinaryClassificationMetricsResult>(
                 testSlipFraction,

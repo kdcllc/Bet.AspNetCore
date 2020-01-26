@@ -8,14 +8,13 @@ using Bet.Extensions.ML.Prediction;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ModelPredictionEngineBuilderExtensions
     {
         /// <summary>
-        /// Adds <see cref="IModelPredictionEngine{TData, TPrediction}"/> based on the <see cref="ModelPoolLoader{TData, TPrediction}"/> implementation.
+        /// Adds <see cref="IModelPredictionEngine{TInput, TPrediction}"/> based on the <see cref="ModelPoolLoader{TInput, TPrediction}"/> implementation.
         /// </summary>
         /// <typeparam name="TInput"></typeparam>
         /// <typeparam name="TPrediction"></typeparam>
@@ -54,18 +53,14 @@ namespace Microsoft.Extensions.DependencyInjection
                       {
                           mlOptions.ModelName = builder.ModelName;
 
+                          mlOptions.ModelLoader = sp.GetRequiredService<IOptionsMonitor<ModelLoaderOptions>>()
+                                                                 .Get(builder.ModelName).ModalLoader;
                           mlOptions.ServiceProvider = sp;
 
                           mlOptions.CreateModel = (mlContext) =>
                           {
-                              var loader = sp.GetRequiredService<IOptionsMonitor<ModelLoaderOptions>>()
-                                             .Get(builder.ModelName).ModalLoader;
+                              var model = mlOptions.ModelLoader.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
 
-                              ChangeToken.OnChange(
-                               () => loader.GetReloadToken(),
-                               () => mlOptions.Reload());
-
-                              var model = loader.LoadAsync(CancellationToken.None).GetAwaiter().GetResult();
                               return mlContext.Model.Load(model, out var inputSchema);
                           };
                       });

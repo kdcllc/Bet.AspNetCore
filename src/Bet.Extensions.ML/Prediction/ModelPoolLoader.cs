@@ -10,26 +10,26 @@ using Microsoft.ML;
 
 namespace Bet.Extensions.ML.Prediction
 {
-    public sealed class ModelPoolLoader<TData, TPrediction> : IDisposable
-        where TData : class
+    public sealed class ModelPoolLoader<TInput, TPrediction> : IDisposable
+        where TInput : class
         where TPrediction : class, new()
     {
         private readonly ILogger _logger;
-        private readonly ModelPredictionEngineOptions<TData, TPrediction> _options;
+        private readonly ModelPredictionEngineOptions<TInput, TPrediction> _options;
         private readonly MLContext _mlContext;
         private readonly IDisposable _changeToken;
 
-        private DefaultObjectPool<PredictionEngine<TData, TPrediction>> _pool;
+        private DefaultObjectPool<PredictionEngine<TInput, TPrediction>>? _pool;
         private ITransformer? _model;
 
-        public ModelPoolLoader(ModelPredictionEngineOptions<TData, TPrediction> options)
+        public ModelPoolLoader(ModelPredictionEngineOptions<TInput, TPrediction> options)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
 
             _mlContext = _options.ServiceProvider.GetRequiredService<IOptions<MLContextOptions>>().Value.MLContext
                 ?? throw new NullReferenceException("MLContext instance is missing");
 
-            _logger = _options.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(ModelPoolLoader<TData, TPrediction>));
+            _logger = _options.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(ModelPoolLoader<TInput, TPrediction>));
 
             LoadPool();
 
@@ -38,7 +38,7 @@ namespace Bet.Extensions.ML.Prediction
                 () => LoadPool());
         }
 
-        public ObjectPool<PredictionEngine<TData, TPrediction>> PredictionEnginePool => _pool;
+        public ObjectPool<PredictionEngine<TInput, TPrediction>> PredictionEnginePool => _pool;
 
         public void Dispose()
         {
@@ -69,21 +69,21 @@ namespace Bet.Extensions.ML.Prediction
                 throw new NullReferenceException("Model wasn't created");
             }
 
-            var pooledObjectPolicy = new ModelPredictionEnginePoolPolicy<TData, TPrediction>(_mlContext, _model);
+            var pooledObjectPolicy = new ModelPredictionEnginePoolPolicy<TInput, TPrediction>(_mlContext, _model);
 
             if (_options.MaximumObjectsRetained != -1)
             {
-                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy, _options.MaximumObjectsRetained));
+                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TInput, TPrediction>>(pooledObjectPolicy, _options.MaximumObjectsRetained));
             }
             else
             {
                 // default maximumRetained is Environment.ProcessorCount * 2, if not explicitly provided
-                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TData, TPrediction>>(pooledObjectPolicy));
+                Interlocked.Exchange(ref _pool, new DefaultObjectPool<PredictionEngine<TInput, TPrediction>>(pooledObjectPolicy));
             }
 
             _logger.LogInformation(
                 "[{className}][{methodName}] ML.NET Model name: {modelName}",
-                nameof(ModelPoolLoader<TData, TPrediction>),
+                nameof(ModelPoolLoader<TInput, TPrediction>),
                 nameof(LoadPool),
                 _options.ModelName);
         }
