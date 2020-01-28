@@ -14,6 +14,7 @@ namespace Bet.Extensions.ML.Azure.ModelLoaders
     {
         private readonly ILogger<AzureContainerModelLoader> _logger;
         private bool _disposed;
+        private ReloadToken _reloadToken;
 
         public AzureContainerModelLoader(ILogger<AzureContainerModelLoader> logger)
         {
@@ -28,7 +29,12 @@ namespace Bet.Extensions.ML.Azure.ModelLoaders
 
         public override IChangeToken GetReloadToken()
         {
-            throw new NotImplementedException();
+            if (_reloadToken == null)
+            {
+                throw new InvalidOperationException($"{nameof(AzureContainerModelLoader)} failed to call {nameof(Setup)} method.");
+            }
+
+            return _reloadToken;
         }
 
         public override Task<Stream> LoadAsync(CancellationToken cancellationToken)
@@ -56,7 +62,7 @@ namespace Bet.Extensions.ML.Azure.ModelLoaders
 
         protected override void Polling()
         {
-            throw new NotImplementedException();
+            _reloadToken = new ReloadToken();
         }
     }
 }

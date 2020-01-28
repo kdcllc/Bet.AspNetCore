@@ -11,9 +11,9 @@ namespace Bet.AspNetCore.Sample.Pages
 {
     public class BlobTestModel : PageModel
     {
-        private readonly IStorageBlob<UploadsBlobOptions> _storageBlob;
+        private readonly StorageBlob<UploadsBlobOptions> _storageBlob;
 
-        public BlobTestModel(IStorageBlob<UploadsBlobOptions> storageBlob)
+        public BlobTestModel(StorageBlob<UploadsBlobOptions> storageBlob)
         {
             _storageBlob = storageBlob;
         }
@@ -21,7 +21,7 @@ namespace Bet.AspNetCore.Sample.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             // TO TEST BLOB
-            await _storageBlob.AddAsync(new { content = "This is added to uploads" }, $"{Guid.NewGuid()}.json");
+            await _storageBlob.AddAsync(string.Empty, new { content = "This is added to uploads" }, $"{Guid.NewGuid()}.json");
 
             return Page();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,66 +12,63 @@ using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.AzureStorage
 {
-    internal sealed class StorageBlob
+    public sealed class StorageBlob<TOptions> where TOptions : StorageBlobOptions
     {
-        private readonly StorageAccountOptions _storageAccountOptions;
-        private readonly ILogger _logger;
+        private readonly IOptionsMonitor<TOptions> _storageBlobOptionsMonitor;
+        private readonly IOptionsMonitor<StorageAccountOptions> _storageAccountOptionsFactory;
 
-        private readonly Lazy<Task<CloudBlobContainer>> _container;
+        private readonly ILogger<StorageBlob<TOptions>> _logger;
+        private readonly ConcurrentDictionary<string, Lazy<Task<CloudBlobContainer>>> _namedContainers = new ConcurrentDictionary<string, Lazy<Task<CloudBlobContainer>>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StorageBlob"/> class.
+        /// Initializes a new instance of the <see cref="StorageBlob{TOptions}"/> class.
         /// </summary>
-        /// <param name="options"></param>
-        /// <param name="storageAccountOptions"></param>
+        /// <param name="storageBlobOptionsMonitor"></param>
+        /// <param name="storageAccountOptionsFactory"></param>
         /// <param name="logger"></param>
         public StorageBlob(
-        StorageBlobOptions options,
-        StorageAccountOptions storageAccountOptions,
-        ILogger logger = default)
+            IOptionsMonitor<TOptions> storageBlobOptionsMonitor,
+            IOptionsMonitor<StorageAccountOptions> storageAccountOptionsFactory,
+            ILogger<StorageBlob<TOptions>> logger)
         {
-            _storageAccountOptions = storageAccountOptions ?? throw new ArgumentNullException(nameof(storageAccountOptions));
-
-            _logger = logger;
-
-            _container = new Lazy<Task<CloudBlobContainer>>(() => CreateCloudBlobContainer(options));
+            _storageBlobOptionsMonitor = storageBlobOptionsMonitor;
+            _storageAccountOptionsFactory = storageAccountOptionsFactory;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
-        /// <summary>
-        /// Azure Blob Container.
-        /// </summary>
-        public Task<CloudBlobContainer> Container => _container.Value;
 
         /// <summary>
         /// Gets all blobs in the container.
         /// </summary>
+        /// <param name="namedContainer">The name of the container options that were registered.</param>
         /// <param name="prefix">The prefix to be used for the search.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public async Task<IEnumerable<CloudBlockBlob>> GetAllAsync(
-            string prefix = default,
+            string namedContainer,
+            string prefix = "",
             CancellationToken cancellationToken = default)
         {
-            BlobContinuationToken blobContinuationToken = default;
+            BlobContinuationToken? blobContinuationToken = default;
 
             var result = new List<CloudBlockBlob>();
 
             do
             {
-                var segment = await (await Container).ListBlobsSegmentedAsync(prefix ?? string.Empty, blobContinuationToken, cancellationToken);
+                var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+                var segment = await container.ListBlobsSegmentedAsync(prefix ?? string.Empty, blobContinuationToken, cancellationToken);
 
                 blobContinuationToken = segment.ContinuationToken;
 
                 foreach (var item in segment.Results)
                 {
-                    if (item is CloudBlockBlob)
+                    if (item is CloudBlockBlob && item != null)
                     {
-                        result.Add(item as CloudBlockBlob);
+                        result.Add((CloudBlockBlob)item);
                     }
                 }
             }
@@ -82,24 +80,34 @@ namespace Bet.Extensions.AzureStorage
         /// <summary>
         /// Gets blob bytes based on the blob name in the container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="blobName">The name of the blob.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<byte[]> GetBytesAsync(
+        public async Task<byte[]?> GetBytesAsync(
+            string namedContainer,
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await (await GetAsync(blobName, cancellationToken))?.ToByteArrayAsync();
+            var stream = await GetAsync(blobName, namedContainer, cancellationToken);
+            if (stream == null)
+            {
+                return null;
+            }
+
+            return await stream.ToByteArrayAsync();
         }
 
         /// <summary>
         /// Gets a single blob as stream based on blob's name.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="blobName">The name of the blob.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">Thrown when blob name is empty.</exception>
-        public async Task<Stream> GetAsync(
+        public async Task<Stream?> GetAsync(
+            string namedContainer,
             string blobName,
             CancellationToken cancellationToken = default)
         {
@@ -108,7 +116,9 @@ namespace Bet.Extensions.AzureStorage
                 throw new ArgumentException(nameof(blobName));
             }
 
-            var blob = (await Container).GetBlockBlobReference(blobName);
+            var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+
+            var blob = container.GetBlockBlobReference(blobName);
             if (blob == null
                 || !await blob.ExistsAsync(cancellationToken))
             {
@@ -123,14 +133,38 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <summary>
+        /// Gets <see cref="CloudBlockBlob"/>.
+        /// </summary>
+        /// <param name="namedContainer"></param>
+        /// <param name="blobName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<CloudBlockBlob?> GetBlobAsync(
+            string namedContainer,
+            string blobName,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(blobName))
+            {
+                throw new ArgumentException(nameof(blobName));
+            }
+
+            var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+
+            return container.GetBlockBlobReference(blobName);
+        }
+
+        /// <summary>
         /// Get serialized type of the blob based on the name.
         /// </summary>
         /// <typeparam name="T">The type of the serialized object.</typeparam>
+        /// <param name="namedContainer"></param>
         /// <param name="blobName">The name of the blob.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">Thrown when blob name is empty.</exception>
         public async Task<T> GetAsync<T>(
+            string namedContainer,
             string blobName,
             CancellationToken cancellationToken = default)
         {
@@ -141,11 +175,11 @@ namespace Bet.Extensions.AzureStorage
 
             string data;
 
-            using (var stream = await GetAsync(blobName, cancellationToken))
+            using (var stream = await GetAsync(blobName, namedContainer, cancellationToken))
             {
                 if (stream == null)
                 {
-                    return default;
+                    return default!;
                 }
 
                 stream.Seek(0, SeekOrigin.Begin);
@@ -157,7 +191,7 @@ namespace Bet.Extensions.AzureStorage
 
             if (string.IsNullOrWhiteSpace(data))
             {
-                return default;
+                return default!;
             }
 
             if (typeof(T).IsSimpleType())
@@ -174,15 +208,19 @@ namespace Bet.Extensions.AzureStorage
         /// <summary>
         /// Adds byte array content to Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="content">The byte array.</param>
         /// <param name="blobId">The id of the blob.</param>
         /// <param name="contentType">The MIME type of the content.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
+        /// <exception cref="ApplicationException">If file fails to be added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="content"/> is <c>null</c>.</exception>
         public async Task<string> AddAsync(
+            string namedContainer,
             byte[] content,
-            string blobId = default,
-            string contentType = default,
+            string? blobId = default,
+            string? contentType = default,
             CancellationToken cancellationToken = default)
         {
             if (content == null)
@@ -196,11 +234,14 @@ namespace Bet.Extensions.AzureStorage
                 Position = 0
             })
             {
-                generatedBlobName = await AddAsync(
-                    stream,
-                    blobId,
-                    contentType,
-                    cancellationToken);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                generatedBlobName = await AddAsync(namedContainer, stream, blobId, contentType, cancellationToken);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            }
+
+            if (generatedBlobName == null)
+            {
+                throw new ApplicationException("Failed to Add the file");
             }
 
             return generatedBlobName;
@@ -209,14 +250,16 @@ namespace Bet.Extensions.AzureStorage
         /// <summary>
         /// Adds Steam content to Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="content">The byte array.</param>
         /// <param name="blobId">The id of the blob.</param>
         /// <param name="contentType">The MIME type of the content.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task<string> AddAsync(
+        public async Task<string?> AddAsync(
+            string namedContainer,
             Stream content,
-            string blobId = default,
-            string contentType = default,
+            string? blobId = default,
+            string? contentType = default,
             CancellationToken cancellationToken = default)
         {
             if (content == null)
@@ -229,7 +272,9 @@ namespace Bet.Extensions.AzureStorage
                 blobId = Guid.NewGuid().ToString();
             }
 
-            var blob = (await Container).GetBlockBlobReference(blobId);
+            var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+
+            var blob = container.GetBlockBlobReference(blobId);
             if (blob == null)
             {
                 return null;
@@ -248,11 +293,13 @@ namespace Bet.Extensions.AzureStorage
         /// <summary>
         /// Adds an object to Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="item">The object to be serialized to Azure Blob Container.</param>
         /// <param name="blobId">The id of the blob.</param>
         /// <param name="encoding">The encoding type.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
+            string namedContainer,
             object item,
             string blobId,
             Encoding encoding,
@@ -280,18 +327,20 @@ namespace Bet.Extensions.AzureStorage
 
             var bytes = encoding.GetBytes(data);
 
-            return await AddAsync(bytes, blobId, contentType, cancellationToken);
+            return await AddAsync(namedContainer, bytes, blobId, contentType, cancellationToken);
         }
 
         /// <summary>
         /// Adds the object to Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="item">The object to be serialized to Azure Blob Container.</param>
         /// <param name="blobId">The id of the blob.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<string> AddAsync(
+            string namedContainer,
             object item,
-            string blobId = default,
+            string? blobId = null,
             CancellationToken cancellationToken = default)
         {
             if (item == null)
@@ -299,20 +348,22 @@ namespace Bet.Extensions.AzureStorage
                 throw new ArgumentNullException(nameof(item));
             }
 
-            return await AddAsync(item, blobId, Encoding.UTF8, cancellationToken);
+            return await AddAsync(namedContainer, item, blobId ?? Guid.NewGuid().ToString(), Encoding.UTF8, cancellationToken);
         }
 
         /// <summary>
         /// Adds data from URI to Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="sourceUri"></param>
         /// <param name="blobId">The id of the blob.</param>
         /// <param name="contentType">The MIME type of the content.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        public async Task<string> AddAsync(
+        public async Task<string?> AddAsync(
+            string namedContainer,
             Uri sourceUri,
-            string blobId = default,
-            string contentType = default,
+            string? blobId = default,
+            string? contentType = default,
             CancellationToken cancellationToken = default)
         {
             if (sourceUri == null)
@@ -326,7 +377,9 @@ namespace Bet.Extensions.AzureStorage
                              .ToString();
             }
 
-            var blob = (await Container).GetBlockBlobReference(blobId);
+            var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+
+            var blob = container.GetBlockBlobReference(blobId);
             if (blob == null)
             {
                 return null;
@@ -357,11 +410,13 @@ namespace Bet.Extensions.AzureStorage
         /// Adds array of {T} objects to Azure Blob Container.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="namedContainer"></param>
         /// <param name="items">The array of {T} objects.</param>
         /// <param name="encoding">The encoding to be used.</param>
         /// <param name="batchSize">The batch size.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<IList<string>> AddBatchAsync<T>(
+            string namedContainer,
             IEnumerable<T> items,
             Encoding encoding,
             int batchSize = 25,
@@ -379,7 +434,17 @@ namespace Bet.Extensions.AzureStorage
 
             foreach (var batch in items.Batch<T>(finalBatchSize))
             {
-                var tasks = batch.Select(item => AddAsync(item, null, encoding, cancellationToken));
+                var tasks = batch.Select(item =>
+                {
+                    if (item != null)
+                    {
+                        return AddAsync(namedContainer, item, Guid.NewGuid().ToString(), encoding, cancellationToken);
+                    }
+                    else
+                    {
+                        return Task.FromResult(string.Empty);
+                    }
+                });
 
                 // executing batch
                 var results = await Task.WhenAll(tasks);
@@ -394,23 +459,27 @@ namespace Bet.Extensions.AzureStorage
         /// Adds the array of object to Azure Blob Container.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="namedContainer"></param>
         /// <param name="items">The array of objects.</param>
         /// <param name="batchSize">The batch size. The default is 25.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<IList<string>> AddBatchAsync<T>(
+            string namedContainer,
             IEnumerable<T> items,
             int batchSize = 25,
             CancellationToken cancellationToken = default)
         {
-            return await AddBatchAsync(items, Encoding.UTF8, batchSize, cancellationToken);
+            return await AddBatchAsync(namedContainer, items, Encoding.UTF8, batchSize, cancellationToken);
         }
 
         /// <summary>
         /// Deletes the Blob from Azure Blob Container.
         /// </summary>
+        /// <param name="namedContainer"></param>
         /// <param name="blobName"></param>
         /// <param name="cancellationToken">The cancellation token.</param>
         public async Task<bool> DeleteAsync(
+            string namedContainer,
             string blobName,
             CancellationToken cancellationToken = default)
         {
@@ -419,7 +488,9 @@ namespace Bet.Extensions.AzureStorage
                 throw new ArgumentException(nameof(blobName));
             }
 
-            var blob = (await Container).GetBlockBlobReference(blobName);
+            var container = await GetNamedContainer(namedContainer, cancellationToken).Value;
+
+            var blob = container.GetBlockBlobReference(blobName);
             if (blob != null
                 && await blob.ExistsAsync(cancellationToken))
             {
@@ -452,19 +523,40 @@ namespace Bet.Extensions.AzureStorage
 
             var fileLocation = Path.Combine(pathLocation, fileName);
 
-            using (var fs = new FileStream(fileLocation, mode, FileAccess.ReadWrite, FileShare.ReadWrite))
+            using var fs = new FileStream(fileLocation, mode, FileAccess.ReadWrite, FileShare.ReadWrite);
+            await fs.WriteAsync(data, 0, data.Length, cancellationToken);
+        }
+
+        public Lazy<Task<CloudBlobContainer>> GetNamedContainer(string containerName, CancellationToken cancellationToken = default)
+        {
+            if (_namedContainers.TryGetValue(containerName, out var container))
             {
-                await fs.WriteAsync(data, 0, data.Length, cancellationToken);
+                return container;
             }
+
+            var options = _storageBlobOptionsMonitor.Get(containerName);
+            var storageOptions = _storageAccountOptionsFactory.Get(options.AccountName);
+
+            var createdContainer = new Lazy<Task<CloudBlobContainer>>(() => CreateCloudBlobContainer(options, storageOptions, cancellationToken));
+
+            _namedContainers.AddOrUpdate(containerName, createdContainer, (_, __) => createdContainer);
+
+            return createdContainer;
         }
 
         private async Task<CloudBlobContainer> CreateCloudBlobContainer(
             StorageBlobOptions options,
+            StorageAccountOptions storageAccountOptions,
             CancellationToken cancellationToken = default)
         {
+            if (storageAccountOptions.CloudStorageAccount == null)
+            {
+                throw new NullReferenceException($"{nameof(storageAccountOptions.CloudStorageAccount)} wasn't created");
+            }
+
             var sw = ValueStopwatch.StartNew();
 
-            var cloudStorageAccount = await _storageAccountOptions.CloudStorageAccount.Value;
+            var cloudStorageAccount = await storageAccountOptions.CloudStorageAccount.Value;
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
 
             var cloudBlobContainer = cloudBlobClient.GetContainerReference(options.ContainerName);
@@ -472,18 +564,15 @@ namespace Bet.Extensions.AzureStorage
             var created = await cloudBlobContainer.CreateIfNotExistsAsync(cancellationToken);
             if (created)
             {
-                _logger?.LogInformation("[Azure Blob] No Azure Blob [{blobName}] found - so one was auto created.", options.ContainerName);
+                _logger.LogInformation("[Azure Blob] No Azure Blob [{blobName}] found - so one was auto created.", options.ContainerName);
             }
             else
             {
-                _logger?.LogInformation("[Azure Blob] Using existing Azure Blob [{blobName}] [{optionsName}].", options.ContainerName, options);
+                _logger.LogInformation("[Azure Blob] Using existing Azure Blob:[{blobName}]; Options:[{optionsName}].", options.ContainerName, options);
             }
 
-            await cloudBlobContainer.SetPermissionsAsync(
-                new BlobContainerPermissions { PublicAccess = options.PublicAccessType },
-                cancellationToken);
+            _logger.LogInformation("[Azure Blob][{methodName}] Elapsed: {seconds}sec", nameof(CreateCloudBlobContainer), sw.GetElapsedTime().TotalSeconds);
 
-            _logger?.LogInformation("[Azure Blob][{methodName}] Elapsed: {seconds}sec", nameof(CreateCloudBlobContainer), sw.GetElapsedTime().TotalSeconds);
             return cloudBlobContainer;
         }
     }

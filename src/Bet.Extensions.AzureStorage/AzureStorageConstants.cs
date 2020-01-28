@@ -1,11 +1,16 @@
 ﻿namespace Bet.Extensions.AzureStorage
 {
-    public static class Constants
+    public static class AzureStorageConstants
     {
         /// <summary>
         /// The Default Azure Storage Configuration element name.
         /// </summary>
         public const string AzureStorage = nameof(AzureStorage);
+
+        /// <summary>
+        /// The name for the Default Azure Storage Account entry.
+        /// </summary>
+        public const string DefaultAccount = nameof(DefaultAccount);
 
         /// <summary>
         /// The Default Azure Storage Blobs Configuration element name.

@@ -112,10 +112,11 @@ namespace Bet.AspNetCore.Sample
                         SentimentText = "This is a very rude movie"
                     };
                 })
-                .AddAzureBlobStorageCheck("files_check", "files", options =>
+                .AddAzureBlobStorageCheck("blob_check", "files", options =>
                 {
                     options.Name = "betstorage";
                 })
+                .AddAzureQueuetorageCheck("queue_check", "betqueue")
                 .AddSigtermCheck("sigterm_check")
                 .AddLoggerPublisher(new List<string> { "sigterm_check" });
 
@@ -123,10 +124,9 @@ namespace Bet.AspNetCore.Sample
 
             services.AddRazorPages().AddNewtonsoftJson();
 
-            services.AddStorageBlob()
-                .AddBlobContainer<UploadsBlobOptions>();
-
-            services.AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
+            services.AddAzureStorageAccount()
+                .AddAzureBlobContainer<UploadsBlobOptions>()
+                .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
             services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
 

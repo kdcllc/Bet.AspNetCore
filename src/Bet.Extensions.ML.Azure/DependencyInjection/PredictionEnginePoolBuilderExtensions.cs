@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.ML
         /// <param name="containerName"></param>
         /// <param name="fileName"></param>
         /// <param name="interval"></param>
-        /// <param name="azureStorageSectionName"></param>
+        /// <param name="storageAccountName"></param>
         /// <param name="setupStorage"></param>
         /// <returns></returns>
         public static PredictionEnginePoolBuilder<TData, TPrediction> FromAzureStorage<TData, TPrediction>(
@@ -32,18 +32,18 @@ namespace Microsoft.Extensions.ML
             string containerName,
             string fileName,
             TimeSpan interval,
-            string azureStorageSectionName = "",
+            string storageAccountName = "",
             Action<StorageAccountOptions>? setupStorage = null) where TData : class
            where TPrediction : class, new()
         {
-            builder.Services.AddAzureStorage(azureStorageSectionName, setupStorage);
+            builder.Services.AddAzureStorageAccount(storageAccountName, configure: setupStorage);
 
             builder.Services.TryAddTransient<AzureStorageModelLoader, AzureStorageModelLoader>();
 
             builder.Services.AddOptions<PredictionEnginePoolOptions<TData, TPrediction>>(modelName)
                 .Configure<IServiceProvider, AzureStorageModelLoader>((options, sp, loader) =>
                 {
-                    var storageOptions = sp.GetRequiredService<IOptionsMonitor<StorageAccountOptions>>().Get(azureStorageSectionName);
+                    var storageOptions = sp.GetRequiredService<IOptionsMonitor<StorageAccountOptions>>().Get(storageAccountName);
                     var mlOptions = sp.GetRequiredService<IOptions<MLOptions>>().Value;
                     var logger = sp.GetRequiredService<ILogger<AzureBlobContainerLoader>>();
 

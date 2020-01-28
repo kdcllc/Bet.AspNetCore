@@ -12,7 +12,7 @@ namespace Bet.Extensions.AzureStorage
 
         public StorageFileProvider(StorageAccountOptions options, string containerName)
         {
-            var storageAccount = options.CloudStorageAccount.Value.GetAwaiter().GetResult();
+            var storageAccount = options.CloudStorageAccount?.Value.GetAwaiter().GetResult();
 
             var blobClient = storageAccount.CreateCloudBlobClient();
 

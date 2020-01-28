@@ -1,24 +1,18 @@
 ﻿using System;
+
 using Bet.Extensions.AzureStorage;
 using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    /// <inheritdoc/>
-    public class DefaultStorageBlobBuilder : IStorageBlobBuilder
+    public class StorageTableBuilder : IStorageTableBuilder
     {
         private readonly string _sectionAzureStorageName;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultStorageBlobBuilder"/> class.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="sectionAzureStorageName"></param>
-        public DefaultStorageBlobBuilder(IServiceCollection services, string sectionAzureStorageName)
+        public StorageTableBuilder(IServiceCollection services, string sectionAzureStorageName)
         {
             Services = services ?? throw new ArgumentNullException(nameof(services));
             _sectionAzureStorageName = sectionAzureStorageName;
@@ -28,17 +22,17 @@ namespace Microsoft.Extensions.DependencyInjection
         public IServiceCollection Services { get; }
 
         /// <inheritdoc/>
-        public IStorageBlobBuilder AddBlobContainer<TOptions>(
-            string sectionAzureStorageName = default,
-            Action<TOptions> configure = default) where TOptions : StorageBlobOptions
+        public IStorageTableBuilder AddTable<TOptions>(
+            string sectionAzureStorageName = null,
+            Action<TOptions> configure = null) where TOptions : StorageTableOptions
         {
             var finalSectionAzureStorageName = (sectionAzureStorageName ?? _sectionAzureStorageName) ?? string.Empty;
 
-            Services.AddAzureStorage(finalSectionAzureStorageName);
+            Services.AddAzureStorageAccount(rootSectionName: finalSectionAzureStorageName);
 
-            Services.ConfigureOptions<TOptions>(Constants.StorageBlobs, (config, path, options) =>
+            Services.ConfigureOptions<TOptions>(AzureStorageConstants.StorageTables, (config, path, options) =>
             {
-                options.AzureStorageConfiguration = finalSectionAzureStorageName;
+                options.AccountName = finalSectionAzureStorageName;
                 if (path != typeof(TOptions).Name)
                 {
                     path = ConfigurationPath.Combine(path, typeof(TOptions).Name);
@@ -50,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 configure?.Invoke(options);
             });
 
-            Services.TryAddTransient<IStorageBlob<TOptions>, StorageBlob<TOptions>>();
+            Services.TryAddTransient<IStorageTable<TOptions>, StorageTable<TOptions>>();
 
             return this;
         }

@@ -1,20 +1,15 @@
 ﻿namespace Bet.Extensions.AzureStorage.Options
 {
-    public class StorageTableOptions
+    public class StorageTableOptions : StorageOptionsBase
     {
         /// <summary>
         /// The name of the table.
         /// </summary>
-        public string TableName { get; set; }
+        public string TableName { get; set; } = string.Empty;
 
         /// <summary>
         /// The default value is 'StorageQueues'.
         /// </summary>
-        internal string RootSectionName { get; set; } = Constants.StorageTables;
-
-        /// <summary>
-        /// Enables connection to AzureStorage configuration.
-        /// </summary>
-        internal string AzureStorageConfiguration { get; set; }
+        internal string RootSectionName { get; set; } = AzureStorageConstants.StorageTables;
     }
 }

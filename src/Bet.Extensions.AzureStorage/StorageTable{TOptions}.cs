@@ -25,7 +25,7 @@ namespace Bet.Extensions.AzureStorage
             ILogger<StorageTable<TOptions>> logger)
         {
             var options = storageTableOptions.CurrentValue;
-            var accountOptions = storageAccountOptions.Get(options.AzureStorageConfiguration);
+            var accountOptions = storageAccountOptions.Get(options.AccountName);
 
             _table = new Lazy<Task<CloudTable>>(() => CreateOrGetBlobTable(options, accountOptions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

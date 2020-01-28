@@ -9,8 +9,14 @@ namespace System.IO
         /// </summary>
         /// <param name="stream">The steam object.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
         public static async Task<byte[]> ToByteArrayAsync(this Stream stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
             stream.Position = 0;
             var byteArray = new byte[stream.Length];
             await stream.ReadAsync(byteArray, 0, (int)stream.Length);

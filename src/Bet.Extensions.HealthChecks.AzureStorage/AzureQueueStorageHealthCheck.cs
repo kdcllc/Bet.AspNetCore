@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Bet.Extensions.AzureStorage;
+using Bet.Extensions.AzureStorage.Options;
+
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Queue;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -11,43 +15,49 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
 {
     public class AzureQueueStorageHealthCheck : IHealthCheck
     {
-        private readonly IOptionsMonitor<StorageAccountOptions> _options;
+        private readonly IOptionsMonitor<StorageQueueOptions> _storageQueueOptionsMonitor;
         private readonly ILogger<AzureQueueStorageHealthCheck> _logger;
+        private readonly StorageQueue<StorageQueueOptions> _storageQueue;
 
         public AzureQueueStorageHealthCheck(
-            IOptionsMonitor<StorageAccountOptions> options,
+            IOptionsMonitor<StorageQueueOptions> storageQueueOptionsMonitor,
+            StorageQueue<StorageQueueOptions> storageQueue,
             ILogger<AzureQueueStorageHealthCheck> logger)
         {
-            _options = options;
+            _storageQueueOptionsMonitor = storageQueueOptionsMonitor ?? throw new ArgumentNullException(nameof(storageQueueOptionsMonitor));
+            _storageQueue = storageQueue ?? throw new ArgumentNullException(nameof(storageQueue));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             var checkName = context.Registration.Name;
-            var options = _options.Get(checkName);
-            var fullCheckName = $"{checkName}-{options?.QueueName}";
+            var options = _storageQueueOptionsMonitor.Get(checkName);
+            var fullCheckName = $"HealCheck Name:{checkName}; Queue Name:{options?.QueueName}";
 
             try
             {
-                _logger.LogInformation("[HealthCheck][{healthCheckName}]", fullCheckName);
+                _logger.LogInformation("[HealthCheck][{checkName}] Queue: {queueName}", checkName, options?.QueueName);
 
-                if (options?.CloudStorageAccount != null)
+                var queue = await _storageQueue.GetNamedQueue(checkName, cancellationToken).Value;
+
+                if (queue != null)
                 {
-                    var cloudStorageAccount = await options.CloudStorageAccount.Value;
-                    var blobClient = cloudStorageAccount.CreateCloudQueueClient();
+                    var blobClient = queue.ServiceClient;
+
                     var serviceProperties = await blobClient.GetServicePropertiesAsync(
                         new QueueRequestOptions(),
                         operationContext: null,
                         cancellationToken: cancellationToken);
+
                     return new HealthCheckResult(HealthStatus.Healthy, fullCheckName);
                 }
 
-                return new HealthCheckResult(context.Registration.FailureStatus, $"{fullCheckName} failed to get {nameof(CloudStorageAccount)} instance");
+                return new HealthCheckResult(context.Registration.FailureStatus, $"{checkName} failed to get {nameof(CloudStorageAccount)} instance for Queue: {options?.QueueName}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[HealthCheck][{healthCheckName}]", fullCheckName);
+                _logger.LogError(ex, "[HealthCheck][{checkName}] Queue: {queueName}", checkName, options?.QueueName);
 
                 return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
             }
