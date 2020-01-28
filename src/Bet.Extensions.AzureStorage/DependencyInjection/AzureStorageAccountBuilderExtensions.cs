@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class AzureStorageServiceCollectionExtensions
+    public static class AzureStorageAccountBuilderExtensions
     {
         public static IAzureStorageAccountBuilder AddAzureStorageAccount(
             this IServiceCollection services,
@@ -58,49 +58,9 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<TOptions>? configure = default)
                 where TOptions : StorageBlobOptions
         {
-            builder.Services.TryAddSingleton<StorageBlob<TOptions>, StorageBlob<TOptions>>();
+            builder.Services.TryAddSingleton<IStorageBlob<TOptions>, StorageBlob<TOptions>>();
 
             builder.AddOptions(named, sectionName, rootSectionName, configure);
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Adds Configuration for UseStaticFiles middleware to use Azure Storage container.
-        /// </summary>
-        /// <typeparam name="TOptions"></typeparam>
-        /// <param name="builder"></param>
-        /// <param name="namedContainer"></param>
-        /// <param name="sectionName"></param>
-        /// <param name="rootSectionName"></param>
-        /// <param name="configure"></param>
-        /// <returns></returns>
-        public static IAzureStorageAccountBuilder AddAzureStorageForStaticFiles<TOptions>(
-             this IAzureStorageAccountBuilder builder,
-             string namedContainer = "",
-             string sectionName = "",
-             string rootSectionName = AzureStorageConstants.StorageFileProviders,
-             Action<TOptions>? configure = null)
-            where TOptions : StorageFileProviderOptions
-        {
-            if (string.IsNullOrEmpty(sectionName))
-            {
-                sectionName = typeof(TOptions).Name;
-            }
-
-            builder.Services.AddOptions<TOptions>(namedContainer)
-                    .Configure<IConfiguration>((options, configuration) =>
-                    {
-                        options.AccountName = builder.AccountName;
-
-                        var rootSection = configuration.GetSection(rootSectionName).Exists() ? rootSectionName : sectionName;
-                        var configPath = ConfigurationPath.Combine(rootSection, sectionName);
-
-                        var section = configuration.GetSection(configPath);
-                        section.Bind(options);
-
-                        configure?.Invoke(options);
-                    });
 
             return builder;
         }
@@ -126,22 +86,56 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<TOptions>? configure = default)
                 where TOptions : StorageQueueOptions
         {
-            builder.Services.TryAddSingleton<StorageQueue<TOptions>, StorageQueue<TOptions>>();
+            builder.Services.TryAddSingleton<IStorageQueue<TOptions>, StorageQueue<TOptions>>();
 
             builder.AddOptions(named, sectionName, rootSectionName, configure);
 
             return builder;
         }
 
-        /// <summary>
-        /// Adds required default values for Azure Storage Table.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="azureStorageSectionName"></param>
-        /// <returns></returns>
-        public static IStorageTableBuilder AddStorageTable(this IServiceCollection services, string azureStorageSectionName = "")
+        public static IAzureStorageAccountBuilder AddAzureTable(
+            this IAzureStorageAccountBuilder builder,
+            string named,
+            string tableName)
         {
-            return new StorageTableBuilder(services, azureStorageSectionName);
+           return builder.AddAzureTable<StorageTableOptions>(named, configure: options =>
+           {
+               options.TableName = tableName;
+           });
+        }
+
+        public static IAzureStorageAccountBuilder AddAzureTable<TOptions>(
+                this IAzureStorageAccountBuilder builder,
+                string named = "",
+                string sectionName = "",
+                string rootSectionName = AzureStorageConstants.StorageTables,
+                Action<TOptions>? configure = default)
+        where TOptions : StorageTableOptions
+        {
+            builder.Services.TryAddSingleton<IStorageTable<TOptions>, StorageTable<TOptions>>();
+
+            return builder.AddOptions(named, sectionName, rootSectionName, configure);
+        }
+
+        /// <summary>
+        /// Adds Configuration for UseStaticFiles middleware to use Azure Storage container.
+        /// </summary>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="named"></param>
+        /// <param name="sectionName"></param>
+        /// <param name="rootSectionName"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static IAzureStorageAccountBuilder AddAzureStorageForStaticFiles<TOptions>(
+             this IAzureStorageAccountBuilder builder,
+             string named = "",
+             string sectionName = "",
+             string rootSectionName = AzureStorageConstants.StorageFileProviders,
+             Action<TOptions>? configure = null)
+                where TOptions : StorageFileProviderOptions
+        {
+            return builder.AddOptions(named, sectionName, rootSectionName, configure);
         }
 
         private static IAzureStorageAccountBuilder AddOptions<TOptions>(

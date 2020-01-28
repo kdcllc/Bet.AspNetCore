@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.AzureStorage.Options
 {
-    public class StorageAccountOptionsSetup :
+    internal class StorageAccountOptionsSetup :
         IPostConfigureOptions<StorageAccountOptions>
     {
         private readonly ILogger<StorageAccountOptionsSetup> _logger;

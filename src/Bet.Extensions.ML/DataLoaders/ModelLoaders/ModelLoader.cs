@@ -13,9 +13,9 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
     {
         protected virtual ModelLoderFileOptions Options { get; set; } = default!;
 
-        protected Func<string, string, CancellationToken, Task>? SaveResultFunc { get; set; }
+        protected Func<ModelLoderFileOptions, string, CancellationToken, Task>? SaveResultFunc { get; set; }
 
-        protected Func<string, CancellationToken, Task<Stream>>? LoadFunc { get; set; }
+        protected Func<ModelLoderFileOptions, CancellationToken, Task<Stream>>? LoadFunc { get; set; }
 
         public abstract Task SaveAsync(Stream stream, CancellationToken cancellationToken);
 
@@ -31,7 +31,7 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
             return Task.Run(
                 async () =>
                 {
-                    var ms = await LoadFunc(Options.ModelResultFileName, cancellationToken);
+                    var ms = await LoadFunc(Options, cancellationToken);
                     using (var reader = new StreamReader(ms))
                     {
                         var obj = JsonConvert.DeserializeObject<TResult>(reader.ReadToEnd());
@@ -50,7 +50,7 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
             }
 
             var json = JsonConvert.SerializeObject(result, Formatting.Indented);
-            await SaveResultFunc(Options.ModelResultFileName, json, cancellationToken);
+            await SaveResultFunc(Options, json, cancellationToken);
         }
 
         public abstract IChangeToken GetReloadToken();

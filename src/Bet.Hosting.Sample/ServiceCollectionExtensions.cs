@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Bet.Extensions.Hosting.Abstractions;
+using Bet.Extensions.ML.Azure.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Hosting.Sample.Services;
 
@@ -35,10 +36,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
+            services.AddAzureStorageAccount("SpamModel1")
+                            .AddAzureBlobContainer("SpamModel1", "models");
+
             return services
-                        .AddSpamModelCreationService<InMemoryModelLoader>("SpamModel1", 0.2)
-                        .AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5)
-                        .AddSentimentModelCreationService<FileModelLoader>();
+                        .AddSpamModelCreationService<AzureStorageModelManager>("SpamModel1", 0.2);
+                        //.AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5)
+                        //.AddSentimentModelCreationService<FileModelLoader>();
         }
     }
 }

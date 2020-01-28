@@ -23,18 +23,18 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            SaveResultFunc = async (fileName, json, cancellationToken) =>
+            SaveResultFunc = async (options, json, cancellationToken) =>
             {
                 await Task.Run(
                     () =>
                     {
-                        var fileLocation = FileHelper.GetAbsolutePath(fileName);
+                        var fileLocation = FileHelper.GetAbsolutePath(options.ModelResultFileName);
                         File.WriteAllText(fileLocation, json);
                     },
                     cancellationToken);
             };
 
-            LoadFunc = (fileName, cancellationToken) => GetMemoryStream(fileName, cancellationToken);
+            LoadFunc = (options, cancellationToken) => GetMemoryStream(options.ModelResultFileName, cancellationToken);
         }
 
         public void Dispose()

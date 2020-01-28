@@ -68,7 +68,7 @@ namespace Bet.Extensions.AzureStorage
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             var items = new List<T>();
-            TableContinuationToken token = null;
+            TableContinuationToken? token = null;
 
             do
             {
@@ -98,7 +98,7 @@ namespace Bet.Extensions.AzureStorage
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             var items = new List<T>();
-            TableContinuationToken token = null;
+            TableContinuationToken? token = null;
 
             var count = 0;
             do
@@ -117,7 +117,7 @@ namespace Bet.Extensions.AzureStorage
             return items;
         }
 
-        public static async Task<TableContinuationToken> ForEachQueryResultAsync<T>(
+        public static async Task<TableContinuationToken?> ForEachQueryResultAsync<T>(
             this CloudTable table,
             TableQuery<T> query,
             TableContinuationToken token,
@@ -136,6 +136,7 @@ namespace Bet.Extensions.AzureStorage
                 }
             }
             while (token != null && !cancellationToken.IsCancellationRequested && (query.TakeCount == null || count < query.TakeCount.Value));
+
             return token;
         }
 
@@ -151,7 +152,7 @@ namespace Bet.Extensions.AzureStorage
             Func<T, Task> processResultAsync,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            TableContinuationToken token = null;
+            TableContinuationToken? token = null;
 
             var count = 0;
             do
@@ -179,7 +180,7 @@ namespace Bet.Extensions.AzureStorage
             Func<T, Task<bool>> processResultAsync,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            TableContinuationToken token = null;
+            TableContinuationToken? token = null;
 
             var count = 0;
             do
@@ -211,7 +212,7 @@ namespace Bet.Extensions.AzureStorage
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
             var items = new List<T>();
-            TableContinuationToken token = null;
+            TableContinuationToken? token = null;
 
             do
             {

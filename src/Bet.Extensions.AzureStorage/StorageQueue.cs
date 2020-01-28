@@ -11,27 +11,30 @@ using Bet.Extensions.AzureStorage.Options;
 using Microsoft.Azure.Storage.Queue;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.AzureStorage
 {
-    public class StorageQueue<TOptions> where TOptions : StorageQueueOptions
+    public class StorageQueue<TOptions> : IStorageQueue<TOptions>
+        where TOptions : StorageQueueOptions
     {
         private readonly IOptionsMonitor<TOptions> _storageQueueOptionsMonitor;
-        private readonly IOptionsMonitor<StorageAccountOptions> _storageAccountOptionsMonitor;
+        private readonly IOptionsFactory<StorageAccountOptions> _storageAccountOptionsFactory;
         private readonly ILogger<StorageQueue<TOptions>> _logger;
         private readonly ConcurrentDictionary<string, Lazy<Task<CloudQueue>>> _namedQueues = new ConcurrentDictionary<string, Lazy<Task<CloudQueue>>>();
 
         public StorageQueue(
             IOptionsMonitor<TOptions> storageQueueOptionsMonitor,
-            IOptionsMonitor<StorageAccountOptions> storageAccountOptionsMonitor,
+            IOptionsFactory<StorageAccountOptions> storageAccountOptionsFactory,
             ILogger<StorageQueue<TOptions>> logger)
         {
             _storageQueueOptionsMonitor = storageQueueOptionsMonitor ?? throw new ArgumentNullException(nameof(storageQueueOptionsMonitor));
-            _storageAccountOptionsMonitor = storageAccountOptionsMonitor ?? throw new ArgumentNullException(nameof(storageAccountOptionsMonitor));
+            _storageAccountOptionsFactory = storageAccountOptionsFactory ?? throw new ArgumentNullException(nameof(storageAccountOptionsFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <inheritdoc />
         public async Task SendAsync(
             string named,
             CloudQueueMessage message,
@@ -46,6 +49,15 @@ namespace Bet.Extensions.AzureStorage
             await queue.AddMessageAsync(message, cancellationToken);
         }
 
+        /// <inheritdoc />
+        public async Task SendAsync(
+            CloudQueueMessage message,
+            CancellationToken cancellationToken = default)
+        {
+            await SendAsync(string.Empty, message, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task SendAsync<T>(
             string named,
             T message,
@@ -66,6 +78,15 @@ namespace Bet.Extensions.AzureStorage
             }
         }
 
+        /// <inheritdoc />
+        public async Task SendAsync<T>(
+            T message,
+            CancellationToken cancellationToken = default)
+        {
+            await SendAsync<T>(string.Empty, message, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<CloudQueueMessage?> GetAsync(
             string named,
             bool shouldDelete = false,
@@ -87,6 +108,16 @@ namespace Bet.Extensions.AzureStorage
             return returned;
         }
 
+        /// <inheritdoc />
+        public async Task<CloudQueueMessage?> GetAsync(
+            bool shouldDelete = false,
+            TimeSpan? visibilityTimeout = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await GetAsync(string.Empty, shouldDelete, visibilityTimeout, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<T> GetAsync<T>(
             string named,
             bool shouldDelete = true,
@@ -103,6 +134,16 @@ namespace Bet.Extensions.AzureStorage
             return default!;
         }
 
+        /// <inheritdoc />
+        public async Task<T> GetAsync<T>(
+            bool shouldDelete = true,
+            TimeSpan? visibilityTimeout = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await GetAsync<T>(string.Empty, shouldDelete, visibilityTimeout, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<IEnumerable<CloudQueueMessage>?> GetManyAsync(
             string named,
             int messageCount = 5,
@@ -133,6 +174,17 @@ namespace Bet.Extensions.AzureStorage
             return retuned;
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<CloudQueueMessage>?> GetManyAsync(
+            int messageCount = 5,
+            bool shouldDelete = false,
+            TimeSpan? visibilityTimeout = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await GetManyAsync(string.Empty, messageCount, shouldDelete, visibilityTimeout, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<IEnumerable<T>?> GetManyAsync<T>(
             string named,
             int messageCount = 5,
@@ -145,6 +197,17 @@ namespace Bet.Extensions.AzureStorage
             return returned?.Select(m => JsonConvert.DeserializeObject<T>(m.AsString));
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<T>?> GetManyAsync<T>(
+            int messageCount = 5,
+            bool shouldDelete = true,
+            TimeSpan? visibilityTimeout = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await GetManyAsync<T>(string.Empty, messageCount, shouldDelete, visibilityTimeout, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task DeleteAsync(
             string named,
             CloudQueueMessage message,
@@ -160,6 +223,15 @@ namespace Bet.Extensions.AzureStorage
             await queue.DeleteMessageAsync(message, cancellationToken);
         }
 
+        /// <inheritdoc />
+        public async Task DeleteAsync(
+            CloudQueueMessage message,
+            CancellationToken cancellationToken = default)
+        {
+            await DeleteAsync(string.Empty, message, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task ClearAsync(
             string named,
             CancellationToken cancellationToken = default)
@@ -169,6 +241,14 @@ namespace Bet.Extensions.AzureStorage
             await queue.ClearAsync(cancellationToken);
         }
 
+        /// <inheritdoc />
+        public async Task ClearAsync(
+            CancellationToken cancellationToken = default)
+        {
+            await ClearAsync(string.Empty, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<IEnumerable<CloudQueueMessage>> PeekAsync(
             string named,
             int count = 1,
@@ -179,6 +259,15 @@ namespace Bet.Extensions.AzureStorage
             return await queue.PeekMessagesAsync(count, cancellationToken);
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<CloudQueueMessage>> PeekAsync(
+            int count = 1,
+            CancellationToken cancellationToken = default)
+        {
+            return await PeekAsync(string.Empty, count, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<IEnumerable<T>?> PeekAsync<T>(
             string named,
             int count = 1,
@@ -189,6 +278,15 @@ namespace Bet.Extensions.AzureStorage
             return returned?.Select(m => JsonConvert.DeserializeObject<T>(m.AsString));
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<T>?> PeekAsync<T>(
+            int count = 1,
+            CancellationToken cancellationToken = default)
+        {
+            return await PeekAsync<T>(string.Empty, count, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task DeleteQueueAsync(string named, CancellationToken cancellationToken = default)
         {
             var queue = await GetNamedQueue(named, cancellationToken).Value;
@@ -196,6 +294,13 @@ namespace Bet.Extensions.AzureStorage
             await queue.DeleteAsync(cancellationToken);
         }
 
+        /// <inheritdoc />
+        public async Task DeleteQueueAsync(CancellationToken cancellationToken = default)
+        {
+            await DeleteQueueAsync(string.Empty, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public Lazy<Task<CloudQueue>> GetNamedQueue(string queueName, CancellationToken cancellationToken = default)
         {
             if (_namedQueues.TryGetValue(queueName, out var container))
@@ -204,7 +309,7 @@ namespace Bet.Extensions.AzureStorage
             }
 
             var options = _storageQueueOptionsMonitor.Get(queueName);
-            var storageOptions = _storageAccountOptionsMonitor.Get(options.AccountName);
+            var storageOptions = _storageAccountOptionsFactory.Create(options.AccountName);
 
             var createdQueue = new Lazy<Task<CloudQueue>>(() => CreateCloudQueue(options, storageOptions, cancellationToken));
 
@@ -239,10 +344,10 @@ namespace Bet.Extensions.AzureStorage
             }
             else
             {
-                _logger.LogInformation("[Azure Queue] Using existing Azure Queue:[{queueName}]; Options:[{optionsName}].", options.QueueName, options);
+                _logger.LogInformation("[Azure Queue] Using existing Azure Queue:[{queueName}].", options.QueueName);
             }
 
-            _logger.LogInformation("[Azure Blob][{methodName}] Elapsed: {seconds}sec", nameof(CreateCloudQueue), sw.GetElapsedTime().TotalSeconds);
+            _logger.LogInformation("[Azure Blob][{methodName}] Elapsed: {elapsed}sec", nameof(CreateCloudQueue), sw.GetElapsedTime().TotalSeconds);
 
             return queue;
         }

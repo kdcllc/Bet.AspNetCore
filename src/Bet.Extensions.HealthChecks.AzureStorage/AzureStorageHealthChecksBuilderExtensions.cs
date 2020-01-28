@@ -17,8 +17,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="name">The name of the hc.</param>
         /// <param name="containerName">The name of the container to be checked.</param>
         /// <param name="setup">The setup action for the hc.</param>
-        /// <param name="sectionName"></param>
-        /// <param name="rootSectionName"></param>
+        /// <param name="sectionName">
+        /// The name of the configuration section for Azure Storage Account.
+        /// Example: AzureStorage:DefaultAccount
+        /// The default is <see cref="AzureStorageConstants.DefaultAccount"/>.
+        /// </param>
+        /// <param name="rootSectionName">
+        /// The root section name for Azure Storage Account.
+        /// Example: AzureStorage:DefaultAccount
+        /// The default is <see cref="AzureStorageConstants.AzureStorage"/>.
+        /// </param>
         /// <param name="failureStatus">The failure status to be returned. The default is 'HealthStatus.Degraded'.</param>
         /// <param name="tags">The optional tags.</param>
         /// <returns></returns>

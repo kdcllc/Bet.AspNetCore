@@ -16,13 +16,13 @@ namespace Bet.Extensions.ML.DataLoaders.ModelLoaders
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
 
-            SaveResultFunc = async (fileName, json, cancellationToken) =>
+            SaveResultFunc = async (options, json, cancellationToken) =>
             {
-                await _storage.SaveAsync(json, fileName, cancellationToken);
+                await _storage.SaveAsync(json, options.ModelResultFileName, cancellationToken);
                 await Task.CompletedTask;
             };
 
-            LoadFunc = (fileName, cancellationToken) => storage.LoadAsync(fileName, cancellationToken);
+            LoadFunc = (options, cancellationToken) => storage.LoadAsync(options.ModelResultFileName, cancellationToken);
         }
 
         public override async Task SaveAsync(Stream stream, CancellationToken cancellationToken)

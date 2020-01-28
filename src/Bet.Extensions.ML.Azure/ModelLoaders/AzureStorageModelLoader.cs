@@ -3,7 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Bet.Extensions.ML.Azure;
+using Bet.Extensions.AzureStorage;
+using Bet.Extensions.AzureStorage.Options;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ML;
@@ -17,11 +18,13 @@ namespace Bet.Extensions.ML
     {
         private const int TimeoutMilliseconds = 60000;
 
+        private readonly IStorageBlob<StorageBlobOptions> _storageBlob;
         private readonly ILogger<AzureStorageModelLoader> _logger;
-        private readonly MLContext _context;
+
+        private readonly MLContext _mlContext;
         private readonly CancellationTokenSource _stopping;
         private ModelReloadToken _reloadToken;
-        private AzureBlobContainerLoader? _containerLoader;
+        private string _modelName = string.Empty;
         private TimeSpan _interval;
         private string _fileName = string.Empty;
         private Task? _pollingTask;
@@ -30,6 +33,7 @@ namespace Bet.Extensions.ML
 
         public AzureStorageModelLoader(
             IOptions<MLOptions> contextOptions,
+            IStorageBlob<StorageBlobOptions> storageBlob,
             ILogger<AzureStorageModelLoader> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -39,9 +43,10 @@ namespace Bet.Extensions.ML
                 throw new ArgumentNullException(nameof(contextOptions));
             }
 
-            _context = contextOptions.Value.MLContext;
+            _mlContext = contextOptions.Value.MLContext;
             _reloadToken = new ModelReloadToken();
             _stopping = new CancellationTokenSource();
+            _storageBlob = storageBlob ?? throw new ArgumentNullException(nameof(storageBlob));
         }
 
         public override ITransformer? GetModel()
@@ -71,11 +76,11 @@ namespace Bet.Extensions.ML
         }
 
         internal void Start(
-            AzureBlobContainerLoader containerLoader,
+            string modelName,
             string fileName,
             TimeSpan interval)
         {
-            _containerLoader = containerLoader;
+            _modelName = modelName;
             _interval = interval;
             _fileName = fileName;
 
@@ -85,11 +90,6 @@ namespace Bet.Extensions.ML
 
         internal async Task RunAsync()
         {
-            if (_containerLoader == null)
-            {
-                throw new ArgumentNullException($"{nameof(_containerLoader)} can't be null");
-            }
-
             var sw = ValueStopwatch.StartNew();
             CancellationTokenSource? cancellation = null;
 
@@ -98,13 +98,20 @@ namespace Bet.Extensions.ML
                 cancellation = CancellationTokenSource.CreateLinkedTokenSource(_stopping.Token);
                 cancellation.CancelAfter(TimeoutMilliseconds);
 
-                var etag = await _containerLoader.GetETag(_fileName);
+                var etag = await _storageBlob.GetBlobAsync(_modelName, _fileName, cancellation.Token);
 
-                if (_eTag != etag)
+                if (_eTag != etag?.Properties.ETag)
                 {
-                    await _containerLoader.LoadModelAsync(_fileName, cancellation.Token);
-                    var previousToken = Interlocked.Exchange(ref _reloadToken, new ModelReloadToken());
-                    previousToken.OnReload();
+                    var stream = await _storageBlob.GetAsync(_modelName, _fileName, cancellation.Token);
+
+                    if (stream != null)
+                    {
+                        var previousToken = Interlocked.Exchange(ref _reloadToken, new ModelReloadToken());
+
+                        _model = _mlContext.Model.Load(stream, out _);
+
+                        previousToken.OnReload();
+                    }
                 }
 
                 _logger.LogInformation(

@@ -27,10 +27,8 @@ Azure Storage Account can be created with the following configurations settings:
 
 ```json
  "AzureStorage": {
-    "Account": {
-      "Name": "storageName",
-      "Token":  "",
-      "ConnectionString": ""
+    "DefaultAccount": {
+      "Name": "storageName"
     }
   }
 ```
@@ -39,7 +37,7 @@ Azure Storage Account can be created with the following configurations settings:
 
 ```json
  "AzureStorage": {
-    "Account": {
+    "DefaultAccount": {
       "Name": "storageName",
       "Token":  "tokenValue",
       "ConnectionString": ""
@@ -51,9 +49,7 @@ Azure Storage Account can be created with the following configurations settings:
 
 ```json
  "AzureStorage": {
-    "Account": {
-      "Name": "",
-      "Token":  "",
+    "DefaultAccount": {
       "ConnectionString": "full-connection-string"
     }
   }
@@ -74,7 +70,7 @@ As you can see no need to provide secure SAS token.
 
 ```json
  "AzureStorage": {
-    "Account": {
+    "DefaultAccount": {
       "Name": "teststorage"
     }
   }
