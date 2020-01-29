@@ -197,6 +197,8 @@ namespace Bet.Extensions.ML.ModelCreation
 
             Log.EndProcess(_logger, nameof(GetModelStream), ModelName, sw.GetElapsedTime());
 
+            stream.Seek(0, SeekOrigin.Begin);
+
             return stream;
         }
 

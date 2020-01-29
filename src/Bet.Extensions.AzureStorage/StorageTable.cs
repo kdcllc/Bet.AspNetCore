@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.AzureStorage
 {
+    /// <inheritdoc />
     public class StorageTable<TOptions> : IStorageTable<TOptions> where TOptions : StorageTableOptions
     {
         private readonly ILogger<StorageTable<TOptions>> _logger;

@@ -39,10 +39,10 @@ namespace Microsoft.Extensions.ML
             builder.Services.AddAzureStorageAccount(modelName, sectionName, rootSectionName, setupStorage)
                             .AddAzureBlobContainer(modelName, blobContainerName);
 
-            builder.Services.TryAddTransient<AzureStorageModelLoader, AzureStorageModelLoader>();
+            builder.Services.TryAddTransient<AzureStorageMSModelLoader, AzureStorageMSModelLoader>();
 
             builder.Services.AddOptions<PredictionEnginePoolOptions<TData, TPrediction>>(modelName)
-                .Configure<AzureStorageModelLoader>((options, loader) =>
+                .Configure<AzureStorageMSModelLoader>((options, loader) =>
                 {
                     loader.Start(modelName, fileName, interval);
                     options.ModelLoader = loader;

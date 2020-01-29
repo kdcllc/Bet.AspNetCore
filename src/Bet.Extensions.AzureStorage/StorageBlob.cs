@@ -117,7 +117,7 @@ namespace Bet.Extensions.AzureStorage
 
             var container = await GetNamedContainer(named, cancellationToken).Value;
 
-            var blob = container.GetBlockBlobReference(blobName);
+            var blob = await container.GetBlobReferenceFromServerAsync(blobName);
             if (blob == null
                 || !await blob.ExistsAsync(cancellationToken))
             {
@@ -126,7 +126,16 @@ namespace Bet.Extensions.AzureStorage
 
             var stream = new MemoryStream();
 
-            await blob.DownloadToStreamAsync(stream, cancellationToken);
+            try
+            {
+                await blob.DownloadToStreamAsync(stream, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
 
             return stream;
         }
@@ -593,6 +602,8 @@ namespace Bet.Extensions.AzureStorage
                 _logger.LogInformation("[Azure Blob] Using existing Azure Blob:[{blobName}].", options.ContainerName);
             }
 
+            // this stop working...
+            // await cloudBlobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = options.PublicAccessType }, cancellationToken);
             _logger.LogInformation("[Azure Blob][{methodName}] Elapsed: {elapsed}sec", nameof(CreateCloudBlobContainer), sw.GetElapsedTime().TotalSeconds);
 
             return cloudBlobContainer;

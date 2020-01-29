@@ -2,12 +2,11 @@
 
 using Bet.Extensions.Hosting.Abstractions;
 using Bet.Extensions.ML.Azure.ModelLoaders;
-using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Hosting.Sample.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class BetHosingServiceCollectionExtensions
     {
         /// <summary>
         /// Adds timed service, that can be run in a Docker container.
@@ -36,11 +35,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
-            services.AddAzureStorageAccount("SpamModel1")
-                            .AddAzureBlobContainer("SpamModel1", "models");
+            services.AddAzureStorageAccount("SpamModel")
+                            .AddAzureBlobContainer("SpamModel", "models");
 
             return services
-                        .AddSpamModelCreationService<AzureStorageModelManager>("SpamModel1", 0.2);
+                        .AddSpamModelCreationService<AzureStorageModelLoader>("SpamModel", 0.2);
                         //.AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5)
                         //.AddSentimentModelCreationService<FileModelLoader>();
         }

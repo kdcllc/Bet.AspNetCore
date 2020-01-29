@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddAzureStorageAccount(builder.ModelName, sectionName, rootSectionName, configureStorage)
                             .AddAzureBlobContainer(builder.ModelName, blobContainerName);
 
-            builder.From<TInput, TPrediction, AzureStorageModelManager>(configure);
+            builder.From<TInput, TPrediction, AzureStorageModelLoader>(configure);
 
             return builder;
         }

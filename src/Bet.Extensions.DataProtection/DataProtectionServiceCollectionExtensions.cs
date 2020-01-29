@@ -13,6 +13,22 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataProtectionAzureStorage(
             this IServiceCollection services,
+            IConfiguration configuration,
+            string sectionName = "AzureDataProtection",
+            string dataProtectionSectionName = "DataProtectionAzureStorage",
+            Action<DataProtectionAzureStorageOptions>? setup = null)
+        {
+            var enabledDataProtection = configuration.GetValue<bool>(sectionName);
+            if (enabledDataProtection)
+            {
+                services.AddDataProtectionAzureStorage(dataProtectionSectionName, setup);
+            }
+
+            return services;
+        }
+
+        public static IServiceCollection AddDataProtectionAzureStorage(
+            this IServiceCollection services,
             string dataProtectionSectionName = "DataProtectionAzureStorage",
             Action<DataProtectionAzureStorageOptions>? setup = null)
         {

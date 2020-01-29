@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Bet.Extensions.AzureStorage;
 using Bet.Extensions.AzureStorage.Options;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ML;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
-using Microsoft.ML;
 
-namespace Bet.Extensions.ML
+namespace Bet.Extensions.ML.Azure.ModelLoaders
 {
     public class AzureStorageModelLoader : ModelLoader, IDisposable
     {
@@ -20,53 +19,22 @@ namespace Bet.Extensions.ML
 
         private readonly IStorageBlob<StorageBlobOptions> _storageBlob;
         private readonly ILogger<AzureStorageModelLoader> _logger;
-
-        private readonly MLContext _mlContext;
-        private readonly CancellationTokenSource _stopping;
-        private ModelReloadToken _reloadToken;
-        private string _modelName = string.Empty;
-        private TimeSpan _interval;
-        private string _fileName = string.Empty;
-        private Task? _pollingTask;
-        private ITransformer? _model;
+        private ReloadToken? _reloadToken;
+        private CancellationTokenSource _stopping;
         private string _eTag = string.Empty;
+        private Task? _pollingTask;
 
         public AzureStorageModelLoader(
-            IOptions<MLOptions> contextOptions,
             IStorageBlob<StorageBlobOptions> storageBlob,
             ILogger<AzureStorageModelLoader> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            if (contextOptions.Value?.MLContext == null)
-            {
-                throw new ArgumentNullException(nameof(contextOptions));
-            }
-
-            _mlContext = contextOptions.Value.MLContext;
-            _reloadToken = new ModelReloadToken();
-            _stopping = new CancellationTokenSource();
             _storageBlob = storageBlob ?? throw new ArgumentNullException(nameof(storageBlob));
-        }
 
-        public override ITransformer? GetModel()
-        {
-            if (_pollingTask == null)
-            {
-                throw new InvalidOperationException("Start must be called on a ModelLoader before it can be used.");
-            }
+            LoadFunc = (options, cancellationToken) => LoadModelResult(options, cancellationToken);
 
-            return _model;
-        }
-
-        public override IChangeToken GetReloadToken()
-        {
-            if (_pollingTask == null)
-            {
-                throw new InvalidOperationException("Start must be called on a ModelLoader before it can be used.");
-            }
-
-            return _reloadToken;
+            _reloadToken = new ReloadToken();
+            _stopping = new CancellationTokenSource();
         }
 
         public void Dispose()
@@ -75,20 +43,67 @@ namespace Bet.Extensions.ML
             GC.SuppressFinalize(this);
         }
 
-        internal void Start(
-            string modelName,
-            string fileName,
-            TimeSpan interval)
+        public override IChangeToken GetReloadToken()
         {
-            _modelName = modelName;
-            _interval = interval;
-            _fileName = fileName;
+            if (_reloadToken == null)
+            {
+                throw new InvalidOperationException($"{nameof(AzureStorageModelLoader)} failed to call {nameof(Setup)} method.");
+            }
 
-            // run for the first time
-            RunAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            return _reloadToken;
         }
 
-        internal async Task RunAsync()
+        public override async Task<Stream> LoadAsync(CancellationToken cancellationToken)
+        {
+            var result = await _storageBlob.GetAsync(Options.ModelName, Options.ModelFileName, cancellationToken);
+
+            if (result == null)
+            {
+                throw new ApplicationException("No Model was retrieved");
+            }
+
+            return result;
+        }
+
+        public override async Task SaveAsync(Stream stream, CancellationToken cancellationToken)
+        {
+            await _storageBlob.AddAsync(
+                Options.ModelName,
+                stream,
+                Options.ModelFileName,
+                contentType: "application/zip",
+                cancellationToken: cancellationToken);
+        }
+
+        public override async Task SaveResultAsync<TResult>(TResult result, CancellationToken cancellationToken)
+        {
+            await _storageBlob.AddAsync(Options.ModelName, result!, Options.ModelResultFileName, cancellationToken);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _stopping?.Dispose();
+            }
+        }
+
+        protected override void Polling()
+        {
+            if (Options.WatchForChanges
+                && Options.ReloadInterval.HasValue)
+            {
+                RunAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _logger.LogInformation(
+                    "[{provideName}][Watching] {modelName}-{fileName} with reloading interval {interval}",
+                    nameof(AzureStorageModelLoader),
+                    Options.ModelName,
+                    Options.ModelFileName,
+                    Options.ReloadInterval);
+            }
+        }
+
+        private async Task RunAsync()
         {
             var sw = ValueStopwatch.StartNew();
             CancellationTokenSource? cancellation = null;
@@ -98,26 +113,31 @@ namespace Bet.Extensions.ML
                 cancellation = CancellationTokenSource.CreateLinkedTokenSource(_stopping.Token);
                 cancellation.CancelAfter(TimeoutMilliseconds);
 
-                var etag = await _storageBlob.GetBlobAsync(_modelName, _fileName, cancellation.Token);
+                var blob = await _storageBlob.GetBlobAsync(Options.ModelName, Options.ModelFileName, cancellation.Token);
 
-                if (_eTag != etag?.Properties.ETag)
+                var etag = string.Empty;
+
+                if (blob != null)
                 {
-                    var stream = await _storageBlob.GetAsync(_modelName, _fileName, cancellation.Token);
-
-                    if (stream != null)
-                    {
-                        var previousToken = Interlocked.Exchange(ref _reloadToken, new ModelReloadToken());
-
-                        _model = _mlContext.Model.Load(stream, out _);
-
-                        previousToken.OnReload();
-                    }
+                    await blob.FetchAttributesAsync();
+                    etag = blob.Properties.ETag;
                 }
 
-                _logger.LogInformation(
-                    "[{loader}][Succeeded] Elapsed {time}ms",
-                    nameof(AzureStorageModelLoader),
-                    sw.GetElapsedTime().TotalMilliseconds);
+                if (_eTag != etag)
+                {
+                    var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
+
+                    await Task.Delay(100, cancellation.Token);
+
+                    _logger.LogInformation(
+                        "[{loader}][Reloaded] Model Name: {modelName} Elapsed: {elapsed}ms",
+                        nameof(AzureStorageModelLoader),
+                        Options.ModelName,
+                        sw.GetElapsedTime().TotalMilliseconds);
+
+                    _eTag = etag;
+                    previousToken?.OnReload();
+                }
             }
             catch (OperationCanceledException) when (!_stopping.IsCancellationRequested)
             {
@@ -125,7 +145,7 @@ namespace Bet.Extensions.ML
             }
             catch (Exception ex)
             {
-                _logger.LogError("Azure Storage Model Loader failed", ex);
+                _logger.LogError(ex, "Azure Storage Model Loader failed for Model: {modelName}", Options.ModelName);
             }
             finally
             {
@@ -139,12 +159,15 @@ namespace Bet.Extensions.ML
             }
         }
 
-        internal async Task WaitForRetry()
+        private async Task WaitForRetry()
         {
-            await Task.Delay(_interval, _stopping.Token);
+            if (Options.ReloadInterval.HasValue)
+            {
+                await Task.Delay(Options.ReloadInterval.Value, _stopping.Token);
+            }
         }
 
-        internal async Task PollForChangesAsync()
+        private async Task PollForChangesAsync()
         {
             while (!_stopping.IsCancellationRequested)
             {
@@ -160,12 +183,11 @@ namespace Bet.Extensions.ML
             }
         }
 
-        protected virtual void Dispose(bool disposing)
+        private async Task<Stream> LoadModelResult(ModelLoderFileOptions options, CancellationToken cancellationToken)
         {
-            if (disposing)
-            {
-                _stopping?.Dispose();
-            }
+#pragma warning disable CS8603 // Possible null reference return.
+            return await _storageBlob.GetAsync(options.ModelName, options.ModelResultFileName, cancellationToken);
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

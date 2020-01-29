@@ -10,7 +10,8 @@ using Microsoft.Azure.Cosmos.Table;
 namespace Bet.Extensions.AzureStorage
 {
     /// <summary>
-    /// https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-patterns.
+    /// Azure Storage Table wrapper interface.
+    /// based on the ideas from https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-patterns.
     /// </summary>
     /// <typeparam name="TOptions"></typeparam>
     public interface IStorageTable<TOptions> where TOptions : StorageTableOptions

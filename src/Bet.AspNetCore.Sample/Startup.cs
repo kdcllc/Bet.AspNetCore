@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
 
-using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
 using Bet.AspNetCore.Sample.Models;
 using Bet.AspNetCore.Sample.Options;
+using Bet.Extensions.ML.Azure.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.Spam.Models;
 
@@ -13,12 +13,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 using Serilog;
 
 namespace Bet.AspNetCore.Sample
@@ -37,20 +37,12 @@ namespace Bet.AspNetCore.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // enables custom options validations on bind and configure.
             services.AddConfigurationValidation();
 
-            var enabledDataProtection = Configuration.GetValue<bool>("EnabledDataProtection");
-            if (enabledDataProtection)
-            {
-                services.AddDataProtectionAzureStorage();
-            }
+            services.AddDataProtectionAzureStorage(Configuration);
 
-            var instrumentId = Configuration.Bind<ApplicationInsightsOptions>("ApplicationInsights", true);
-
-            services.AddApplicationInsightsTelemetry(options =>
-            {
-                options.InstrumentationKey = instrumentId.InstrumentationKey;
-            });
+            services.AddAppInsightsTelemetry();
 
             services.AddDeveloperListRegisteredServices(o =>
             {
@@ -67,13 +59,21 @@ namespace Bet.AspNetCore.Sample
                 });
 
             // add spam model
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
-                MLModels.SpamModel)
-                .From<SpamInput, SpamPrediction, FileModelLoader>(
-                options =>
-                {
-                    options.ModelFileName = "MLContent/SpamModel.zip";
-                });
+            //services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
+            //    MLModels.SpamModel)
+            //    .From<SpamInput, SpamPrediction, FileModelLoader>(
+            //    options =>
+            //    {
+            //        options.ModelFileName = "MLContent/SpamModel.zip";
+            //    });
+
+            services.AddAzureStorageAccount(MLModels.SpamModel).AddAzureBlobContainer(MLModels.SpamModel, "models");
+            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(MLModels.SpamModel)
+                    .From<SpamInput, SpamPrediction, AzureStorageModelLoader>(options =>
+                    {
+                        options.WatchForChanges = true;
+                        options.ReloadInterval = TimeSpan.FromSeconds(40);
+                    });
 
             // configure Options for the App.
             services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
@@ -138,7 +138,6 @@ namespace Bet.AspNetCore.Sample
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env,
-            IApiVersionDescriptionProvider provider,
             IConfiguration configuration)
         {
             app.UseIfElse(
@@ -160,15 +159,9 @@ namespace Bet.AspNetCore.Sample
                     return prod;
                 });
 
-            var enableHttpsRedirection = configuration.GetValue<bool>("EnabledHttpsRedirection");
-
-            if (enableHttpsRedirection)
-            {
-                app.UseHttpsRedirection();
-            }
+            app.UseOrNotHttpsRedirection();
 
             app.UseStaticFiles();
-
             app.UseSerilogRequestLogging();
 
             app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
@@ -181,17 +174,7 @@ namespace Bet.AspNetCore.Sample
             app.UseAuthorization();
 
             app.UseSwagger();
-
-            // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
-            app.UseSwaggerUI(options =>
-            {
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint(
-                         $"/swagger/{description.GroupName}/swagger.json",
-                         description.GroupName.ToUpperInvariant());
-                }
-            });
+            app.UseSwaggerUI();
 
             // https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/
             app.UseEndpoints(endpoints =>
