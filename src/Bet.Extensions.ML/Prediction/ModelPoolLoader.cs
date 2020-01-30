@@ -38,7 +38,7 @@ namespace Bet.Extensions.ML.Prediction
                 () => LoadPool());
         }
 
-        public ObjectPool<PredictionEngine<TInput, TPrediction>> PredictionEnginePool => _pool;
+        public ObjectPool<PredictionEngine<TInput, TPrediction>> PredictionEnginePool => _pool!;
 
         public void Dispose()
         {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Bet.Extensions.ML.ModelCreation.Services;
-using Bet.Hosting.Sample.Services;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +38,10 @@ namespace Bet.Hosting.Sample
                         await host.StartAsync();
 
                         var scope = host.Services.CreateScope();
-                        var token = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
+                        var appLifeTime = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
 
                         var job = scope.ServiceProvider.GetRequiredService<IModelCreationService>();
-                        await job.BuildModelsAsync(token.ApplicationStopping);
+                        await job.BuildModelsAsync(appLifeTime.ApplicationStopping);
 
                         await host.StopAsync();
                         return 0;
@@ -95,10 +95,20 @@ namespace Bet.Hosting.Sample
                     else
                     {
                         services.AddHealthChecks()
+
+                                // memory check
                                 .AddMemoryHealthCheck()
+
+                                // dummy check
                                 .AddCheck("Healthy_Check_Two", () => HealthCheckResult.Healthy())
+
+                                // health check for the worker process.
                                 .AddSocketListener(8080)
+
+                                // publisher to publish logs.
                                 .AddLoggerPublisher();
+
+                        // adds ML.NET model generations every 30 mins.
                         services.AddMachineLearningHostedService();
                     }
                 });

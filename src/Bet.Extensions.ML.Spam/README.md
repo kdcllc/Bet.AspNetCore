@@ -17,8 +17,7 @@ This project is self contained ML.NET project to be used within other DotNetCore
 For complete examples please refer to sample projects:
 
 1. [`Bet.AspNetCore.Sample`](../Bet.AspNetCore.Sample/README.md) - `AspNetCore` Web App with spam prediction models.
-2. [`Bet.ML.WebApi.Sample`](../Bet.ML.WebApi.Sample/README.md) - AspNetCore Web Api application with predictive engine enabled.
-3. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/README.md)
+2. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/README.md)
 
 
 ```csharp

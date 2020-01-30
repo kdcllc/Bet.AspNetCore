@@ -33,20 +33,6 @@ services:
         PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
         SOLUTION_BASE: "false"
 
-  bet.webapi:
-    image: ${DOCKER_REGISTRY-}/bet:webapi
-    depends_on:
-      - bet.base
-    build:
-      context: .
-      dockerfile: src/Bet.ML.WebApi.Sample/Dockerfile
-      args:
-        RUNTESTS: "false"
-        VERBOSE: "false"
-        NUGET_RESTORE: "-v=m" #overides the --disable-parallel
-        PROJECT_PATH: "/src/Bet.ML.WebApi.Sample/Bet.ML.WebApi.Sample.csproj"
-        SOLUTION_BASE: "false"
-
   bet.hosting:
     image: ${DOCKER_REGISTRY-}/bet:hosting
     depends_on:

@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="CronScheduler.AspNetCore" />
-    <PackageReference Include="CsvHelper" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
@@ -42,6 +41,7 @@
     <ProjectReference Include="..\Bet.Extensions.HealthChecks.AzureStorage\Bet.Extensions.HealthChecks.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.HealthChecks.ML\Bet.Extensions.HealthChecks.ML.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Azure\Bet.Extensions.ML.Azure.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
   </ItemGroup>
 

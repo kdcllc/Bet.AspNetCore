@@ -55,7 +55,7 @@ Azure Storage Account can be created with the following configurations settings:
   }
 ```
 
-### Auzre Managed Identities support
+### Azure Managed Identities support
 
 By default the following roles are not assigned:
 
@@ -100,8 +100,9 @@ As you can see no need to provide secure SAS token.
 4. Add Service registration
 
 ```csharp
-    services.AddStorageBlob()
-            .AddBlobContainer<UploadsStorageBlobsOptions>()
+    services.AddAzureStorageAccount()
+            .AddAzureBlobContainer<UploadsBlobOptions>()
+            .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 ```
 
 5. Enable middleware

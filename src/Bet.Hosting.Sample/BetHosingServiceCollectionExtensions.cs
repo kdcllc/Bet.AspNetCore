@@ -2,6 +2,7 @@
 
 using Bet.Extensions.Hosting.Abstractions;
 using Bet.Extensions.ML.Azure.ModelLoaders;
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Hosting.Sample.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -29,19 +30,33 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds this as Kubernetes CronJob.
+        /// Adds this as Kubernetes CronJob that builds <see cref="SpamModelEngineExtensions"/>
+        /// and <see cref="SentimentModelEngineExtensions"/> ML.NET models.
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
         public static IServiceCollection AddMachineLearningModels(this IServiceCollection services)
         {
-            services.AddAzureStorageAccount("SpamModel")
-                            .AddAzureBlobContainer("SpamModel", "models");
+            const string containerName = "models";
 
-            return services
-                        .AddSpamModelCreationService<AzureStorageModelLoader>("SpamModel", 0.2);
-                        //.AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5)
-                        //.AddSentimentModelCreationService<FileModelLoader>();
+            // model name is what connects everything together.
+            var spamModelName = "SpamModel";
+
+            services.AddAzureStorageAccount(spamModelName)
+                    .AddAzureBlobContainer(spamModelName, containerName);
+
+            services.AddSpamModelCreationService<AzureStorageModelLoader>(spamModelName, 0.2);
+
+            // example of adding file based model generation
+            // services.AddSpamModelCreationService<FileModelLoader>("SpamModel2", 0.5);
+            // services.AddSpamModelCreationService<InMemoryModelLoader>("SpamModel1");
+            var sentimentModelName = "SentimentModel";
+            services.AddAzureStorageAccount(sentimentModelName)
+                    .AddAzureBlobContainer(sentimentModelName, containerName);
+
+            services.AddSentimentModelCreationService<AzureStorageModelLoader>(sentimentModelName);
+
+            return services;
         }
     }
 }

@@ -1,16 +1,18 @@
 ﻿# .NET Core Service Worker for Machine Learning (ML.NET) Model Building
 
-This example demonstrates how to schedule Machine Learning Model building process for Spam and Sentiment.
+This example demonstrates how to schedule Machine Learning Model building process for Spam and Sentiment ML.NET models.
 
-The idea is that model would have the input of a new `datapoints` and would require the rebuild.
+The idea is that ML.NET model is not stale and would have the input of a new `datapoints` and would require the rebuild of the model at the eve of each day.
 
-The sample runs as .NET Core Service Worker and can be hosted in Docker/Kubernetes and generate new models based on the new data as it becomes
-available.
+The sample was designed to be run Kubernetes Cluster in two ways:
+
+1. `.NET Core Service Worker` (this would require a consistent memory allocation). This also demonstrates `worker` tcp based health check
+2. or as a Cron Job (preferred usage).
 
 This sample is fully containerized to be used as:
 
 1. As stand-alone Docker container that runs application every 30 min interval. It utilizes `TcpListener` for Pod health checks.
-2. As [Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) with interval specified in the deployment.
+2. As [Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) with interval specified in the deployment which is once a day at 1:00am.
 
 ## Build and Deploy
 

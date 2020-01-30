@@ -1,7 +1,8 @@
 
 # configurations for cronjob
 cronjob:
-  schedule: "*/10 * * * *"
+  # every day at 1:00am
+  schedule: "0 1 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2

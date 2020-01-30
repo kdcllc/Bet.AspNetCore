@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The DI services.</param>
         /// <param name="appName">The name of the application.</param>
-        /// <param name="includeXmlComments"></param>
+        /// <param name="includeXmlComments">The flag to include auto-generated xml dll comments. The Default is true.</param>
         /// <returns></returns>
         public static IServiceCollection AddSwaggerGenWithApiVersion(
             this IServiceCollection services,
@@ -74,6 +74,9 @@ namespace Microsoft.Extensions.DependencyInjection
                         {
                             options.IncludeXmlComments(GetXmlDocPath(appliationName));
                         }
+
+                        // https://github.com/domaindrivendev/Swashbuckle/issues/142
+                        options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                     });
 
             services.AddSwaggerGen();

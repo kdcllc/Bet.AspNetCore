@@ -60,6 +60,8 @@ namespace Bet.AspNetCore.Sample
 
                             webBuilder.ConfigureServices(services =>
                             {
+                                // commented it out if model building to be done on apps load.
+                                // services.AddStartupJob<ModelBuilderJob>();
                                 services.AddStartupJob<SeedDatabaseStartupJob>();
                             });
 

@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Bet.ML.WebApi.Sample/bin/Debug/netcoreapp3.0/Bet.ML.WebApi.Sample.dll",
+            "program": "${workspaceFolder}/src/Bet.AspNetCore.Sample/bin/Debug/netcoreapp3.1/Bet.AspNetCore.Sample.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Bet.ML.WebApi.Sample/",
+            "cwd": "${workspaceFolder}/src/Bet.AspNetCore.Sample/",
             "console": "internalConsole",
             "stopAtEntry": false,
             "env": {

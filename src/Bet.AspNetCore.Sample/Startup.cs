@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
-using Bet.AspNetCore.Sample.Models;
 using Bet.AspNetCore.Sample.Options;
-using Bet.Extensions.ML.Azure.ModelLoaders;
-using Bet.Extensions.ML.DataLoaders.ModelLoaders;
-using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 using Serilog;
 
@@ -40,6 +34,10 @@ namespace Bet.AspNetCore.Sample
             // enables custom options validations on bind and configure.
             services.AddConfigurationValidation();
 
+            // configure Options for the App example.
+            services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
+
+            // requires AzureDataProtection=true to register
             services.AddDataProtectionAzureStorage(Configuration);
 
             services.AddAppInsightsTelemetry();
@@ -51,32 +49,14 @@ namespace Bet.AspNetCore.Sample
 
             services.AddReCapture(Configuration);
 
-            // add sentiment model
-            services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>(MLModels.SentimentModel)
-                .From<SentimentObservation, SentimentPrediction, FileModelLoader>(options =>
-                {
-                    options.ModelFileName = "MLContent/SentimentModel.zip";
-                });
+            // adds spam model and monitors for changes.
+            services.AddSpamModelPrediction(Configuration);
 
-            // add spam model
-            //services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
-            //    MLModels.SpamModel)
-            //    .From<SpamInput, SpamPrediction, FileModelLoader>(
-            //    options =>
-            //    {
-            //        options.ModelFileName = "MLContent/SpamModel.zip";
-            //    });
+            // adds sentiment model and monitors for changes.
+            services.AddSentimentModelPrediction(Configuration);
 
-            services.AddAzureStorageAccount(MLModels.SpamModel).AddAzureBlobContainer(MLModels.SpamModel, "models");
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(MLModels.SpamModel)
-                    .From<SpamInput, SpamPrediction, AzureStorageModelLoader>(options =>
-                    {
-                        options.WatchForChanges = true;
-                        options.ReloadInterval = TimeSpan.FromSeconds(40);
-                    });
-
-            // configure Options for the App.
-            services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
+            // adds healthchecks
+            services.AddAppHealthChecks(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -95,50 +75,37 @@ namespace Bet.AspNetCore.Sample
             });
 
             services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddHealthChecks()
-                .AddUriHealthCheck("ms_check", uriOptions: (options) =>
-                {
-                    options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
-                })
-                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>(
-                $"{MLModels.SentimentModel}_check",
-                options =>
-                {
-                    options.ModelName = MLModels.SentimentModel;
-                    options.SampleData = new SentimentObservation
-                    {
-                        SentimentText = "This is a very rude movie"
-                    };
-                })
-                .AddAzureBlobStorageCheck("blob_check", "files", options =>
-                {
-                    options.Name = "betstorage";
-                })
-                .AddAzureQueuetorageCheck("queue_check", "betqueue")
-                .AddSigtermCheck("sigterm_check")
-                .AddLoggerPublisher(new List<string> { "sigterm_check" });
+            services.AddMvc()
+                    .AddNewtonsoftJson();
 
-            services.AddMvc().AddNewtonsoftJson();
-
-            services.AddRazorPages().AddNewtonsoftJson();
+            services.AddRazorPages()
+                    .AddNewtonsoftJson();
 
             services.AddAzureStorageAccount()
                 .AddAzureBlobContainer<UploadsBlobOptions>()
                 .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
-            services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
-
             // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
-            services.AddSwaggerGenWithApiVersion();
+            services.AddSwaggerGenWithApiVersion(AppName);
+
+            var buildModels = Configuration.GetValue<bool>("BuildModels");
+
+            if (buildModels)
+            {
+                services.AddScheduler(builder =>
+                {
+                    builder.AddJob<ModelBuilderJob, ModelBuilderOptions>();
+                    builder.UnobservedTaskExceptionHandler = null;
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
-            IConfiguration configuration)
+            IWebHostEnvironment env)
         {
             app.UseIfElse(
                 env.IsDevelopment(),
@@ -162,6 +129,10 @@ namespace Bet.AspNetCore.Sample
             app.UseOrNotHttpsRedirection();
 
             app.UseStaticFiles();
+
+            // demonstrates static file cache
+            app.UseStaticFilesWithCache(TimeSpan.FromSeconds(10));
+
             app.UseSerilogRequestLogging();
 
             app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
