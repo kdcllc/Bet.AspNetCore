@@ -20,6 +20,7 @@
 
 	<ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Colorful.Console" />
 		<PackageReference Include="McMaster.Extensions.CommandLineUtils" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />

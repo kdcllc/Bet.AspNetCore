@@ -1,6 +1,8 @@
 ﻿using System;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.AspNetCore.Http
@@ -227,6 +229,28 @@ namespace Microsoft.AspNetCore.Http
                     }
                 }
             });
+
+            return app;
+        }
+
+        /// <summary>
+        /// Adds Https redirection if enabled in the configuration.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="sectionName">The name of the section where configuration for this is set.
+        /// The default value is "HttpsRedirection".</param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseOrNotHttpsRedirection(
+            this IApplicationBuilder app,
+            string sectionName = "HttpsRedirection")
+        {
+            var configuration = app.ApplicationServices.GetRequiredService<IConfiguration>();
+
+            var enableHttpsRedirection = configuration.GetValue<bool>(sectionName);
+            if (enableHttpsRedirection)
+            {
+                app.UseHttpsRedirection();
+            }
 
             return app;
         }

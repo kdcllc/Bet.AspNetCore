@@ -12,34 +12,24 @@ namespace Bet.Extensions.AzureStorage.Options
     public class StorageAccountOptions
     {
         /// <summary>
-        /// Returns <see cref="CloudStorageAccount"/> instance based on configurations provided.
-        /// </summary>
-        public Lazy<Task<CloudStorageAccount>> CloudStorageAccount { get; set; }
-
-        /// <summary>
         /// Azure Storage Connection String.
         /// </summary>
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; set; } = string.Empty;
 
         /// <summary>
         /// Name of the Storage Account. Used with <see cref="AzureServiceTokenProvider"/>.
         /// This is enable only if ConnectionString is empty or null.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// SAS Token used with Name of the Storage Account.
         /// </summary>
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
 
         /// <summary>
-        /// The default value is 'AzureStorage'.
+        /// Returns <see cref="CloudStorageAccount"/> instance based on configurations provided.
         /// </summary>
-        public string RootSectionName { get; set; } = Constants.AzureStorage;
-
-        /// <summary>
-        /// The default value is empty for the non named option.
-        /// </summary>
-        internal string OptionName { get; set; } = string.Empty;
+        public Lazy<Task<CloudStorageAccount>>? CloudStorageAccount { get; set; }
     }
 }

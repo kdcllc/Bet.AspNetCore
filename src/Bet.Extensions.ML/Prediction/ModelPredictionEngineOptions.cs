@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Threading;
+
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -16,27 +17,15 @@ namespace Bet.Extensions.ML.Prediction
         where TData : class
         where TPrediction : class, new()
     {
-        private ReloadToken _reloadToken;
-
-        public ModelPredictionEngineOptions()
-        {
-            _reloadToken = new ReloadToken();
-        }
-
         /// <summary>
         /// The instance of the service provider.
         /// </summary>
         public IServiceProvider? ServiceProvider { get; set; } = default;
 
         /// <summary>
-        /// This is set up by DI process. The default value is <see cref="Constants.MLDefaultModelName"/>.
+        /// This is set up by DI process. The default value is empty string.
         /// </summary>
-        public string ModelName { get; set; } = Constants.MLDefaultModelName;
-
-        /// <summary>
-        /// Machine Learning Model Specific Context. The default value is set to a new instance.
-        /// </summary>
-        public Func<MLContext> MLContext { get; set; } = () => new MLContext();
+        public string ModelName { get; set; } = string.Empty;
 
         /// <summary>
         /// Will contain the input schema for the model. If the model was saved without any
@@ -52,7 +41,9 @@ namespace Bet.Extensions.ML.Prediction
         /// <summary>
         /// The entry point to configure and load the actual Machine Learning Model.
         /// </summary>
-        public Func<MLContext, ITransformer>? CreateModel { get; set; } = default;
+        public Func<MLContext, ITransformer>? CreateModel { get; set; }
+
+        public ModelLoader? ModelLoader { get; set; }
 
         /// <summary>
         /// The logging level for the <see cref="MLContext"/> for this instance of options.The default is <see cref="LogLevel.Trace"/>.
@@ -65,13 +56,12 @@ namespace Bet.Extensions.ML.Prediction
         /// <returns></returns>
         public IChangeToken GetReloadToken()
         {
-            return _reloadToken = new ReloadToken();
-        }
+            if (ModelLoader == null)
+            {
+                throw new NullReferenceException($"{nameof(ModelLoader)} must be set");
+            }
 
-        public void Reload()
-        {
-            var previousToken = Interlocked.Exchange(ref _reloadToken, new ReloadToken());
-            previousToken.OnReload();
+            return ModelLoader.GetReloadToken();
         }
     }
 }

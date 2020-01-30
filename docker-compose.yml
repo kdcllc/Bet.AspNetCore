@@ -8,38 +8,41 @@
 version: '3.4'
 
 services:
-  bet.aspnetcore.web:
-    image: ${DOCKER_REGISTRY-}/bet-aspnetcore-web-sample:${TAG}
+  bet.base:
+    image: ${DOCKER_REGISTRY-}/bet:base
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+      args:
+        NUGET_RESTORE: "-v=m"
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        SOLUTION_BASE: "true"
+
+  bet.web:
+    image: ${DOCKER_REGISTRY-}/bet:web
+    depends_on:
+      - bet.base
     build:
       context: .
       dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
       args:
         RUNTESTS: "false"
         VERBOSE: "false"
-        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        NUGET_RESTORE: "-v=m" #overides the --disable-parallel
         PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
         SOLUTION_BASE: "false"
 
-  bet.aspnetcore.webapi:
-    image: ${DOCKER_REGISTRY-}/bet-aspnetcore-webapi-sample:${TAG}
-    build:
-      context: .
-      dockerfile: src/Bet.ML.WebApi.Sample/Dockerfile
-      args:
-        RUNTESTS: "false"
-        VERBOSE: "false"
-        #NUGET_RESTORE: "-f" #overides the --disable-parallel
-        PROJECT_PATH: "/src/Bet.ML.WebApi.Sample/Bet.ML.WebApi.Sample.csproj"
-        SOLUTION_BASE: "false"
-
   bet.hosting:
-    image: ${DOCKER_REGISTRY-}/bet-hosting-sample:${TAG}
+    image: ${DOCKER_REGISTRY-}/bet:hosting
+    depends_on:
+      - bet.base
     build:
       context: .
       dockerfile: src/Bet.Hosting.Sample/Dockerfile
       args:
         RUNTESTS: "false"
         VERBOSE: "false"
-        #NUGET_RESTORE: "-f" #overides the --disable-parallel
+        NUGET_RESTORE: "-v=m" #overides the --disable-parallel
         PROJECT_PATH: "/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj"
         SOLUTION_BASE: "false"

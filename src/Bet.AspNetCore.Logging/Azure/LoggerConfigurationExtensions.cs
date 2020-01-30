@@ -67,13 +67,10 @@ namespace Serilog
 
             if (!string.IsNullOrEmpty(appInsightConfig.InstrumentationKey))
             {
-                // depends on:
-                // var instrumentId = Configuration.Bind<ApplicationInsightsOptions>("ApplicationInsights",true);
-                // services.AddApplicationInsightsTelemetry(options =>
-                // {
-                //    options.InstrumentationKey = instrumentId.InstrumentationKey;
-                // });
-                var telemetryClient = TelemetryConfiguration.Active;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                // https://github.com/serilog/serilog-sinks-applicationinsights/issues/121
+                var telemetryClient = TelemetryConfiguration.CreateDefault();
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
                 if (appInsightConfig.EnableEvents)
                 {

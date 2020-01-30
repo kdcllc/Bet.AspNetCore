@@ -1,23 +1,19 @@
-using System.Collections.Generic;
-using System.IO;
+using System;
 
-using Bet.AspNetCore.Logging.Azure;
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
-using Bet.AspNetCore.Sample.Models;
 using Bet.AspNetCore.Sample.Options;
-using Bet.Extensions.ML.Spam.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+
+using Serilog;
 
 namespace Bet.AspNetCore.Sample
 {
@@ -35,20 +31,16 @@ namespace Bet.AspNetCore.Sample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // enables custom options validations on bind and configure.
             services.AddConfigurationValidation();
 
-            var enabledDataProtection = Configuration.GetValue<bool>("EnabledDataProtection");
-            if (enabledDataProtection)
-            {
-                services.AddDataProtectionAzureStorage();
-            }
+            // configure Options for the App example.
+            services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
 
-            var instrumentId = Configuration.Bind<ApplicationInsightsOptions>("ApplicationInsights", true);
+            // requires AzureDataProtection=true to register
+            services.AddDataProtectionAzureStorage(Configuration);
 
-            services.AddApplicationInsightsTelemetry(options =>
-            {
-                options.InstrumentationKey = instrumentId.InstrumentationKey;
-            });
+            services.AddAppInsightsTelemetry();
 
             services.AddDeveloperListRegisteredServices(o =>
             {
@@ -57,22 +49,14 @@ namespace Bet.AspNetCore.Sample
 
             services.AddReCapture(Configuration);
 
-            services.AddModelPredictionEngine<SentimentObservation, SentimentPrediction>("MLContent/SentimentModel.zip", "SentimentModel");
+            // adds spam model and monitors for changes.
+            services.AddSpamModelPrediction(Configuration);
 
-            services.AddModelPredictionEngine<SpamInput, SpamPrediction>(
-                mlOptions =>
-            {
-                mlOptions.CreateModel = (mlContext) =>
-                {
-                    using (var fileStream = File.OpenRead("MLContent/SpamModel.zip"))
-                    {
-                        return mlContext.Model.Load(fileStream, out var inputSchema);
-                    }
-                };
-            }, "SpamModel");
+            // adds sentiment model and monitors for changes.
+            services.AddSentimentModelPrediction(Configuration);
 
-            // configure Options for the App.
-            services.ConfigureWithDataAnnotationsValidation<AppSetting>(Configuration, "App");
+            // adds healthchecks
+            services.AddAppHealthChecks(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -91,42 +75,37 @@ namespace Bet.AspNetCore.Sample
             });
 
             services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddHealthChecks()
-                .AddUriHealthCheck("ms_check", uriOptions: (options) =>
-                {
-                    options.AddUri("https://httpstat.us/503").UseExpectedHttpCode(503);
-                })
-                .AddMachineLearningModelCheck<SentimentObservation, SentimentPrediction>("Sentiment_Check")
-                .AddAzureBlobStorageCheck("files_check", "files", options =>
-                {
-                    options.Name = "betstorage";
-                })
-                .AddSigtermCheck("sigterm_check")
-                .AddLoggerPublisher(new List<string> { "sigterm_check" });
+            services.AddMvc()
+                    .AddNewtonsoftJson();
 
-            services.AddMvc().AddNewtonsoftJson();
+            services.AddRazorPages()
+                    .AddNewtonsoftJson();
 
-            services.AddRazorPages().AddNewtonsoftJson();
-
-            services.AddStorageBlob()
-                .AddBlobContainer<UploadsBlobOptions>();
-
-            services.AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
-
-            services.AddSwaggerGen(options => options.SwaggerDoc("v1", new OpenApiInfo { Title = $"{AppName} API", Version = "v1" }));
+            services.AddAzureStorageAccount()
+                .AddAzureBlobContainer<UploadsBlobOptions>()
+                .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
             // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
-            services.AddSwaggerGenWithApiVersion();
+            services.AddSwaggerGenWithApiVersion(AppName);
+
+            var buildModels = Configuration.GetValue<bool>("BuildModels");
+
+            if (buildModels)
+            {
+                services.AddScheduler(builder =>
+                {
+                    builder.AddJob<ModelBuilderJob, ModelBuilderOptions>();
+                    builder.UnobservedTaskExceptionHandler = null;
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
-            IApiVersionDescriptionProvider provider,
-            IConfiguration configuration)
+            IWebHostEnvironment env)
         {
             app.UseIfElse(
                 env.IsDevelopment(),
@@ -147,14 +126,14 @@ namespace Bet.AspNetCore.Sample
                     return prod;
                 });
 
-            var enableHttpsRedirection = configuration.GetValue<bool>("EnabledHttpsRedirection");
-
-            if (enableHttpsRedirection)
-            {
-                app.UseHttpsRedirection();
-            }
+            app.UseOrNotHttpsRedirection();
 
             app.UseStaticFiles();
+
+            // demonstrates static file cache
+            app.UseStaticFilesWithCache(TimeSpan.FromSeconds(10));
+
+            app.UseSerilogRequestLogging();
 
             app.UseAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
@@ -166,17 +145,7 @@ namespace Bet.AspNetCore.Sample
             app.UseAuthorization();
 
             app.UseSwagger();
-
-            // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
-            app.UseSwaggerUI(options =>
-            {
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint(
-                         $"/swagger/{description.GroupName}/swagger.json",
-                         description.GroupName.ToUpperInvariant());
-                }
-            });
+            app.UseSwaggerUI();
 
             // https://devblogs.microsoft.com/aspnet/blazor-now-in-official-preview/
             app.UseEndpoints(endpoints =>

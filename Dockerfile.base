@@ -1,0 +1,17 @@
+#------------------------------------------------------------------------------------------------------------------------
+#
+# USAGE:        Creates Docker Base Image for other apps to reuse it.
+#               1. Build the image
+#               2. Run the container to get the packages out of the image.
+#
+# BUILD:        docker build --rm -f "Dockerfile.base" -t kdcllc/bet:base --build-arg NUGET_RESTORE="-v=q" .
+#
+#
+#------------------------------------------------------------------------------------------------------------------------
+
+ARG SOLUTION_BASE="true"
+ARG NUGET_RESTORE="-v=q"
+ARG RUNTESTS
+ARG VERBOSE
+
+FROM kdcllc/dotnet-sdk:3.1-alpine as builder

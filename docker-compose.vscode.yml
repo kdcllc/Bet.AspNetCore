@@ -26,5 +26,6 @@ services:
     ports:
       - "9000:80"
       - "9001:443"
+      - "8001:8001" # kubernets dashboard
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity

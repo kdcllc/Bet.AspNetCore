@@ -109,7 +109,7 @@ namespace AppAuthentication
                 console.WriteLine(
                     ConsoleColor.Blue,
                     "[{0}][Running on Port]:[{1}]",
-                    nameof(AppAuthentication).ToLower(CultureInfo.InvariantCulture),
+                    nameof(AppAuthentication).ToUpperInvariant(),
                     builderConfig.Port);
 
                 var webHost = WebHostBuilderExtensions.CreateDefaultBuilder(builderConfig)

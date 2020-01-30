@@ -2,12 +2,12 @@
 
 namespace Bet.Extensions.AzureStorage.Options
 {
-    public class StorageBlobOptions
+    public class StorageBlobOptions : StorageOptionsBase
     {
         /// <summary>
         /// Azure Storage Blob Container Name.
         /// </summary>
-        public string ContainerName { get; set; }
+        public string ContainerName { get; set; } = string.Empty;
 
         /// <summary>
         /// If container doesn't exist it will be created with this permission. The default value is 'Off'.
@@ -25,15 +25,5 @@ namespace Bet.Extensions.AzureStorage.Options
         /// Unknown = 3.
         /// </summary>
         public BlobContainerPublicAccessType PublicAccessType { get; set; } = BlobContainerPublicAccessType.Off;
-
-        /// <summary>
-        /// The default value is 'StorageBlobs'.
-        /// </summary>
-        internal string RootSectionName { get; set; } = Constants.StorageBlobs;
-
-        /// <summary>
-        /// Enables connection to AzureStorage configuration.
-        /// </summary>
-        internal string AzureStorageConfiguration { get; set; }
     }
 }

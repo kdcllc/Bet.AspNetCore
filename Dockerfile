@@ -4,10 +4,10 @@
 #               1. Build the image
 #               2. Run the container to get the packages out of the image.
 #
-# BUILD:        docker build -t kdcllc/betaspnetcore.nuget:v1 -f "Dockerfile" --build-arg VERSION=2.1.1-preview --build-arg NUGET_RESTORE="-v=m" .
+# BUILD:        docker build -t kdcllc/bet:nuget-build -f "Dockerfile" --build-arg VERSION=2.1.1-preview --build-arg NUGET_RESTORE="-v=m" .
 #
-# RUN:          1. docker run -d --name betaspnetcore.nuget kdcllc/betaspnetcore.nuget:v1
-#               2. docker cp betaspnetcore.nuget:/app/nugets ${PWD}/packages
+# RUN:          1. docker run -d --name bet.nuget.build kdcllc/bet:nuget-build
+#               2. docker cp bet.nuget.build:/app/nugets ${PWD}/packages
 #------------------------------------------------------------------------------------------------------------------------
 
 FROM kdcllc/dotnet-sdk:3.1-buster as builder

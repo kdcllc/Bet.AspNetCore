@@ -13,7 +13,7 @@ namespace Bet.Extensions.AzureStorage
 
         public StorageDirectoryContents(CloudBlobDirectory blob)
         {
-            BlobContinuationToken continuationToken = null;
+            BlobContinuationToken? continuationToken = null;
 
             do
             {
