@@ -45,21 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 where TResult : MetricsResult
                 where TLoader : SourceLoader<TInput>
         {
-            // adds source loader into DI
-            builder.Services.TryAdd(ServiceDescriptor.Describe(typeof(TLoader), typeof(TLoader), serviceLifetime));
-
-            // add file options configurations.
-            builder.Services.Configure<SourceLoaderFileOptions<TInput>>(builder.ModelName, options => configure(options));
-
-            // create source loader options
-            builder.Services.AddOptions<SourceLoaderOptions<TInput>>(builder.ModelName)
-                            .Configure<IServiceProvider, TLoader>(
-                                (options, sp, loader) =>
-                                {
-                                    var setupOptions = sp.GetRequiredService<IOptionsMonitor<SourceLoaderFileOptions<TInput>>>().Get(builder.ModelName);
-                                    loader.Setup(setupOptions);
-                                    options.SourceLoader = loader;
-                                });
+            builder.Services.AddSourceLoader<TInput, TLoader>(builder.ModelName, configure, serviceLifetime);
             return builder;
         }
 
@@ -72,31 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 where TLoader : ModelLoader
         {
             // adds model loader to DI
-            builder.Services.TryAdd(ServiceDescriptor.Describe(typeof(TLoader), typeof(TLoader), serviceLifetime));
-
-            // adds configuration for model file and model result file
-            builder.Services.Configure<ModelLoderFileOptions>(
-                builder.ModelName,
-                options =>
-                {
-                    options.ModelName = builder.ModelName;
-                    options.WatchForChanges = false;
-                    options.ModelResultFileName = $"{options.ModelName}.json";
-                    options.ModelFileName = $"{options.ModelName}.zip";
-
-                    configure?.Invoke(options);
-                });
-
-            // adds model loader options to be used.
-            builder.Services.AddOptions<ModelLoaderOptions>(builder.ModelName)
-                            .Configure<IServiceProvider, TLoader>(
-                            (options, sp, loader) =>
-                            {
-                                var setupOptions = sp.GetRequiredService<IOptionsMonitor<ModelLoderFileOptions>>().Get(builder.ModelName);
-                                loader.Setup(setupOptions);
-
-                                options.ModalLoader = loader;
-                            });
+            builder.Services.AddModelLoader<TInput, TLoader>(builder.ModelName, configure, serviceLifetime);
             return builder;
         }
 

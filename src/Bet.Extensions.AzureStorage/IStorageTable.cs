@@ -156,5 +156,41 @@ namespace Bet.Extensions.AzureStorage
             TableQuery<T> query,
             Func<T, T> processResult,
             CancellationToken cancellationToken = default) where T : ITableEntity, new();
+
+        /// <summary>
+        /// Gets <see cref="CloudTable"/> object.
+        /// </summary>
+        /// <param name="namedTable"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<CloudTable> GetNamedTable(string namedTable, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Deletes batch records based on the query result.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="named"></param>
+        /// <param name="query"></param>
+        /// <param name="batchSize"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<TableBatchResult>> DeleteBatchAsync<T>(
+            string named,
+            TableQuery<T> query,
+            int batchSize = 100,
+            CancellationToken cancellationToken = default) where T : ITableEntity, new();
+
+        /// <summary>
+        /// Deletes batch records based on the query result.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="batchSize"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<TableBatchResult>> DeleteBatchAsync<T>(
+            TableQuery<T> query,
+            int batchSize = 100,
+            CancellationToken cancellationToken = default) where T : ITableEntity, new();
     }
 }

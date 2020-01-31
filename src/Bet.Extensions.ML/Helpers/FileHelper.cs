@@ -24,6 +24,19 @@ namespace Bet.Extensions.ML.Helpers
         }
 
         public static List<TData> GetRecords<TData>(
+           Stream stream,
+           Configuration configuration) where TData : class
+        {
+            using var reader = new StreamReader(stream);
+            using var csv = new CsvReader(reader, configuration);
+            {
+                csv.Configuration.BadDataFound = null;
+                var records = csv.GetRecords<TData>();
+                return records.ToList();
+            }
+        }
+
+        public static List<TData> GetRecords<TData>(
             string fileName,
             string delimiter = ",",
             bool hasHeaderRecord = true) where TData : class
@@ -33,6 +46,12 @@ namespace Bet.Extensions.ML.Helpers
             var configuration = GetConfiguration(delimiter, hasHeaderRecord);
 
             return GetRecords<TData>(fileLocation, configuration);
+        }
+
+        public static void SaveFile(byte[] data, string fileName)
+        {
+            var fileLocation = GetAbsolutePath(fileName);
+            File.WriteAllBytes(fileLocation, data);
         }
 
         public static List<TData> GetRecordsFromZipFile<TData>(
@@ -92,28 +111,31 @@ namespace Bet.Extensions.ML.Helpers
             Stream zipFile,
             Configuration configuration)
         {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            var archive = new ZipArchive(zipFile);
-#pragma warning restore CA2000 // Dispose objects before losing scope
+            var result = new List<TData>();
 
-            Stream unzippedFile = null;
+            using var archive = new ZipArchive(zipFile);
 
             foreach (var entry in archive.Entries)
             {
-                if (entry.FullName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                using var unzippedFile = entry.Open(); // assume that a single file is in the zip.
+
+                using var reader = new StreamReader(unzippedFile);
+                using var csv = new CsvReader(reader, configuration);
+
+                csv.Configuration.HeaderValidated = null;
+                csv.Configuration.MissingFieldFound = null;
+
+                var records = csv.GetRecords<TData>().ToList();
+
+                if (records != null)
                 {
-                    unzippedFile = entry.Open(); // assume that a single file is in the zip.
-                    break;
+                    result.AddRange(records);
                 }
             }
 
-            using var reader = new StreamReader(unzippedFile);
-            using var csv = new CsvReader(reader, configuration);
+            archive.Dispose();
 
-            csv.Configuration.HeaderValidated = null;
-            csv.Configuration.MissingFieldFound = null;
-
-            return csv.GetRecords<TData>().ToList();
+            return result;
         }
 
         public static byte[] GetZipFileFromRecords<T>(
@@ -122,33 +144,29 @@ namespace Bet.Extensions.ML.Helpers
             bool hasHeaderRecord = true)
         {
             using var zipStream = new MemoryStream();
-            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Create);
+            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true);
 
             var zipItem = archive.CreateEntry("records.csv", CompressionLevel.Optimal);
 
-            using (var zipItemStream = zipItem.Open())
-            {
-                // copy records stream to the zip.
-                zipItemStream.Flush();
-                using var recordsStream = GetStreamFromRecords(records, GetConfiguration(delimiter, hasHeaderRecord));
-                recordsStream.CopyTo(zipItemStream);
+            using var zipItemStream = zipItem.Open();
 
-                zipItemStream.Close();
-                zipStream.Flush();
-            }
+            var csvRecords = GetStreamFromRecords(records, GetConfiguration(delimiter, hasHeaderRecord));
+            zipItemStream.Write(csvRecords, 0, csvRecords.Length);
 
-            return zipStream.ToArray();
+            archive.Dispose();
+
+            var bytes = zipStream.ToArray();
+
+            return bytes;
         }
 
-        private static Stream GetStreamFromRecords<T>(
+        private static byte[] GetStreamFromRecords<T>(
             IEnumerable<T> records,
             Configuration configuration)
         {
-            var stream = new MemoryStream();
-            var streamWrite = new StreamWriter(stream);
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            var csvWriter = new CsvWriter(streamWrite, configuration);
-#pragma warning restore CA2000 // Dispose objects before losing scope
+            using var stream = new MemoryStream();
+            using var streamWrite = new StreamWriter(stream);
+            using var csvWriter = new CsvWriter(streamWrite, configuration);
 
             // 1. write records to stream
             csvWriter.Configuration.AutoMap<T>();
@@ -157,7 +175,9 @@ namespace Bet.Extensions.ML.Helpers
             streamWrite.Flush();
             stream.Seek(0, SeekOrigin.Begin);
 
-            return stream;
+            var bytes = stream.ToArray();
+
+            return bytes;
         }
     }
 }
