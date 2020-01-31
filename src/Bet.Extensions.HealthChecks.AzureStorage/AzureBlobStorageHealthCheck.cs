@@ -16,12 +16,12 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
     public class AzureBlobStorageHealthCheck : IHealthCheck
     {
         private readonly IOptionsMonitor<StorageBlobOptions> _storageBlobOptionsMonitor;
-        private readonly StorageBlob<StorageBlobOptions> _storageBlob;
+        private readonly IStorageBlob<StorageBlobOptions> _storageBlob;
 
         private ILogger<AzureBlobStorageHealthCheck> _logger;
 
         public AzureBlobStorageHealthCheck(
-            StorageBlob<StorageBlobOptions> storageBlob,
+            IStorageBlob<StorageBlobOptions> storageBlob,
             IOptionsMonitor<StorageBlobOptions> storageBlobOptionsMonitor,
             ILogger<AzureBlobStorageHealthCheck> logger)
         {
