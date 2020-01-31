@@ -123,8 +123,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         var tasks = new List<Task>
                         {
-                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
-                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
+                             ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
+                             ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
                         };
 
                         await Task.WhenAll(tasks);

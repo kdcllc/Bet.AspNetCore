@@ -24,6 +24,8 @@ namespace Bet.Extensions.ML.ModelCreation.Services
         {
             _logger.LogInformation("[Machine Learning][Started] Models Building");
 
+            var modelsCount = 0;
+
             foreach (var modelBuilder in _modelBuilders)
             {
                 try
@@ -33,6 +35,8 @@ namespace Bet.Extensions.ML.ModelCreation.Services
                     await modelBuilder.ClassifyTestAsync(cancellationToken);
 
                     await modelBuilder.SaveModelAsync(cancellationToken);
+
+                    Interlocked.Increment(ref modelsCount);
                 }
                 catch (Exception ex)
                 {
@@ -40,7 +44,7 @@ namespace Bet.Extensions.ML.ModelCreation.Services
                 }
             }
 
-            _logger.LogInformation("[Machine Learning][Ended] Models Building");
+            _logger.LogInformation("[Machine Learning][Ended] Total number of successfully build models: {modelsCount}", modelsCount);
         }
     }
 }
