@@ -28,6 +28,11 @@ namespace Bet.Extensions.ML.Azure.SourceLoaders
 
             var download = storage.GetAsync(modelName, options.FileName, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
 
+            if (download == null)
+            {
+                return new List<TInput>();
+            }
+
             if (options.FileName.Contains(".zip"))
             {
                 return FileHelper.GetRecordsFromZipFile<TInput>(download, config);

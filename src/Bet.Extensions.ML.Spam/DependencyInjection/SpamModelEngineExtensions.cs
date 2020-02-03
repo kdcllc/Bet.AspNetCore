@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var builder = services.AddModelCreationService<SpamInput, MulticlassClassificationFoldsAverageMetricsResult>(modelName);
 
             // 1. adds 2 embedded sources to source loader interface
-            builder.AddSources<SpamInput, MulticlassClassificationFoldsAverageMetricsResult, EmbeddedSourceLoader<SpamInput>>(options =>
+            builder.AddSourceLoader<SpamInput, MulticlassClassificationFoldsAverageMetricsResult, EmbeddedSourceLoader<SpamInput>>(options =>
             {
                 options.Sources.Add(new SourceLoaderFile<SpamInput>
                 {
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.AddModelLoader<SpamInput, MulticlassClassificationFoldsAverageMetricsResult, TModelLoader>();
 
             // 3. adds model creation configuration
-            builder.ConfigureModel<SpamInput, MulticlassClassificationFoldsAverageMetricsResult>(
+            builder.ConfigureModelDefinition<SpamInput, MulticlassClassificationFoldsAverageMetricsResult>(
                 testSlipFraction,
                 options =>
                 {

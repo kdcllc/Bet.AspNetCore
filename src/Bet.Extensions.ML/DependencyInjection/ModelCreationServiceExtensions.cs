@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return new ModelCreationServiceBuilder<TInput, TResult>(services, modelName);
         }
 
-        public static IModelCreationServiceBuilder<TInput, TResult> AddSources<TInput, TResult, TLoader>(
+        public static IModelCreationServiceBuilder<TInput, TResult> AddSourceLoader<TInput, TResult, TLoader>(
             this IModelCreationServiceBuilder<TInput, TResult> builder,
             Action<SourceLoaderFileOptions<TInput>> configure,
             ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IModelCreationServiceBuilder<TInput, TResult> ConfigureModel<TInput, TResult>(
+        public static IModelCreationServiceBuilder<TInput, TResult> ConfigureModelDefinition<TInput, TResult>(
             this IModelCreationServiceBuilder<TInput, TResult> builder,
             double testSlipFraction,
             Action<ModelDefinitionBuilderOptions<TResult>> configureModel)
@@ -104,7 +104,6 @@ namespace Microsoft.Extensions.DependencyInjection
                             options =>
                             {
                                 options.ModelName = builder.ModelName;
-
                                 configureEngine?.Invoke(options);
                             });
 

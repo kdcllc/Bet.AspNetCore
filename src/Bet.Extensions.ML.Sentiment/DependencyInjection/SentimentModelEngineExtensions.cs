@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var builder = services.AddModelCreationService<SentimentIssue, BinaryClassificationMetricsResult>(modelName);
 
-            builder.AddSources<SentimentIssue, BinaryClassificationMetricsResult, EmbeddedSourceLoader<SentimentIssue>>(options =>
+            builder.AddSourceLoader<SentimentIssue, BinaryClassificationMetricsResult, EmbeddedSourceLoader<SentimentIssue>>(options =>
             {
                 options.Sources.Add(new SourceLoaderFile<SentimentIssue>
                 {
@@ -57,7 +57,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.AddModelLoader<SentimentIssue, BinaryClassificationMetricsResult, TModelLoader>(configure);
 
-            builder.ConfigureModel<SentimentIssue, BinaryClassificationMetricsResult>(
+            builder.ConfigureModelDefinition<SentimentIssue, BinaryClassificationMetricsResult>(
                 testSlipFraction,
                 options =>
                 {
