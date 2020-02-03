@@ -17,11 +17,11 @@ namespace Bet.Extensions.HealthChecks.AzureStorage
     {
         private readonly IOptionsMonitor<StorageQueueOptions> _storageQueueOptionsMonitor;
         private readonly ILogger<AzureQueueStorageHealthCheck> _logger;
-        private readonly StorageQueue<StorageQueueOptions> _storageQueue;
+        private readonly IStorageQueue<StorageQueueOptions> _storageQueue;
 
         public AzureQueueStorageHealthCheck(
             IOptionsMonitor<StorageQueueOptions> storageQueueOptionsMonitor,
-            StorageQueue<StorageQueueOptions> storageQueue,
+            IStorageQueue<StorageQueueOptions> storageQueue,
             ILogger<AzureQueueStorageHealthCheck> logger)
         {
             _storageQueueOptionsMonitor = storageQueueOptionsMonitor ?? throw new ArgumentNullException(nameof(storageQueueOptionsMonitor));

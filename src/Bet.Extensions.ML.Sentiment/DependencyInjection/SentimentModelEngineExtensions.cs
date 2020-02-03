@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.SourceLoaders;
-using Bet.Extensions.ML.DataLoaders.SourceLoaders.Embedded;
 using Bet.Extensions.ML.Helpers;
 using Bet.Extensions.ML.ModelCreation;
 using Bet.Extensions.ML.ModelCreation.Results;
@@ -28,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var builder = services.AddModelCreationService<SentimentIssue, BinaryClassificationMetricsResult>(modelName);
 
-            builder.AddSources<SentimentIssue, BinaryClassificationMetricsResult, EmbeddedSourceLoader<SentimentIssue>>(options =>
+            builder.AddSourceLoader<SentimentIssue, BinaryClassificationMetricsResult, EmbeddedSourceLoader<SentimentIssue>>(options =>
             {
                 options.Sources.Add(new SourceLoaderFile<SentimentIssue>
                 {
@@ -58,7 +57,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.AddModelLoader<SentimentIssue, BinaryClassificationMetricsResult, TModelLoader>(configure);
 
-            builder.ConfigureModel<SentimentIssue, BinaryClassificationMetricsResult>(
+            builder.ConfigureModelDefinition<SentimentIssue, BinaryClassificationMetricsResult>(
                 testSlipFraction,
                 options =>
                 {
@@ -123,8 +122,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         var tasks = new List<Task>
                         {
-                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
-                             SentimentModelEngineExtensions.ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
+                             ClassifyAsync(modelBuilder, "This is a very rude movie", false, logger, cancellationToken),
+                             ClassifyAsync(modelBuilder, "Hate All Of You're Work", true, logger, cancellationToken)
                         };
 
                         await Task.WhenAll(tasks);

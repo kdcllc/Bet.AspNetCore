@@ -11,7 +11,7 @@ replicaCount: 1
 image:
   repository: kdcllc/bet
   tag: web
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: LoadBalancer

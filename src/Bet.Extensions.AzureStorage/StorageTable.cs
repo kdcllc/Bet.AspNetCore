@@ -21,7 +21,7 @@ namespace Bet.Extensions.AzureStorage
         private readonly ILogger<StorageTable<TOptions>> _logger;
         private readonly ExecutionLogger _executionLogger;
 
-        private readonly ConcurrentDictionary<string, Lazy<Task<CloudTable>>> _namedTables = new ConcurrentDictionary<string, Lazy<Task<CloudTable>>>();
+        private readonly ConcurrentDictionary<string, Task<CloudTable>> _namedTables = new ConcurrentDictionary<string, Task<CloudTable>>();
         private readonly IOptionsMonitor<TOptions> _storageTableOptionsMonitor;
         private readonly IOptionsMonitor<StorageAccountOptions> _storageAccountOptionsMonitor;
 
@@ -60,12 +60,51 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
+        public async Task<IEnumerable<TableBatchResult>> DeleteBatchAsync<T>(
+            string named,
+            TableQuery<T> query,
+            int batchSize = 100,
+            CancellationToken cancellationToken = default) where T : ITableEntity, new()
+        {
+            var tasks = new List<Task<TableBatchResult>>();
+
+            var table = await GetNamedTable(named, cancellationToken);
+
+            var entities = await table.ExecuteQueryAsync<T>(query, cancellationToken);
+            var offset = 0;
+            while (offset < entities.Count)
+            {
+                var batch = new TableBatchOperation();
+
+                var rows = entities.Skip(offset).Take(batchSize).ToList();
+                rows.ForEach(row => batch.Delete(row));
+
+                var result = table.ExecuteBatchAsync(batch, cancellationToken);
+
+                tasks.Add(result);
+
+                offset += rows.Count;
+            }
+
+            return await Task.WhenAll(tasks);
+        }
+
+        /// <inheritdoc />
+        public Task<IEnumerable<TableBatchResult>> DeleteBatchAsync<T>(
+            TableQuery<T> query,
+            int batchSize = 100,
+            CancellationToken cancellationToken = default) where T : ITableEntity, new()
+        {
+            return DeleteBatchAsync<T>(string.Empty, query, batchSize, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<TableResult> DeleteAsync(
             string named,
             TableEntity entity,
             CancellationToken cancellationToken = default)
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () => await table.DeleteAsync(entity, cancellationToken),
@@ -78,7 +117,7 @@ namespace Bet.Extensions.AzureStorage
             TableQuery<T> query,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () => await table.ExecuteQueryAsync(query, cancellationToken),
@@ -92,7 +131,7 @@ namespace Bet.Extensions.AzureStorage
             Func<T, T> processResult,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () => await table.ForEachQueryResultAsync(query, processResult, cancellationToken),
@@ -106,7 +145,7 @@ namespace Bet.Extensions.AzureStorage
             string rowkey,
             CancellationToken cancellationToken = default)
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () =>
@@ -123,7 +162,7 @@ namespace Bet.Extensions.AzureStorage
             T entity,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () =>
@@ -141,7 +180,7 @@ namespace Bet.Extensions.AzureStorage
             string rowKey,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () => await table.GetEntityAsync<T>(partitionKey, rowKey, cancellationToken),
@@ -154,7 +193,7 @@ namespace Bet.Extensions.AzureStorage
             T entity,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                 async () => await table.InsertAsync(entity, cancellationToken),
@@ -167,7 +206,7 @@ namespace Bet.Extensions.AzureStorage
             T entity,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                async () => await table.InsertOrReplaceAsync(entity, cancellationToken),
@@ -180,14 +219,14 @@ namespace Bet.Extensions.AzureStorage
             T entity,
             CancellationToken cancellationToken = default) where T : ITableEntity, new()
         {
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var table = await GetNamedTable(named, cancellationToken);
 
             return await _executionLogger.ExecuteAndLogAsync(
                async () => await table.InsertOrMergeAsync(entity, cancellationToken),
                nameof(InsertOrUpdateAsync));
         }
 
-        public Lazy<Task<CloudTable>> GetNamedTable(string namedTable, CancellationToken cancellationToken = default)
+        public Task<CloudTable> GetNamedTable(string namedTable, CancellationToken cancellationToken = default)
         {
             if (_namedTables.TryGetValue(namedTable, out var container))
             {
@@ -197,7 +236,7 @@ namespace Bet.Extensions.AzureStorage
             var options = _storageTableOptionsMonitor.Get(namedTable);
             var storageOptions = _storageAccountOptionsMonitor.Get(options.AccountName);
 
-            var createdContainer = new Lazy<Task<CloudTable>>(() => CreateOrGetBlobTable(options, storageOptions, cancellationToken));
+            var createdContainer = Task.Run(() => CreateOrGetBlobTable(options, storageOptions, cancellationToken));
 
             _namedTables.AddOrUpdate(namedTable, createdContainer, (_, __) => createdContainer);
 
@@ -210,50 +249,23 @@ namespace Bet.Extensions.AzureStorage
             int batchSize,
             CancellationToken cancellationToken) where T : ITableEntity, new()
         {
-            var tableBatchResults = new List<TableBatchResult>();
+            var tasks = new List<Task<TableBatchResult>>();
 
-            var processCount = 0;
-            var exCount = 0;
+            var table = await GetNamedTable(named, cancellationToken);
 
-            var table = await GetNamedTable(named, cancellationToken).Value;
+            var offset = 0;
 
-            try
+            while (offset < entities.Count())
             {
-                var itemCount = entities.Count();
-                var finalBatchSize = itemCount > batchSize ? batchSize : itemCount;
+                var rows = entities.Skip(offset).Take(batchSize).ToList();
 
-                foreach (var batch in entities.Batch<T>(finalBatchSize))
-                {
-                    try
-                    {
-                        Interlocked.Add(ref processCount, finalBatchSize);
-                        _logger?.LogDebug($"Process {processCount} of {itemCount}");
+                var result = table.BatchInsertOrUpdateAsync<T>(rows, cancellationToken);
 
-                        // Execute the operation.
-                        var result = await table.BatchInsertOrUpdateAsync<T>(batch, cancellationToken);
-
-                        if (result != null)
-                        {
-                            tableBatchResults.Add(result);
-                        }
-                    }
-                    catch (StorageException ex)
-                    {
-                        Interlocked.Increment(ref exCount);
-                        _logger?.LogError(ex.GetBaseException().ToString());
-
-                        // throw;
-                    }
-                }
-            }
-            catch (AggregateException ex)
-            {
-                _logger.LogError("Error occurred with the batch update of the entities", ex?.InnerException?.GetBaseException());
+                tasks.Add(result);
+                offset += rows.Count;
             }
 
-            _logger.LogDebug("Succeeded count {success}: Failed count {failed}", processCount, exCount);
-
-            return tableBatchResults;
+            return await Task.WhenAll(tasks);
         }
 
         private async Task<CloudTable> CreateOrGetBlobTable(

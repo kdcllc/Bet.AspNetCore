@@ -39,12 +39,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IModelPredictionEngineBuilder<TInput, TPrediction> From<TInput, TPrediction, TLoader>(
             this IModelPredictionEngineBuilder<TInput, TPrediction> builder,
-            Action<ModelLoderFileOptions>? configure = default)
+            Action<ModelLoderFileOptions>? configure = default,
+            ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
             where TInput : class
             where TPrediction : class, new()
             where TLoader : ModelLoader
         {
-            builder.AddModelLoader<TInput, TPrediction, TLoader>(configure);
+            builder.Services.AddModelLoader<TInput, TLoader>(builder.ModelName, configure, serviceLifetime);
 
             builder.Services
                     .AddOptions<ModelPredictionEngineOptions<TInput, TPrediction>>(builder.ModelName)

@@ -21,7 +21,7 @@ namespace Bet.Extensions.ML.ModelCreation
         private readonly ILogger<ModelCreationEngine<TInput, TResult, TOptions>> _logger;
         private readonly IOptionsFactory<SourceLoaderOptions<TInput>> _sourceLoaderOptionsFactory;
         private readonly IOptionsMonitor<TOptions> _engineOptionsMonitor;
-        private readonly IOptionsFactory<ModelLoaderOptions> _modelLoaderOptions;
+        private readonly IOptionsFactory<ModelLoaderOptions> _modelLoaderOptionsFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelCreationEngine{TInput, TResult, TOptions}"/> class.
@@ -41,7 +41,7 @@ namespace Bet.Extensions.ML.ModelCreation
             _modelBuilders = modelBuilders ?? throw new ArgumentNullException(nameof(modelBuilders));
             _sourceLoaderOptionsFactory = sourceLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(sourceLoaderOptionsFactory));
             _engineOptionsMonitor = engineOptionsMonitor;
-            _modelLoaderOptions = modelLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(modelLoaderOptionsFactory));
+            _modelLoaderOptionsFactory = modelLoaderOptionsFactory ?? throw new ArgumentNullException(nameof(modelLoaderOptionsFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -64,8 +64,10 @@ namespace Bet.Extensions.ML.ModelCreation
                 Log.StartProcess(_logger, nameof(TrainModelAsync), modelBuilder.ModelName);
 
                 var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
-                var sourceLoaderOptions = _sourceLoaderOptionsFactory.Create(modelBuilder.ModelName);
-                var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
+
+                var sourceLoaderOptions = engineOptions.SourceLoaderOptionsConfigurator(_sourceLoaderOptionsFactory, modelBuilder.ModelName);
+
+                var modelLoaderOptions = engineOptions.ModelLoaderOptionsConfigurator(_modelLoaderOptionsFactory, modelBuilder.ModelName);
 
                 var data = await engineOptions.DataLoader(sourceLoaderOptions.SourceLoader, cancellationToken);
 
@@ -105,7 +107,9 @@ namespace Bet.Extensions.ML.ModelCreation
                 var sw = ValueStopwatch.StartNew();
                 Log.StartProcess(_logger, nameof(SaveModelAsync), modelBuilder.ModelName);
 
-                var modelLoaderOptions = _modelLoaderOptions.Create(modelBuilder.ModelName);
+                var engineOptions = _engineOptionsMonitor.Get(modelBuilder.ModelName);
+
+                var modelLoaderOptions = engineOptions.ModelLoaderOptionsConfigurator(_modelLoaderOptionsFactory, modelBuilder.ModelName);
 
                 var readStream = modelBuilder.GetModelStream();
                 await modelLoaderOptions.ModalLoader.SaveAsync(readStream, cancellationToken);

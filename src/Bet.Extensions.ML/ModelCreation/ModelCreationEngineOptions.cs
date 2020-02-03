@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Bet.Extensions.ML.DataLoaders.ModelLoaders;
 using Bet.Extensions.ML.DataLoaders.SourceLoaders;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.ML.ModelCreation
 {
@@ -23,6 +24,9 @@ namespace Bet.Extensions.ML.ModelCreation
                 cancellationToken);
         };
 
+        /// <summary>
+        /// Configures default ML.NET Train Model configurator.
+        /// </summary>
         public Func<IModelDefinitionBuilder<TInput, TResult>, IEnumerable<TInput>, ILogger, TResult> TrainModelConfigurator { get; set; }
             = (modelBuilder, data, logger) =>
         {
@@ -46,5 +50,11 @@ namespace Bet.Extensions.ML.ModelCreation
         };
 
         public Func<IModelDefinitionBuilder<TInput, TResult>, ILogger, CancellationToken, Task>? ClassifyTestConfigurator { get; set; }
+
+        public Func<IOptionsFactory<SourceLoaderOptions<TInput>>, string, SourceLoaderOptions<TInput>> SourceLoaderOptionsConfigurator { get; set; }
+         = (sourceLoaderOptionsFactory, modelName) => sourceLoaderOptionsFactory.Create(modelName);
+
+        public Func<IOptionsFactory<ModelLoaderOptions>, string, ModelLoaderOptions> ModelLoaderOptionsConfigurator { get; set; }
+         = (modelLoaderOptionsFactory, modelName) => modelLoaderOptionsFactory.Create(modelName);
     }
 }
