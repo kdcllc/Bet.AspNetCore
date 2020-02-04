@@ -12,9 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="Serilog.Extensions.Logging" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
-    <PackageReference Include="Serilog.Sinks.AzureAnalytics" />
     <PackageReference Include="Serilog.AspNetCore" />
   </ItemGroup>
 
@@ -23,8 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
-    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
   </ItemGroup>
 
 </Project>

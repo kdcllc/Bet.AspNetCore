@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bet.AspNetCore.Logging.Azure
+namespace Bet.Extensions.Logging.Azure
 {
     public class ApplicationInsightsOptions
     {

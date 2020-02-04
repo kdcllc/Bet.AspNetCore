@@ -104,6 +104,7 @@
   <ItemGroup Label="Serilog">
     <PackageReference Update="Serilog" Version="2.9.0" />
     <PackageReference Update="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Update="Serilog.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.0.4" />

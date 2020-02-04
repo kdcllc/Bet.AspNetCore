@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 
-using Bet.AspNetCore.LetsEncrypt;
 using Bet.AspNetCore.LetsEncrypt.Abstractions;
 using Bet.AspNetCore.LetsEncrypt.InMemory;
 

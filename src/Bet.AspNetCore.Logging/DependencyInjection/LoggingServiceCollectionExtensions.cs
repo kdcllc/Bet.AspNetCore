@@ -1,4 +1,4 @@
-﻿using Bet.AspNetCore.Logging.Azure;
+﻿using Bet.Extensions.Logging.Azure;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.Extensions.Configuration;

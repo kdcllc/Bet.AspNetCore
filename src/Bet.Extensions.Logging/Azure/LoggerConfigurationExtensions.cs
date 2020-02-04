@@ -1,10 +1,10 @@
 ﻿using System;
 
-using Bet.AspNetCore.Logging.Azure;
+using Bet.Extensions.Logging.Azure;
 
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Serilog
 {
@@ -19,7 +19,7 @@ namespace Serilog
         /// <param name="enableValidation">The option to enable or disable options validations on the startup.</param>
         /// <param name="applicationName">
         /// The name for the application logs in Azure Log Analytics. The name can't contain any characters.
-        /// The Default value is <see cref="WebHostDefaults.ApplicationKey"/>.
+        /// The Default value is <see cref="HostDefaults.ApplicationKey"/>.
         /// </param>
         /// <param name="batchSize">The size of the batch to send to Azue Log Analytics.</param>
         /// <returns></returns>
@@ -36,7 +36,7 @@ namespace Serilog
 
             if (!string.IsNullOrEmpty(azureAnalyticsOptions.WorkspaceId))
             {
-                var appName = applicationName ?? configuration[WebHostDefaults.ApplicationKey];
+                var appName = applicationName ?? configuration[HostDefaults.ApplicationKey];
 
                 loggerConfiguration.WriteTo.AzureAnalytics(
                     azureAnalyticsOptions.WorkspaceId,
