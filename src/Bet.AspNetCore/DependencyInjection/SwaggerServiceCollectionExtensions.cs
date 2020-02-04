@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+
+using Bet.AspNetCore.Swagger.OperationFilters;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -74,6 +77,8 @@ namespace Microsoft.Extensions.DependencyInjection
                         {
                             options.IncludeXmlComments(GetXmlDocPath(appliationName));
                         }
+
+                        options.OperationFilter<SwaggerDefaultValues>();
 
                         // https://github.com/domaindrivendev/Swashbuckle/issues/142
                         options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
