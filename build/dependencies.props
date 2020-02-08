@@ -93,6 +93,13 @@
     <PackageReference Update="Microsoft.Azure.Storage.Common" Version="11.1.1" />
   </ItemGroup>
 
+  <ItemGroup Label="Microsoft.Azure.Management">
+    <PackageReference Update="Microsoft.Azure.Management.AppService.Fluent" Version="1.30.0" />
+    <PackageReference Update="Microsoft.Azure.Management.Dns.Fluent" Version="1.30.0" />
+    <PackageReference Update="Microsoft.Azure.Management.Fluent" Version="1.30.0" />
+    <PackageReference Update="Microsoft.Identity.Client" Version="4.8.1" />
+  </ItemGroup>
+  
   <ItemGroup Label="Unit Tests">
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Update="Moq" Version="4.13.1" />
@@ -111,6 +118,7 @@
     <PackageReference Update="Serilog.Sinks.AzureAnalytics" Version="4.6.0" />
     <PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Update="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Update="Serilog.Sinks.Debug" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.ML">
@@ -120,6 +128,8 @@
 
   <ItemGroup Label="Shared">
     <PackageReference Update="Certes" Version="2.3.3" />
+    <PackageReference Update="DnsClient" Version="1.2.0" />
+
     <PackageReference Update="Colorful.Console" Version="1.2.10" />
     <PackageReference Update="CsvHelper" Version="12.3.2" />
     <PackageReference Update="McMaster.Extensions.CommandLineUtils" Version="2.5.0"/>

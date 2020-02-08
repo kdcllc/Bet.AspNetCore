@@ -32,7 +32,8 @@ namespace Microsoft.Extensions.Configuration
         public static void DebugConfigurationsWithSerilog(this IConfigurationRoot config)
         {
             var logger = new LoggerConfiguration()
-                                              .ReadFrom.Configuration(config)
+                                              .MinimumLevel.Debug()
+                                              .WriteTo.Debug()
                                               .WriteTo.Console()
                                               .CreateLogger();
 

@@ -1,8 +1,8 @@
-﻿using Bet.AspNetCore.LetsEncrypt.Internal;
+﻿using Microsoft.AspNetCore.Builder;
 
-namespace Microsoft.AspNetCore.Builder
+namespace Bet.AspNetCore.LetsEncrypt.Internal
 {
-    public static class ApplicationBuilderExtensions
+    internal static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseLetsEncryptDomainVerification(
             this IApplicationBuilder builder,

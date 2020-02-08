@@ -63,5 +63,9 @@ namespace Bet.AspNetCore.LetsEncrypt.Options
         internal Uri AcmeServer { get; set; }
 
         internal bool IsDevelopment { get; set; } = true;
+
+        internal string CertificateContainerName { get; set; }
+
+        internal string ChallengeConainterName { get; set; }
     }
 }

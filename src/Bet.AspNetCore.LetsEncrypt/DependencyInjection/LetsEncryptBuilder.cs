@@ -2,9 +2,9 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public class DefaultLetsEncryptBuilder : ILetsEncryptBuilder
+    public class LetsEncryptBuilder : ILetsEncryptBuilder
     {
-        public DefaultLetsEncryptBuilder(IServiceCollection services)
+        public LetsEncryptBuilder(IServiceCollection services)
         {
             Services = services ?? throw new ArgumentNullException(nameof(services));
         }

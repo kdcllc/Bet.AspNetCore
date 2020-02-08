@@ -128,6 +128,9 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 
             pfxBuilder.FullChain = true;
 
+            _logger.LogDebug(certificateFriendlyName);
+            _logger.LogDebug(certificatePassword);
+
             var pfxBytes = pfxBuilder.Build(certificateFriendlyName, certificatePassword);
 
             _logger.LogInformation("Certificate acquired.");

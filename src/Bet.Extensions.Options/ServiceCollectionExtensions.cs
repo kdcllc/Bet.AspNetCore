@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             string sectionName,
             string? optionName = default,
-            Action<TOptions>? configureAction = default) where TOptions : class, new()
+            Action<TOptions, IConfiguration>? configureAction = default) where TOptions : class, new()
         {
             if (optionName == null)
             {
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var configuration = sp.GetRequiredService<IConfiguration>();
                     configuration.Bind(sectionName, options);
 
-                    configureAction?.Invoke(options);
+                    configureAction?.Invoke(options, configuration);
                 });
             });
 
@@ -56,7 +56,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             // Registers an IConfigureOptions<TOptions> action configurator. Being last it will bind from config source first
             // and run the customization afterwards
-            services.Configure<TOptions>(optionName, options => configureAction?.Invoke(options));
+            services.AddOptions<TOptions>(optionName).
+                Configure<IConfiguration>((options, configuration) => configureAction?.Invoke(options, configuration));
 
             return services;
         }
