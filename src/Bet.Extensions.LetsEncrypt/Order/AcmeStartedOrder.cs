@@ -4,14 +4,8 @@ namespace Bet.Extensions.LetsEncrypt.Order
 {
     public class AcmeStartedOrder
     {
-        public ChallengeResult[] Challenges { get; }
-
-        public IOrderContext Order { get; }
-
-        public IChallengeContext[] ChallengeContexts { get; }
-
         public AcmeStartedOrder(
-            ChallengeResult[] challenges,
+            AcmeChallengeResponse[] challenges,
             IOrderContext order,
             IChallengeContext[] challengeContexts)
         {
@@ -19,5 +13,11 @@ namespace Bet.Extensions.LetsEncrypt.Order
             Order = order;
             ChallengeContexts = challengeContexts;
         }
+
+        public AcmeChallengeResponse[] Challenges { get; }
+
+        public IOrderContext Order { get; }
+
+        public IChallengeContext[] ChallengeContexts { get; }
     }
 }

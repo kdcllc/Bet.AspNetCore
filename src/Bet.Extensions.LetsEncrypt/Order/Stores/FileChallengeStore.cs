@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.LetsEncrypt.Order.Stores
@@ -11,9 +13,9 @@ namespace Bet.Extensions.LetsEncrypt.Order.Stores
     {
         private readonly FileChallengeStoreOptions _options;
 
-        public FileChallengeStore(FileChallengeStoreOptions options)
+        public FileChallengeStore(IOptions<FileChallengeStoreOptions> options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _options = options.Value;
         }
 
         public Task DeleteAsync(string name, CancellationToken cancellationToken)

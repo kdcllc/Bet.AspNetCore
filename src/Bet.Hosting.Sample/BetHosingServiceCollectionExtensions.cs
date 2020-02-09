@@ -1,9 +1,10 @@
 ﻿using System;
 
-using Bet.Extensions.Hosting.Abstractions;
+using Bet.Extensions.Hosting.Hosted;
 using Bet.Extensions.ML.Azure.ModelLoaders;
-using Bet.Extensions.ML.DataLoaders.ModelLoaders;
-using Bet.Hosting.Sample.Services;
+using Bet.Extensions.ML.ModelCreation.Services;
+
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -18,12 +19,24 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddMachineLearningModels();
 
-            services.AddTimedHostedService<MachineLearningHostedService>(options =>
+            services.AddTimedHostedService(
+            "MachineLearningService",
+            options =>
             {
-                options.Interval = TimeSpan.FromMinutes(30);
+                options.TaskToExecuteAsync = async (opt, sp, cancellationToken) =>
+                {
+                    var job = sp.GetRequiredService<IModelCreationService>();
+                    var logger = sp.GetRequiredService<ILogger<TimedHostedService>>();
 
-                options.FailMode = FailMode.LogAndRetry;
-                options.RetryInterval = TimeSpan.FromSeconds(30);
+                    try
+                    {
+                        await job.BuildModelsAsync(cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError("{serviceName} failed with exception: {message}", nameof(TimedHostedService), ex.Message);
+                    }
+                };
             });
 
             return services;

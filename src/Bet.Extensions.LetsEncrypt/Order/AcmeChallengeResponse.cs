@@ -1,6 +1,6 @@
 ﻿namespace Bet.Extensions.LetsEncrypt.Order
 {
-    public class ChallengeResult
+    public class AcmeChallengeResponse
     {
         public string Token { get; set; } = string.Empty;
 

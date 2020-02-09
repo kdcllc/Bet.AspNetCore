@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
+using Bet.Extensions.AzureStorage;
+using Bet.Extensions.AzureStorage.Options;
 using Bet.Extensions.LetsEncrypt.Account;
 using Bet.Extensions.LetsEncrypt.Account.Stores;
 using Bet.Extensions.LetsEncrypt.AcmeChallenges;
@@ -8,10 +11,10 @@ using Bet.Extensions.LetsEncrypt.Certificates;
 using Bet.Extensions.LetsEncrypt.Certificates.Stores;
 using Bet.Extensions.LetsEncrypt.Order;
 using Bet.Extensions.LetsEncrypt.Order.Stores;
+
 using DnsClient;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using static System.Environment;
@@ -24,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this ILetsEncryptBuilder builder,
             string section = "LetsEncrypt:AcmeAccount",
             string? rootPath = null,
-            Action<AcmeAccountOptions>? configure = null)
+            Action<AcmeAccountOptions, IServiceProvider>? configure = null)
         {
             builder.Services
                     .AddOptions<FileAcmeAccountStoreOptions>(builder.Name)
@@ -43,21 +46,45 @@ namespace Microsoft.Extensions.DependencyInjection
                         }
                     });
 
-            builder.Services
-                    .AddOptions<AcmeAccountOptions>(builder.Name)
-                    .Configure<IConfiguration>((options, configuration) =>
-                    {
-                        configuration.Bind(section, options);
+            builder.Services.AddChangeTokenOptions<AcmeAccountOptions>(
+                section,
+                builder.Name,
+                (options, sp) =>
+                {
+                    configure?.Invoke(options, sp);
+                    options.AccountStore = sp.GetServices<IAcmeAccountStore>().First(x => x is FileAcmeAccountStore);
+                });
 
-                        configure?.Invoke(options);
-                    })
-                    .PostConfigure<IServiceProvider>((options, sp) =>
+            return builder;
+        }
+
+        public static ILetsEncryptBuilder ConfigureAcmeAccountWitAzureStorageStore(
+            this ILetsEncryptBuilder builder,
+            string section = "LetsEncrypt:AcmeAccount",
+            string blobSection = "AcmeAccount",
+            string blobRootSection = "LetsEncrypt:StorageBlobs",
+            Action<AcmeAccountOptions, IServiceProvider>? configure = null,
+            Action<StorageBlobOptions>? storageConfigure = null)
+        {
+            builder.Services
+                  .AddAzureStorageAccount("letsencrypt")
+                  .AddAzureBlobContainer(builder.Name, blobSection, blobRootSection, storageConfigure);
+
+            builder.Services
+                    .AddOptions<AzureAcmeAccountStoreOptions>(builder.Name)
+                    .Configure(options =>
                     {
-                        var storeOptions = sp.GetRequiredService<IOptionsMonitor<FileAcmeAccountStoreOptions>>().Get(builder.Name);
-                        options.AccountStore = new FileAcmeAccountStore(storeOptions);
+                        options.NamedOption = builder.Name;
                     });
 
-            builder.Services.TryAddScoped<IAcmeContextClientFactory, AcmeContextClientFactory>();
+            builder.Services.AddChangeTokenOptions<AcmeAccountOptions>(
+                section,
+                builder.Name,
+                (options, sp) =>
+                {
+                    configure?.Invoke(options, sp);
+                    options.AccountStore = sp.GetServices<IAcmeAccountStore>().First(x => x is AzureAcmeAccountStore);
+                });
 
             return builder;
         }
@@ -66,7 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this ILetsEncryptBuilder builder,
             string section = "LetsEncrypt:AcmeOrder",
             string? rootPath = null,
-            Action<AcmeOrderOptions>? configure = null)
+            Action<AcmeOrderOptions, IServiceProvider>? configure = null)
         {
             builder.Services
                 .AddOptions<FileChallengeStoreOptions>(builder.Name)
@@ -85,21 +112,55 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                 });
 
-            builder.Services.AddOptions<AcmeOrderOptions>(builder.Name)
-                .Configure<IConfiguration>((options, configuration) =>
+            builder.Services.AddChangeTokenOptions<AcmeOrderOptions>(
+                section,
+                builder.Name,
+                (options, sp) =>
                 {
-                    configuration.Bind(section, options);
-
-                    configure?.Invoke(options);
-                })
-                .PostConfigure<IServiceProvider>((options, sp) =>
-                {
-                    var storeOptions = sp.GetRequiredService<IOptionsMonitor<FileChallengeStoreOptions>>().Get(builder.Name);
-
-                    options.ChallengesStore = new FileChallengeStore(storeOptions);
+                    configure?.Invoke(options, sp);
+                    options.ChallengesStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is FileChallengeStore);
                 });
 
-            builder.Services.TryAddScoped<IAcmeOrderClient, AcmeOrderClient>();
+            return builder;
+        }
+
+        public static ILetsEncryptBuilder ConfigureAcmeOrderWithInMemoryStore(
+            this ILetsEncryptBuilder builder,
+            string section = "LetsEncrypt:AcmeOrder",
+            Action<AcmeOrderOptions, IServiceProvider>? configure = null)
+        {
+            builder.Services.AddChangeTokenOptions<AcmeOrderOptions>(
+                section,
+                builder.Name,
+                (options, sp) =>
+                {
+                    configure?.Invoke(options, sp);
+                    options.ChallengesStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is InMemoryChallengeStore);
+                });
+
+            return builder;
+        }
+
+        public static ILetsEncryptBuilder ConfigureCertificateWithAzureStorageStore(
+            this ILetsEncryptBuilder builder,
+            string section = "LetsEncrypt:Certificate",
+            string blobSection = "Certificates",
+            string blobRootSection = "LetsEncrypt:StorageBlobs",
+            Action<CertificateOptions, IServiceProvider>? configure = null,
+            Action<StorageBlobOptions>? storageConfigure = null)
+        {
+            builder.Services
+                  .AddAzureStorageAccount("letsencrypt")
+                  .AddAzureBlobContainer(builder.Name, blobSection, blobRootSection, storageConfigure);
+
+            builder.Services
+                .AddOptions<AzureCertificateStoreOptions>(builder.Name)
+                .Configure(options =>
+                {
+                    options.OptionsName = builder.Name;
+                });
+
+            builder.Services.AddChangeTokenOptions(section, builder.Name, configure);
 
             return builder;
         }
@@ -108,7 +169,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this ILetsEncryptBuilder builder,
             string section = "LetsEncrypt:Certificate",
             string? rootPath = null,
-            Action<CertificateOptions>? configure = null)
+            Action<CertificateOptions, IServiceProvider>? configure = null)
         {
             builder.Services
                 .AddOptions<FileCertificateStoreOptions>(builder.Name)
@@ -126,15 +187,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                 });
 
-            builder.Services
-                .AddOptions<CertificateOptions>(builder.Name)
-                .Configure<IConfiguration>((options, configuration) =>
-                {
-                    configuration.Bind(section, options);
-                    configure?.Invoke(options);
-                });
-
-            builder.Services.TryAddScoped<ICertificateValidator, CertificateValidator>();
+            builder.Services.AddChangeTokenOptions(section, builder.Name, configure);
 
             return builder;
         }

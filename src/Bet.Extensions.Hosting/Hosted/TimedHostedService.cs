@@ -2,45 +2,45 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
-namespace Bet.Extensions.Hosting.Abstractions
+namespace Bet.Extensions.Hosting.Hosted
 {
-    public abstract class TimedHostedService : ITimedHostedService
+    public class TimedHostedService : IHostedService, IDisposable
     {
         private readonly IEnumerable<ITimedHostedLifeCycleHook> _lifeCycleHooks;
         private readonly CancellationTokenSource _cancellationCts;
         private readonly SemaphoreSlim _semaphoreSlim;
+        private readonly ILogger<TimedHostedService> _logger;
+        private readonly TimedHostedServiceOptions _options;
+        private readonly IServiceProvider _serviceProvider;
+
         private Timer? _timer;
 
-        protected TimedHostedService(
-            IOptionsMonitor<TimedHostedServiceOptions> options,
+        public TimedHostedService(
+            IServiceProvider serviceProvider,
+            TimedHostedServiceOptions options,
             IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
-            ILogger<ITimedHostedService> logger)
+            ILogger<TimedHostedService> logger)
         {
-            Options = options.CurrentValue;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
 
-            options.OnChange(changedOptions => Options = changedOptions);
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _lifeCycleHooks = lifeCycleHooks ?? throw new ArgumentNullException(nameof(lifeCycleHooks));
 
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _lifeCycleHooks = lifeCycleHooks;
             _cancellationCts = new CancellationTokenSource();
+
             _semaphoreSlim = new SemaphoreSlim(1);
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
-
-        public TimedHostedServiceOptions Options { get; private set; }
-
-        public ILogger<ITimedHostedService> Logger { get; }
-
-        public Func<CancellationToken, Task> TaskToExecuteAsync { get; set; } = (token) => Task.CompletedTask;
 
         public virtual async Task StartAsync(CancellationToken cancellationToken)
         {
             var stoppingCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cancellationCts.Token);
 
-            Logger.LogWarning("The {serviceName} background thread is starting.", nameof(TimedHostedService));
+            _logger.LogWarning("The {serviceName} background thread is starting.", nameof(TimedHostedService));
 
             stoppingCts.Token.ThrowIfCancellationRequested();
 
@@ -49,7 +49,7 @@ namespace Bet.Extensions.Hosting.Abstractions
                 await lifeCycleHook.OnStartAsync(stoppingCts.Token).ConfigureAwait(false);
             }
 
-            _timer = new Timer(async (_) => await ExecuteAsync(stoppingCts.Token), null, TimeSpan.Zero, Options.Interval);
+            _timer = new Timer(async (_) => await ExecuteAsync(stoppingCts.Token), null, TimeSpan.Zero, _options.Interval);
 
             await Task.CompletedTask;
         }
@@ -83,7 +83,8 @@ namespace Bet.Extensions.Hosting.Abstractions
 
                 await _semaphoreSlim.WaitAsync();
 
-                await TaskToExecuteAsync(cancellationToken);
+                using var scope = _serviceProvider.CreateScope();
+                await _options.TaskToExecuteAsync(_options, scope.ServiceProvider, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -111,17 +112,18 @@ namespace Bet.Extensions.Hosting.Abstractions
                     await lifeCycleHook.OnRunOnceSucceededAsync(cancellationToken);
                 }
             }
-            catch (Exception ex) when (Options.FailMode != FailMode.Unhandled)
+            catch (Exception ex) when (_options.FailMode != FailMode.Unhandled)
             {
-                if (Options.FailMode == FailMode.LogAndRetry)
+                _logger.LogWarning(ex, $"Exception occurred: {ex.Message}");
+
+                if (_options.FailMode == FailMode.LogAndRetry)
                 {
-                    Logger.LogWarning(ex, $"Exception occurred: {ex.Message} - Retrying");
-                    _timer?.Change(Timeout.InfiniteTimeSpan, Options.RetryInterval);
+                    _timer?.Change(Timeout.InfiniteTimeSpan, _options.RetryInterval);
                 }
-                else
-                {
-                    Logger.LogWarning(ex, $"Exception occurred: {ex.Message} - Continue");
-                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to execute the task", ex);
             }
         }
 

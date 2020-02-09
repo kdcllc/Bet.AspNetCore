@@ -63,7 +63,7 @@ namespace Bet.Extensions.LetsEncrypt.Order
 
             var nonNullChallengeContexts = challengeContexts.Where(x => x != null).ToArray();
 
-            var challenges = nonNullChallengeContexts.Select((x, c) => new ChallengeResult
+            var challenges = nonNullChallengeContexts.Select((x, c) => new AcmeChallengeResponse
             {
                 Token = x.Type == ChallengeTypes.Dns01 ? accountClient.AccountKey.DnsTxt(x.Token) : x.Token,
                 Response = x.KeyAuthz,

@@ -41,7 +41,7 @@ namespace Bet.Extensions.LetsEncrypt.AcmeChallenges
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task DnsAuthorizationAsync(string named, string instanceId, ChallengeResult challenge)
+        public async Task DnsAuthorizationAsync(string named, string instanceId, AcmeChallengeResponse challenge)
         {
             var options = _optionsMonitor.Get(named);
 
@@ -154,7 +154,7 @@ namespace Bet.Extensions.LetsEncrypt.AcmeChallenges
             return dnsClient;
         }
 
-        private async Task CheckDnsChallengeAsync(ChallengeResult challengeResult, string fullDomain)
+        private async Task CheckDnsChallengeAsync(AcmeChallengeResponse challengeResult, string fullDomain)
         {
             var retries = 0;
             var delay = TimeSpan.FromSeconds(10);

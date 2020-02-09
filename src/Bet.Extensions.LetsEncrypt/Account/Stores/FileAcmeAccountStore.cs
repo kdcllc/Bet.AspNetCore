@@ -1,10 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Certes;
+
+using Microsoft.Extensions.Options;
 
 namespace Bet.Extensions.LetsEncrypt.Account.Stores
 {
@@ -12,9 +13,9 @@ namespace Bet.Extensions.LetsEncrypt.Account.Stores
     {
         private readonly FileAcmeAccountStoreOptions _options;
 
-        public FileAcmeAccountStore(FileAcmeAccountStoreOptions options)
+        public FileAcmeAccountStore(IOptions<FileAcmeAccountStoreOptions> options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _options = options.Value;
         }
 
         public async Task<IKey?> LoadAsync(string name, CancellationToken cancellationToken)

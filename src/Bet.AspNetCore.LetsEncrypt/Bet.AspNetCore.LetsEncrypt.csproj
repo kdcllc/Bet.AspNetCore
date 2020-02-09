@@ -3,21 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Description>Provides API for configuring ASP.NET Core to use Let's Encrypt.org to automatically generate HTTPS certificates.</Description>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-      <PackageReference Include="Certes" />
-  </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.LetsEncrypt\Bet.Extensions.LetsEncrypt.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

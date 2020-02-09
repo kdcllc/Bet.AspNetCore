@@ -52,7 +52,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates
             }
             catch (CryptographicException exc)
             {
-                _logger.LogError(exc, "Exception occured during certificate validation");
+                _logger.LogError(exc, "Exception occurred during certificate validation");
                 return false;
             }
         }

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bet.Extensions.Hosting.Abstractions
+namespace Bet.Extensions.Hosting.Hosted
 {
     public interface ITimedHostedLifeCycleHook
     {

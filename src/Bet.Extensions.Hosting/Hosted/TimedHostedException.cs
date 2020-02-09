@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Bet.Extensions.Hosting.Abstractions
+namespace Bet.Extensions.Hosting.Hosted
 {
     public class TimedHostedException : Exception
     {

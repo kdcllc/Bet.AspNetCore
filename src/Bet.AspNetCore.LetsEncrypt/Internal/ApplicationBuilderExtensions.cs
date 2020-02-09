@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bet.AspNetCore.LetsEncrypt.Internal
 {
@@ -6,11 +9,13 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
     {
         public static IApplicationBuilder UseLetsEncryptDomainVerification(
             this IApplicationBuilder builder,
-            string path = "/.well-known/acme-challenge")
+            string named)
         {
-            builder.Map(path, app =>
+            var options = builder.ApplicationServices.GetRequiredService<IOptionsMonitor<HttpChallengeResponseOptions>>().Get(named);
+            var logger = builder.ApplicationServices.GetRequiredService<ILogger<HttpChallengeResponseMiddleware>>();
+            builder.Map(options.ValidationPath, app =>
             {
-                app.UseMiddleware<ChallengeApprovalMiddleware>();
+                app.UseMiddleware<HttpChallengeResponseMiddleware>(options.ChallengeStore, logger);
             });
 
             return builder;

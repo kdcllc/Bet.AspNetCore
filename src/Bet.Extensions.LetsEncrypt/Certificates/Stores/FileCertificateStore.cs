@@ -4,15 +4,17 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Options;
+
 namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
 {
     public class FileCertificateStore : ICertificateStore
     {
         private readonly FileCertificateStoreOptions _options;
 
-        public FileCertificateStore(FileCertificateStoreOptions options)
+        public FileCertificateStore(IOptions<FileCertificateStoreOptions> options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<X509Certificate2?> LoadAsync(string name, string certificatePassword, CancellationToken cancellationToken)

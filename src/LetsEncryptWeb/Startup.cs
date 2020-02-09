@@ -26,26 +26,11 @@ namespace LetsEncryptWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLetsEncrypt(
-                configure: (options, configuration) =>
-                {
-                    var domainName = configuration.GetValue<string>("LetsEncryptDomainName");
-
-                    options.HostNames = new[] { domainName };
-
-                    options.CertificateFriendlyName = domainName;
-
-                    options.CertificatePassword = "7a1fe7ee-8daf-423d-b43b-a55e6794dcd9";
-
-                    options.CertificateSigningRequest = new CsrInfo()
-                    {
-                        CountryName = "US",
-                        Organization = "KDCLLC",
-                        CommonName = domainName
-                    };
-                },
-                interval: TimeSpan.FromMinutes(5))
-                .AddAzureStorage("challenges", "certificates");
+            services.AddLetsEncryptClient()
+                    .ConfigureAcmeAccountWitAzureStorageStore()
+                    .ConfigureAcmeOrderWithInMemoryStore()
+                    .ConfigureCertificateWithAzureStorageStore()
+                    .AddHttpChallengeResponse();
 
             services.AddControllers();
         }
