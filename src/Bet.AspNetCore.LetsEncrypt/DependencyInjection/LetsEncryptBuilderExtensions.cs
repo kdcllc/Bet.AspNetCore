@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static ILetsEncryptBuilder AddHttpChallengeResponse(this ILetsEncryptBuilder builder)
         {
+            builder.Services.AddSingleton<HttpChallenge>();
+
             builder.Services
                     .AddOptions<KestrelServerOptions>()
                     .Configure<KestrelCertificateSelector>((options, certificateSelector) =>
@@ -38,6 +40,8 @@ namespace Microsoft.Extensions.DependencyInjection
                typeof(IHostedService),
                sp =>
                {
+                   var challegne = sp.GetRequiredService<HttpChallenge>();
+
                    var accountOptions = sp.GetRequiredService<IOptionsMonitor<AcmeAccountOptions>>().Get(builder.Name);
                    var certificateOptions = sp.GetRequiredService<IOptionsMonitor<CertificateOptions>>().Get(builder.Name);
 
@@ -46,6 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
                    var certificateSelector = sp.GetRequiredService<KestrelCertificateSelector>();
 
                    return new StartupCertificateLoader(
+                       challegne,
                        Options.Options.Create(accountOptions),
                        Options.Options.Create(certificateOptions),
                        developmentCertificate,
@@ -56,10 +61,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services
                    .AddSingleton<IStartupFilter, HttpChallengeStartupFilter>();
-                   //.AddTransient<HttpChallengeResponseMiddleware>();
 
             builder.Services
-                   .AddOptions<HttpChallengeResponseOptions>(string.Empty)
+                   .AddOptions<HttpChallengeResponseOptions>(string.Empty) // TODO: figure out how to tie it to builder.Name
                    .Configure<IServiceProvider>((options, sp) =>
                    {
                        options.ChallengeStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is InMemoryChallengeStore);

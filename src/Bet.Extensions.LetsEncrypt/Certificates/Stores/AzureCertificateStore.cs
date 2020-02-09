@@ -23,16 +23,25 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
+        public bool Configured => _options.Configured;
+
+        public string NamedOption => _options.NamedOption;
+
         public async Task<X509Certificate2?> LoadAsync(string name, string certificatePassword, CancellationToken cancellationToken)
         {
-            var blob = await _storage.GetBytesAsync(_options.OptionsName, name, cancellationToken);
+            var blob = await _storage.GetBytesAsync(_options.NamedOption, name, cancellationToken);
+
+            if (blob == null)
+            {
+                return null;
+            }
 
             return new X509Certificate2(blob, certificatePassword);
         }
 
         public async Task SaveAsync(byte[] value, string name, CancellationToken cancellationToken)
         {
-            await _storage.AddAsync(_options.OptionsName, value, name, null, cancellationToken);
+            await _storage.AddAsync(_options.NamedOption, value, name, null, cancellationToken);
         }
     }
 }

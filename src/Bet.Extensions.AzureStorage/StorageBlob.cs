@@ -566,6 +566,12 @@ namespace Bet.Extensions.AzureStorage
             }
 
             var options = _storageBlobOptionsMonitor.Get(named);
+
+            if (string.IsNullOrEmpty(options.ContainerName))
+            {
+                throw new ArgumentNullException($"Please make sure that {nameof(options.ContainerName)} is registered");
+            }
+
             var storageOptions = _storageAccountOptionsFactory.Create(options.AccountName);
 
             var createdContainer = new Lazy<Task<CloudBlobContainer>>(() => CreateCloudBlobContainer(options, storageOptions, cancellationToken));

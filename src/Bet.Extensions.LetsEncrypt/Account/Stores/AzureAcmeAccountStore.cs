@@ -25,6 +25,8 @@ namespace Bet.Extensions.LetsEncrypt.Account.Stores
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
+        public bool Configured => _options.Configured;
+
         public async Task<IKey?> LoadAsync(string name, CancellationToken cancellationToken)
         {
             var blob = await _storage.GetBytesAsync(_options.NamedOption, name, cancellationToken);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using Bet.Extensions.LetsEncrypt.Order;
 using Bet.Extensions.LetsEncrypt.Order.Stores;

@@ -17,6 +17,10 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
+        public bool Configured => _options.Configured;
+
+        public string NamedOption => _options.NamedOption;
+
         public async Task<X509Certificate2?> LoadAsync(string name, string certificatePassword, CancellationToken cancellationToken)
         {
             var fullPath = Path.Combine(_options.RootPath, name);

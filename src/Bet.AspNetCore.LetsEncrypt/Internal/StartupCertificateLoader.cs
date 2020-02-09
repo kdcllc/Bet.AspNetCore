@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,8 +21,10 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
         private readonly IOptions<AcmeAccountOptions> _accountOptions;
         private readonly IOptions<CertificateOptions> _certificateOptions;
         private readonly DevelopmentCertificate _developmentCertificate;
+        private readonly HttpChallenge _httpChallenge;
 
         public StartupCertificateLoader(
+            HttpChallenge httpChallenge,
             IOptions<AcmeAccountOptions> accountOptions,
             IOptions<CertificateOptions> certificateOptions,
             DevelopmentCertificate developmentCertificate,
@@ -33,6 +36,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
             _accountOptions = accountOptions;
             _certificateOptions = certificateOptions;
             _developmentCertificate = developmentCertificate ?? throw new ArgumentNullException(nameof(developmentCertificate));
+            _httpChallenge = httpChallenge ?? throw new ArgumentNullException(nameof(httpChallenge));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -44,14 +48,25 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
                 devCerts.ToList().ForEach(c => _certificateSelector.Add(c));
             }
 
-            foreach (var store in _stores)
+            foreach (var domainName in _accountOptions.Value.Domains)
             {
-                foreach (var domainName in _accountOptions.Value.Domains)
+                foreach (var store in _stores.Where(x => x.Configured))
                 {
                     var cert = await store.LoadAsync(
                         domainName,
                         _certificateOptions.Value?.CertificatePassword ?? string.Empty,
                         cancellationToken);
+
+                    if (cert == null)
+                    {
+                        var certificateBytes = await _httpChallenge.GetCertificateAsync(store.NamedOption, cancellationToken);
+                        if (certificateBytes != null)
+                        {
+                            await store.SaveAsync(certificateBytes, domainName, cancellationToken);
+
+                            cert = new X509Certificate2(certificateBytes, _certificateOptions.Value?.CertificatePassword ?? string.Empty);
+                        }
+                    }
 
                     if (cert != null)
                     {

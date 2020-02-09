@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.Hosting", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{D08248C1-62F0-4011-9CB2-406FDE28EEA3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cli-tool", "cli-tool", "{D5655917-C1A5-44AA-85D2-BF9132205E4E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cli-tools", "cli-tools", "{D5655917-C1A5-44AA-85D2-BF9132205E4E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAuthentication", "src\AppAuthentication\AppAuthentication.csproj", "{47756F33-5FF7-4FDB-8E7D-F30CCFBE8F34}"
 EndProject
@@ -100,7 +100,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.ML.Azure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LetsEncryptWeb", "src\LetsEncryptWeb\LetsEncryptWeb.csproj", "{A8517287-C7C9-440D-ACC0-F47B379A105A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.Extensions.LetsEncrypt", "src\Bet.Extensions.LetsEncrypt\Bet.Extensions.LetsEncrypt.csproj", "{6F3F68FA-94FE-41FD-BF31-571349AF5C74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.LetsEncrypt", "src\Bet.Extensions.LetsEncrypt\Bet.Extensions.LetsEncrypt.csproj", "{6F3F68FA-94FE-41FD-BF31-571349AF5C74}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{C4F77FEB-4C40-4285-AE27-D9B361A3A46F}"
 EndProject

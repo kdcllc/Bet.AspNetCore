@@ -10,7 +10,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
 {
     public class X509CertCertificateStore : ICertificateStore, IDisposable
     {
-        private readonly IOptions<X509CertCertificateStoreOptions> _options;
+        private readonly X509CertCertificateStoreOptions _options;
         private readonly ILogger<X509CertCertificateStore> _logger;
         private readonly X509Store _store;
 
@@ -18,12 +18,16 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
             IOptions<X509CertCertificateStoreOptions> options,
             ILogger<X509CertCertificateStore> logger)
         {
-            _options = options;
+            _options = options.Value;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             _store.Open(OpenFlags.ReadWrite);
         }
+
+        public bool Configured => _options.Configured;
+
+        public string NamedOption => _options.NamedOption;
 
         public void Dispose()
         {
@@ -36,7 +40,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
             var certs = _store.Certificates.Find(
                X509FindType.FindBySubjectDistinguishedName,
                "CN=" + name,
-               validOnly: !_options.Value.AllowInvalidCerts);
+               validOnly: !_options.AllowInvalidCerts);
 
             if (certs == null || certs.Count == 0)
             {

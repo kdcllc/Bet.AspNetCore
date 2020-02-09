@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +16,8 @@ namespace Bet.Extensions.LetsEncrypt.Order.Stores
         {
             _options = options.Value;
         }
+
+        public bool Configured => _options.Configured;
 
         public Task DeleteAsync(string name, CancellationToken cancellationToken)
         {

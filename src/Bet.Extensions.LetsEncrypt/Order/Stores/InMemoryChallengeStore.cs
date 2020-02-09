@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace Bet.Extensions.LetsEncrypt.Order.Stores
@@ -10,6 +12,14 @@ namespace Bet.Extensions.LetsEncrypt.Order.Stores
     public class InMemoryChallengeStore : IAcmeChallengeStore
     {
         private readonly ConcurrentDictionary<string, string> _store = new ConcurrentDictionary<string, string>();
+        private ChallengeStoreOptions _options;
+
+        public InMemoryChallengeStore(IOptions<ChallengeStoreOptions> options)
+        {
+            _options = options.Value;
+        }
+
+        public bool Configured => _options.Configured;
 
         public Task DeleteAsync(string name, CancellationToken cancellationToken)
         {

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 
-using Bet.Extensions.AzureStorage;
 using Bet.Extensions.AzureStorage.Options;
 using Bet.Extensions.LetsEncrypt.Account;
 using Bet.Extensions.LetsEncrypt.Account.Stores;
@@ -15,7 +14,6 @@ using Bet.Extensions.LetsEncrypt.Order.Stores;
 using DnsClient;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 using static System.Environment;
 
@@ -44,6 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
                         {
                             options.RootPath = rootPath;
                         }
+
+                        options.Configured = true;
                     });
 
             builder.Services.AddChangeTokenOptions<AcmeAccountOptions>(
@@ -75,6 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .Configure(options =>
                     {
                         options.NamedOption = builder.Name;
+                        options.Configured = true;
                     });
 
             builder.Services.AddChangeTokenOptions<AcmeAccountOptions>(
@@ -110,6 +111,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         options.RootPath = rootPath;
                     }
+
+                    options.Configured = true;
                 });
 
             builder.Services.AddChangeTokenOptions<AcmeOrderOptions>(
@@ -129,6 +132,13 @@ namespace Microsoft.Extensions.DependencyInjection
             string section = "LetsEncrypt:AcmeOrder",
             Action<AcmeOrderOptions, IServiceProvider>? configure = null)
         {
+            builder.Services
+               .AddOptions<ChallengeStoreOptions>(builder.Name)
+               .Configure(options =>
+               {
+                   options.Configured = true;
+               });
+
             builder.Services.AddChangeTokenOptions<AcmeOrderOptions>(
                 section,
                 builder.Name,
@@ -157,7 +167,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddOptions<AzureCertificateStoreOptions>(builder.Name)
                 .Configure(options =>
                 {
-                    options.OptionsName = builder.Name;
+                    options.NamedOption = builder.Name;
+                    options.Configured = true;
                 });
 
             builder.Services.AddChangeTokenOptions(section, builder.Name, configure);
@@ -185,6 +196,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         options.RootPath = rootPath;
                     }
+
+                    options.NamedOption = builder.Name;
+                    options.Configured = true;
                 });
 
             builder.Services.AddChangeTokenOptions(section, builder.Name, configure);
@@ -201,12 +215,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.AddScoped<AzureDnsChallenge>();
 
-            builder.Services.AddOptions<AzureAuthenticationOptions>(builder.Name)
-                            .Configure<IConfiguration>((options, configuration) =>
-                            {
-                                configuration.Bind(section, options);
-                                configure?.Invoke(options);
-                            });
+            builder.Services
+                    .AddOptions<AzureAuthenticationOptions>(builder.Name)
+                    .Configure<IConfiguration>((options, configuration) =>
+                    {
+                        configuration.Bind(section, options);
+                        configure?.Invoke(options);
+                    });
 
             return builder;
         }

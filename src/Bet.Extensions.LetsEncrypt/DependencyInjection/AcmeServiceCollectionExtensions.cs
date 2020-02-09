@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var builder = new LetsEncryptBuilder(services, name);
 
             // Acme Account generic registrations
-            builder.Services.TryAddScoped<IAcmeContextClientFactory, AcmeContextClientFactory>();
+            builder.Services.TryAddSingleton<IAcmeContextClientFactory, AcmeContextClientFactory>();
 
             builder.Services.AddSingleton<IAcmeAccountStore, FileAcmeAccountStore>(sp =>
             {
@@ -38,9 +38,13 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             // Acme Order generic registrations
-            builder.Services.TryAddScoped<IAcmeOrderClient, AcmeOrderClient>();
+            builder.Services.TryAddSingleton<IAcmeOrderClient, AcmeOrderClient>();
 
-            builder.Services.TryAddSingleton<IAcmeChallengeStore, InMemoryChallengeStore>();
+            builder.Services.AddSingleton<IAcmeChallengeStore, InMemoryChallengeStore>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptionsMonitor<ChallengeStoreOptions>>().Get(builder.Name);
+                return new InMemoryChallengeStore(Options.Options.Create(options));
+            });
 
             builder.Services.AddSingleton<IAcmeChallengeStore, FileChallengeStore>(sp =>
             {

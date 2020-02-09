@@ -18,6 +18,8 @@ namespace Bet.Extensions.LetsEncrypt.Account.Stores
             _options = options.Value;
         }
 
+        public bool Configured => _options.Configured;
+
         public async Task<IKey?> LoadAsync(string name, CancellationToken cancellationToken)
         {
             var fullPath = Path.Combine(_options.RootPath, name);
