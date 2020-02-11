@@ -34,34 +34,31 @@ By implementing and registering this interface with DI it is possible to trigger
 
 The simple implementation of the service that must be run at an interval specified.
 
-1. Add `MyHostedService` the hosted service.
+1. Add `MyHostedService` to the DI.
 
 ```csharp
-    public class MyHostedService : TimedHostedService
-    {
-        public ModelBuilderHostedService(
-            IOptionsMonitor<TimedHostedServiceOptions> options,
-            IEnumerable<ITimedHostedLifeCycleHook> lifeCycleHooks,
-            ILogger<ITimedHostedService> logger) : base(options, lifeCycleHooks, logger)
+    services.AddTimedHostedService(
+        "MachineLearningService",
+        options =>
         {
-            TaskToExecuteAsync = (token) => RunAsync(token);
-        }
+            options.Interval = TimeSpan.FromMinutes(30);
 
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            Logger.Information("RunAsync at {timestamp}", DateTime.Now);
-        }
-    }
-```
+            options.FailMode = FailMode.LogAndRetry;
+            options.RetryInterval = TimeSpan.FromSeconds(30);
 
-2. Add `MyHostedService` to the DI.
+            options.TaskToExecuteAsync = async (sp, cancellationToken) =>
+            {
+                var job = sp.GetRequiredService<IModelCreationService>();
+                var logger = sp.GetRequiredService<ILogger<TimedHostedService>>();
 
-```csharp
-     services.AddTimedHostedService<MyHostedService>(options =>
-    {
-        options.Interval = TimeSpan.FromMinutes(30);
-
-        options.FailMode = FailMode.LogAndRetry;
-        options.RetryInterval = TimeSpan.FromSeconds(30);
-    });
+                try
+                {
+                    await job.BuildModelsAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("{serviceName} failed with exception: {message}", nameof(TimedHostedService), ex.Message);
+                }
+            };
+        });
 ```

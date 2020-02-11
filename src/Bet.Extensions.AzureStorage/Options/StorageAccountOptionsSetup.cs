@@ -104,6 +104,8 @@ namespace Bet.Extensions.AzureStorage.Options
 
                 var storageCredentials = new StorageCredentials(tokenCredential);
 
+                _logger.LogInformation("[Azure Storage][Authentication] Name: {storageName}", options.Name);
+
                 account = new CloudStorageAccount(storageCredentials, options.Name, string.Empty, true);
 
                 _logger.LogInformation("[Azure Storage][Authentication] Using MSI Token.");

@@ -16,12 +16,18 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
     <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Logging" />
     <PackageReference Include="Serilog.Settings.Configuration" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+    <PackageReference Include="Serilog.Sinks.AzureAnalytics" />
     <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.Debug" />
     <PackageReference Include="Serilog.Sinks.RollingFile" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
     <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 </Project>

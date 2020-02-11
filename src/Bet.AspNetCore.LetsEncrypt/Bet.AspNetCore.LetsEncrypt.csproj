@@ -2,21 +2,30 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Description>Provides API for configuring ASP.NET Core to use Let's Encrypt.org to automatically generate HTTPS certificates.</Description>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-      <PackageReference Include="Certes" />
-  </ItemGroup>
+
+  <PropertyGroup>
+    <Description>
+      Let's Encrypt Automatically SSL Provisioning for AspNetCore website hosted with Kestrel.
+      Generates and updates outdated SSL Certificates.
+    </Description>
+    <PackageTags>AspNetCore, Hosting, Let's Encrypt, ACME, SSL Certificate provisioning, Kestrel</PackageTags>
+  </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CronScheduler.AspNetCore" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.LetsEncrypt\Bet.Extensions.LetsEncrypt.csproj" />
     <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

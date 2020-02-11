@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Let's Encrypt library that can be used with IHost.</Description>
+    <PackageTags>dotnetcore, generic host, letsencrypt, acme , ordering ssl certificates ,extensions</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <PackageReference Include="Certes" />
+    <PackageReference Include="DnsClient" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
+    <PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" />
+    <PackageReference Include="Microsoft.Azure.Management.Dns.Fluent" />
+    <PackageReference Include="Microsoft.Azure.Management.Fluent" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Identity.Client" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.Extensions.AzureStorage\Bet.Extensions.AzureStorage.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
+    <ProjectReference Include="..\Bet.Extensions\Bet.Extensions.csproj" />
+  </ItemGroup>
+
+
+</Project>

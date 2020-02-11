@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>908809be-0f2b-40cc-a3a0-97ab1c80f47e</UserSecretsId>
+    <IsPackable>false</IsPackable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bet.AspNetCore.LetsEncrypt\Bet.AspNetCore.LetsEncrypt.csproj" />
+    <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
+  </ItemGroup>
+
+</Project>

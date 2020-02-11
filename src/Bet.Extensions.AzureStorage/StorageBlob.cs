@@ -87,7 +87,7 @@ namespace Bet.Extensions.AzureStorage
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            var stream = await GetAsync(blobName, named, cancellationToken);
+            var stream = await GetAsync(named, blobName, cancellationToken);
             if (stream == null)
             {
                 return null;
@@ -117,7 +117,7 @@ namespace Bet.Extensions.AzureStorage
 
             var container = await GetNamedContainer(named, cancellationToken).Value;
 
-            var blob = await container.GetBlobReferenceFromServerAsync(blobName);
+            var blob = container.GetBlobReference(blobName);
             if (blob == null
                 || !await blob.ExistsAsync(cancellationToken))
             {
@@ -566,6 +566,12 @@ namespace Bet.Extensions.AzureStorage
             }
 
             var options = _storageBlobOptionsMonitor.Get(named);
+
+            if (string.IsNullOrEmpty(options.ContainerName))
+            {
+                throw new ArgumentNullException($"Please make sure that {nameof(options.ContainerName)} is registered");
+            }
+
             var storageOptions = _storageAccountOptionsFactory.Create(options.AccountName);
 
             var createdContainer = new Lazy<Task<CloudBlobContainer>>(() => CreateCloudBlobContainer(options, storageOptions, cancellationToken));

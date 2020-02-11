@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Bet.Hosting.Sample
 {
@@ -80,11 +81,15 @@ namespace Bet.Hosting.Sample
                         configuration.DebugConfigurations();
                     }
                 })
-                .ConfigureLogging((hostingContext, logger) =>
+                .UseSerilog((hostingContext, loggerBuilder) =>
                 {
-                    logger.AddConfiguration(hostingContext.Configuration);
-                    logger.AddConsole();
-                    logger.AddDebug();
+                    var applicationName = $"BetHostingSample-{hostingContext.HostingEnvironment.EnvironmentName}";
+                    loggerBuilder
+                            .ReadFrom.Configuration(hostingContext.Configuration)
+                            .Enrich.FromLogContext()
+                            .WriteTo.Console()
+                            .AddApplicationInsights(hostingContext.Configuration)
+                            .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                 })
                 .ConfigureServices(services =>
                 {
