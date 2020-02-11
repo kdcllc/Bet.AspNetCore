@@ -29,9 +29,14 @@ namespace Bet.Extensions.LetsEncrypt.Account.Stores
 
         public async Task<IKey?> LoadAsync(string name, CancellationToken cancellationToken)
         {
-            var blob = await _storage.GetBytesAsync(_options.NamedOption, name, cancellationToken);
-            var text = BitConverter.ToString(blob);
+            var bytes = await _storage.GetBytesAsync($"{_options.NamedOption}-account", name, cancellationToken);
 
+            if (bytes == null)
+            {
+                return null;
+            }
+
+            var text = Encoding.UTF8.GetString(bytes);
             return KeyFactory.FromPem(text);
         }
 
@@ -40,7 +45,7 @@ namespace Bet.Extensions.LetsEncrypt.Account.Stores
             var text = value.ToPem();
             var bytes = Encoding.UTF8.GetBytes(text);
 
-            await _storage.AddAsync(_options.NamedOption, bytes, name, null, cancellationToken);
+            await _storage.AddAsync($"{_options.NamedOption}-account", bytes, name, null, cancellationToken);
         }
     }
 }

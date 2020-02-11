@@ -11,7 +11,9 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 {
     internal class KestrelCertificateSelector
     {
-        private readonly ConcurrentDictionary<string, X509Certificate2> _store = new ConcurrentDictionary<string, X509Certificate2>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, X509Certificate2>
+            _store = new ConcurrentDictionary<string, X509Certificate2>(StringComparer.OrdinalIgnoreCase);
+
         private readonly ICertificateValidator _certificateValidator;
         private readonly string _named;
 

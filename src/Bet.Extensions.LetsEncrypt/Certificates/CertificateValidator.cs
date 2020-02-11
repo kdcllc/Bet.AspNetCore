@@ -20,16 +20,16 @@ namespace Bet.Extensions.LetsEncrypt.Certificates
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public bool IsCertificateValid(string named, X509Certificate2 certificate)
+        public bool IsCertificateValid(string named, X509Certificate2? certificate)
         {
-            var options = _optionsMonitor.Get(named);
-
             try
             {
                 if (certificate == null)
                 {
                     return false;
                 }
+
+                var options = _optionsMonitor.Get(named);
 
                 var now = DateTimeOffset.Now;
 

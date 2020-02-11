@@ -4,7 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.DataProtection.svg)](https://www.nuget.org/packages?q=Bet.Extensions.DataProtection)
 [![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.Extensions.DataProtection.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
 
-This library provides with ability to add `DataProtection` to any DotNetCore appliction.
+This library provides with ability to add `DataProtection` to any DotNetCore application.
 
 
 ```bash

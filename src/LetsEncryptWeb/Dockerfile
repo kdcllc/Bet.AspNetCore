@@ -1,5 +1,6 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
+#
+# BUILD:  docker build --rm -f "src\LetsEncryptWeb\Dockerfile" -t kdcllc/bet:letsencrypt .
+#
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
@@ -17,6 +18,7 @@ COPY ["src/Bet.Extensions.AzureVault/Bet.Extensions.AzureVault.csproj", "src/Bet
 COPY ["src/Bet.Extensions/Bet.Extensions.csproj", "src/Bet.Extensions/"]
 COPY ["src/Bet.Extensions.Options/Bet.Extensions.Options.csproj", "src/Bet.Extensions.Options/"]
 COPY ["src/Bet.AspNetCore.LetsEncrypt/Bet.AspNetCore.LetsEncrypt.csproj", "src/Bet.AspNetCore.LetsEncrypt/"]
+COPY ["src/Bet.Extensions.LetsEncrypt/Bet.Extensions.LetsEncrypt.csproj", "src/Bet.Extensions.LetsEncrypt/"]
 COPY ["src/Bet.Extensions.Logging/Bet.Extensions.Logging.csproj", "src/Bet.Extensions.Logging/"]
 COPY ["src/Bet.Extensions.Hosting/Bet.Extensions.Hosting.csproj", "src/Bet.Extensions.Hosting/"]
 COPY ["src/Bet.Extensions.AzureStorage/Bet.Extensions.AzureStorage.csproj", "src/Bet.Extensions.AzureStorage/"]

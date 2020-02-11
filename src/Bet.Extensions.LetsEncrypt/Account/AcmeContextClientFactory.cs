@@ -37,7 +37,7 @@ namespace Bet.Extensions.LetsEncrypt.Account
             var defaulDomain = options.Domains[0];
 
             // 1. Check if the account is stored
-            var accountKey = await presistence.LoadAsync($"account.{defaulDomain}", cancellationToken);
+            var accountKey = await presistence.LoadAsync($"{defaulDomain}", cancellationToken);
 
             AcmeContext acmeContext;
 
@@ -46,7 +46,7 @@ namespace Bet.Extensions.LetsEncrypt.Account
                 acmeContext = new AcmeContext(options.LetsEncryptUri);
                 await acmeContext.NewAccount(options.Email, true);
 
-                await presistence.SaveAsync(acmeContext.AccountKey, $"{options.Prefix}.{defaulDomain}", cancellationToken);
+                await presistence.SaveAsync(acmeContext.AccountKey, $"{defaulDomain}", cancellationToken);
             }
             else
             {

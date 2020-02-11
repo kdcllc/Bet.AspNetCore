@@ -28,8 +28,6 @@ namespace Bet.Extensions.LetsEncrypt.Account
             ? WellKnownServers.LetsEncryptStagingV2
             : WellKnownServers.LetsEncryptV2;
 
-        public string Prefix { get; set; } = "account";
-
         internal IAcmeAccountStore? AccountStore { get; set; }
     }
 }

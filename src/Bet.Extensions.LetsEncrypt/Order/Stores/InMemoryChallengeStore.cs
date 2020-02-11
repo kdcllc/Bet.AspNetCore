@@ -11,7 +11,7 @@ namespace Bet.Extensions.LetsEncrypt.Order.Stores
 {
     public class InMemoryChallengeStore : IAcmeChallengeStore
     {
-        private readonly ConcurrentDictionary<string, string> _store = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _store = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private ChallengeStoreOptions _options;
 
         public InMemoryChallengeStore(IOptions<ChallengeStoreOptions> options)
@@ -23,7 +23,7 @@ namespace Bet.Extensions.LetsEncrypt.Order.Stores
 
         public Task DeleteAsync(string name, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.Run(() => _store.TryRemove(name, out var value));
         }
 
         public Task<T> LoadAsync<T>(string name, CancellationToken cancellationToken) where T : class

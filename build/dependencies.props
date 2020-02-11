@@ -33,12 +33,12 @@
     <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="3.0.0-preview4*" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1"/>
     <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="$(EFCommonVersion)"/>
     <PackageReference Update="Microsoft.Extensions.FileProviders.Embedded" Version="$(ExtensionsVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1" />
   </ItemGroup>
 
   <ItemGroup Label="DataProtection">
@@ -99,7 +99,7 @@
     <PackageReference Update="Microsoft.Azure.Management.Fluent" Version="1.30.0" />
     <PackageReference Update="Microsoft.Identity.Client" Version="4.8.1" />
   </ItemGroup>
-  
+
   <ItemGroup Label="Unit Tests">
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Update="Moq" Version="4.13.1" />

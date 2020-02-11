@@ -46,9 +46,9 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 
             _logger.LogInformation("Confirmed challenge request for {token}", token);
 
-            context.Response.ContentLength = matchingChallenge.Token.Length;
+            context.Response.ContentLength = matchingChallenge.Response.Length;
             context.Response.ContentType = "application/octet-stream";
-            await context.Response.WriteAsync(matchingChallenge.Token, context.RequestAborted);
+            await context.Response.WriteAsync(matchingChallenge.Response, context.RequestAborted);
         }
     }
 }

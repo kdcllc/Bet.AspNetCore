@@ -141,7 +141,9 @@ namespace Bet.Extensions.LetsEncrypt.Order
 
             pfxBuilder.FullChain = true;
 
-            var pfxBytes = pfxBuilder.Build("Let's Encrypt - " + accountOptions.Domains, certificateOptions?.CertificatePassword ?? string.Empty);
+            var pfxBytes = pfxBuilder.Build(
+                $"Let's Encrypt - {accountOptions.Domains[0]} ",
+                certificateOptions?.CertificatePassword ?? string.Empty);
 
             _logger.LogInformation("[LetsEncrypt][Certificate] Certificate acquired.");
 
@@ -190,7 +192,8 @@ namespace Bet.Extensions.LetsEncrypt.Order
 
                 var allInvalid = challenges.All(x => (x.Status == ChallengeStatus.Invalid && x.Type == ChallengeTypes.Http01));
 
-                if ((anyValid && !anyPending) || allInvalid)
+                if ((anyValid && !anyPending)
+                    || (allInvalid && retries >= orderOptions.ValidationRetry))
                 {
                     break;
                 }

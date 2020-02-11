@@ -29,7 +29,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
 
         public async Task<X509Certificate2?> LoadAsync(string name, string certificatePassword, CancellationToken cancellationToken)
         {
-            var blob = await _storage.GetBytesAsync(_options.NamedOption, name, cancellationToken);
+            var blob = await _storage.GetBytesAsync($"{_options.NamedOption}-cert", name, cancellationToken);
 
             if (blob == null)
             {
@@ -41,7 +41,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
 
         public async Task SaveAsync(byte[] value, string name, CancellationToken cancellationToken)
         {
-            await _storage.AddAsync(_options.NamedOption, value, name, null, cancellationToken);
+            await _storage.AddAsync($"{_options.NamedOption}-cert", value, name, null, cancellationToken);
         }
     }
 }

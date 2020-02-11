@@ -68,7 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services
                   .AddAzureStorageAccount("letsencrypt")
-                  .AddAzureBlobContainer(builder.Name, blobSection, blobRootSection, storageConfigure);
+                  .AddAzureBlobContainer($"{builder.Name}-account", blobSection, blobRootSection, storageConfigure);
 
             builder.Services
                     .AddOptions<AzureAcmeAccountStoreOptions>(builder.Name)
@@ -161,7 +161,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services
                   .AddAzureStorageAccount("letsencrypt")
-                  .AddAzureBlobContainer(builder.Name, blobSection, blobRootSection, storageConfigure);
+                  .AddAzureBlobContainer($"{builder.Name}-cert", blobSection, blobRootSection, storageConfigure);
 
             builder.Services
                 .AddOptions<AzureCertificateStoreOptions>(builder.Name)

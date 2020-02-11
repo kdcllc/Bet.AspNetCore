@@ -19,9 +19,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 
         public async Task<byte[]> GetCertificateAsync(string named, CancellationToken cancellationToken)
         {
-            var order = await _orderClient.StartOrderAsync(named, x => x.Http(), CancellationToken.None);
-
-            await Task.Delay(100);
+            var order = await _orderClient.StartOrderAsync(named, x => x.Http(), cancellationToken);
 
             return await _orderClient.CompleteOrderAsync(named, order, cancellationToken);
         }

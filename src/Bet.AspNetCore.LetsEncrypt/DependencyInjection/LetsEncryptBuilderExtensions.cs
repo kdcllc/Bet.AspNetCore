@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
+using Bet.AspNetCore.LetsEncrypt;
 using Bet.AspNetCore.LetsEncrypt.Internal;
-using Bet.Extensions.LetsEncrypt.Account;
 using Bet.Extensions.LetsEncrypt.Certificates;
-using Bet.Extensions.LetsEncrypt.Certificates.Stores;
 using Bet.Extensions.LetsEncrypt.Order.Stores;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -38,25 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.Add(ServiceDescriptor.Describe(
                typeof(IHostedService),
-               sp =>
-               {
-                   var challegne = sp.GetRequiredService<HttpChallenge>();
-
-                   var accountOptions = sp.GetRequiredService<IOptionsMonitor<AcmeAccountOptions>>().Get(builder.Name);
-                   var certificateOptions = sp.GetRequiredService<IOptionsMonitor<CertificateOptions>>().Get(builder.Name);
-
-                   var developmentCertificate = sp.GetRequiredService<DevelopmentCertificate>();
-                   var stores = sp.GetRequiredService<IEnumerable<ICertificateStore>>();
-                   var certificateSelector = sp.GetRequiredService<KestrelCertificateSelector>();
-
-                   return new StartupCertificateLoader(
-                       challegne,
-                       Options.Options.Create(accountOptions),
-                       Options.Options.Create(certificateOptions),
-                       developmentCertificate,
-                       stores,
-                       certificateSelector);
-               },
+               sp => new StartupCertificateLoader(builder.Name, sp),
                ServiceLifetime.Singleton));
 
             builder.Services
@@ -68,6 +47,8 @@ namespace Microsoft.Extensions.DependencyInjection
                    {
                        options.ChallengeStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is InMemoryChallengeStore);
                    });
+
+            builder.Services.AddScheduler(x => x.AddJob<AcmeRenewalJob, AcmeRenewalJobOptions>("LetsEncrypt"));
 
             return builder;
         }
