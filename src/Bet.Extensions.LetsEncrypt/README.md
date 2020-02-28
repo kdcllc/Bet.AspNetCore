@@ -2,10 +2,12 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.LetsEncrypt.svg)](https://www.nuget.org/packages?q=Bet.Extensions.LetsEncrypt)
-[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.Extensions.LetsEncrypt.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
+[![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.LetsEncrypt/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.LetsEncrypt/latest/download)
+
 
 The basic logic for Let's Encrypt SSL certificate generation
 
+Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
 
 ## Troubleshooting DNS Challenge Validation
 

@@ -2,9 +2,11 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.LetsEncrypt.svg)](https://www.nuget.org/packages?q=Bet.AspNetCore.LetsEncrypt)
-[![MyGet](https://img.shields.io/myget/kdcllc/v/Bet.AspNetCore.LetsEncrypt.svg?label=myget)](https://www.myget.org/F/kdcllc/api/v2)
+[![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.AspNetCore.LetsEncrypt/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.AspNetCore.LetsEncrypt/latest/download)
 
 This library is designed only to be used with ASP.NET Core with Kestrel Applications, no proxies.
+
+Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
 
 Account and Certificate information can be stored:
 
@@ -15,7 +17,7 @@ The case usage is with Azure Container Instances (ACIs) for a small sized websit
 
 ### LetsEncryptWeb
 
-1. [`LetsEncryptWeb`](../LetsEncryptWeb/README.md)
+1. [`LetsEncryptWeb`](../LetsEncryptWeb/)
 
 
 ## Usage

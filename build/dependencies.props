@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.1.1</AspNetCoreVersion>
-    <EFCommonVersion>3.1.1</EFCommonVersion>
-    <ExtensionsVersion>3.1.1</ExtensionsVersion>
+    <AspNetCoreVersion>3.1.2</AspNetCoreVersion>
+    <EFCommonVersion>3.1.2</EFCommonVersion>
+    <ExtensionsVersion>3.1.2</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Microsoft.AspNetCore Sample Applications" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
@@ -30,7 +30,7 @@
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(EFCommonVersion)" />
     <PackageReference Update="Microsoft.AspNetCore.Identity.UI" Version="$(EFCommonVersion)" />
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="3.0.0-preview4*" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.2.0" />
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson"  Version="$(AspNetCoreVersion)"/>
     <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EFCommonVersion)" />
