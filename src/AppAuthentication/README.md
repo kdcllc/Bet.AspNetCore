@@ -1,7 +1,9 @@
 ﻿# AppAuthentication Cli Tool
 
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
-[![NuGet](https://img.shields.io/nuget/v/appauthentication.svg)](https://www.nuget.org/packages?q=appauthentication)
+[![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/AppAuthentication/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/AppAuthentication/latest/download)
+
+Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
 
 ![appauthentication debug in docker](../../img/appauthentication-docker-debug.gif)
 
