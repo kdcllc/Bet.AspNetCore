@@ -25,7 +25,7 @@ namespace AppAuthentication
     [Command(
         "run",
         Description = "Runs instance of the local server that returns authentication tokens.",
-        ThrowOnUnexpectedArgument = false,
+        UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw,
         AllowArgumentSeparator = true)]
     [HelpOption("--help")]
     internal class RunCommand

@@ -15,52 +15,61 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.AspNetCore.Sample
 {
-    public class ModelBuilderJob : ScheduledJob, IStartupJob
+    public class ModelBuilderJob : IScheduledJob, IStartupJob
     {
         private readonly IServiceProvider _provider;
         private readonly ILogger<ModelBuilderJob> _logger;
-        private readonly ModelBuilderOptions _options;
+        private ModelBuilderOptions _options;
 
         public ModelBuilderJob(
             IServiceProvider provider,
-            IOptionsMonitor<ModelBuilderOptions> options,
-            ILogger<ModelBuilderJob> logger) : base(options.CurrentValue)
+            IOptionsMonitor<ModelBuilderOptions> optionsMonitor,
+            ILogger<ModelBuilderJob> logger)
         {
-            _options = options.CurrentValue;
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _options = optionsMonitor.Get(Name);
+
+            optionsMonitor.OnChange((o, n) =>
+            {
+                if (n == Name)
+                {
+                    _options = o;
+                }
+            });
         }
 
-        public override async Task ExecuteAsync(CancellationToken cancellationToken)
+        public string Name => nameof(ModelBuilderJob);
+
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            using (var scope = _provider.CreateScope())
+            using var scope = _provider.CreateScope();
+            var modelBuilders = scope.ServiceProvider.GetRequiredService<IEnumerable<IModelCreationEngine>>();
+
+            // 1. Build models
+            _logger.LogInformation("[Started][{jobName}] executing model builders total count: {numberOfModels}", nameof(ModelBuilderJob), modelBuilders?.ToList()?.Count ?? 0);
+
+            var actualCount = 0;
+            foreach (var modelBuilder in modelBuilders)
             {
-                var modelBuilders = scope.ServiceProvider.GetRequiredService<IEnumerable<IModelCreationEngine>>();
-
-                // 1. Build models
-                _logger.LogInformation("[Started][{jobName}] executing model builders total count: {numberOfModels}", nameof(ModelBuilderJob), modelBuilders?.ToList()?.Count ?? 0);
-
-                var actualCount = 0;
-                foreach (var modelBuilder in modelBuilders)
+                try
                 {
-                    try
-                    {
-                        await modelBuilder.TrainModelAsync(cancellationToken);
+                    await modelBuilder.TrainModelAsync(cancellationToken);
 
-                        await modelBuilder.ClassifyTestAsync(cancellationToken);
+                    await modelBuilder.ClassifyTestAsync(cancellationToken);
 
-                        await modelBuilder.SaveModelAsync(cancellationToken);
+                    await modelBuilder.SaveModelAsync(cancellationToken);
 
-                        actualCount++;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.ToString());
-                    }
+                    actualCount++;
                 }
-
-                _logger.LogInformation("[Finished][{jobName}] executing total number successfully {numberOfModels}", nameof(ModelBuilderJob), actualCount);
+                catch (Exception ex)
+                {
+                    _logger.LogError("{modelBuilder} failed with exception: {message}", modelBuilder.GetType(), ex.ToString());
+                }
             }
+
+            _logger.LogInformation("[Finished][{jobName}] executing total number successfully {numberOfModels}", nameof(ModelBuilderJob), actualCount);
         }
     }
 }

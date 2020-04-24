@@ -48,7 +48,8 @@ namespace Microsoft.Extensions.DependencyInjection
                        options.ChallengeStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is InMemoryChallengeStore);
                    });
 
-            builder.Services.AddScheduler(x => x.AddJob<AcmeRenewalJob, AcmeRenewalJobOptions>("LetsEncrypt"));
+
+            builder.Services.AddSchedulerJob<AcmeRenewalJob, AcmeRenewalJobOptions>(sectionName: "LetsEncrypt");
 
             return builder;
         }

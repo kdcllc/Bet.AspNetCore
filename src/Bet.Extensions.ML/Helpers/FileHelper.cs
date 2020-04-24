@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Bet.Extensions.ML.Helpers
     {
         public static List<TData> GetRecords<TData>(
             string fileLocation,
-            Configuration configuration) where TData : class
+            CsvConfiguration configuration) where TData : class
         {
             using var reader = new StreamReader(fileLocation);
             using (var csv = new CsvReader(reader, configuration))
@@ -25,7 +26,7 @@ namespace Bet.Extensions.ML.Helpers
 
         public static List<TData> GetRecords<TData>(
            Stream stream,
-           Configuration configuration) where TData : class
+           CsvConfiguration configuration) where TData : class
         {
             using var reader = new StreamReader(stream);
             using var csv = new CsvReader(reader, configuration);
@@ -82,11 +83,11 @@ namespace Bet.Extensions.ML.Helpers
             return Path.Combine(assemblyFolderPath, relativePath);
         }
 
-        public static Configuration GetConfiguration(
+        public static CsvConfiguration GetConfiguration(
             string delimiter = ",",
             bool hasHeaderRecord = true)
         {
-            return new Configuration
+            return new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = hasHeaderRecord,
                 Delimiter = delimiter,
@@ -98,7 +99,7 @@ namespace Bet.Extensions.ML.Helpers
 
         public static List<TData> GetRecordsFromZipFile<TData>(
             byte[] zipFile,
-            Configuration configuration)
+            CsvConfiguration configuration)
         {
             var stream = new MemoryStream();
             stream.Write(zipFile, 0, zipFile.Length);
@@ -109,7 +110,7 @@ namespace Bet.Extensions.ML.Helpers
 
         public static List<TData> GetRecordsFromZipFile<TData>(
             Stream zipFile,
-            Configuration configuration)
+            CsvConfiguration configuration)
         {
             var result = new List<TData>();
 
@@ -162,7 +163,7 @@ namespace Bet.Extensions.ML.Helpers
 
         private static byte[] GetStreamFromRecords<T>(
             IEnumerable<T> records,
-            Configuration configuration)
+            CsvConfiguration configuration)
         {
             using var stream = new MemoryStream();
             using var streamWrite = new StreamWriter(stream);
