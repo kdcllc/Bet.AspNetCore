@@ -34,7 +34,7 @@ namespace Bet.Extensions.Logging
                 try
                 {
                     var result = await action();
-                    _logger.LogDebug("[Azure Table][{methodName}] Elapsed: {ElapsedMilliseconds}ms;", methodName, sw.GetElapsedTime());
+                    _logger.LogDebug("[Executing][{methodName}] Elapsed: {ElapsedMilliseconds}ms;", methodName, sw.GetElapsedTime());
 
                     return result;
                 }
@@ -42,7 +42,7 @@ namespace Bet.Extensions.Logging
                 {
                     var exception = ex?.GetBaseException() ?? ex;
 
-                    _logger.LogError(exception, "[Azure Table][{methodName}] Elapsed: {ElapsedMilliseconds} ms", methodName, sw.GetElapsedTime());
+                    _logger.LogError(exception, "[Executing][{methodName}] Elapsed: {ElapsedMilliseconds} ms", methodName, sw.GetElapsedTime());
                     throw;
                 }
             }

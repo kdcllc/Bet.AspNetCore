@@ -15,35 +15,10 @@ Account and Certificate information can be stored:
 
 The case usage is with Azure Container Instances (ACIs) for a small sized websites
 
-### LetsEncryptWeb
+### For usage of this library please refer to `LetsEncryptWeb` Sample project
 
 1. [`LetsEncryptWeb`](../LetsEncryptWeb/)
 
-
-## Usage
-
-```csharp
-    services.AddLetsEncrypt(configure =>
-    {
-        var domainName = configuration.GetValue<string>("LetsEncryptDomainName");
-
-        configure.Email = "email@domain.com";
-        configure.HostNames = new[] { DomainName, "domain.com" };
-
-        configure.UseStagingServer = true;
-
-        configure.CertificateFriendlyName = DomainName;
-        configure.CertificatePassword = "4a94dfd8-7ae1-4378-8eac-87a2b38b9087";
-
-        configure.CertificateSigningRequest = new CsrInfo()
-        {
-            CountryName = "US",
-            Organization = "KDCLLC",
-            OrganizationUnit = "Dev",
-            CommonName = DomainName
-        };
-    });
-```
 
 ## Testing the Code
 

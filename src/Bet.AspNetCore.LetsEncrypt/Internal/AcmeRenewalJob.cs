@@ -47,6 +47,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("[{name}][started] executing", nameof(AcmeRenewalJob));
             try
             {
                 using var scope = _provider.CreateScope();
@@ -110,6 +111,8 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
             {
                 _logger.LogError(0, ex, $"{nameof(AcmeRenewalJob)} failed to renew certificate");
             }
+
+            _logger.LogInformation("[{name}][ended] executing", nameof(AcmeRenewalJob));
         }
 
         private async Task<X509Certificate2?> CreateAcmeOrder(
