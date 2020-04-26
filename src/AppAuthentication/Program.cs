@@ -15,7 +15,7 @@ namespace AppAuthentication
     [Command(
         Name = Constants.CLIToolName,
         Description = "Cli tool to help with Docker/Kuberbetes Local Containers Development for Microsoft Azure MSI Identity authentication.",
-        ThrowOnUnexpectedArgument = false,
+        UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw,
         AllowArgumentSeparator = true)]
     [Subcommand(typeof(RunCommand))]
     [HelpOption("-?")]

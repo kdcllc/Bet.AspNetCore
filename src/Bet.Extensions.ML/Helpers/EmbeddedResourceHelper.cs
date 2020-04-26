@@ -12,17 +12,15 @@ namespace Bet.Extensions.ML.Helpers
     {
         public static List<TData> GetRecords<TData>(
             string fileName,
-            Configuration configuration) where TData : class
+            CsvConfiguration configuration) where TData : class
         {
             var assembly = typeof(TData).GetTypeInfo().Assembly;
 
-            using (var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{fileName}"))
-            using (var reader = new StreamReader(resource))
-            using (var csv = new CsvReader(reader, configuration))
-            {
-                var records = csv.GetRecords<TData>();
-                return records.ToList();
-            }
+            using var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.{fileName}");
+            using var reader = new StreamReader(resource);
+            using var csv = new CsvReader(reader, configuration);
+            var records = csv.GetRecords<TData>();
+            return records.ToList();
         }
 
         public static List<TData> GetRecords<TData>(

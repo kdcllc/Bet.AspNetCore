@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Configuration;
+using Serilog;
 
 namespace LetsEncryptWeb
 {
@@ -27,13 +27,22 @@ namespace LetsEncryptWeb
                     var configuration = configBuilder.AddAzureKeyVault(
                         hostingEnviromentName: envName,
                         usePrefix: false,
-                        reloadInterval: null);
+                        reloadInterval: TimeSpan.FromMinutes(1));
 
                     // helpful to see what was retrieved from all of the configuration providers.
                     if (hostingContext.HostingEnvironment.IsDevelopment())
                     {
                         configuration.DebugConfigurationsWithSerilog();
                     }
+                })
+                .ConfigureLogging((hostingContext, logBuilder) =>
+                {
+                    logBuilder.ClearProviders();
+                    logBuilder.AddFilter((_) => true);
+
+                    logBuilder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    logBuilder.AddDebug();
+                    logBuilder.AddConsole();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

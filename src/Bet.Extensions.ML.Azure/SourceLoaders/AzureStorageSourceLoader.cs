@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 
 using Bet.Extensions.AzureStorage;
@@ -18,7 +19,7 @@ namespace Bet.Extensions.ML.Azure.SourceLoaders
         public override Func<SourceLoaderFile<TInput>, IServiceProvider, string, List<TInput>> ProcessFile { get; set; }
         = (options, sp, modelName) =>
         {
-            var config = new Configuration
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Delimiter = options.Delimiter,
                 HasHeaderRecord = options.HasHeaderRecord

@@ -17,24 +17,37 @@ using Microsoft.Extensions.Options;
 
 namespace Bet.AspNetCore.LetsEncrypt.Internal
 {
-    internal class AcmeRenewalJob : ScheduledJob
+    internal class AcmeRenewalJob : IScheduledJob
     {
         private readonly IServiceProvider _provider;
-        private readonly AcmeRenewalJobOptions _options;
         private readonly ILogger<AcmeRenewalJob> _logger;
+
+        private AcmeRenewalJobOptions _options;
 
         public AcmeRenewalJob(
             IServiceProvider provider,
             IOptionsMonitor<AcmeRenewalJobOptions> options,
-            ILogger<AcmeRenewalJob> logger) : base(options.CurrentValue)
+            ILogger<AcmeRenewalJob> logger)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-            _options = options.CurrentValue;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _options = options.Get(Name);
+
+            options.OnChange((o, n) =>
+            {
+                if (n == Name)
+                {
+                    _options = o;
+                }
+            });
         }
 
-        public override async Task ExecuteAsync(CancellationToken cancellationToken)
+        public string Name => nameof(AcmeRenewalJob);
+
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("[{name}][started] executing", nameof(AcmeRenewalJob));
             try
             {
                 using var scope = _provider.CreateScope();
@@ -98,6 +111,8 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
             {
                 _logger.LogError(0, ex, $"{nameof(AcmeRenewalJob)} failed to renew certificate");
             }
+
+            _logger.LogInformation("[{name}][ended] executing", nameof(AcmeRenewalJob));
         }
 
         private async Task<X509Certificate2?> CreateAcmeOrder(

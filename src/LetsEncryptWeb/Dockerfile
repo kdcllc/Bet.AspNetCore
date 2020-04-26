@@ -1,6 +1,9 @@
 #
 # BUILD:  docker build --rm -f "src\LetsEncryptWeb\Dockerfile" -t kdcllc/bet:letsencrypt .
 #
+# PUBLISH: docker push kdcllc/bet:letsencrypt
+#
+
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80

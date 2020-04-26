@@ -64,6 +64,11 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
 
         public X509Certificate2? Select(ConnectionContext features, string hostName)
         {
+            if (string.IsNullOrEmpty(hostName))
+            {
+                return null;
+            }
+
             if (!_store.TryGetValue(hostName, out var retVal))
             {
                 return null;

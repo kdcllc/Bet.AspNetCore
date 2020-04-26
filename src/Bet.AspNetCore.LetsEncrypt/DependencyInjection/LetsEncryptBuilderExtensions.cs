@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using Bet.AspNetCore.LetsEncrypt;
 using Bet.AspNetCore.LetsEncrypt.Internal;
 using Bet.Extensions.LetsEncrypt.Certificates;
 using Bet.Extensions.LetsEncrypt.Order.Stores;
@@ -16,6 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static ILetsEncryptBuilder AddHttpChallengeResponse(this ILetsEncryptBuilder builder)
         {
+            builder.Services.AddLogging();
+
             builder.Services.AddSingleton<HttpChallenge>();
 
             builder.Services
@@ -48,7 +49,8 @@ namespace Microsoft.Extensions.DependencyInjection
                        options.ChallengeStore = sp.GetServices<IAcmeChallengeStore>().First(x => x is InMemoryChallengeStore);
                    });
 
-            builder.Services.AddScheduler(x => x.AddJob<AcmeRenewalJob, AcmeRenewalJobOptions>("LetsEncrypt"));
+
+            builder.Services.AddSchedulerJob<AcmeRenewalJob, AcmeRenewalJobOptions>(sectionName: "LetsEncrypt");
 
             return builder;
         }
