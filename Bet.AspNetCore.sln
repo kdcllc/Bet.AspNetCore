@@ -13,7 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6064A704-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B5340D45-2E08-42BE-B316-4B46EBEEFB69}"
 	ProjectSection(SolutionItems) = preProject
-		build\betcommon.ruleset = build\betcommon.ruleset
 		build\dependencies.props = build\dependencies.props
 		build\settings.props = build\settings.props
 		build\sources.props = build\sources.props
