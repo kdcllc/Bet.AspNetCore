@@ -81,18 +81,20 @@ namespace Bet.Hosting.Sample
                         configuration.DebugConfigurations();
                     }
                 })
-                .UseSerilog((hostingContext, loggerBuilder) =>
+                .UseSerilog((hostingContext, sp, loggerBuilder) =>
                 {
                     var applicationName = $"BetHostingSample-{hostingContext.HostingEnvironment.EnvironmentName}";
                     loggerBuilder
                             .ReadFrom.Configuration(hostingContext.Configuration)
                             .Enrich.FromLogContext()
                             .WriteTo.Console()
-                            .AddApplicationInsights(hostingContext.Configuration)
+                            .AddApplicationInsights(sp)
                             .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                 })
                 .ConfigureServices(services =>
                 {
+                    services.AddApplicationInsightsTelemetryWorkerService();
+
                     if (runAsCronJob)
                     {
                         services.AddMachineLearningModels();

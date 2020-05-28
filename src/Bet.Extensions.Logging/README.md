@@ -24,3 +24,12 @@ Sometimes we need to have tracing information enable to see where the configurat
                configBuilder.Build().DebugConfigurations();
           }
 ```
+
+In order for this library to work with Microsoft ApplicationInsights please register the workers within DI:
+
+```csharp
+            .ConfigureServices(services =>
+                {
+                    services.AddApplicationInsightsTelemetryWorkerService();
+                })
+```

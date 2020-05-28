@@ -9,9 +9,9 @@
     <AspNetCoreVersion>2.2</AspNetCoreVersion>
     <EFCommonVersion>2.2</EFCommonVersion>
     <ExtensionsVersion>2.2</ExtensionsVersion>
-    <MLCommon>1.4.0</MLCommon>
+    <MLCommon>1.5.0</MLCommon>
     <SwashbuckleCommon>5.4.1</SwashbuckleCommon>
-    <MicrosoftAzureStorageCommon>11.1.5</MicrosoftAzureStorageCommon>
+    <MicrosoftAzureStorageCommon>11.1.6</MicrosoftAzureStorageCommon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
@@ -112,7 +112,7 @@
   <ItemGroup Label="Serilog">
     <PackageReference Update="Serilog" Version="2.9.0" />
     <PackageReference Update="Serilog.AspNetCore" Version="3.2.0" />
-    <PackageReference Update="Serilog.Extensions.Hosting" Version="3.0.0" />
+    <PackageReference Update="Serilog.Extensions.Hosting" Version="3.1.0" />
     <PackageReference Update="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Update="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0" />
@@ -155,7 +155,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Analyzers">
-    <PackageReference Include="Bet.CodeAnalyzers" Version="1.0.9" PrivateAssets="All" />
+    <PackageReference Include="Bet.CodeAnalyzers" Version="1.0.10" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
