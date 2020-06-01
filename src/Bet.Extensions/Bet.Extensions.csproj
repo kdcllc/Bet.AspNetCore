@@ -13,5 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Primitives" />
+    <PackageReference Include="System.Threading.Channels" />
   </ItemGroup>
 </Project>
