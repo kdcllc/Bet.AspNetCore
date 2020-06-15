@@ -18,11 +18,9 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "ASPNETCORE_URLS": "https://*:443;http://*:80"
             },
-
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             },
-
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",
@@ -36,13 +34,18 @@
                 "linux": {
                     "command": "xdg-open"
                 }
-            },
+            }
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "Local Process with Kubernetes (Preview)",
+            "type": "dev-spaces-connect-configuration",
+            "request": "launch"
         }
     ]
 }

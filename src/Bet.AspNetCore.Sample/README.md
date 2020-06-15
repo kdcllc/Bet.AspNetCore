@@ -1,5 +1,7 @@
 # AspNetCore Web Application Sample
 
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kdcllc/Bet.AspNetCore/master/LICENSE)
+
 This project demonstrates how to utilize:
 
 - `Sentiment` and `Spam` ML models with AspNetCore application
@@ -10,7 +12,7 @@ This project demonstrates how to utilize:
 4. ML.NET Models HealthChecks
 5. ML.NET Models file watch with File, Azure providers
 
-- Kubernetes Dataprotection provider to store the encryptions keys in Azure Storage Blob.
+- Kubernetes `DataProtection` provider to store the encryptions keys in Azure Storage Blob.
 
 The building of the models occurs on the launch of the application and the Http traffic is not served until the Initial job has been completed.
 
@@ -18,8 +20,8 @@ The building of the models occurs on the launch of the application and the Http 
 
 These models can be found at the following projects:
 
-- [`Bet.Extensions.ML.Sentiment` Library](../../src/Bet.Extensions.ML.Sentiment/README.md)
-- [`Bet.Extensions.ML.Spam` Library](../../src/Bet.Extensions.ML.Spam/README.md)
+- [`Bet.Extensions.ML.Sentiment` Library](../../src/Bet.Extensions.ML.Sentiment/)
+- [`Bet.Extensions.ML.Spam` Library](../../src/Bet.Extensions.ML.Spam/)
 
 The folder named `MLContent` contains pre-generated ML.NET models that the Web Api Controllers use for the predictions when `true` is set to `true`.
 
@@ -47,10 +49,13 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install web api in the local Kubernetes cluster
-     helm install betweb --set service.port=5000 -n betweb
+    helm install betweb k8s/betweb --set ingress.enabled=false,aadpodidbinding=test,local.enabled=true
 
-    # delete web api
-    helm delete  betwebsample --purge
+    # unistall web api project
+    helm uninstall betweb
+
+    # verify the pod
+    kubectl describe pod betweb
 ```
 
 ## ML Model HealthCheck
@@ -107,4 +112,15 @@ Batch testing of values
 ```
 
 ## Future work
+
 - To enable the functionality to accept new data point and storing them inside of SQLite or other storage.
+
+## About Docker Images
+
+This repo is utilizing [King David Consulting LLC Docker Images](https://hub.docker.com/u/kdcllc):
+
+- [kdcllc/dotnet-sdk:3.1](https://hub.docker.com/r/kdcllc/dotnet-sdk-vscode):  - the docker image for templated `DotNetCore` build of the sample web application.
+
+- [kdcllc/dotnet-sdk-vscode:3.1](https://hub.docker.com/r/kdcllc/dotnet-sdk/tags): the docker image for the Visual Studio Code In container development.
+
+- [Docker Github repo](https://github.com/kdcllc/docker/blob/master/dotnet/dotnet-docker.md)

@@ -4,6 +4,7 @@ using Bet.Extensions.Logging.Azure;
 
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Serilog
@@ -56,6 +57,7 @@ namespace Serilog
         /// <param name="sectionName">The options configuration section name.</param>
         /// <param name="enableValidation">The option to enable or disable options validations on the startup.</param>
         /// <returns></returns>
+        [Obsolete("Please use method with IServiceProvider overload.")]
         public static LoggerConfiguration AddApplicationInsights(
             this LoggerConfiguration loggerConfiguration,
             IConfiguration configuration,
@@ -69,7 +71,7 @@ namespace Serilog
             {
 #pragma warning disable CA2000 // Dispose objects before losing scope
                 // https://github.com/serilog/serilog-sinks-applicationinsights/issues/121
-                var telemetryClient = TelemetryConfiguration.CreateDefault();
+                var telemetryClient = TelemetryConfiguration.Active; // TelemetryConfiguration.CreateDefault();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
                 if (appInsightConfig.EnableEvents)
@@ -80,6 +82,48 @@ namespace Serilog
                 if (appInsightConfig.EnableTraces)
                 {
                     loggerConfiguration.WriteTo.ApplicationInsights(telemetryClient, TelemetryConverter.Traces);
+                }
+            }
+
+            return loggerConfiguration;
+        }
+
+        /// <summary>
+        /// Adds Azure ApplicationInsights Serilog Sink.
+        /// </summary>
+        /// <param name="loggerConfiguration">The instance of LoggerConfiguration.</param>
+        /// <param name="provider">The configuration instance.</param>
+        /// <param name="sectionName">The options configuration section name.</param>
+        /// <param name="enableValidation">The option to enable or disable options validations on the startup.</param>
+        /// <returns></returns>
+        public static LoggerConfiguration AddApplicationInsights(
+            this LoggerConfiguration loggerConfiguration,
+            IServiceProvider provider,
+            string sectionName = "ApplicationInsights",
+            bool enableValidation = true)
+        {
+            var configuration = provider.GetRequiredService<IConfiguration>();
+
+            // writes to Application Insights window
+            var appInsightConfig = configuration.Bind<ApplicationInsightsOptions>(sectionName, enableValidation);
+
+            if (!string.IsNullOrEmpty(appInsightConfig.InstrumentationKey))
+            {
+                var telemteryConfiguration = provider.GetService<TelemetryConfiguration>();
+
+                if (telemteryConfiguration == null)
+                {
+                    telemteryConfiguration = new TelemetryConfiguration { InstrumentationKey = appInsightConfig.InstrumentationKey };
+                }
+
+                if (appInsightConfig.EnableEvents)
+                {
+                    loggerConfiguration.WriteTo.ApplicationInsights(telemteryConfiguration, TelemetryConverter.Events);
+                }
+
+                if (appInsightConfig.EnableTraces)
+                {
+                    loggerConfiguration.WriteTo.ApplicationInsights(telemteryConfiguration, TelemetryConverter.Traces);
                 }
             }
 

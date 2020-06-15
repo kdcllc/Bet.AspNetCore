@@ -33,10 +33,10 @@ Create chart name and version as used by the chart label.
 
 {{- define "envariables" -}}
 - name: DatabasePath
-  value: "/aksshare/"
+  value: "/betshare/"
 - name: LocalMLModels
   value: "false"
 {{ if .Values.local.enabled }}
 {{ toYaml .Values.local.env }}
 {{ end }}
-{{- end -}}}}
+{{- end -}}

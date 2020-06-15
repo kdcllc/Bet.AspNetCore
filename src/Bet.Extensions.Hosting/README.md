@@ -4,16 +4,20 @@
 [![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.Hosting.svg)](https://www.nuget.org/packages?q=Bet.Extensions.Hosting)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.Hosting/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.Hosting/latest/download)
 
+*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
+
 The collection of the IHost related functionality used with GenericHost.
 
-Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
-
-## Configuration Validations for `IHost`
+## Install
 
 ```bash
     dotnet add package Bet.Extensions.Hosting
     dotnet add package Bet.Extensions.Options
 ```
+
+## Usage
+
+### Configuration Validations for `IHost`
 
 [Usage Bet.Extensions.Options](../../src/Bet.Extensions.Options/README.md).
 
@@ -26,13 +30,13 @@ To enable validation use `UseOptionValidation` in `Program.cs`
 
 Usage of `ConfigureWithDataAnnotationsValidation` or `ConfigureWithValidation` the same as in `IWebHost`
 
-## `IHostStartupFilter`
+### `IHostStartupFilter`
 
 To enable registration of other services on the start up use `UseStartupFilters` in `Program.cs`
 
 By implementing and registering this interface with DI it is possible to trigger startup jobs for `IHost`.
 
-## `ITimedHostedService`
+### `ITimedHostedService`
 
 The simple implementation of the service that must be run at an interval specified.
 

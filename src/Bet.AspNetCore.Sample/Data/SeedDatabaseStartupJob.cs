@@ -34,6 +34,8 @@ namespace Bet.AspNetCore.Sample.Data
 
             await _dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
             var email = "demo@demo.com";
             var defaultUser = await _userManager.FindByNameAsync(email);
 

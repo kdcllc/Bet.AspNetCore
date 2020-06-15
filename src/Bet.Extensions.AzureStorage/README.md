@@ -4,13 +4,9 @@
 [![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.AzureStorage.svg)](https://www.nuget.org/packages?q=Bet.Extensions.AzureStorage)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.AzureStorage/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.AzureStorage/latest/download)
 
-Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
+*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
-Add the following to the project
-
-```csharp
-    dotnet add package Bet.Extensions.AzureStorage
-```
+The purpose of this repo is create an extension to Azure Storage Libraries and support MSI identity or token authentication.
 
 This library contains collection of Azure Storage functionality.
 
@@ -18,6 +14,13 @@ This library contains collection of Azure Storage functionality.
 - It allows configuration of AspNetCore Static File options to use Azure Storage Blob Container.
 
 Sample App requires [Azure storage emulator for development](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
+
+## Install
+
+```csharp
+    dotnet add package Bet.Extensions.AzureStorage
+```
+
 
 ## Usage
 
@@ -115,5 +118,6 @@ As you can see no need to provide secure SAS token.
 
 ## Resources
 
-[Services that support managed identities for Azure resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities#azure-storage-blobs-and-queues)
-[Authenticate access to blobs and queues with Azure Active Directory and managed identities for Azure Resources](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-msi)
+- [Services that support managed identities for Azure resources](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities#azure-storage-blobs-and-queues)
+
+- [Authenticate access to blobs and queues with Azure Active Directory and managed identities for Azure Resources](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-msi)

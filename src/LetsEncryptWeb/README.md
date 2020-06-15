@@ -8,12 +8,11 @@ http://betacme.kingdavidconsulting.com/weatherforecast
 
 https://betacme.kingdavidconsulting.com/weatherforecast
 
-The required Azure Compoenent
+The required Azure Components
 
 - Azure Blob Storage - Used to store Acme Account and Certificate
 - Azure Key Vault - Used to store secrets
 - [Managed Identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-cli) is used to access resources from Azure Container Services
-
 
 ## Azure Container Services Deployment Sample Template
 
@@ -67,6 +66,5 @@ identity:
 tags: null
 
 type: Microsoft.ContainerInstance/containerGroups
-
 
 ```

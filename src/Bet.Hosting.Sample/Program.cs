@@ -29,33 +29,31 @@ namespace Bet.Hosting.Sample
         /// <returns></returns>
         public static async Task<int> Main(string[] args)
         {
-            using (var mutex = new Mutex(true, nameof(Program), out var canCreateNew))
+            using var mutex = new Mutex(true, nameof(Program), out var canCreateNew);
+            if (canCreateNew)
             {
-                if (canCreateNew)
+                using var host = CreateHostBuilder(args).UseConsoleLifetime().Build();
+                if (runAsCronJob)
                 {
-                    using var host = CreateHostBuilder(args).UseConsoleLifetime().Build();
-                    if (runAsCronJob)
-                    {
-                        await host.StartAsync();
+                    await host.StartAsync();
 
-                        var scope = host.Services.CreateScope();
-                        var appLifeTime = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
+                    var scope = host.Services.CreateScope();
+                    var appLifeTime = scope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>();
 
-                        var job = scope.ServiceProvider.GetRequiredService<IModelCreationService>();
-                        await job.BuildModelsAsync(appLifeTime.ApplicationStopping);
+                    var job = scope.ServiceProvider.GetRequiredService<IModelCreationService>();
+                    await job.BuildModelsAsync(appLifeTime.ApplicationStopping);
 
-                        await host.StopAsync();
-                        return 0;
-                    }
-
-                    await host.RunAsync();
+                    await host.StopAsync();
                     return 0;
                 }
-                else
-                {
-                    Console.WriteLine($"Only one instance of the {nameof(Program)} tool can be run at the same time.");
-                    return -1;
-                }
+
+                await host.RunAsync();
+                return 0;
+            }
+            else
+            {
+                Console.WriteLine($"Only one instance of the {nameof(Program)} tool can be run at the same time.");
+                return -1;
             }
         }
 
@@ -81,18 +79,20 @@ namespace Bet.Hosting.Sample
                         configuration.DebugConfigurations();
                     }
                 })
-                .UseSerilog((hostingContext, loggerBuilder) =>
+                .UseSerilog((hostingContext, sp, loggerBuilder) =>
                 {
                     var applicationName = $"BetHostingSample-{hostingContext.HostingEnvironment.EnvironmentName}";
                     loggerBuilder
                             .ReadFrom.Configuration(hostingContext.Configuration)
                             .Enrich.FromLogContext()
                             .WriteTo.Console()
-                            .AddApplicationInsights(hostingContext.Configuration)
-                            .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
+                            .AddApplicationInsights(sp);
+                            // .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                 })
                 .ConfigureServices(services =>
                 {
+                    services.AddApplicationInsightsTelemetryWorkerService();
+
                     if (runAsCronJob)
                     {
                         services.AddMachineLearningModels();

@@ -68,7 +68,7 @@ namespace Bet.AspNetCore.Sample
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 var dbPath = Configuration.GetValue<string>("DatabasePath");
-                var connectionString = $"Filename={dbPath}app.db";
+                var connectionString = $"Data Source={dbPath}app.db";
                 options.UseSqlite(connectionString);
 
                 // options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));

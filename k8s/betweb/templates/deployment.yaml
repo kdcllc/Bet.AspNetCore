@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "betweb.fullname" . }}
@@ -45,24 +45,24 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 30
           volumeMounts:
-            - name: azure
-              mountPath: /aksshare
-      volumes:
-      - name: azure
-        shareName: aksshare
-        persistentVolumeClaim:
-          claimName: azurefile
+            - name: betazurefile
+              mountPath: /betshare
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: betazurefile
+        azureFile:
+          secretName: betstorage-secret
+          shareName: betshare
     {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
+    nodeSelector:
+      {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
+    affinity:
+      {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
+    tolerations:
+      {{ toYaml . | indent 8 }}
     {{- end }}

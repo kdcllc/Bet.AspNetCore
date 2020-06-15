@@ -26,6 +26,16 @@ namespace Bet.AspNetCore.Sample
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                        .UseSerilog((hostingContext, sp, loggerConfiguration) =>
+                        {
+                            var applicationName = $"BetWebSample-{hostingContext.HostingEnvironment.EnvironmentName}";
+                            loggerConfiguration
+                                    .ReadFrom.Configuration(hostingContext.Configuration)
+                                    .Enrich.FromLogContext()
+                                    .WriteTo.Console()
+                                    .AddApplicationInsights(sp);
+                                    // .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
+                        })
                         .ConfigureWebHostDefaults(webBuilder =>
                         {
                             webBuilder.UseShutdownTimeout(TimeSpan.FromSeconds(20));
@@ -47,22 +57,13 @@ namespace Bet.AspNetCore.Sample
                                 }
                             });
 
-                            webBuilder.UseSerilog((hostingContext, loggerConfiguration) =>
-                            {
-                                var applicationName = $"BetWebSample-{hostingContext.HostingEnvironment.EnvironmentName}";
-                                loggerConfiguration
-                                        .ReadFrom.Configuration(hostingContext.Configuration)
-                                        .Enrich.FromLogContext()
-                                        .WriteTo.Console()
-                                        .AddApplicationInsights(hostingContext.Configuration)
-                                        .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
-                            });
-
                             webBuilder.ConfigureServices(services =>
                             {
                                 // commented it out if model building to be done on apps load.
                                 // services.AddStartupJob<ModelBuilderJob>();
                                 services.AddStartupJob<SeedDatabaseStartupJob>();
+
+                                services.AddApplicationInsightsTelemetry();
                             });
 
                             webBuilder.UseStartup<Startup>();

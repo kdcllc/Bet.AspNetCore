@@ -1,13 +1,14 @@
 ﻿# AppAuthentication Cli Tool
 
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kdcllc/Bet.AspNetCore/master/LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
+[![NuGet](https://img.shields.io/nuget/v/appauthentication.svg)](https://www.nuget.org/packages?q=appauthentication )
+![Nuget](https://img.shields.io/nuget/dt/appauthentication )
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/AppAuthentication/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/AppAuthentication/latest/download)
 
-Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
+*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
-![appauthentication debug in docker](../../img/appauthentication-docker-debug.gif)
-
-This dotnet cli tool provides ability to accesses Azure Vault in Docker Container when this container is ran on the local machine.
+This dotnet cli tool provides ability to accesses Azure Key Vault/ Azure Blob Storage in Docker Container when this container is ran on the local machine.
 In addition if needed this cli tool can be enabled to retrieve tokens for local machine development.
 It can be utilized in conjunction with VSCode Remote Extensions.
 
@@ -16,6 +17,11 @@ The tool was tested on:
 - On Windows 10 Visual Studio.NET or AzureCli Providers.
 
 - On Linux with Azure Cli only. Install Azure Cli `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
+
+
+![appauthentication debug in docker](../../img/appauthentication-docker-debug.gif)
+
+## Install
 
 ```bash
     dotnet tool install --global appauthentication
@@ -106,4 +112,4 @@ If AzureCli provider is used please make sure you log into Azure with the follow
 
 - Using without 2.2 `ENV DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX=2`
 
-- To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop).
+- To learn how to use this tool in real life example refer to [K8.DotNetCore.Workshop](https://github.com/kdcllc/K8.DotNetCore.Workshop)
