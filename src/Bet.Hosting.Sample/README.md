@@ -38,16 +38,16 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install cron job
-    helm install k8s/bethosting/charts/betcronjob --name betcronjob
+    helm install betcronjob k8s/bethosting/charts/betcronjob --set local.enabled=false
 
     # delete cron job
-    helm delete  betcronjob --purge
+    helm uninstall  betcronjob
 
     # install worker pod
-    helm install  k8s/bethosting/charts/betworker --name betworker
+    helm install  betworker k8s/bethosting/charts/betworker --set local.enabled=true
 
     # delete worker deployment
-    helm delete  betworker --purge
+    helm uninstall  betworker
 ```
 
 Or
