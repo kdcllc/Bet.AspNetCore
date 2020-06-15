@@ -11,7 +11,8 @@
     <ExtensionsVersion>2.2</ExtensionsVersion>
     <MLCommon>1.5.0</MLCommon>
     <SwashbuckleCommon>5.4.1</SwashbuckleCommon>
-    <MicrosoftAzureStorageCommon>11.1.6</MicrosoftAzureStorageCommon>
+    <MicrosoftAzureStorageCommon>11.1.7</MicrosoftAzureStorageCommon>
+    <MicrosoftAzureManagementCommon>1.34.0</MicrosoftAzureManagementCommon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netstandard2.0'">
@@ -21,9 +22,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <AspNetCoreVersion>3.1.4</AspNetCoreVersion>
-    <EFCommonVersion>3.1.4</EFCommonVersion>
-    <ExtensionsVersion>3.1.4</ExtensionsVersion>
+    <AspNetCoreVersion>3.1.5</AspNetCoreVersion>
+    <EFCommonVersion>3.1.5</EFCommonVersion>
+    <ExtensionsVersion>3.1.5</ExtensionsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Microsoft.AspNetCore Sample Applications" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
@@ -95,9 +96,9 @@
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.Azure.Management">
-    <PackageReference Update="Microsoft.Azure.Management.AppService.Fluent" Version="1.33.0" />
-    <PackageReference Update="Microsoft.Azure.Management.Dns.Fluent" Version="1.33.0" />
-    <PackageReference Update="Microsoft.Azure.Management.Fluent" Version="1.33.0" />
+    <PackageReference Update="Microsoft.Azure.Management.AppService.Fluent" Version="$(MicrosoftAzureManagementCommon)" />
+    <PackageReference Update="Microsoft.Azure.Management.Dns.Fluent" Version="$(MicrosoftAzureManagementCommon)" />
+    <PackageReference Update="Microsoft.Azure.Management.Fluent" Version="$(MicrosoftAzureManagementCommon)" />
     <PackageReference Update="Microsoft.Identity.Client" Version="4.14.0" />
   </ItemGroup>
 
@@ -105,8 +106,8 @@
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Update="Moq" Version="4.14.1" />
     <PackageReference Update="xunit" Version="2.4.1" />
-    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Update="coverlet.collector" Version="1.2.1" />
+    <PackageReference Update="xunit.runner.visualstudio" Version="2.4.2" />
+    <PackageReference Update="coverlet.collector" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup Label="Serilog">

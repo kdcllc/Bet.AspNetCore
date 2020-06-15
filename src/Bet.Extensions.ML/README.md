@@ -6,7 +6,7 @@
 ![Nuget](https://img.shields.io/nuget/dt/Bet.Extensions.ML)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.ML/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.ML/latest/download)
 
-*Note: Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.*
+*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
 The goal of this repo is to provide with production ready extensions to [ML.NET library](https://github.com/dotnet/machinelearning).
 
@@ -15,7 +15,6 @@ It contains two major functionality:
 1. ML.NET ModelBuilder Pipeline with ability to load from different sources i.e. Azure Blob Storage.
 
 2. ML.NET Web Api hosting with caching of ML models to improve performance. This library utilizes `ObjectPool` similar to  [Extensions.ML](https://github.com/glennc/Extensions.ML)
-
 
 ## Install
 
@@ -28,7 +27,7 @@ It contains two major functionality:
 For complete examples please refer to sample projects:
 
 1. [`Bet.AspNetCore.Sample`](../Bet.AspNetCore.Sample/) - `AspNetCore` Web App with spam prediction models.
-2. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/)
+2. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/) - `DotNetCore` Worker based scheduled job for generating ML.NET Models.
 
 To include Machine Learning prediction the following can be added:
 

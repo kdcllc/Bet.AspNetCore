@@ -1,16 +1,29 @@
 # Bet.Extensions.HealthChecks.ML
 
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kdcllc/Bet.AspNetCore/master/LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
 [![NuGet](https://img.shields.io/nuget/v/Bet.Extensions.HealthChecks.ML.svg)](https://www.nuget.org/packages?q=Bet.Extensions.HealthChecks.ML)
+![Nuget](https://img.shields.io/nuget/dt/Bet.Extensions.HealthChecks.ML)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.HealthChecks.ML/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.HealthChecks.ML/latest/download)
 
-The healthcheck for Machine Learning model that is loaded into the Application Context.
+*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
-Pre-release packages are distributed via feedz.io `https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json`.
+This goal of this repo is to create ML.NET `HealChecks` for Application Context. This is useful feature that makes the state of the Models to be checked.
+
+## Install
+
+```csharp
+    dotnet add package Bet.Extensions.HealthChecks.ML
+```
 
 ## Usage
 
-1. Add `HealthCheck` configuration in `ConfigureServices`.
+For complete examples please refer to sample projects:
+
+1. [`Bet.AspNetCore.Sample`](../Bet.AspNetCore.Sample/) - `AspNetCore` Web App with spam prediction models.
+2. [`Bet.Hosting.Sample`](../Bet.Hosting.Sample/) - `DotNetCore` Worker based scheduled job for generating ML.NET Models.
+
+In order for the healtheck to work please add `HealthCheck` configuration in `ConfigureServices`.
 
 ```csharp
   services.AddHealthChecks()

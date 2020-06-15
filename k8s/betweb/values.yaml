@@ -17,7 +17,7 @@ service:
   type: LoadBalancer
   port: 80
 
-#msi identity
+# msi identity
 aadpodidbinding: somevalue
 
 ingress:
@@ -35,12 +35,12 @@ ingress:
        - betweb.kingdavidconsulting.com
 
 resources:
-  limits:
-   cpu: 500m
-   memory: 250Mi
-  requests:
-   cpu: 250m
-   memory: 128Mi
+   limits:
+    cpu: 500m
+    memory: 250Mi
+   requests:
+    cpu: 250m
+    memory: 128Mi
 
 nodeSelector: {}
 

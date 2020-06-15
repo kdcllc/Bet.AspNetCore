@@ -33,8 +33,8 @@ namespace Bet.AspNetCore.Sample
                                     .ReadFrom.Configuration(hostingContext.Configuration)
                                     .Enrich.FromLogContext()
                                     .WriteTo.Console()
-                                    .AddApplicationInsights(sp)
-                                    .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
+                                    .AddApplicationInsights(sp);
+                                    // .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                         })
                         .ConfigureWebHostDefaults(webBuilder =>
                         {

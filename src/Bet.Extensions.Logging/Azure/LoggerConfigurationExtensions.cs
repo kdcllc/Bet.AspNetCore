@@ -2,7 +2,6 @@
 
 using Bet.Extensions.Logging.Azure;
 
-using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
