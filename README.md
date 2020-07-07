@@ -20,7 +20,7 @@ This goal of this repo is to provide with a reusable functionality for developin
 
 ## `DotNetCore` CLI global tools
 
-1. [AppAuthentication](./src/AppAuthentication/) - enables `Azure Key Vault` or `Azure Blob Storage` access from Docker Container in Local development based on token authentication.
+1. [AppAuthentication](https://github.com/kdcllc/AppAuthentication) - enables Microsoft Managed Identity (MSI) testing `Azure Key Vault` or `Azure Blob Storage` access from Docker Container in Local development based on token authentication.
 
 ## Generic functionally that extends `Microsoft.Extensions` namespace
 
