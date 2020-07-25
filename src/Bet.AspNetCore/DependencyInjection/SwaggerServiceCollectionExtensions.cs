@@ -37,11 +37,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 o.AssumeDefaultVersionWhenUnspecified = true;
             });
 
-            services.AddMvcCore().AddApiExplorer()
-                           .AddAuthorization()
-                           .AddFormatterMappings()
-                           .AddCacheTagHelper()
-                           .AddDataAnnotations();
+            services
+                .AddMvcCore()
+                .AddApiExplorer()
+                .AddAuthorization()
+                .AddFormatterMappings()
+                .AddCacheTagHelper()
+                .AddDataAnnotations();
 
             services.AddOptions<SwaggerUIOptions>()
                     .Configure<IApiVersionDescriptionProvider>((options, provider) =>
