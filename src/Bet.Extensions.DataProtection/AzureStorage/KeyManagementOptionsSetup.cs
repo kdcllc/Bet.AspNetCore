@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.DataProtection.AzureStorage;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Azure.Services.AppAuthentication;

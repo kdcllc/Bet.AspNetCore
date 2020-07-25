@@ -4,7 +4,7 @@ local:
     - name: MSI_ENDPOINT
       value: http://host.docker.internal:5050/oauth2/token
     - name: MSI_SECRET
-      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+      value: efc8c2ee-35af-4391-b47a-9aff3a08381a
 
 replicaCount: 1
 

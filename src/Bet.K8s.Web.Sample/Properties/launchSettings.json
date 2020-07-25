@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Bet.K8s.Web.Sample": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DatabasePath" : ""
+      },
+      "applicationUrl": "https://localhost:4101;http://localhost:4100"
+    }
+  }
+}
+

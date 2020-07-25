@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: betk8swebazurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile
+  resources:
+    requests:
+      storage: 1Gi
