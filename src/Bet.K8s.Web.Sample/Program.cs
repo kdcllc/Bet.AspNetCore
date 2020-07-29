@@ -79,7 +79,7 @@ namespace Bet.K8s.Web.Sample
                             // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-3.1
                             services.Configure<ForwardedHeadersOptions>(options =>
                             {
-                                options.ForwardedHeaders = ForwardedHeaders.All;
+                                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
                             });
 
                             services.AddResponseCompression();

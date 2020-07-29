@@ -4,6 +4,7 @@ metadata:
   name: {{ include "betk8sweb.fullname" . }}
   labels:
     {{- include "betk8sweb.labels" . | nindent 4 }}
+    aadpodidbinding: {{.Values.aadpodidbinding}}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,6 +20,7 @@ spec:
     {{- end }}
       labels:
         {{- include "betk8sweb.selectorLabels" . | nindent 8 }}
+        aadpodidbinding: {{.Values.aadpodidbinding}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
