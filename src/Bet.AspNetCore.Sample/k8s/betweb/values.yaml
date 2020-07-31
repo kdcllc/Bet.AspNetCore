@@ -1,0 +1,89 @@
+local:
+  enabled: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: efc8c2ee-35af-4391-b47a-9aff3a08381a
+
+replicaCount: 1
+
+image:
+  repository: kdcllc/bet
+  tag: web
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80
+
+# msi identity
+aadpodidbinding: somevalue
+
+# azure file claim config
+azurefileClaimConfig:
+ mountPath: "/betshare"
+ claimName: "betwebazurefile"
+ secretName: "betshare-secret"
+ shareName: "betshare"
+ storage: 1Gi
+
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: betweb.kingdavidconsulting.com
+      paths: ["/"]
+  tls:
+   - secretName: betweb-secret-tls
+     hosts:
+       - betweb.kingdavidconsulting.com
+
+resources:
+   limits:
+    cpu: 350m
+    memory: 250Mi
+   requests:
+    cpu: 250m
+    memory: 128Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80

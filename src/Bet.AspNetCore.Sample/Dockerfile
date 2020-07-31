@@ -1,12 +1,19 @@
 #------------------------------------------------------------------------------------------------------------------------
 #
 # USAGE:        This Dockerfile builds the AspNetCore Sample.
+#               - Azure Key Vault
+#               - Azure Blob Storage (sql file and also data protection)
+#               - Azure ApplInsights
+#
+#
 #
 # BUILD:        docker build --rm -f "src\Bet.AspNetCore.Sample\Dockerfile" -t kdcllc/bet:web .
 #               --no-cache flag can be used
 #
 # RUN:          docker run -d -p 5000:80 kdcllc/bet:web
-#               docker push kdcllc/bet:web
+#
+#
+# PUSH:         docker push kdcllc/bet:web
 #
 #------------------------------------------------------------------------------------------------------------------------
 

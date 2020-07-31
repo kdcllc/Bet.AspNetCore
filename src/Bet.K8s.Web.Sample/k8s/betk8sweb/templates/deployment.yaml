@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "betk8sweb.fullname" . }}
+  labels:
+    {{- include "betk8sweb.labels" . | nindent 4 }}
+    aadpodidbinding: {{.Values.aadpodidbinding}}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "betk8sweb.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "betk8sweb.selectorLabels" . | nindent 8 }}
+        aadpodidbinding: {{.Values.aadpodidbinding}}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "betk8sweb.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          # this value is used by application for SQLite
+          - name: DatabasePath
+            value: "/betshare/"
+          {{- include "envariables" . | nindent 10 -}}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: http
+            initialDelaySeconds: {{ .Values.probesConfig.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probesConfig.periodSeconds }}
+            timeoutSeconds: {{ .Values.probesConfig.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /healthy
+              port: http
+            initialDelaySeconds: {{ .Values.probesConfig.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probesConfig.periodSeconds }}
+            timeoutSeconds: {{ .Values.probesConfig.timeoutSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: azure
+              mountPath: {{ .Values.azurefileClaimConfig.mountPath }}
+      volumes:
+      - name: azure
+        persistentVolumeClaim:
+          claimName: {{ .Values.azurefileClaimConfig.claimName }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

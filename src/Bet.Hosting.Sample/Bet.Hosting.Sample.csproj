@@ -21,6 +21,12 @@
     <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="k8s\**\*" />
+    <Content Include="k8s\**\*" CopyToPublishDirectory="Never" />
+    <None Include="k8s\**\*" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
   <PropertyGroup Label="Docker">
     <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
     <DockerfileFile>../../src/Bet.Hosting.Sample/Dockerfile</DockerfileFile>

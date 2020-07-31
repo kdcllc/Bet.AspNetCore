@@ -8,21 +8,8 @@
 version: '3.4'
 
 services:
-  bet.base:
-    image: ${DOCKER_REGISTRY-}/bet:base
-    build:
-      context: .
-      dockerfile: Dockerfile.base
-      args:
-        NUGET_RESTORE: "-v=m"
-        RUNTESTS: "false"
-        VERBOSE: "false"
-        SOLUTION_BASE: "true"
-
   bet.web:
     image: ${DOCKER_REGISTRY-}/bet:web
-    depends_on:
-      - bet.base
     build:
       context: .
       dockerfile: src/Bet.AspNetCore.Sample/Dockerfile
@@ -33,10 +20,20 @@ services:
         PROJECT_PATH: "/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj"
         SOLUTION_BASE: "false"
 
+  bet.k8sweb:
+    image: ${DOCKER_REGISTRY-}/bet:k8sweb
+    build:
+      context: .
+      dockerfile: src/Bet.K8s.Web.Sample/Dockerfile
+      args:
+        RUNTESTS: "false"
+        VERBOSE: "false"
+        NUGET_RESTORE: "-v=m" #overides the --disable-parallel
+        PROJECT_PATH: "/src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj"
+        SOLUTION_BASE: "false"
+
   bet.hosting:
     image: ${DOCKER_REGISTRY-}/bet:hosting
-    depends_on:
-      - bet.base
     build:
       context: .
       dockerfile: src/Bet.Hosting.Sample/Dockerfile

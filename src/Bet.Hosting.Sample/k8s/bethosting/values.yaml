@@ -1,0 +1,26 @@
+replicaCount: 1
+
+# local development msi token to be passed
+local:
+  enabled: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+
+image:
+  repository: kdcllc/bet
+  tag: hosting
+  pullPolicy: IfNotPresent
+
+aadpodidbinding: aks-identity-example
+
+resources:
+  limits:
+   cpu: 100m
+   memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 128Mi
+

@@ -1,0 +1,36 @@
+
+# configurations for cronjob
+cronjob:
+  # every day at 1:00am
+  schedule: "0 1 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  args:
+    run: "--runAsCronJob=true"
+  command: ["./Bet.Hosting.Sample"]
+  restartPolicy: OnFailure
+
+local:
+  enabled: true
+  env:
+    - name: MSI_ENDPOINT
+      value: http://host.docker.internal:5050/oauth2/token
+    - name: MSI_SECRET
+      value: 1c791bd8-94e7-468f-97f3-4b46a1d0aea5
+
+image:
+  repository: kdcllc/bet
+  tag: hosting
+  pullPolicy: IfNotPresent
+
+# msi identity
+aadpodidbinding: aks-identity-example
+
+resources:
+  limits:
+   cpu: 500m
+   memory: 350Mi
+  requests:
+   cpu: 100m
+   memory: 250Mi

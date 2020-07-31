@@ -1,0 +1,38 @@
+# https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "betcronjob.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "betcronjob.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ template "betcronjob.chart" . }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1800
+      template:
+        metadata:
+         labels:
+          aadpodidbinding: {{.Values.aadpodidbinding}}
+        spec:
+          containers:
+          - name: {{ .Chart.Name }}
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            command: {{ .Values.cronjob.command }}
+{{- if .Values.local.enabled }}
+            env:
+{{ toYaml .Values.local.env | indent 14 -}}
+{{- end }}
+            args:
+              - "{{ .Values.cronjob.args.run }}"
+            resources:
+{{ toYaml .Values.resources | indent 15 }}
+          restartPolicy: {{ .Values.cronjob.restartPolicy}}
+
