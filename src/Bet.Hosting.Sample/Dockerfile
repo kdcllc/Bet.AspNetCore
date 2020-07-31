@@ -1,6 +1,12 @@
 #------------------------------------------------------------------------------------------------------------------------
 #
-# USAGE:        This Dockerfile builds the sample for hosting application.
+# USAGE:        This Dockerfile builds the sample for hosting application inside of Kubernetes Cluster.
+#               - demo for ML.NET building models for SentimentModel
+#               - Azure Key Vault
+#               - Azure Blob Storage
+#               - Azure AppInsights
+#
+# NOTE:         Please run commands from root of the solution.
 #
 # BUILD:        docker build --rm -f "src\Bet.Hosting.Sample\Dockerfile" -t kdcllc/bet:hosting .
 #

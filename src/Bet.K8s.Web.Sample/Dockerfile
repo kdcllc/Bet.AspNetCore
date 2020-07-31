@@ -3,6 +3,9 @@
 # USAGE:        This dockerfile build container for Bet.K8s.Web.Sample project to test:
 #                   - Azure Key Vault Conifguration access
 #                   - Azure Blob Storage for SQLite database storage
+#                   - Azure ApplInsights
+#
+# NOTE:         Please run commands from root of the solution.
 #
 #
 # BUILD:        Run these commands from root directory
@@ -22,7 +25,7 @@ ARG VERBOSE=false
 ARG PROJECT_PATH=/src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj
 
 FROM kdcllc/dotnet-sdk:3.1-alpine as builder
-RUN dotnet publish "./src/Bet.K8s.Web.Sample//Bet.K8s.Web.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
+RUN dotnet publish "./src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 
 FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1-alpine AS runtime

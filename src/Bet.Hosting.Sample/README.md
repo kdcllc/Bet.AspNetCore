@@ -6,13 +6,19 @@ The idea is that ML.NET model is not stale and would have the input of a new `da
 
 The sample was designed to be run Kubernetes Cluster in two ways:
 
-1. `.NET Core Service Worker` (this would require a consistent memory allocation). This also demonstrates `worker` tcp based health check
-2. or as a Cron Job (preferred usage).
+1. As `.NET Core Worker` (this would require a consistent memory allocation). This also demonstrates `worker` tcp based health check for the pod. The schedule is based on CronScheduler.
+![healthcheck](../../img/betworker-tcp-healthcheck.JPG)
+
+2. As a Cron Job (preferred usage). The execution schedule is based on Kubernetes
 
 This sample is fully containerized to be used as:
 
 1. As stand-alone Docker container that runs application every 30 min interval. It utilizes `TcpListener` for Pod health checks.
 2. As [Kubernetes CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) with interval specified in the deployment which is once a day at 1:00am.
+
+## Azure
+
+- Azure Blob storage has to have permission for MSI access as `Storage Blob Data Contributor`
 
 ## Build and Deploy
 
@@ -38,13 +44,13 @@ Make sure to execute all of the commands from the solution folder.
 ```bash
 
     # install cron job
-    helm install betcronjob k8s/bethosting/charts/betcronjob --set local.enabled=false
+    helm install betcronjob k8s/bethosting/charts/betcronjob --set aadpodidbinding=[msiId],local.enabled=false
 
     # delete cron job
     helm uninstall  betcronjob
 
     # install worker pod
-    helm install  betworker k8s/bethosting/charts/betworker --set local.enabled=true
+    helm install  betworker k8s/bethosting/charts/betworker --set aadpodidbinding=[msiId],local.enabled=false
 
     # delete worker deployment
     helm uninstall  betworker
@@ -88,3 +94,8 @@ spec:
 - Install `kubectl apply -f "cronjob.yaml"`
 
 - Remove `kubectl delete -f "cronjob.yaml"`
+
+## Hosting
+
+- `RunConsoleAsync` – Enables console support
+- `UseConsoleLifetime` – Listens for shutdown signals

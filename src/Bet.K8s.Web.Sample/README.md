@@ -24,7 +24,17 @@ This app has a private Azure Container Registry (ACR), if desired to test with y
     docker push {DOCKER_REGISTRY}/bet:k8sweb
 
 ```
+Or with `docker compose`
 
+```bash
+
+    # local or dev build and run
+    docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d bet.hosting
+
+    # production build
+    docker-compose -f "docker-compose.yml" up -d --build --no-recreate bet.k8sweb
+
+```
 ## Configure AKS for this sample application
 
 For Azure Vault to work
@@ -85,47 +95,14 @@ This must be created per kubernetes namespace.
 ```ps1
 
     $storageName="betstorage"
-    $storageKey 
-    # setup fileshare storage
+    $storageKey
+    # setup fileshare storage secret for azurefile provider
     kubectl create secret generic betshare-secret --from-literal=azurestorageaccountname=$storageName --from-literal=azurestorageaccountkey=$storageKey
     kubectl describe secret/betshare-secret
 
-
-
-    # login to pods
-    kubectl exec --stdin --tty  betk8sweb-576b969558-gghlw -- /bin/sh
-    # list mounts
-    df -aTh
-
-    # install
-     helm install betk8sweb k8s/betk8sweb --set ingress.enabled=true,aadpodidbinding={id} --disable-openapi-validation
-     helm uninstall betk8sweb
-
-    kubectl apply -f k8s/betshare-pv.yaml
-
-    kubectl apply -f k8s/betshare-pvc.yaml
-
-    kubectl get pods
-
-    kubectl describe pod betk8sweb-6f4cc779b8-847f8
-
-    # lists all of the claims
-    kubectl get pv
 ```
 
-
-
-
-```bash
-    # local install
-    helm install betk8sweb -n azuretest --set ingress.enable=false,
-
-    # install in the cluster
-    helm install betk8sweb --set local.enable=false  -n betk8sweb
-
-    # remove
-    helm delete  betk8sweb --purge
-```
+## Azure Key Vault
 
 Adding the required Secret to Azure Vault with Azure CLI command:
 
@@ -133,7 +110,36 @@ Adding the required Secret to Azure Vault with Azure CLI command:
     az keyvault secret set -n betk8sweb--testValue --vault-name [vaultName] --value MySuperSecretThatIDontWantToShareWithYou!
 ```
 
-## Azure Key Vault
+### Helm Application Management
+
+Please run this commands from the root of the application.
+
+```bash
+
+    # local install
+    helm install betk8sweb k8s/betk8sweb --set ingress.enabled=false,local.enable=true
+
+    # install in the cluster
+    helm install betk8sweb k8s/betk8sweb --set ingress.enabled=true,aadpodidbinding=[podMsiId]
+
+    # uninstall
+    helm uninstall betk8sweb
+
+    # troubleshooting
+    kubectl get pods
+
+    kubectl describe pod betk8sweb-[id]
+
+
+    # login to pods
+    kubectl exec --stdin --tty  betk8sweb-[id] -- /bin/sh
+    # list mounts
+    df -aTh
+
+    # lists all of the claims
+    kubectl get pv
+```
+
 
 ## References
 

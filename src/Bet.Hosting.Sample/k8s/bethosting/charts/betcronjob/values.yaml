@@ -24,6 +24,9 @@ image:
   tag: hosting
   pullPolicy: IfNotPresent
 
+# msi identity
+aadpodidbinding: aks-identity-example
+
 resources:
   limits:
    cpu: 500m

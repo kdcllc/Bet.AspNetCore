@@ -35,10 +35,10 @@ Make sure to execute all of the commands from the solution folder.
 
 ```bash
     # builds and runs the container
-    docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d  bet.aspnetcore.web
+    docker-compose -f "docker-compose.yml" -f "docker-compose.override.yml" up -d  bet.web
 
     # simply builds the image
-    docker-compose -f "docker-compose.yml" up -d --build --no-recreate  bet.aspnetcore.web
+    docker-compose -f "docker-compose.yml" up -d --build --no-recreate  bet.web
 
     # publish if needed
     docker push kdcllc/bet:web

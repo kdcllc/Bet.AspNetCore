@@ -7,6 +7,7 @@ using Bet.AspNetCore.Sample.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -57,6 +58,12 @@ namespace Bet.AspNetCore.Sample
 
             // adds healthchecks
             services.AddAppHealthChecks(Configuration);
+
+            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-3.1
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -118,6 +125,8 @@ namespace Bet.AspNetCore.Sample
                 },
                 prod =>
                 {
+                    app.UseForwardedHeaders();
+
                     app.UseExceptionHandler("/Error");
 
                     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

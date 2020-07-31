@@ -15,7 +15,11 @@ spec:
   failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 1800
       template:
+        metadata:
+         labels:
+          aadpodidbinding: {{.Values.aadpodidbinding}}
         spec:
           containers:
           - name: {{ .Chart.Name }}

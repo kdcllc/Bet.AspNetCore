@@ -18,6 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "betworker.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        aadpodidbinding: {{.Values.aadpodidbinding}}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -33,14 +34,12 @@ spec:
               protocol: TCP
           livenessProbe:
             tcpSocket:
-              path: /
               port: health
             initialDelaySeconds: 50
             periodSeconds: 20
             timeoutSeconds: 30
           readinessProbe:
             tcpSocket:
-              path: /
               port: health
             initialDelaySeconds: 60
             periodSeconds: 20
