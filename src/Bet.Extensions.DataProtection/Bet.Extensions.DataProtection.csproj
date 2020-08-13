@@ -1,26 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>The Data Protection Azure Based Libaray for AspNetCore and GenericHost.</Description>
-    <PackageTags>aspnetcore, dotnetcore ,logging ,serilog ,extensions</PackageTags>
+    <Description>The Data Protection Azure Based Library for AspNetCore and GenericHost.</Description>
+    <PackageTags>AspNetCore, DotNetCore ,Data Protection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.KeyVault" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureKeyVault" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-      <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>

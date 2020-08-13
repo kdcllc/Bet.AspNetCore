@@ -77,7 +77,7 @@ namespace Bet.AspNetCore.LetsEncrypt.Internal
                     {
                         var cert = await store.LoadAsync(
                             domainName,
-                            certificateOptions?.CertificatePassword ?? string.Empty,
+                            certificateOptions.CertificatePassword ?? string.Empty,
                             cancellationToken);
 
                         if (!certificateValidator.IsCertificateValid(store.NamedOption, cert))

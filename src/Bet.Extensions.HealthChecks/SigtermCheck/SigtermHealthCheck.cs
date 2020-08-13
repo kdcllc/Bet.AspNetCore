@@ -8,21 +8,12 @@ namespace Bet.Extensions.HealthChecks.SigtermCheck
 {
     public class SigtermHealthCheck : IHealthCheck
     {
-#if NETCOREAPP3_1 || NETSTANDARD2_1
         private readonly IHostApplicationLifetime _applicationLifetime;
 
         public SigtermHealthCheck(IHostApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime;
         }
-#else
-        private readonly IApplicationLifetime _applicationLifetime;
-
-        public SigtermHealthCheck(IApplicationLifetime applicationLifetime)
-        {
-            _applicationLifetime = applicationLifetime;
-        }
-#endif
 
         public Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,

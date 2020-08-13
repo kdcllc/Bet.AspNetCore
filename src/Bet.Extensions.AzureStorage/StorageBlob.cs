@@ -62,9 +62,9 @@ namespace Bet.Extensions.AzureStorage
 
                 foreach (var item in segment.Results)
                 {
-                    if (item is CloudBlockBlob && item != null)
+                    if (item is CloudBlockBlob blob && item != null)
                     {
-                        result.Add((CloudBlockBlob)item);
+                        result.Add(blob);
                     }
                 }
             }

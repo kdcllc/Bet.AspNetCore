@@ -45,12 +45,8 @@ namespace Microsoft.Extensions.Configuration
             string hostingEnviromentName,
             bool usePrefix = true,
             int tokenAuthRetry = 2,
-#if NETSTANDARD2_0
-            string sectionName = "AzureVault")
-#elif NETSTANDARD2_1
             string sectionName = "AzureVault",
             TimeSpan? reloadInterval = null)
-#endif
         {
             var config = builder.Build();
             var options = config.Bind<AzureVaultOptions>(sectionName);
@@ -74,21 +70,9 @@ namespace Microsoft.Extensions.Configuration
                     KeyVaultClient Kv() => new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
 
                     var keyVaultClient = policy.Execute(Kv);
-#if NETSTANDARD2_0
-                    // load values that are not specific to the environment.
-                    builder.AddAzureKeyVault(options?.BaseUrl, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
 
-                    if (!string.IsNullOrEmpty(prefix))
-                    {
-                        builder.AddAzureKeyVault(options?.BaseUrl, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
-                    }
-                    else
-                    {
-                        builder.AddAzureKeyVault(options?.BaseUrl, keyVaultClient, new DefaultKeyVaultSecretManager());
-                    }
-#elif NETSTANDARD2_1
                     // load values that are not specific to the environment.
-                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl)
+                    builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl)
                     {
                         Client = keyVaultClient,
                         Manager = new PrefixExcludingKeyVaultSecretManager(),
@@ -97,7 +81,7 @@ namespace Microsoft.Extensions.Configuration
 
                     if (!string.IsNullOrEmpty(prefix))
                     {
-                        builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl)
+                        builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl)
                         {
                             Client = keyVaultClient,
                             Manager = new PrefixKeyVaultSecretManager(prefix),
@@ -106,14 +90,13 @@ namespace Microsoft.Extensions.Configuration
                     }
                     else
                     {
-                        builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options.BaseUrl)
+                        builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl)
                         {
                             Client = keyVaultClient,
                             Manager = new DefaultKeyVaultSecretManager(),
                             ReloadInterval = reloadInterval,
                         });
                     }
-#endif
 
                     return builder.Build();
                 }
@@ -135,19 +118,7 @@ namespace Microsoft.Extensions.Configuration
                 && !string.IsNullOrWhiteSpace(options?.ClientSecret))
             {
                 var secret = options?.ClientSecret.FromBase64String();
-#if NETSTANDARD2_0
-                // load values that are not specific to the environment.
-                builder.AddAzureKeyVault(options?.BaseUrl, options?.ClientId, secret, new PrefixExcludingKeyVaultSecretManager());
 
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    builder.AddAzureKeyVault(options?.BaseUrl, options?.ClientId, secret, new PrefixKeyVaultSecretManager(prefix));
-                }
-                else
-                {
-                    builder.AddAzureKeyVault(options?.BaseUrl, options?.ClientId, secret, new DefaultKeyVaultSecretManager());
-                }
-#elif NETSTANDARD2_1
                 // load values that are not specific to the environment.
                 builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl, options?.ClientId, secret)
                 {
@@ -171,7 +142,6 @@ namespace Microsoft.Extensions.Configuration
                         ReloadInterval = reloadInterval
                     });
                 }
-#endif
             }
 
             return builder.Build();
@@ -190,12 +160,8 @@ namespace Microsoft.Extensions.Configuration
             this IConfigurationBuilder builder,
             string keyVaultEndpoints,
             bool usePrefix = true,
-#if NETSTANDARD2_0
-            string? hostingEnviromentName = null)
-#elif NETSTANDARD2_1
             string? hostingEnviromentName = null,
             TimeSpan? reloadInterval = null)
-#endif
         {
             if (!string.IsNullOrEmpty(keyVaultEndpoints))
             {
@@ -212,14 +178,6 @@ namespace Microsoft.Extensions.Configuration
 
                 foreach (var splitEndpoint in keyVaultEndpoints.Split(';'))
                 {
-#if NETSTANDARD2_0
-                    builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixExcludingKeyVaultSecretManager());
-
-                    if (!string.IsNullOrEmpty(prefix))
-                    {
-                        builder.AddAzureKeyVault(splitEndpoint, keyVaultClient, new PrefixKeyVaultSecretManager(prefix));
-                    }
-#elif NETSTANDARD2_1
                     builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(splitEndpoint)
                     {
                         Client = keyVaultClient,
@@ -236,7 +194,6 @@ namespace Microsoft.Extensions.Configuration
                             ReloadInterval = reloadInterval
                         });
                     }
-#endif
                 }
             }
 
