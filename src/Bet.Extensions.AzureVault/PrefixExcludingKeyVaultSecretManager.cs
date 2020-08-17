@@ -9,6 +9,13 @@ namespace Bet.Extensions.AzureVault
     /// </summary>
     public class PrefixExcludingKeyVaultSecretManager : IKeyVaultSecretManager
     {
+        private readonly Environments _envronments;
+
+        public PrefixExcludingKeyVaultSecretManager(Environments envronments)
+        {
+            _envronments = envronments;
+        }
+
         public bool Load(SecretItem secret)
         {
             // Load a vault secret when its secret name starts with the
@@ -21,7 +28,7 @@ namespace Bet.Extensions.AzureVault
             {
                 var env = secretName.Substring(0, envIndex);
 
-                return !AzureVaultKeyBuilder.Enviroments.ContainsValue(env);
+                return !_envronments.ContainsValue(env);
             }
 
             return true;

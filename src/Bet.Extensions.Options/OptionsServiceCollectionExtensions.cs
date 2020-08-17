@@ -1,13 +1,39 @@
 ﻿using System;
 
+using Bet.Extensions;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OptionsServiceCollectionExtensions
     {
+        public static IServiceCollection AddEnvironmentsOptions(
+            this IServiceCollection services,
+            string sectionName = nameof(Environments))
+        {
+            // required
+            services.AddOptions();
+
+            services.TryAddSingleton<IConfigureOptions<Environments>>(sp =>
+            {
+                return new ConfigureNamedOptions<Environments>(string.Empty, opt =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+                    var section = config.GetSection(sectionName);
+
+                    opt.Clear();
+
+                    config.Bind(nameof(Environments), opt);
+                });
+            });
+
+            return services;
+        }
+
         /// <summary>
         /// Adds Options that support being updated during application run.
         /// </summary>

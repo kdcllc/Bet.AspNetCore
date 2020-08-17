@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 using Xunit;
 
@@ -13,6 +14,51 @@ namespace Bet.Extensions.UnitTest.Options
 {
     public class OptionsValidationTests
     {
+        [Fact]
+        public void Bind_Enviroments_Dictionary()
+        {
+            var dic = new Dictionary<string, string>
+            {
+                { "Environments:Development", "Development" },
+                { "Environments:Staging", "Staging" },
+                { "Environments:Production", "Production" }
+            };
+
+            var env = new Environments();
+            env.Clear();
+            var config = new ConfigurationBuilder().AddInMemoryCollection(dic).Build();
+
+            config.Bind(nameof(Environments), env);
+
+            Assert.NotNull(env);
+        }
+
+        [Fact]
+        public void Add_Enviroments_DI()
+        {
+            var services = new ServiceCollection();
+            var dic = new Dictionary<string, string>
+            {
+                { "Environments:Development", "Development" },
+                { "Environments:Staging", "Staging" },
+                { "Environments:Production", "Production" }
+            };
+            var config = new ConfigurationBuilder().AddInMemoryCollection(dic).Build();
+
+            services.AddSingleton<IConfiguration>(config);
+            services.AddEnvironmentsOptions();
+            services.AddEnvironmentsOptions();
+
+            var sp = services.BuildServiceProvider();
+
+            var pr = sp.GetServices<IOptions<Environments>>();
+            Assert.Single(pr);
+
+            var env = sp.GetRequiredService<IOptions<Environments>>().Value;
+
+            Assert.Equal(3, env.Count);
+        }
+
         [Fact]
         public void Bind_Object_Fail()
         {

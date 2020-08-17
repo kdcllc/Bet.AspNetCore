@@ -1,3 +1,6 @@
+# create secret with
+# kubectl create secret generic betshare-secret --from-literal=azurestorageaccountname=betstorage --from-literal=azurestorageaccountkey={key}
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:

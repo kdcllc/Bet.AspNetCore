@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Microsoft.AspNetCore.Mvc.ApplicationModels
 {
+#nullable disable
     public class KebabRoutingConvention : IControllerModelConvention
     {
         public void Apply(ControllerModel controller)
@@ -57,4 +58,5 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
             }
         }
     }
+#nullable restore
 }
