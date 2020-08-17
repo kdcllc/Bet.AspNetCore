@@ -3,9 +3,9 @@ version: '3'
 services:
   # this is for the entire solution
   bet.vscode:
-    image: kdcllc/dotnet-sdk-vscode:3.1-bionic
+    image: kdcllc/dotnet-sdk-vscode:5.0-focal
     # Azure Key Vault Authentication global tool
-    # dotnet tool install --global appauthentication --version 1.2.2
+    # dotnet tool install --global appauthentication 
     # run this tool first then check the configuration
     # docker-compose -f ./docker-compose.vscode.yml config
     environment:

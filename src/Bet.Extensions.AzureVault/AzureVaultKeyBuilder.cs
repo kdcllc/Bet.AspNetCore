@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Bet.AspNetCore.Options;
+using Bet.Extensions;
 using Bet.Extensions.AzureVault;
 
 using Microsoft.Azure.KeyVault;
@@ -21,13 +22,6 @@ namespace Microsoft.Extensions.Configuration
     /// </summary>
     public static class AzureVaultKeyBuilder
     {
-        internal static readonly Dictionary<string, string> Enviroments = new Dictionary<string, string>
-        {
-            { "Development", "dev" },
-            { "Staging", "qa" },
-            { "Production", "prod" }
-        };
-
         /// <summary>
         /// Adds Azure Key Vault with VS.NET authentication in the Development and MSI in production.
         /// If MSI authentication fails it falls back to Client Id and Secret pair if specified in the configuration.
@@ -38,7 +32,8 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="usePrefix">The prefix like dev,qa,prod.</param>
         /// <param name="tokenAuthRetry">The default value for the retry is 2.</param>
         /// <param name="sectionName">The name of the Azure Key Vault Configuration Section. The default is 'AzureVault'.</param>
-        /// <param name="reloadInterval"></param>
+        /// <param name="reloadInterval">The reload interval for the Azure Key Vault.</param>
+        /// <param name="enviroments">The conversion for HostEnvironment:Prefix. The default is null.</param>
         /// <returns></returns>
         public static IConfigurationRoot AddAzureKeyVault(
             this IConfigurationBuilder builder,
@@ -46,15 +41,17 @@ namespace Microsoft.Extensions.Configuration
             bool usePrefix = true,
             int tokenAuthRetry = 2,
             string sectionName = "AzureVault",
-            TimeSpan? reloadInterval = null)
+            TimeSpan? reloadInterval = null,
+            Environments? enviroments = null)
         {
             var config = builder.Build();
             var options = config.Bind<AzureVaultOptions>(sectionName);
+            enviroments ??= new Environments();
 
             var prefix = string.Empty;
             if (usePrefix)
             {
-                Enviroments.TryGetValue(hostingEnviromentName, out prefix);
+                enviroments.TryGetValue(hostingEnviromentName, out prefix);
             }
 
             if (!string.IsNullOrWhiteSpace(options?.BaseUrl))
@@ -75,7 +72,7 @@ namespace Microsoft.Extensions.Configuration
                     builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl)
                     {
                         Client = keyVaultClient,
-                        Manager = new PrefixExcludingKeyVaultSecretManager(),
+                        Manager = new PrefixExcludingKeyVaultSecretManager(enviroments),
                         ReloadInterval = reloadInterval
                     });
 
@@ -100,7 +97,7 @@ namespace Microsoft.Extensions.Configuration
 
                     return builder.Build();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     var list = builder.Sources.ToList();
                     var found = list.Where(x => x.GetType().FullName.Contains("AzureKeyVaultConfigurationSource"));
@@ -122,7 +119,7 @@ namespace Microsoft.Extensions.Configuration
                 // load values that are not specific to the environment.
                 builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(options?.BaseUrl, options?.ClientId, secret)
                 {
-                    Manager = new PrefixExcludingKeyVaultSecretManager(),
+                    Manager = new PrefixExcludingKeyVaultSecretManager(enviroments),
                     ReloadInterval = reloadInterval
                 });
 
@@ -154,21 +151,25 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="keyVaultEndpoints">The default Azure Key Vaults values separated by ';'.</param>
         /// <param name="usePrefix">The default is true. It adds prefixed values from the vault.</param>
         /// <param name="hostingEnviromentName">The hosting environment that is matched to 'dev, stage or prod'.</param>
-        /// <param name="reloadInterval"></param>
+        /// <param name="reloadInterval">The reload interval for the Azure Key Vault.</param>
+        /// <param name="enviroments">The conversion for HostEnvironment:Prefix. The default is null.</param>
         /// <returns></returns>
         public static IConfigurationRoot AddAzureKeyVaults(
             this IConfigurationBuilder builder,
             string keyVaultEndpoints,
             bool usePrefix = true,
             string? hostingEnviromentName = null,
-            TimeSpan? reloadInterval = null)
+            TimeSpan? reloadInterval = null,
+            Environments? enviroments = null)
         {
             if (!string.IsNullOrEmpty(keyVaultEndpoints))
             {
+                enviroments ??= new Environments();
+
                 var prefix = string.Empty;
                 if (usePrefix && hostingEnviromentName != null)
                 {
-                    Enviroments.TryGetValue(hostingEnviromentName, out prefix);
+                    enviroments.TryGetValue(hostingEnviromentName, out prefix);
                 }
 
                 var azureServiceTokenProvider = new AzureServiceTokenProvider();
@@ -181,7 +182,7 @@ namespace Microsoft.Extensions.Configuration
                     builder.AddAzureKeyVault(new AzureKeyVaultConfigurationOptions(splitEndpoint)
                     {
                         Client = keyVaultClient,
-                        Manager = new PrefixExcludingKeyVaultSecretManager(),
+                        Manager = new PrefixExcludingKeyVaultSecretManager(enviroments),
                         ReloadInterval = reloadInterval
                     });
 

@@ -10,7 +10,7 @@
 #               2. docker cp bet.nuget.build:/app/nugets ${PWD}/packages
 #------------------------------------------------------------------------------------------------------------------------
 
-FROM kdcllc/dotnet-sdk:3.1-buster as builder
+FROM kdcllc/dotnet-sdk:5.0-focal as builder
 
 RUN apt-get -y update &&\
     apt-get -y install git &&\
