@@ -92,7 +92,8 @@
   </ItemGroup>
 
   <ItemGroup Label="Microsoft.FeatureManagement">
-    <PackageReference Update="Azure.Identity" Version="1.2.0" />
+    <!-- https://github.com/Azure/azure-sdk-for-net/issues/14258 can't upgrade to the latest-->
+    <PackageReference Update="Azure.Identity" Version="1.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="3.0.2" />
     <PackageReference Update="Microsoft.FeatureManagement" Version="2.0.0" />
   </ItemGroup>
