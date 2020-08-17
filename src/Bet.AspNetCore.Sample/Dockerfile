@@ -15,6 +15,7 @@
 #
 # PUSH:         docker push kdcllc/bet:web
 #
+#               kubectl exec --stdin --tty betweb -- /bin/sh
 #------------------------------------------------------------------------------------------------------------------------
 
 ARG SOLUTION_BASE=false
