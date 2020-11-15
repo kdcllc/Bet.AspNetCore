@@ -44,7 +44,7 @@ namespace Bet.Extensions.LetsEncrypt.Certificates.Stores
 
             if (certs == null || certs.Count == 0)
             {
-                return Task.FromResult<X509Certificate2>(null);
+                return Task.FromResult<X509Certificate2>(default);
             }
 
             if (_logger.IsEnabled(LogLevel.Trace))

@@ -132,10 +132,13 @@ namespace Bet.Extensions.LetsEncrypt.Order
                     CommonName = commonName,
                 };
 
-                orderOptions.CertificateSigningRequest = csrInfo;
+                if (orderOptions != null)
+                {
+                    orderOptions.CertificateSigningRequest = csrInfo;
+                }
             }
 
-            var certificateChain = await order.Generate(orderOptions.CertificateSigningRequest, privateKey);
+            var certificateChain = await order.Generate(orderOptions?.CertificateSigningRequest, privateKey);
 
             var pfxBuilder = certificateChain.ToPfx(privateKey);
 

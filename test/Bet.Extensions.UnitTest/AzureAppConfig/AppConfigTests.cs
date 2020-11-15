@@ -10,8 +10,9 @@ namespace Bet.Extensions.UnitTest.AzureAppConfig
     public class AppConfigTests
     {
         [Fact(Skip = "Integration")]
+
         // [Fact]
-        public async Task Configure_Azure_App_Config_With_Defaults()
+        public void Configure_Azure_App_Config_With_Defaults()
         {
             var dic = new Dictionary<string, string>
             {

@@ -211,7 +211,7 @@ namespace Microsoft.Extensions.DependencyInjection
             string section = "LetsEncrypt:AzureAuthentication",
             Action<AzureAuthenticationOptions>? configure = null)
         {
-            builder.Services.AddScoped((sp) => new LookupClient() { UseCache = false });
+            builder.Services.AddScoped((sp) => new LookupClient(new LookupClientOptions { UseCache = false }));
 
             builder.Services.AddScoped<AzureDnsChallenge>();
 

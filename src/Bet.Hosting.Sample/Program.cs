@@ -87,6 +87,7 @@ namespace Bet.Hosting.Sample
                             .Enrich.FromLogContext()
                             .WriteTo.Console()
                             .AddApplicationInsights(sp);
+
                             // .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                 })
                 .ConfigureServices(services =>

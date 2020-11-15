@@ -39,6 +39,7 @@ namespace Bet.K8s.Web.Sample
                             .Enrich.FromLogContext()
                             .WriteTo.Console()
                             .AddApplicationInsights(sp);
+
                     // .AddAzureLogAnalytics(hostingContext.Configuration, applicationName: applicationName);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
