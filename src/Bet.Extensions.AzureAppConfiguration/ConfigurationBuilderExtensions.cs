@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.Configuration
                     // configure features
                     options.UseFeatureFlags(fo =>
                     {
-                        fo.CacheExpirationTime = featuresOptions.CacheExpirationTime;
+                        fo.CacheExpirationInterval = featuresOptions.CacheExpirationInterval;
                         if (!string.IsNullOrEmpty(featuresOptions.Label))
                         {
                             fo.Label = env[featuresOptions.Label];

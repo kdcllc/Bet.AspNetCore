@@ -97,7 +97,7 @@ namespace Microsoft.Extensions.Configuration
 
                     return builder.Build();
                 }
-                catch (Exception ex)
+                catch
                 {
                     var list = builder.Sources.ToList();
                     var found = list.Where(x => x.GetType().FullName.Contains("AzureKeyVaultConfigurationSource"));

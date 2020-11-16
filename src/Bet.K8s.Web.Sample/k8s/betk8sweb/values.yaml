@@ -69,7 +69,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: NodePort # accessiable thru ngnix only
   port: 80
 
 ingress:

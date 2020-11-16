@@ -14,7 +14,7 @@ image:
   pullPolicy: Always
 
 service:
-  type: LoadBalancer
+  type: NodePort # accessiable thru ngnix only
   port: 80
 
 # msi identity
