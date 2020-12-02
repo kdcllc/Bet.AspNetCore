@@ -20,8 +20,6 @@ namespace Bet.AspNetCore.Sample
 {
     public class Startup
     {
-        private const string AppName = "Bet.AspNetCore.Sample";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -94,8 +92,7 @@ namespace Bet.AspNetCore.Sample
                 .AddAzureBlobContainer<UploadsBlobOptions>()
                 .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
-            // Preview 8 has been fixed https://github.com/microsoft/aspnet-api-versioning/issues/499
-            services.AddSwaggerGenWithApiVersion(AppName);
+            services.AddSwaggerGenWithApiVersion<Startup>(includeXmlComments: true);
 
             var buildModels = Configuration.GetValue<bool>("BuildModels");
 

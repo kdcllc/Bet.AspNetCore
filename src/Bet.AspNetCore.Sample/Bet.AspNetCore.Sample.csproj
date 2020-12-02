@@ -10,6 +10,10 @@
     <IdentityUIFrameworkVersion>Bootstrap4</IdentityUIFrameworkVersion>
 
     <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+
+    <!-- Enable this if Swagger is including XML comments part of it UI. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
     <!--- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2590 -->
     <NoWarn>$(NoWarn);SA1649</NoWarn>
   </PropertyGroup>

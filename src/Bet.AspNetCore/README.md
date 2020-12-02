@@ -43,3 +43,20 @@ Then add validation for Configurations as action call back or as data annotation
 
    services.ConfigureWithDataAnnotationsValidation<FakeOptionsWithDataAnnotations>(configuration, sectionName: "FakeOptions");
 ```
+
+### Simplify configuration for OpenApi / Swagger UI, Document Generation
+
+```csharp
+
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddSwaggerGenWithApiVersion<Startup>();
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    // Swagger
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+```
