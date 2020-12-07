@@ -1,8 +1,11 @@
 using System;
+using System.Net.Http;
 
 using Bet.AspNetCore.Middleware.Diagnostics;
 using Bet.AspNetCore.Sample.Data;
 using Bet.AspNetCore.Sample.Options;
+
+using Hellang.Middleware.ProblemDetails;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -94,6 +97,8 @@ namespace Bet.AspNetCore.Sample
 
             services.AddSwaggerGenWithApiVersion<Startup>(includeXmlComments: true);
 
+            services.AddJwtAuthentication();
+
             var buildModels = Configuration.GetValue<bool>("BuildModels");
 
             if (buildModels)
@@ -104,6 +109,22 @@ namespace Bet.AspNetCore.Sample
                     builder.UnobservedTaskExceptionHandler = null;
                 });
             }
+
+            // Adds custom Api Error Handling.
+            services.AddProblemDetails(
+               options =>
+               {
+                   options.IncludeExceptionDetails = (ctx, ex) =>
+                   {
+                        // Fetch services from HttpContext.RequestServices
+                        var env = ctx.RequestServices.GetRequiredService<IHostEnvironment>();
+                        return env.IsDevelopment() || env.IsStaging();
+                   };
+
+                   options.MapToStatusCode<NotImplementedException>(StatusCodes.Status501NotImplemented);
+                   options.MapToStatusCode<HttpRequestException>(StatusCodes.Status503ServiceUnavailable);
+                   options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
+               }); // Add
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -131,6 +152,8 @@ namespace Bet.AspNetCore.Sample
 
                     return prod;
                 });
+
+            app.UseProblemDetails(); // Add the middleware
 
             app.UseOrNotHttpsRedirection();
 

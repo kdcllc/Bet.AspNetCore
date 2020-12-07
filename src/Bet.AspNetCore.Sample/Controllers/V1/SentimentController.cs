@@ -7,7 +7,7 @@ using Bet.Extensions.ML.Sentiment.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bet.AspNetCore.Sample.Controllers
+namespace Bet.AspNetCore.Sample.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]

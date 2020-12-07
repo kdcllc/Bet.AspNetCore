@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="CronScheduler.AspNetCore" />
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+    <ProjectReference Include="..\Bet.AspNetCore.Jwt\Bet.AspNetCore.Jwt.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />

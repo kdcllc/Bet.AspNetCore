@@ -1,0 +1,33 @@
+﻿# Bet.AspNetCore.Jwt
+
+[![Build status](https://ci.appveyor.com/api/projects/status/fo9rakj7s7uhs3ij?svg=true)](https://ci.appveyor.com/project/kdcllc/bet-aspnetcore)
+[![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.Jwt.svg)](https://www.nuget.org/packages?q=Bet.AspNetCore.Jwt)
+[![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.AspNetCore.Jwt/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.AspNetCore.Jwt/latest/download)
+
+## Install
+
+```csharp
+    dotnet add package Bet.AspNetCore.Jwt
+```
+
+```JSON
+  "JwtTokenAuthOptions": {
+
+    "Issuer": "kingdavidconsulting.com",
+    "Salt":"Rm9yIEdvZCBzbyBsb3ZlZCB0aGUgd29ybGQsIHRoYXQgaGUgZ2F2ZSBoaXMgb25seSBiZWdvdHRlbiBTb24sIHRoYXQgd2hvc29ldmVyIGJlbGlldmV0aCBpbiBoaW0gc2hvdWxkIG5vdCBwZXJpc2gsIGJ1dCBoYXZlIGV2ZXJsYXN0aW5nIGxpZmUK",
+    "Secret": "Sm9obiAzOjE2Cg==",
+    "Audience": "api"
+  }
+```
+
+```bash
+    # generate secret
+    echo John 3:16 | base64
+
+    # generate salt
+    echo 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life' | base64
+
+    # decode
+
+    echo '' | base64 -d
+```
