@@ -25,22 +25,55 @@ namespace Bet.AspNetCore.Jwt.Controllers
         [HttpPost]
         [Route("/token")]
         public async Task<IActionResult> RequestToken(
-            [FromBody] TokenRequest request,
+            [FromBody] AuthorizeTokenRequest request,
             CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = await _authService.IsAuthenticatedAsync(request, cancellationToken);
+            var result = await _authService.GetTokenAsync(request, cancellationToken);
 
             if (result.Success)
             {
-                return Ok(new { result.Token });
+                return Ok(result);
             }
 
             return BadRequest("Invalid Request");
+        }
+
+        [HttpPost]
+        [Route("/refresh")]
+        public async Task<IActionResult> RefreshToken(
+            [FromBody] RefreshTokenRequest request,
+            CancellationToken cancellationToken)
+        {
+            var result = await _authService.RefreshTokenAsync(request, cancellationToken);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("Invalid client request");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/revoke")]
+        public async Task<IActionResult> Revoke(CancellationToken cancellationToken)
+        {
+            var username = User.Identity.Name;
+
+            if (await _authService.RevokeAsync(username, cancellationToken))
+            {
+                return NoContent();
+            }
+
+            return BadRequest();
+        }
+
+        private string IpAddress()
+        {
+            return Request.Headers.ContainsKey("X-Forwarded-For")
+                ? (string)Request.Headers["X-Forwarded-For"]
+                : HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
     }
 }

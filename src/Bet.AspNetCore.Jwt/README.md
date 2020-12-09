@@ -17,6 +17,21 @@
     "Salt":"Rm9yIEdvZCBzbyBsb3ZlZCB0aGUgd29ybGQsIHRoYXQgaGUgZ2F2ZSBoaXMgb25seSBiZWdvdHRlbiBTb24sIHRoYXQgd2hvc29ldmVyIGJlbGlldmV0aCBpbiBoaW0gc2hvdWxkIG5vdCBwZXJpc2gsIGJ1dCBoYXZlIGV2ZXJsYXN0aW5nIGxpZmUK",
     "Secret": "Sm9obiAzOjE2Cg==",
     "Audience": "api"
+  },
+
+"UserStoreOptions": {
+    "Users": [
+      {
+        "Id": 1,
+        "UserName": "user1",
+        "Password": "P@ssword!"
+      },
+      {
+        "Id": 2,
+        "UserName": "user2",
+        "Password": "P@ssword2!"
+      }
+    ]
   }
 ```
 
@@ -30,4 +45,12 @@
     # decode
 
     echo '' | base64 -d
+```
+
+
+## Json Serilization
+
+```
+dotnet add package --version 5.6.2 Swashbuckle.AspNetCore.Newtonsoft
+services.AddSwaggerGenNewtonsoftSupport(); // explicit opt-in - needs to be placed after AddSwaggerGen()
 ```

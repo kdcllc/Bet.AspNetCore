@@ -32,12 +32,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureAuthOptions"></param>
         /// <param name="configureJwtOptions"></param>
         /// <param name="configureJwtTokenOptions"></param>
+        /// <param name="configureUserStoreOptions"></param>
         /// <returns></returns>
         public static IServiceCollection AddJwtAuthentication<TUserService>(
             this IServiceCollection services,
             Action<AuthenticationOptions> configureAuthOptions,
             Action<JwtBearerOptions>? configureJwtOptions = default,
-            Action<JwtTokenAuthOptions, IConfiguration>? configureJwtTokenOptions = default)
+            Action<JwtTokenAuthOptions, IConfiguration>? configureJwtTokenOptions = default,
+            Action<UserStoreOptions, IConfiguration>? configureUserStoreOptions = default)
             where TUserService : IUserService
         {
             services.AddChangeTokenOptions<JwtTokenAuthOptions>(
@@ -55,6 +57,15 @@ namespace Microsoft.Extensions.DependencyInjection
                         ServiceLifetime.Scoped));
 
             services.AddScoped<IAuthenticateService, JwtTokenAuthenticationService>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddSingleton<IUserStore, InMemoryUserStore>();
+
+            services.AddChangeTokenOptions<UserStoreOptions>(
+                nameof(UserStoreOptions),
+                nameof(InMemoryUserStore),
+                (o, c) => configureUserStoreOptions?.Invoke(o, c));
+
+            services.AddControllers();
 
             return services;
         }

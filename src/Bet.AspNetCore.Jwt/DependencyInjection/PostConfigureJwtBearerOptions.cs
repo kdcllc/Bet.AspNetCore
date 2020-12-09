@@ -41,6 +41,9 @@ namespace Microsoft.AspNetCore.Authentication.JwtBearer
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.Secret)),
                 ValidIssuer = tokenOptions.Issuer,
                 ValidAudience = tokenOptions.Audience,
+
+                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                ClockSkew = TimeSpan.Zero
             };
         }
     }

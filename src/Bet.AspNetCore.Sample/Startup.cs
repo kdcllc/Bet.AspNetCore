@@ -85,17 +85,17 @@ namespace Bet.AspNetCore.Sample
             services.AddDefaultIdentity<IdentityUser>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc()
-                    .AddNewtonsoftJson();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
-            services.AddRazorPages()
-                    .AddNewtonsoftJson();
+            services.AddRazorPages().AddNewtonsoftJson();
 
             services.AddAzureStorageAccount()
                 .AddAzureBlobContainer<UploadsBlobOptions>()
                 .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
             services.AddSwaggerGenWithApiVersion<Startup>(includeXmlComments: true);
+            // https://github.com/domaindrivendev/Swashbuckle.AspNetCore#systemtextjson-stj-vs-newtonsoft
+            services.AddSwaggerGenNewtonsoftSupport(); // explicit opt-in - needs to be placed after AddSwaggerGen()
 
             services.AddJwtAuthentication();
 

@@ -7,6 +7,10 @@ namespace Bet.AspNetCore.Jwt.Services
 {
     public interface IAuthenticateService
     {
-        Task<TokenResponse> IsAuthenticatedAsync(TokenRequest request, CancellationToken cancellationToken);
+        Task<AuthorizeTokenResponse> GetTokenAsync(AuthorizeTokenRequest request, CancellationToken cancellationToken);
+
+        Task<AuthorizeTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellation);
+
+        Task<bool> RevokeAsync(string userName, CancellationToken cancellation);
     }
 }

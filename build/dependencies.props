@@ -160,6 +160,7 @@
     <PackageReference Update="Swashbuckle.AspNetCore.Swagger" Version="$(SwashbuckleCommon)" />
     <PackageReference Update="Swashbuckle.AspNetCore.SwaggerUI" Version="$(SwashbuckleCommon)" />
     <PackageReference Update="Swashbuckle.AspNetCore.Annotations" Version="$(SwashbuckleCommon)" />
+    <PackageReference Update="Swashbuckle.AspNetCore.Newtonsoft" Version="$(SwashbuckleCommon)" />
   </ItemGroup>
 
   <ItemGroup Label="SourceLink">
