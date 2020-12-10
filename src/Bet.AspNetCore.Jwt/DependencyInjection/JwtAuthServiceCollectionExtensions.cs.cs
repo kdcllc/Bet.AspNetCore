@@ -21,7 +21,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
         {
             return services
-                .AddJwtAuthentication<DefaultUserService>(options => options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme);
+                .AddJwtAuthentication<DefaultUserService>(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                });
         }
 
         /// <summary>
