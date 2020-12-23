@@ -105,6 +105,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.K8s.Web.Sample", "src\B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bet.Extensions.AzureAppConfiguration", "src\Bet.Extensions.AzureAppConfiguration\Bet.Extensions.AzureAppConfiguration.csproj", "{6D6C7ABB-786B-4897-9EEA-E9F76A9AA5AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bet.AspNetCore.Jwt", "src\Bet.AspNetCore.Jwt\Bet.AspNetCore.Jwt.csproj", "{ACF7FCB9-6F96-4754-8103-0520B2238C87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +237,10 @@ Global
 		{6D6C7ABB-786B-4897-9EEA-E9F76A9AA5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D6C7ABB-786B-4897-9EEA-E9F76A9AA5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D6C7ABB-786B-4897-9EEA-E9F76A9AA5AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF7FCB9-6F96-4754-8103-0520B2238C87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF7FCB9-6F96-4754-8103-0520B2238C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF7FCB9-6F96-4754-8103-0520B2238C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF7FCB9-6F96-4754-8103-0520B2238C87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -273,6 +279,7 @@ Global
 		{8DBACFCC-6031-44F4-AF8C-556A3946AB0A} = {8382D62B-2BB8-4406-95FD-63AF167F5D65}
 		{0F1E6CF9-988F-46C9-A85C-D9B60829275B} = {D08248C1-62F0-4011-9CB2-406FDE28EEA3}
 		{6D6C7ABB-786B-4897-9EEA-E9F76A9AA5AF} = {C4F77FEB-4C40-4285-AE27-D9B361A3A46F}
+		{ACF7FCB9-6F96-4754-8103-0520B2238C87} = {8DBACFCC-6031-44F4-AF8C-556A3946AB0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A53F67D4-7CE9-4F03-8DD4-2C00E7AE2F46}

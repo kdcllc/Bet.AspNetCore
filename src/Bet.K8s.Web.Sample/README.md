@@ -1,5 +1,15 @@
 # Bet.K8s.Web.Sample project
 
+> The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
+
+## Give a Star! :star:
+
+If you like or are using this project to learn or start your solution, please give it a star. Thanks!
+
+## Summary
+
 This sample application is designed to test Kubernetes deployment to Azure Cloud.
 
 - Azure Blob Storage (used for SQLite database with file share enabled)

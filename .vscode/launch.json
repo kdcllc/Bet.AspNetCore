@@ -16,11 +16,23 @@
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "https://*:443;http://*:80"
+                "ASPNETCORE_URLS": "https://*:443;http://*:80",
+                // source link enabled
+                "COMPlus_ZapDisable": "1",
+                "COMPlus_ReadyToRun": "0"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             },
+            // enable source link debugging...
+            // https://devblogs.microsoft.com/dotnet/improving-debug-time-productivity-with-source-link/#visual-studio-code
+            "justMyCode": false,
+            "symbolOptions": {
+                "searchMicrosoftSymbolServer": true,
+                "searchNuGetOrgSymbolServer": true
+            },
+            "suppressJITOptimizations": true,
+
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",

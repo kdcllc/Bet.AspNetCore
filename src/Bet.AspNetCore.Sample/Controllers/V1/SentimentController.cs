@@ -7,10 +7,11 @@ using Bet.Extensions.ML.Sentiment.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bet.AspNetCore.Sample.Controllers
+namespace Bet.AspNetCore.Sample.Controllers.V1
 {
-    [Route("/v{api-version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("/v{version:apiVersion}/[controller]")]
     public class SentimentController : ControllerBase
     {
         private readonly IModelPredictionEngine<SentimentIssue, SentimentPrediction> _sentimentModel;

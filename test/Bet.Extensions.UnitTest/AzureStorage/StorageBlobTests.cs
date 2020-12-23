@@ -15,7 +15,7 @@ namespace Bet.Extensions.UnitTest.AzureStorage
 {
     public class StorageBlobTests
     {
-        [Fact(Skip = "Integration")]
+        [RunnableInDebugOnly]
         public async Task Test()
         {
             var settings = new Dictionary<string, string>

@@ -6,7 +6,11 @@
 ![Nuget](https://img.shields.io/nuget/dt/Bet.Extensions.ML)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.ML/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.ML/latest/download)
 
+> The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
+
 *Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
+
+## Summary
 
 The goal of this repo is to provide with production ready extensions to [ML.NET library](https://github.com/dotnet/machinelearning).
 
@@ -15,6 +19,13 @@ It contains two major functionality:
 1. ML.NET ModelBuilder Pipeline with ability to load from different sources i.e. Azure Blob Storage.
 
 2. ML.NET Web Api hosting with caching of ML models to improve performance. This library utilizes `ObjectPool` similar to  [Extensions.ML](https://github.com/glennc/Extensions.ML)
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
+
+## Give a Star! :star:
+
+If you like or are using this project to learn or start your solution, please give it a star. Thanks!
+
 
 ## Install
 

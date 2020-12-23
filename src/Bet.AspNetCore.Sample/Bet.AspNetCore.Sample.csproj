@@ -10,12 +10,17 @@
     <IdentityUIFrameworkVersion>Bootstrap4</IdentityUIFrameworkVersion>
 
     <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+
+    <!-- Enable this if Swagger is including XML comments part of it UI. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
     <!--- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2590 -->
     <NoWarn>$(NoWarn);SA1649</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CronScheduler.AspNetCore" />
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
@@ -27,11 +32,13 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
     <PackageReference Include="Microsoft.ML" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+    <ProjectReference Include="..\Bet.AspNetCore.Jwt\Bet.AspNetCore.Jwt.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
     <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />

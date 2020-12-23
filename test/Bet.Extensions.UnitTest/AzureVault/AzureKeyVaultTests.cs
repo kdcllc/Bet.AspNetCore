@@ -9,9 +9,7 @@ namespace Bet.AspNetCore.UnitTest
 {
     public class AzureKeyVaultTests
     {
-        [Fact(Skip = "Integration Test")]
-
-        // [Fact]
+        [RunnableInDebugOnly]
         public void TestGenericHost()
         {
             var dic = new Dictionary<string, string>
