@@ -1,5 +1,15 @@
 ﻿# .NET Core Service Worker for Machine Learning (ML.NET) Model Building
 
+> The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
+
+## Give a Star! :star:
+
+If you like or are using this project to learn or start your solution, please give it a star. Thanks!
+
+## Summary
+
 This example demonstrates how to schedule Machine Learning Model building process for Spam and Sentiment ML.NET models.
 
 The idea is that ML.NET model is not stale and would have the input of a new `datapoints` and would require the rebuild of the model at the eve of each day.

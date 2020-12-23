@@ -6,9 +6,18 @@
 ![Nuget](https://img.shields.io/nuget/dt/Bet.AspNetCore)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.AspNetCore/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.AspNetCore/latest/download)
 
+> The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
+
 *Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
-This goal of this repo is to provide with a reusable functionality for developing Microservices with Docker and Kubernetes. These libraries extend `Microsoft.Extensions` and `Microsoft.AspNetCore` namespaces.
+This goal of this repo is to provide with a reusable functionality for developing Microservices with Docker and Kubernetes.
+These libraries extend `Microsoft.Extensions` and `Microsoft.AspNetCore` namespaces accordingly.
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
+
+## Give a Star! :star:
+
+If you like or are using this project to learn or start your solution, please give it a star. Thanks!
 
 ## Machine Learning ([ML.NET](https://github.com/dotnet/machinelearning)) functionality
 
@@ -41,6 +50,7 @@ This goal of this repo is to provide with a reusable functionality for developin
 7. [`Bet.Extensions.HealthChecks`](./src/Bet.Extensions.HealthChecks/) - extends useful HealChecks for Kubernetes, including `Worker` tcp based healthchecks.
 8. [`Bet.Extensions.HealthChecks.AzureStorage`](./src/Bet.Extensions.HealthChecks.AzureStorage/) - provides with HealthChecks Azure Storage
 9. [`Bet.Extensions.DataProtection`](./src/Bet.Extensions.DataProtection/) - extends `DataProtection` to store encryption keys on Azure Storage Blob.
+10. [`Bet.AspNetCore.Jwt`](./src/Bet.AspNetCore.Jwt/) - Provides a simple and a quick way to get started with JWT authentication for your app.
 
 ## AspNetCore specific functionality
 

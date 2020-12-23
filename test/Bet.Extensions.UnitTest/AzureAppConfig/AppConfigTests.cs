@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 
@@ -9,9 +8,7 @@ namespace Bet.Extensions.UnitTest.AzureAppConfig
 {
     public class AppConfigTests
     {
-        [Fact(Skip = "Integration")]
-
-        // [Fact]
+        [RunnableInDebugOnly]
         public void Configure_Azure_App_Config_With_Defaults()
         {
             var dic = new Dictionary<string, string>

@@ -6,9 +6,19 @@
 [![NuGet](https://img.shields.io/nuget/v/Bet.AspNetCore.svg)](https://www.nuget.org/packages?q=Bet.Extensions.LetsEncrypt)
 [![feedz.io](https://img.shields.io/badge/endpoint.svg?url=https://f.feedz.io/kdcllc/bet-aspnetcore/shield/Bet.Extensions.LetsEncrypt/latest)](https://f.feedz.io/kdcllc/bet-aspnetcore/packages/Bet.Extensions.LetsEncrypt/latest/download)
 
+> The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
+
 *Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
 
+## Summary
+
 The basic logic for Let's Encrypt SSL certificate generation.
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
+
+## Give a Star! :star:
+
+If you like or are using this project to learn or start your solution, please give it a star. Thanks!
 
 ## Install
 
