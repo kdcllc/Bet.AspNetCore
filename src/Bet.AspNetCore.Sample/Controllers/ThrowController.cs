@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Hellang.Middleware.ProblemDetails;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Bet.AspNetCore.Sample.Controllers
 {
@@ -45,6 +46,8 @@ namespace Bet.AspNetCore.Sample.Controllers
         }
 
         [HttpGet("E")]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public ActionResult<bool> E([FromQuery] Data data)
         {
             ModelState.AddModelError(string.Empty, "for reals");
@@ -52,6 +55,8 @@ namespace Bet.AspNetCore.Sample.Controllers
         }
 
         [HttpGet("D")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public ActionResult<bool> D([FromQuery] Data data)
         {
             return BadRequest();
@@ -63,6 +68,8 @@ namespace Bet.AspNetCore.Sample.Controllers
         }
 
         [HttpGet("D2")]
+        [ProducesResponseType(typeof(Deets), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public ActionResult<bool> D2([FromQuery] Data data)
         {
             return BadRequest(new Deets { Name = "Fred" });

@@ -74,11 +74,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<CloudBlockBlob>> GetAllAsync(
+        public Task<IEnumerable<CloudBlockBlob>> GetAllAsync(
             string prefix = "",
             CancellationToken cancellationToken = default)
         {
-            return await GetAllAsync(string.Empty, prefix, cancellationToken);
+            return GetAllAsync(string.Empty, prefix, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -97,11 +97,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<byte[]?> GetBytesAsync(
+        public Task<byte[]?> GetBytesAsync(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await GetBytesAsync(string.Empty, blobName, cancellationToken);
+            return GetBytesAsync(string.Empty, blobName, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -141,11 +141,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<Stream?> GetAsync(
+        public Task<Stream?> GetAsync(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await GetAsync(string.Empty, blobName, cancellationToken);
+            return GetAsync(string.Empty, blobName, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -165,11 +165,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<CloudBlockBlob?> GetBlobAsync(
+        public Task<CloudBlockBlob?> GetBlobAsync(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await GetBlobAsync(string.Empty, blobName, cancellationToken);
+            return GetBlobAsync(string.Empty, blobName, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -216,11 +216,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<T> GetAsync<T>(
+        public Task<T> GetAsync<T>(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await GetAsync<T>(string.Empty, blobName, cancellationToken);
+            return GetAsync<T>(string.Empty, blobName, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -256,13 +256,13 @@ namespace Bet.Extensions.AzureStorage
         }
 
         // <inheritdoc />
-        public async Task<string> AddAsync(
+        public Task<string> AddAsync(
             byte[] content,
             string? blobId = default,
             string? contentType = default,
             CancellationToken cancellationToken = default)
         {
-            return await AddAsync(string.Empty, content, blobId, contentType, cancellationToken);
+            return AddAsync(string.Empty, content, blobId, contentType, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -302,17 +302,17 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<string?> AddAsync(
+        public Task<string?> AddAsync(
             Stream content,
             string? blobId = default,
             string? contentType = default,
             CancellationToken cancellationToken = default)
         {
-            return await AddAsync(string.Empty, content, blobId, contentType, cancellationToken);
+            return AddAsync(string.Empty, content, blobId, contentType, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<string> AddAsync(
+        public Task<string> AddAsync(
             string named,
             object item,
             string blobId,
@@ -341,21 +341,21 @@ namespace Bet.Extensions.AzureStorage
 
             var bytes = encoding.GetBytes(data);
 
-            return await AddAsync(named, bytes, blobId, contentType, cancellationToken);
+            return AddAsync(named, bytes, blobId, contentType, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<string> AddAsync(
+        public Task<string> AddAsync(
             object item,
             string blobId,
             Encoding encoding,
             CancellationToken cancellationToken = default)
         {
-            return await AddAsync(string.Empty, item, blobId, encoding, cancellationToken);
+            return AddAsync(string.Empty, item, blobId, encoding, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<string> AddAsync(
+        public Task<string> AddAsync(
             string named,
             object item,
             string? blobId = null,
@@ -366,16 +366,16 @@ namespace Bet.Extensions.AzureStorage
                 throw new ArgumentNullException(nameof(item));
             }
 
-            return await AddAsync(named, item, blobId ?? Guid.NewGuid().ToString(), Encoding.UTF8, cancellationToken);
+            return AddAsync(named, item, blobId ?? Guid.NewGuid().ToString(), Encoding.UTF8, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<string> AddAsync(
+        public Task<string> AddAsync(
             object item,
             string? blobId = null,
             CancellationToken cancellationToken = default)
         {
-            return await AddAsync(string.Empty, item, blobId, cancellationToken);
+            return AddAsync(string.Empty, item, blobId, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -427,13 +427,13 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<string?> AddAsync(
+        public Task<string?> AddAsync(
             Uri sourceUri,
             string? blobId = default,
             string? contentType = default,
             CancellationToken cancellationToken = default)
         {
-            return await AddAsync(string.Empty, sourceUri, blobId, contentType, cancellationToken);
+            return AddAsync(string.Empty, sourceUri, blobId, contentType, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -478,32 +478,32 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<IList<string>> AddBatchAsync<T>(
+        public Task<IList<string>> AddBatchAsync<T>(
             IEnumerable<T> items,
             Encoding encoding,
             int batchSize = 25,
             CancellationToken cancellationToken = default)
         {
-            return await AddBatchAsync<T>(string.Empty, items, encoding, batchSize, cancellationToken);
+            return AddBatchAsync<T>(string.Empty, items, encoding, batchSize, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IList<string>> AddBatchAsync<T>(
+        public Task<IList<string>> AddBatchAsync<T>(
             string named,
             IEnumerable<T> items,
             int batchSize = 25,
             CancellationToken cancellationToken = default)
         {
-            return await AddBatchAsync(named, items, Encoding.UTF8, batchSize, cancellationToken);
+            return AddBatchAsync(named, items, Encoding.UTF8, batchSize, cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IList<string>> AddBatchAsync<T>(
+        public Task<IList<string>> AddBatchAsync<T>(
             IEnumerable<T> items,
             int batchSize = 25,
             CancellationToken cancellationToken = default)
         {
-            return await AddBatchAsync<T>(string.Empty, items, batchSize, cancellationToken);
+            return AddBatchAsync<T>(string.Empty, items, batchSize, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -531,11 +531,11 @@ namespace Bet.Extensions.AzureStorage
         }
 
         /// <inheritdoc />
-        public async Task<bool> DeleteAsync(
+        public Task<bool> DeleteAsync(
             string blobName,
             CancellationToken cancellationToken = default)
         {
-            return await DeleteAsync(string.Empty, blobName, cancellationToken);
+            return DeleteAsync(string.Empty, blobName, cancellationToken);
         }
 
         /// <inheritdoc />

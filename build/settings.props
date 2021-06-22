@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Docker">
-    <!-- kdcllc docker image specifics -->
+     <!--kdcllc docker image specifics-->
     <PROJECT_PATH></PROJECT_PATH>
     <RUNTESTS>"false"</RUNTESTS>
     <VERBOSE>"false"</VERBOSE>
@@ -18,13 +18,13 @@
     <NUGET_RESTORE>"-v=m"</NUGET_RESTORE>
     <DOCKER_BUILD_ARGS>--build-arg RUNTESTS=$(RUNTESTS) --build-arg NUGET_RESTORE=$(NUGET_RESTORE) --build-arg VERBOSE=$(VERBOSE) --build-arg SOLUTION_BASE=$(SOLUTION_BASE)</DOCKER_BUILD_ARGS>
 
-    <!-- MSI local dev -->
-    <MSI_ENDPOINT Condition="'$(MSI_ENDPOINT)' == '' ">
+     <!--MSI local dev-->
+    <!--<MSI_ENDPOINT Condition="'$(MSI_ENDPOINT)' == '' ">
       http://host.docker.internal:5050/oauth2/token
     </MSI_ENDPOINT>
     <MSI_SECRET Condition="'$(MSI_SECRET)' == '' ">
       94f48227-f2f7-41c7-b6df-749214ef2897
-    </MSI_SECRET>
+    </MSI_SECRET>-->
 
     <DockerfileContext>../../.</DockerfileContext>
     <DockerfileRunArguments>-e "MSI_ENDPOINT=$(MSI_ENDPOINT)" -e "MSI_SECRET=$(MSI_SECRET)"</DockerfileRunArguments>

@@ -13,6 +13,10 @@
 This goal of this repo is to provide with a reusable functionality for developing Microservices with Docker and Kubernetes.
 These libraries extend `Microsoft.Extensions` and `Microsoft.AspNetCore` namespaces accordingly.
 
+## Hire me
+
+Please send [email](mailto:kingdavidconsulting@gmail.com) if you consider to **hire me**.
+
 [![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vyve0og)
 
 ## Give a Star! :star:

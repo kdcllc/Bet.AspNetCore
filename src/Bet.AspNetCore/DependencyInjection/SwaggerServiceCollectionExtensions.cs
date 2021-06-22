@@ -97,7 +97,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         // add a custom operation filter to support header input
                         // options.OperationFilter<AddHeaderOperationFilter>("traceidparent", "Trace Id in w3c format. Ex: 00-95a8affeb7d85b4fb08fe28f19ba815e-6003203a14071244-00 <br/>https://w3c.github.io/trace-context/#examples-of-http-traceparent-headers");
-
                         options.AddBearer();
 
                         // https://github.com/domaindrivendev/Swashbuckle/issues/142

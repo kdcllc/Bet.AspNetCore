@@ -29,9 +29,9 @@ namespace Bet.Extensions.ML.Helpers
            CsvConfiguration configuration) where TData : class
         {
             using var reader = new StreamReader(stream);
+            configuration.BadDataFound = null;
             using var csv = new CsvReader(reader, configuration);
             {
-                csv.Configuration.BadDataFound = null;
                 var records = csv.GetRecords<TData>();
                 return records.ToList();
             }
@@ -116,15 +116,15 @@ namespace Bet.Extensions.ML.Helpers
 
             using var archive = new ZipArchive(zipFile);
 
+            configuration.HeaderValidated = null;
+            configuration.MissingFieldFound = null;
+
             foreach (var entry in archive.Entries)
             {
                 using var unzippedFile = entry.Open(); // assume that a single file is in the zip.
 
                 using var reader = new StreamReader(unzippedFile);
                 using var csv = new CsvReader(reader, configuration);
-
-                csv.Configuration.HeaderValidated = null;
-                csv.Configuration.MissingFieldFound = null;
 
                 var records = csv.GetRecords<TData>().ToList();
 
@@ -170,7 +170,8 @@ namespace Bet.Extensions.ML.Helpers
             using var csvWriter = new CsvWriter(streamWrite, configuration);
 
             // 1. write records to stream
-            csvWriter.Configuration.AutoMap<T>();
+            // https://github.com/JoshClose/CsvHelper/blob/f68a5a1cdecb4e4f7b2a536b0ce482deb95acda5/src/CsvHelper.Website/input/migration/v20/index.md#automap
+            csvWriter.Context.AutoMap<T>();
 
             csvWriter.WriteRecords(records);
             streamWrite.Flush();

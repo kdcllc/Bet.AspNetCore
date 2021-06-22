@@ -12,7 +12,7 @@ namespace Bet.Extensions
         /// </summary>
         /// <param name="resourceFileName">A file name to be used in a contains search.</param>
         /// <returns>IO.Stream that the user should dispose of.</returns>
-        public static byte[]? GetAsByteArrayFromCallingAssembly(string resourceFileName)
+        public static byte[] ? GetAsByteArrayFromCallingAssembly(string resourceFileName)
         {
             return GetAsByteArray(Assembly.GetCallingAssembly(), resourceFileName);
         }
@@ -105,7 +105,7 @@ namespace Bet.Extensions
             using (var stream = GetAsStream(assembly, resourceFileName))
             using (var fileStream = File.Create(fullFilePath))
             {
-                stream.CopyTo(fileStream);
+                stream?.CopyTo(fileStream);
             }
 
             return fullFilePath;
@@ -116,8 +116,7 @@ namespace Bet.Extensions
             var result = string.Empty;
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                result = assembly.GetManifestResourceNames()
-                    .FirstOrDefault(n => n.ToLower().Contains(fileName.Replace("/", ".").ToLower()));
+                result = Array.Find(assembly.GetManifestResourceNames(), n => n.IndexOf(fileName.Replace("/", "."), StringComparison.CurrentCultureIgnoreCase) >= 0);
             }
 
             return result;
