@@ -31,15 +31,3 @@ services:
         NUGET_RESTORE: "-v=m" #overides the --disable-parallel
         PROJECT_PATH: "/src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj"
         SOLUTION_BASE: "false"
-
-  bet.hosting:
-    image: ${DOCKER_REGISTRY-}/bet:hosting
-    build:
-      context: .
-      dockerfile: src/Bet.Hosting.Sample/Dockerfile
-      args:
-        RUNTESTS: "false"
-        VERBOSE: "false"
-        NUGET_RESTORE: "-v=m" #overides the --disable-parallel
-        PROJECT_PATH: "/src/Bet.Hosting.Sample/Bet.Hosting.Sample.csproj"
-        SOLUTION_BASE: "false"

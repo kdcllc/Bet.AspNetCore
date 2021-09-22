@@ -94,6 +94,7 @@ namespace Bet.AspNetCore.Sample
                 .AddAzureStorageForStaticFiles<UploadsBlobStaticFilesOptions>();
 
             services.AddSwaggerGenWithApiVersion<Startup>(includeXmlComments: true);
+
             // https://github.com/domaindrivendev/Swashbuckle.AspNetCore#systemtextjson-stj-vs-newtonsoft
             services.AddSwaggerGenNewtonsoftSupport(); // explicit opt-in - needs to be placed after AddSwaggerGen()
 

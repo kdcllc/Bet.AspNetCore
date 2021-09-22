@@ -8,6 +8,12 @@
 
 If you like or are using this project to learn or start your solution, please give it a star. Thanks!
 
+## _NOTE_
+
+In order for `KeyManagementOptionsSetup` to work on the local machine with MSI 1.) Visual Studio.NET and 2.) Azure CLI must be authenticated 
+under the same user account
+
+
 ## Summary
 
 This project demonstrates how to utilize:

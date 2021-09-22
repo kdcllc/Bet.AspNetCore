@@ -20,6 +20,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
   </ItemGroup>
 </Project>

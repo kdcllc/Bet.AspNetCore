@@ -1,30 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);CA2000;NU1608</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<NoWarn>$(NoWarn);CA2000;NU1608</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 
-    <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(NetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(NetCoreVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio" />
-  </ItemGroup>
+		<PackageReference Include="coverlet.collector" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(NetCoreVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(NetCoreVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="Moq" />
+		<PackageReference Include="xunit" />
+		<PackageReference Include="xunit.runner.visualstudio" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
-    <ProjectReference Include="..\..\src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
-    <ProjectReference Include="..\..\src\Bet.AspNetCore\Bet.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+		<ProjectReference Include="..\..\src\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
+		<ProjectReference Include="..\..\src\Bet.AspNetCore\Bet.AspNetCore.csproj" />
+	</ItemGroup>
 
 </Project>

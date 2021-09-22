@@ -1,71 +1,74 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>2045cfaa-b810-41bd-a6dd-bf1e38502faa</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <IsPackable>false</IsPackable>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <PreserveCompilationReferences>true</PreserveCompilationReferences>
-    <IdentityUIFrameworkVersion>Bootstrap4</IdentityUIFrameworkVersion>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UserSecretsId>2045cfaa-b810-41bd-a6dd-bf1e38502faa</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<IsPackable>false</IsPackable>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
+		<IdentityUIFrameworkVersion>Bootstrap4</IdentityUIFrameworkVersion>
 
-    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+		<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
 
-    <!-- Enable this if Swagger is including XML comments part of it UI. -->
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!-- Enable this if Swagger is including XML comments part of it UI. -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-    <!--- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2590 -->
-    <NoWarn>$(NoWarn);SA1649</NoWarn>
-  </PropertyGroup>
+		<!--- https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2590 -->
+		<NoWarn>$(NoWarn);SA1649</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CronScheduler.AspNetCore" />
-    <PackageReference Include="Hellang.Middleware.ProblemDetails" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
-    <PackageReference Include="Microsoft.ML" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CronScheduler.AspNetCore" />
+		<PackageReference Include="Hellang.Middleware.ProblemDetails" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
+		<PackageReference Include="Bet.Extensions.ML.Sentiment" />
+		<PackageReference Include="Bet.Extensions.ML.Spam" />
+		<PackageReference Include="Bet.Extensions.ML.Azure" />
+		<PackageReference Include="Bet.Extensions.HealthChecks.ML" />
+		<PackageReference Include="Bet.Extensions.HealthChecks.AzureStorage" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore.Jwt\Bet.AspNetCore.Jwt.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
-    <ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.AzureVault\Bet.Extensions.AzureVault.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.DataProtection\Bet.Extensions.DataProtection.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.HealthChecks.AzureStorage\Bet.Extensions.HealthChecks.AzureStorage.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.HealthChecks.ML\Bet.Extensions.HealthChecks.ML.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.ML.Azure\Bet.Extensions.ML.Azure.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.ML.Sentiment\Bet.Extensions.ML.Sentiment.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.ML.Spam\Bet.Extensions.ML.Spam.csproj" />
-  </ItemGroup>
+		<PackageReference Include="Bet.Extensions.AzureVault" />
+		<PackageReference Include="Bet.Extensions.DataProtection" />
+    <PackageReference Include="Bet.Extensions.Logging" />
+    <PackageReference Include="Serilog.AspNetCore" />
 
-  <ItemGroup>
-    <None Update="MLContent\SentimentModel.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="MLContent\SpamModel.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
+	</ItemGroup>
 
-  <PropertyGroup Label="Docker">
-    <!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
-    <DockerfileFile>../../src/Bet.AspNetCore.Sample/Dockerfile</DockerfileFile>
-    <PROJECT_PATH>/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj</PROJECT_PATH>
-    <DockerfileBuildArguments>--build-arg PROJECT_PATH=$(PROJECT_PATH) $(DOCKER_BUILD_ARGS)</DockerfileBuildArguments>
-  </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Bet.AspNetCore.AzureStorage\Bet.AspNetCore.AzureStorage.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore.HealthChecks\Bet.AspNetCore.HealthChecks.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore.Jwt\Bet.AspNetCore.Jwt.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore.Logging\Bet.AspNetCore.Logging.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore.Middleware\Bet.AspNetCore.Middleware.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore.ReCapture\Bet.AspNetCore.ReCapture.csproj" />
+		<ProjectReference Include="..\Bet.AspNetCore\Bet.AspNetCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="MLContent\SentimentModel.zip">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="MLContent\SpamModel.zip">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<PropertyGroup Label="Docker">
+		<!--https://docs.microsoft.com/en-us/visualstudio/containers/container-msbuild-properties?view=vs-2019-->
+		<DockerfileFile>../../src/Bet.AspNetCore.Sample/Dockerfile</DockerfileFile>
+		<PROJECT_PATH>/src/Bet.AspNetCore.Sample/Bet.AspNetCore.Sample.csproj</PROJECT_PATH>
+		<DockerfileBuildArguments>--build-arg PROJECT_PATH=$(PROJECT_PATH) $(DOCKER_BUILD_ARGS)</DockerfileBuildArguments>
+	</PropertyGroup>
 
 </Project>

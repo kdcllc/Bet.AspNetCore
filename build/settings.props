@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup Label="Basic Settings">
-    <VersionPrefix>3.1.11-preview1</VersionPrefix>
+    <VersionPrefix>4.0.0-preview1</VersionPrefix>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <LangVersion>latest</LangVersion>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Docker">
-    <!-- kdcllc docker image specifics -->
+     <!--kdcllc docker image specifics-->
     <PROJECT_PATH></PROJECT_PATH>
     <RUNTESTS>"false"</RUNTESTS>
     <VERBOSE>"false"</VERBOSE>
@@ -18,7 +18,7 @@
     <NUGET_RESTORE>"-v=m"</NUGET_RESTORE>
     <DOCKER_BUILD_ARGS>--build-arg RUNTESTS=$(RUNTESTS) --build-arg NUGET_RESTORE=$(NUGET_RESTORE) --build-arg VERBOSE=$(VERBOSE) --build-arg SOLUTION_BASE=$(SOLUTION_BASE)</DOCKER_BUILD_ARGS>
 
-    <!-- MSI local dev -->
+     <!--MSI local dev-->
     <MSI_ENDPOINT Condition="'$(MSI_ENDPOINT)' == '' ">
       http://host.docker.internal:5050/oauth2/token
     </MSI_ENDPOINT>

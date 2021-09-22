@@ -14,7 +14,8 @@ namespace Bet.AspNetCore.Sample.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
-    //[ApiConventionType(typeof(DefaultApiConventions))]
+
+    // [ApiConventionType(typeof(DefaultApiConventions))]
     [Route("v{version:apiVersion}/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -37,7 +38,8 @@ namespace Bet.AspNetCore.Sample.Controllers.V1
         OperationId = "Get",
         Tags = new[] { "Controllers" })
         ]
-        //[ApiConventionMethod(
+
+        // [ApiConventionMethod(
         //    typeof(DefaultApiConventions),
         //    nameof(DefaultApiConventions.Get))]
         public IEnumerable<WeatherForecast> Get(CancellationToken cancellationToken)

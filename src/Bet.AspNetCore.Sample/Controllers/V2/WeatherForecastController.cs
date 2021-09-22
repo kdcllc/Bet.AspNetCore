@@ -14,7 +14,8 @@ namespace Bet.AspNetCore.Sample.Controllers.V2
 {
     [ApiController]
     [ApiVersion("2.0")]
-    //[ApiConventionType(typeof(DefaultApiConventions))]
+
+    // [ApiConventionType(typeof(DefaultApiConventions))]
     [Route("v{version:apiVersion}/[controller]")]
     public class WeatherForecastController : ControllerBase
     {

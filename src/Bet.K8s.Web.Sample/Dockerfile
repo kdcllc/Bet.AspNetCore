@@ -24,11 +24,11 @@ ARG RUNTESTS=false
 ARG VERBOSE=false
 ARG PROJECT_PATH=/src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj
 
-FROM kdcllc/dotnet-sdk:5.0-alpine as builder
+FROM kdcllc/dotnet-sdk:6.0-alpine as builder
 RUN dotnet publish "./src/Bet.K8s.Web.Sample/Bet.K8s.Web.Sample.csproj" -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:5.0-alpine AS runtime
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine AS runtime
 WORKDIR /app
 
 COPY --from=builder /app/out ./
