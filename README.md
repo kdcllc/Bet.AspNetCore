@@ -8,7 +8,7 @@
 
 > The second letter in the Hebrew alphabet is the ב bet/beit. Its meaning is "house". In the ancient pictographic Hebrew it was a symbol resembling a tent on a landscape.
 
-*Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json).*
+_Note: Pre-release packages are distributed via [feedz.io](https://f.feedz.io/kdcllc/bet-aspnetcore/nuget/index.json)._
 
 This goal of this repo is to provide with a reusable functionality for developing Microservices with Docker and Kubernetes.
 These libraries extend `Microsoft.Extensions` and `Microsoft.AspNetCore` namespaces accordingly.
@@ -34,6 +34,7 @@ If you like or are using this project to learn or start your solution, please gi
 ## `DotNetCore` CLI global tools
 
 1. [AppAuthentication](https://github.com/kdcllc/AppAuthentication) - enables Microsoft Managed Identity (MSI) testing `Azure Key Vault` or `Azure Blob Storage` access from Docker Container in Local development based on token authentication.
+   ![AppAuthentication](./img/appauthentication-docker-debug.gif)
 
 ```bash
     # adds local tool manifest file
@@ -81,7 +82,7 @@ All of the sample applications are deployable to local Kubernetes Cluster.
 
 This repo is utilizing [King David Consulting LLC Docker Images](https://hub.docker.com/u/kdcllc):
 
-- [kdcllc/dotnet-sdk:3.1](https://hub.docker.com/r/kdcllc/dotnet-sdk-vscode):  - the docker image for templated `DotNetCore` build of the sample web application.
+- [kdcllc/dotnet-sdk:3.1](https://hub.docker.com/r/kdcllc/dotnet-sdk-vscode): - the docker image for templated `DotNetCore` build of the sample web application.
 
 - [kdcllc/dotnet-sdk-vscode:3.1](https://hub.docker.com/r/kdcllc/dotnet-sdk/tags): the docker image for the Visual Studio Code In container development.
 

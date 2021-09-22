@@ -1,27 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>The collection of the functionality for AspNetCore WebHost.</Description>
-    <PackageTags>aspnetcore, hosting, extensions, options validation</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>The collection of the functionality for AspNetCore WebHost.</Description>
+		<PackageTags>aspnetcore, hosting, extensions, options validation</PackageTags>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Bet.Extensions.Options\Bet.Extensions.Options.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+		<PackageReference Include="Bet.Extensions.Options" />
+	</ItemGroup>
 </Project>

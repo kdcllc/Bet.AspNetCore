@@ -1,30 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Description>
-      Let's Encrypt Automatically SSL Provisioning for AspNetCore website hosted with Kestrel.
-      Generates and updates outdated SSL Certificates.
-    </Description>
-    <PackageTags>AspNetCore, Hosting, Let's Encrypt, ACME, SSL Certificate provisioning, Kestrel</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Description>
+			Let's Encrypt Automatically SSL Provisioning for AspNetCore website hosted with Kestrel.
+			Generates and updates outdated SSL Certificates.
+		</Description>
+		<PackageTags>AspNetCore, Hosting, Let's Encrypt, ACME, SSL Certificate provisioning, Kestrel</PackageTags>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CronScheduler.AspNetCore" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Bet.Extensions.Hosting\Bet.Extensions.Hosting.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.LetsEncrypt\Bet.Extensions.LetsEncrypt.csproj" />
-    <ProjectReference Include="..\Bet.Extensions.Logging\Bet.Extensions.Logging.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CronScheduler.AspNetCore" />
+		<PackageReference Include="Bet.Extensions.LetsEncrypt" />
+	</ItemGroup>
 
 </Project>
