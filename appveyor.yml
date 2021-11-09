@@ -5,9 +5,9 @@ branches:
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2019
-## temporary until 6.0.100-rc.1.21463.6 sdk is installed
+## temporary until 6.0.100 sdk is installed
 install:
-  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/6.0.100-rc.1.21463.6/dotnet-sdk-6.0.100-rc.1.21463.6-win-x64.zip"
+  - ps: $urlCurrent = "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/6.0.100/dotnet-sdk-6.0.100-win-x64.zip"
   - ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetsdk"
   - ps: mkdir $env:DOTNET_INSTALL_DIR -Force | Out-Null
   - ps: $tempFileCurrent = [System.IO.Path]::GetTempFileName()
